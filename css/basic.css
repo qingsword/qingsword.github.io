@@ -52,9 +52,6 @@ div,li{  /*border，padding不扩充宽高*/
 	text-indent: -9999px;
 	float: left;
 }
-#nav  .nav-logo:hover{
-	background-image: url("../logo/logob.png") ;
-}
 #nav .nav-site-description{
 	border-left: 1px solid #7e7d7d;
 	height: 45px;
