@@ -124,7 +124,7 @@
 	float: left;
 }
 #content .sections .sections-title{
-	height:31px;
+	/*height:31px;*/
 	border-bottom: solid 2px #333;
 	margin: 12px 0;
 }
