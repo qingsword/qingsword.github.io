@@ -1,0 +1,261 @@
+@charset "utf-8";
+/*home内容区主框架*/
+#content {
+	width 100%;
+	margin-top: 90px;
+}
+#content .content-container{
+	max-width: 1263px;
+	margin: 0 auto;
+	padding: 0 6px;
+}
+/*/home内容区主框架*/
+
+/*侧边栏*/
+#content  .aside{
+	width: 26%;
+	float: right;
+}
+#content .about,
+#content .tags,
+#content .recommend{
+	font-size: 18px;
+	border: 1px solid #7e7d7d;
+	border-radius: 8px;
+	padding: 8px 8px 8px 8px;
+	margin-bottom: 10px;
+}
+#content .about h2,
+#content .tags h2,
+#content .recommend h2{
+	display: block;
+	height: 35px;
+	line-height: 35px;
+	background-image: linear-gradient(90deg,rgb(3, 192, 198) 0%,black 25%);
+	border-radius: 6px;
+	font-size: 18px;
+	font-weight: normal;
+	color: #c7c5c5;
+	padding-left: 18px;
+	text-shadow:1px 1px 1px gray ;
+	
+}
+#content .aside .eng-h{
+	font-size: 15px;
+	color: #6ec3c8;
+}
+#content .about .about-link{
+	display: block;
+	height: 32px;
+	margin: 6px 0 6px 18px;
+}
+#content .about .qingbarin{
+	float: left;
+}
+#content .about .about-span{
+	display: block;
+	float: left;
+	line-height: 32px;
+	margin-left: 5px;
+	color: #c7c5c5;
+}
+#content .about figure{
+	margin: 0px 0px 5px 22px;
+	clear: both;
+}
+#content .about .about-info{
+	margin-right: 9px;
+	float: left;
+}
+#content .about figure:after{  
+	content: "qingsword.com";
+	display: block;
+	height: 0;
+	visibility: hidden;
+	clear: both;
+}
+#content .about figure figcaption,
+#content .about figure figcaption a{
+	display: block;
+	float: left;
+	height: 24px;
+	line-height: 24px;
+	color:#999;
+}
+#content .tags ul,
+#content .recommend ul{
+	margin: 6px 0 0 20px;
+}
+
+#content .tags li{
+	float: left;
+}
+#content .tags li a{
+	margin: 4px;
+	display: block;
+	width: 122px;
+	height: 32px;
+	border-radius: 6px;
+	line-height: 32px;
+	text-align: center;
+	color: #999;
+	border:1px solid #333;
+}
+#content .tags li a:hover,
+#content .recommend li a:hover{
+	background-color: rgb(3, 192, 198);
+	color: white;
+}
+#content .recommend li a{
+	display: block;
+	margin: 4px;
+	color: #999;
+	overflow: hidden;  /*截取多余部分，不换行*/
+	white-space: nowrap;
+	text-overflow:ellipsis;
+	border-radius: 6px;
+	letter-spacing: 0.5px;
+}
+/*/侧边栏*/
+
+/*文章摘要区*/
+#content  .sections{
+	width: 73%;
+	float: left;
+}
+#content .sections .sections-title{
+	height:31px;
+	border-bottom: solid 2px #333;
+	margin: 12px 0;
+}
+#content .sections .sections-title h2{
+	display: inline-block;
+	border-bottom: solid 2px #1ea65c;
+	font-size: 22px;
+	color: #c7c5c5;
+}
+#content .sections .article{
+	border: 1px dashed #7e7d7d;
+	border-radius: 6px;
+	margin-bottom: 10px;
+	padding: 10px;
+}
+#content .sections .article:hover{
+	background-color: #111;
+}
+#content .article header{
+	border-left: 6px solid #1ea65c;
+}
+#content .article header h1{
+	letter-spacing: 1px;
+	font-size: 20px;
+	padding: 10px;
+}
+#content .article header a{
+	color: #c7c5c5;
+}
+#content .article section p{
+	letter-spacing: 1px;
+	font-size: 18px;
+	padding: 16px;
+	color: #999;
+}
+#content .article section a{
+	color: #c7c5c5;
+	display: block;
+	width: 120px;
+	height: 32px;
+	text-align: center;
+	line-height: 32px;
+	border-radius: 6px;
+	font-size: 18px;
+	margin-left: 16px;
+	border: 1px solid #1ea65c;
+}
+#content .article section a:hover{
+	background-color: #1ea65c;
+}
+#content .article footer{
+	margin: 6px 0 0 16px;
+	font-size: 16px;
+	color: #666;
+}
+#content .article footer span{
+	padding-left: 10px;
+}
+#content .article footer a{
+	display: inline-block;
+	padding: 0 4px;
+	text-align: center;
+	border-radius: 4px;
+	color: #c7c5c5;
+	background-color: #1ea65c;
+}
+#content .sections .article-all
+{
+	width: 200px;
+	height: 30px;
+	line-height: 30px;
+	text-align: center;
+	font-size: 18px;
+	border-radius: 8px;
+	background-color: #1ea65c;
+	margin: 0 auto;
+}
+#content .sections .article-all a{
+	display: block;
+	color: #fff;
+}
+/*/文章摘要区*/
+
+/*媒体查询区*/
+/*当页面大于1200px时，PC大屏*/
+@media (min-width: 1200px) {
+
+}
+/*在992和1199像素之间，PC小屏*/
+@media (min-width: 992px) and (max-width: 1199px) {
+	#content  .aside{
+		width: 30%;
+		float: right;
+	}
+	#content  .sections{
+		width: 69%;
+		float: left;
+	}
+	#content .tags li a{
+		width: 110px;
+	}
+}
+/*在768和991像素之间，PAD端*/
+@media (min-width: 768px) and (max-width: 991px) {
+	#content .tags li a{
+		width: 125px;
+	}
+	#content .about .about-hidden{
+		display: none;
+	}
+	#content .about .about-span{
+		font-size: 16px;
+	}
+	#content 
+}
+/*在480和767像素之间，高分辨率手机端*/
+@media (min-width: 480px) and (max-width: 767px) {
+	#content .aside-hiden{
+		display: none;
+	}
+	#content .sections{
+		width: 100%;
+	}
+}
+/*小于480像素的屏幕，低分辨率手机端*/
+@media (max-width: 479px) {
+	#content .aside-hiden{
+		display: none;
+	}
+	#content .sections{
+		width: 100%;
+	}
+}
+/*/媒体查询区*/
