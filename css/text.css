@@ -1,0 +1,41 @@
+@charset "utf-8";
+#content {
+	width 100%;
+	margin-top: 70px;
+}
+#content .content-container{
+	max-width: 1263px;
+	margin: 0 auto;
+}
+#content .text-container{
+	padding: 30px;
+	color: #c0c0c0;
+	font-size: 20px;
+}
+#content .text-header h1{
+	font-size: 26px;
+	color: #dedede;
+	text-align: center;
+	border-bottom: 1px solid #1ea65c;
+	padding-bottom: 10px;
+	margin-bottom: 40px;
+}
+#content .text-body h2{
+	color: #d6d6d6;
+	font-size: 22px;
+	border-left: 4px solid #1ea65c;
+	padding: 6px;
+	margin:6px 0;
+}
+#content .text-body p{
+	margin: 15px;
+	/*word-wrap: break-word;*/
+	word-break:break-all;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	letter-spacing: 0.2px;
+	line-height: 1.5;
+}
+#content .text-body .indent-p{
+	margin-left: 30px;
+}
