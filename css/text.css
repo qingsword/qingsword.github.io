@@ -1,0 +1,124 @@
+@charset "utf-8";
+#content {
+	width 100%;
+	margin-top: 70px;
+}
+#content .content-container{
+	max-width: 1263px;
+	margin: 0 auto;
+}
+#content .text-container{
+	padding: 30px 30px 0 30px;
+	color: #c0c0c0;
+	font-size: 20px;
+	word-break:break-all;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+#content .text-header h1{
+	font-size: 26px;
+	color: #dedede;
+	text-align: center;
+	border-bottom: 1px solid #1ea65c;
+	padding-bottom: 10px;
+	margin-bottom: 40px;
+}
+#content .text-body h2{
+	color: #d6d6d6;
+	font-size: 22px;
+	border-left: 4px solid #1ea65c;
+	padding: 6px;
+	margin:6px 0;
+}
+#content .contents{
+	margin: 15px;
+}
+#content .contents a{
+	color: #c0c0c0;
+	border-bottom: 1px solid #1ea65c;
+	letter-spacing: 0.5px;
+	line-height: 1.5;
+}
+#content .text-body p{
+	margin: 15px;
+	letter-spacing: 0.5px;
+	line-height: 1.5;
+}
+#content .text-body .indent-p{
+	margin-left: 30px;
+}
+
+#content .text-footer{
+	border-top: 1px solid #1ea65c;
+	margin-top: 20px;
+	padding: 10px 10px 0 10px;
+}
+#content .text-footer a{
+	color: #1ea65c;
+}
+
+/**媒体查询，响应式布局**/
+/*当页面大于1200px时，PC大屏*/
+@media (min-width: 1200px) {
+
+}
+/*在992和1199像素之间，PC小屏*/
+@media (min-width: 992px) and (max-width: 1199px) {
+
+}
+/*在768和991像素之间，PAD端*/
+@media (min-width: 768px) and (max-width: 991px) {
+	
+}
+/*在480和767像素之间，高分辨率手机端*/
+@media (min-width: 480px) and (max-width: 767px) {
+	#content .text-container{
+		padding: 8px;
+		font-size: 16px;
+	}
+	#content .text-header h1{
+		font-size: 18px;
+		margin: 15px 0 35px 0;
+	}
+	#content .text-body h2{
+		font-size: 17px;
+		padding: 4px;
+		margin:4px 0;
+	}
+	#content .text-body p{
+		margin: 10px;
+	}
+	#content .text-body .indent-p{
+		margin-left: 20px;
+	}
+	#content .text-body .codearea{
+		font-size: 15px;
+		padding: 10px 10px 0 10px;
+	}
+}
+/*小于480像素的屏幕，低分辨率手机端*/
+@media (max-width: 479px) {
+	#content .text-container{
+		padding: 8px;
+		font-size: 16px;
+	}
+	#content .text-header h1{
+		font-size: 18px;
+		margin: 15px 0 35px 0;
+	}
+	#content .text-body h2{
+		font-size: 17px;
+		padding: 4px;
+		margin:4px 0;
+	}
+	#content .text-body p{
+		margin: 10px;
+	}
+	#content .text-body .indent-p{
+		margin-left: 20px;
+	}
+	#content .text-body .codearea{
+		font-size: 15px;
+		padding: 10px 10px 0 10px;
+	}
+}
