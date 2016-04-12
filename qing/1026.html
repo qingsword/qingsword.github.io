@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<!--Copyright©QingSword.COM︻☼1010D>-->
+<html lang="zh-ch">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
+	<meta name="description" content="晴刃,是一个致力推广实用计算机技术的个人博客;我们分享计算机知识;为计算机系统以及网络安全防范做出一份贡献。【专注技术 创造价值 共同进步】">
+	<meta name="keywords" content="晴刃,晴,qing,qingsword,ccna图文笔记,ubuntu,linux,ubuntu server,mysql,node.js,javascript,python,计算机技术博客">
+	<title>[ubuntu入门手册]-3-如何调节和保存屏幕亮度| QingSword.COM </title>
+	<link rel="stylesheet" type="text/css" href="../css/basic.css">
+	<link rel="stylesheet" type="text/css" href="../css/text.css">
+	<!-- 代码块高亮js -->
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shCore.css"/>
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shThemeRDark.css"/>
+	 <script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shCore.js"></script>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shBrushBash.js"></script>
+	<script type="text/javascript">
+	SyntaxHighlighter.all();
+	</script>
+</head>
+<body>
+	<!--header -->
+	<header id="nav">
+			<div class="nav-container"> 
+				<!-- 根大纲-->
+				<a href="http://www.qingsword.com" title="晴刃">
+					<h1 class="nav-logo">晴刃</h1>
+				</a>
+				<h2 class="nav-site-description desc-hidden">
+					自由、互助、分享、专注计算机技术
+				</h2>
+				<nav class="nav-links"> 
+					<!-- nav连接大纲-->
+					<h1 style="display:none;">网站导航</h1> 
+					<ul>
+						<li  class="li-hidden">
+							<a href="../index.html" title="home">
+								<span class="link-word"><img src="../logo/home.png" alt="home" class="link-img">首页</span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../web.html" title="web">
+								<span class="link-word"><img src="../logo/web.png" alt="web" class="link-img">前端<span class="word-hidden">设计</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../system.html" title="system">
+								<span class="link-word"><img src="../logo/linux.png" alt="linux" class="link-img">系统<span class="word-hidden">应用</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../net.html" title="net">
+								<span class="link-word"><img src="../logo/net.png" alt="net" class="link-img">网络<span class="word-hidden">技术</span></span>
+							</a>
+						</li>
+						<li>
+							<a href="../sitemap.html" title="sitemap">
+								<span class="link-word"><img src="../logo/archives.png" alt="archives" class="link-img"><span class="word-hidden">文章</span>归档</span>
+							</a>
+						</li>
+					</ul>
+				</nav>
+			</div>		
+	</header>
+	<!-- /header -->
+
+	<!-- content-->
+	<div id="content">
+		<div class="content-container">
+			<!-- 文章区 -->
+			<article class="text-container">
+				<header class="text-header">
+					<h1>[ubuntu入门手册]-3-如何调节和保存屏幕亮度</h1>	
+				</header><!-- /header -->
+				<section class="text-body">
+					<h2>引言</h2>
+					<p>这篇文章用Ubuntu14.04来演示如何调节和保存屏幕亮度，所使用的笔记本Intel+Nvidia双显卡，笔记本硬件是Intel芯片组，所以默认情况下所有“[fn]+热键”安装系统后都能正常使用，但"fn+亮度调节键"不起作用，本文将提供几种解决此问题的可行方案。</p>
+					<!-- 目录 -->
+					<h2>文章目录</h2>
+					<ul class="contents">	
+						 <li><a href="#ubuntu-backlight-1">0×1.如何让Ubuntu下fn+亮度调节键起作用</a></li>
+						 <li><a href="#ubuntu-backlight-2">0×2.如何让Ubuntu重启后保存屏幕亮度</a></li>
+					 </ul>
+					<!-- /目录 -->
+
+					<!-- 正文 -->
+					<h2 id="ubuntu-backlight-1">0×1.如何让Ubuntu下fn+亮度调节键起作用</h2>
+					<p>打开终端， 修改grub启动配置：</p>
+					<pre class="brush: bash;">
+						#1.使用任何文本编辑器编辑grub文件
+						qing@qingsword.com:~$ sudo vim /etc/default/grub 
+
+						#2.找到下面这几行
+						GRUB_DEFAULT=0
+						GRUB_HIDDEN_TIMEOUT=0
+						GRUB_HIDDEN_TIMEOUT_QUIET=true
+						GRUB_TIMEOUT=10
+						GRUB_DISTRIBUTOR=`lsb_release -i -s 2> /dev/null || echo Debian`
+						GRUB_CMDLINE_LINUX_DEFAULT="quiet splash"   /*修改这一行*/
+						GRUB_CMDLINE_LINUX=""
+
+						#3.将倒数第二行替换成
+						GRUB_CMDLINE_LINUX_DEFAULT="quiet splash acpi_osi=Linux acpi_backlight=vendor"
+						
+						#或者将后两行替换成（两种方法效果相同）
+						GRUB_CMDLINE_LINUX_DEFAULT="quiet splash acpi_osi=Linux"
+						GRUB_CMDLINE_LINUX="acpi_backlight=vendor"
+
+						#4.修改完成后保存退出，更新grub启动配置
+						qing@qingsword.com:~$ sudo update-grub
+
+						#5.重启计算机
+						qing@qingsword.com:~$ sudo reboot
+					</pre>
+					<p>重启之后，看看[fn]+亮度调节键是不是起作用了？但是别急，这时Ubuntu还不能保存我们调节的亮度，每次重新启动后，系统的屏幕亮度都会被调节到最大值。</p>
+					<h2 id="ubuntu-backlight-2">0×2.如何让Ubuntu重启后保存屏幕亮度</h2>
+					<p>想要配置屏幕亮度，首先我们必须知道自己系统的屏幕亮度取值范围，打开终端按照下面的步骤:</p>
+					<pre class="brush: bash;">
+						#1.首先进入intel_backlight目录
+						qing@qingsword.com:~$ cd /sys/class/backlight/intel_backlight
+						
+						#此目录中有如下两个重要文件，其中brightness是当前屏幕亮度值，max_brightness保存了屏幕可以设置的最大值
+						brightness  max_brightness 
+
+						#2.切换到root权限
+						qing@qingsword.com:/..../intel_backlight$ su - root
+						
+						#如果在安装ubuntu后还没有配置root用户密码，可以使用下面的命令设置root密码，否则无法切换root权限
+						qing@qingsword.com:/..../intel_backlight$ sudo passwd root
+
+						#3.尝试写入一个值到brightness文件，看看屏幕亮度是不是变化了？
+						qing@qingsword.com:/..../intel_backlight# echo 300 > brightness
+
+						#4.理论的取值范围是0～max_brightness中的最大值，0是完全黑屏，请使用上面的方法写入一个适合自己的亮度，记下这个数字
+
+						#5.将自己调节好的数字写入开机启动文件中，比如本例使用100的亮度
+						qing@qingsword.com:/..../intel_backlight#vim /etc/rc.local
+						#在exit 0前面添加一句echo如下，这样每次启动就能自动将亮度调节到100了
+						....
+						# By default this script does nothing.
+						echo 100 > /sys/class/backlight/intel_backlight/brightness
+						exit 0
+					</pre>
+					<p>笔者在这里遇到一个小bug，上面写入开机启动的方法不是每次重启都有效，所以下面提供了另外一种方法写入亮度</p>
+					<pre class="brush: bash;">
+						#1.首先用vim在自己家目录创建一个脚本文件
+						qing@qingsword.com:~$ vim ～/.constbrightness.sh
+
+						#2.输入如下内容（--set-brightness 100后面这个数字100改成你想要设置的亮度值）
+						#!/bin/sh
+						#change brightness setting on startup or resume
+						pkexec /usr/lib/gnome-settings-daemon/gsd-backlight-helper --set-brightness 100
+
+						#3.保存这个文件后,给他添加可执行权限
+						qing@qingsword.com:~$ sudo chmod +x ～/.constbrightness.sh
+
+						#4.最后执行下面的命令（请将下面文件路径中的用户名qing替换成你自己的用户名）
+						qing@qingsword.com:~$ sudo gsettings set org.gnome.settings-daemon.peripherals.input-devices hotplug-command "/home/qing/.constbrightness.sh"
+					</pre>
+					<p>经过测试发现，第二种方法每次启动都能成功将亮度设定为我们指定的值。</p>
+						
+					<!-- /正文 -->
+
+				<footer class="text-footer">
+					<p>
+						*转载请注明来自:<a title="晴刃-自由、互助、分享、专注计算机技术。" href="http://www.qingsword.com" target="_blank">晴刃(QingSword.COM)</a>
+					</p>
+					<p>*原文连接:<a title="[ubuntu入门手册]-3-如何调节和保存屏幕亮度" href="http://www.qingsword.com/qing/1026.html" target="_blank">http://www.qingsword.com/qing/1026.html</a></p>
+				</footer>
+			</article>
+			<!-- /文章区 -->	
+		</div>
+	</div>
+	<!-- /content -->
+	
+	<!-- footer -->
+	<footer id="footer">
+		<div class="footer-container">
+			QingSword.COM &nbsp;<img src="../logo/by-nc-sa.png" alt="Creative Commons" title="Creative Commons">
+		</div>
+	</footer>
+	<!-- /footer -->
+</body>
+</html>
