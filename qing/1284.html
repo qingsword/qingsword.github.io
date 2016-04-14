@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<!--Copyright©QingSword.COM︻☼1010D>-->
+<html lang="zh-ch">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
+	<meta name="description" content="晴刃,是一个致力推广实用计算机技术的个人博客;我们分享计算机知识;为计算机系统以及网络安全防范做出一份贡献。【专注技术 创造价值 共同进步】">
+	<meta name="keywords" content="晴刃,晴,qing,qingsword,ccna图文笔记,ubuntu,linux,ubuntu server,mysql,node.js,javascript,python,计算机技术博客">
+	<title>[ubuntu入门手册]-9-使用断点续传下载器uGet| QingSword.COM </title>
+	<link rel="shortcut icon" type="image/x-icon" href="../logo/favicon.ico">
+	<link rel="stylesheet" type="text/css" href="../css/basic.css">
+	<link rel="stylesheet" type="text/css" href="../css/text.css">
+	<!-- 代码块高亮js -->
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shCore.css"/>
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shThemeRDark.css"/>
+	 <script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shCore.js"></script>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shBrushBash.js"></script>
+	<script type="text/javascript">
+	SyntaxHighlighter.all();
+	</script>
+</head>
+<body>
+	<!--header -->
+	<header id="nav">
+			<div class="nav-container"> 
+				<!-- 根大纲-->
+				<a href="http://www.qingsword.com" title="晴刃">
+					<h1 class="nav-logo">晴刃</h1>
+				</a>
+				<h2 class="nav-site-description desc-hidden">
+					自由、互助、分享、专注计算机技术
+				</h2>
+				<nav class="nav-links"> 
+					<!-- nav连接大纲-->
+					<h1 style="display:none;">网站导航</h1> 
+					<ul>
+						<li  class="li-hidden">
+							<a href="../index.html" title="home">
+								<span class="link-word"><img src="../logo/home.png" alt="home" class="link-img">首页</span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../web.html" title="web">
+								<span class="link-word"><img src="../logo/web.png" alt="web" class="link-img">前端<span class="word-hidden">设计</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../system.html" title="system">
+								<span class="link-word"><img src="../logo/linux.png" alt="linux" class="link-img">系统<span class="word-hidden">应用</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../net.html" title="net">
+								<span class="link-word"><img src="../logo/net.png" alt="net" class="link-img">网络<span class="word-hidden">技术</span></span>
+							</a>
+						</li>
+						<li>
+							<a href="../sitemap.html" title="sitemap">
+								<span class="link-word"><img src="../logo/archives.png" alt="archives" class="link-img"><span class="word-hidden">文章</span>归档</span>
+							</a>
+						</li>
+					</ul>
+				</nav>
+			</div>		
+	</header>
+	<!-- /header -->
+
+	<!-- content-->
+	<div id="content">
+		<div class="content-container">
+			<!-- 文章区 -->
+			<article class="text-container">
+				<header class="text-header">
+					<h1>[ubuntu入门手册]-9-使用断点续传下载器uGet</h1>	
+				</header><!-- /header -->
+				<section class="text-body">
+					<h2>引言</h2>
+					<p>这篇文章给大家提供Ubuntu中两种断点续传下载方案，一种是纯UI界面的uGet(前端)+aria2(后端)，配合Firefox浏览器的FlashGot插件实现浏览器关联；另一种是纯终端下十分强大的aria2。</p>
+					<!-- 目录 -->
+					<h2>文章目录</h2>
+					<ul class="contents">	
+						 <li><a href="#ubuntu-install-uget-and-aria2-1">0×1.安装uGet和aria2</a></li>
+						 <li><a href="#ubuntu-install-uget-and-aria2-2">0×2.在火狐浏览器中安装FlashGot插件</a></li>
+						 <li><a href="#ubuntu-install-uget-and-aria2-3">0×3.使用纯终端aria2下载</a></li>
+					 </ul>
+					<!-- /目录 -->
+
+					<!-- 正文 -->
+					<h2 id="ubuntu-install-uget-and-aria2-1">0×1.安装uGet和aria2</h2>
+					<p>打开终端安装uGet和aria2：</p>
+					<pre class="brush: bash;">
+					#1.更新软件源列表
+					qing@qingsword.com:~$  sudo apt-get update
+
+					#2.安装uGet和aria2
+					qing@qingsword.com:~$  sudo apt-get install uget aria2
+
+					#3.使用启动栏最上方的ubuntu搜索按钮搜索uget，或者在终端中直接输入uget-gtk，启动uGet
+					qing@qingsword.com:~$  uget-gtk
+					</pre>
+					<p>启动后打开软件设置界面，开启aria2插件支持；</p>
+					<img src="images/install-uget-and-aria-1.jpg" alt="install-uget-and-aria-1">
+					<p>开启aria2插件后，关闭uGet并重新打开，配置下载目录和服务器连接数，如果aria2插件没有开启成功，服务器连接数是不能配置的；</p>
+					<img src="images/install-uget-and-aria-2.jpg" alt="images/install-uget-and-aria-2">
+					<h2 id="ubuntu-install-uget-and-aria2-2">0×2.在火狐浏览器中安装FlashGot组件</h2>
+					<p>启动火狐浏览器,在菜单栏中点击”工具”>“附加组件”,然后搜索FlashGot，安装它；</p>
+					<img src="images/install-uget-and-aria-3.jpg" alt="images/install-uget-and-aria-3">
+					<img src="images/install-uget-and-aria-4.jpg" alt="images/install-uget-and-aria-4">
+					<p>安装完成后重启Firefox，尝试着去下载一个文件，在弹出的FlashGot下载选择器中，选择uGet作为下载器；</p>
+					<img src="images/install-uget-and-aria-5.jpg" alt="images/install-uget-and-aria-5">
+					<p>uGet作为UI配合aria2下载各种站点HTTP，FTP资源还是非常快的，基本上能达到宽带的最大下载速度。</p>
+					<p>Ps：如果火狐的FlashGot提示下载失败，有可能是当地的网络接入商屏蔽了火狐服务器，请将下面的这段#mozilla写入系统/etc/hosts文件中,打开终端用gedit编辑hosts文件</p>
+					<pre class="brush: bash;">
+					qing@qingsword.com:~$ sudo gedit /etc/hosts
+					</pre>
+					<p class="indent-p">
+						#mozilla<br>
+						117.18.232.191 addons.cdn.mozilla.net<br>
+						117.18.232.191 mozorg.cdn.mozilla.net<br>
+						117.18.232.191 developer.cdn.mozilla.net<br>
+						117.18.232.191 fhr.cdn.mozilla.net<br>
+						117.18.232.191 support.cdn.mozilla.net<br>
+						117.18.232.191 marketplace.cdn.mozilla.net<br>
+						117.18.232.191 air.cdn.mozilla.net<br>
+						117.18.232.191 activations.cdn.mozilla.net<br>
+						117.18.232.191 cdn.mozilla.net<br>
+						117.18.232.191 download-installer.cdn.mozilla.net<br>
+						117.18.237.191 getpersonas-cdn.mozilla.net<br>
+						117.18.232.191 snippets.cdn.mozilla.net<br>
+						117.18.232.191 telemetry-experiment.cdn.mozilla.net<br>
+						117.18.232.191 code.cdn.mozilla.net<br>
+						117.18.232.191 videos.cdn.mozilla.net<br>
+						117.18.232.191 glow.cdn.mozilla.net<br>
+						68.232.45.109 df6a.https.cdn.softlayer.net<br>
+						117.18.237.29 ocsp.digicert.com<br>
+					</p>
+
+					<h2 id="ubuntu-install-uget-and-aria2-3">0×3.使用纯终端aria2下载</h2>
+					<p>　Aria2 是一个轻量级多协议多源命令行下载工具；支持 HTTP,  HTTPS, FTP, SFTP, BT, Metalink等协议；下面是Aria2的常用实例：</p>
+					<p>1）下载单个文件</p>
+					<pre class="brush: bash;">
+					
+					#a.下载单个文件,将要下载的文件地址包含在一对英文双引号中，aria会将文件下载到当前目录中，可以使用ctrl+c来中断下载，如果需要断点续传，只需要在相同的目录下执行相同的命令，只要http源地址文件不变，就能直接断点续传，没有下载完的任务会同时存在两个文件，其中以.aria2结尾的文件保存着当前的下载进度和信息
+					qing@qingsword.com:~$ aria2c "http：//URL/file.zip"
+
+					#b.使用多连接，多线程下载单个文件，-x15同一服务器连接数15，-s15单个任务最大线程数15（比起单线程会明显快很多，一般会达到当前网络最大下载速度）
+					qing@qingsword.com:~$ aria2c -x15 -s15 "http：//URL/file.zip"
+					</pre>
+					<p>2）并行下载多个文件</p>
+					<pre class="brush: bash;">
+						#c.使用参数-Z（大写）并行下载任意数目的URL，每个URL用空格分隔
+						qing@qingsword.com:~$  aria2c -Z "http：//URL/file1.zip" "http：//URL/fileN.zip"
+
+						#d.将URL放在文本文件中，让aria2下载文本文件中所有的URL
+						qing@qingsword.com:~$ gedit TextFile
+						#每行一个URL，保存在TextFile文件中
+						http：//URL/file1.zip
+						http：//URL/file2.zip
+						......
+						http：//URL/fileN.zip
+						#-i后面是文件名，-j3表示，一次并行下载这个文件中的3条URL文件
+						qing@qingsword.com:~$ aria2 -i TextFile -j3
+					</pre>
+					<p>3）下载BT和磁力链接</p>
+					<pre class="brush: bash;">
+						#e.显示一个.torrent文件中的内容
+						qing@qingsword.com:~$ aria2c -S  "file.torrent"
+
+						#f.直接解析URL中的种子文件内容下载
+						qing@qingsword.com:~$ aria2c "http：//URL/file.torrent"
+
+						#g.解析本地种子文件内容下载
+						qing@qingsword.com:~$ aria2c "file.torrent"
+
+						#h.限制上传速度为20K，当下载速度低于100K时，尝试增加连接数来提高下载速度
+						qing@qingsword.com:~$ aria2c -u20K --bt-request-peer-speed-limit=200K "file.torrent"
+
+						#i.下载磁力连接
+						qing@qingsword.com:~$ aria2c "magnet:?xxx"
+					</pre>
+					<p>4）使用本地配置文件中的属性</p>
+					<p>上面的例子中的所有属性都可以直接写在aria2的本地配置文件aria2.conf中，在使用aria2下载的时候，只需要在aria2c后面写上文件或者bt连接地址就可以了，aria2会自动调用本地配置文件中的参数下载；</p>
+					<pre class="brush: bash;">
+						#j.创建本地配置文件
+						qing@qingsword.com:~$ gedit ~/.aria2/aria2.conf
+						#在文件中输入下面的内容，请根据自己的环境修改部分参数（比如下载文件夹，监听端口等）
+
+						# '#'开头为注释内容, 选项都有相应的注释说明, 根据需要修改
+						#被注释的选项填写的是默认值, 建议在需要修改时再取消注释
+						## 基本选项 ##
+						# 文件的保存路径(可使用绝对路径或相对路径，推荐使用绝对路径), 默认: 当前启动位置
+						dir=/home/qing/download
+						# 文件预分配方式, 能有效降低磁盘碎片, 默认:prealloc
+						# 预分配所需时间: none < falloc ? trunc < prealloc
+						# falloc和trunc则需要文件系统和内核支持
+						# NTFS建议使用falloc, EXT3/4建议trunc, MAC 下需要注释此项
+						file-allocation=trunc
+						# 断点续传，目前只支持 HTTP/HTTPS/FTP 协议
+						continue=true
+						 
+						## 下载连接相关 ##
+						# 最大同时下载任务数, 运行时可修改, 默认:5
+						max-concurrent-downloads=20
+						# 同一服务器连接数, 添加时可指定, 默认:1
+						max-connection-per-server=15
+						# 单个任务最大线程数, 添加时可指定, 默认:5
+						split=5
+						# 整体下载速度限制,单位K或M, 运行时可修改, 默认:0
+						#max-overall-download-limit=0
+						# 单个任务下载速度限制, 默认:0
+						#max-download-limit=0
+						# 整体上传速度限制, 运行时可修改, 默认:0
+						#max-overall-upload-limit=10K
+						# 单个任务上传速度限制, 默认:0
+						#max-upload-limit=0
+						 
+						 
+						## RPC相关设置 ##
+						# 启用RPC, 默认:false
+						enable-rpc=true
+						# 允许所有来源, 默认:false
+						rpc-allow-origin-all=true
+						# 允许非外部访问, 默认:false
+						rpc-listen-all=true
+						# RPC监听端口, 端口被占用时可以修改, 默认:6800
+						rpc-listen-port=51112
+						# 设置的RPC授权令牌, v1.18.4新增功能, 取代 --rpc-user 和 --rpc-passwd 选项
+						#rpc-secret=TOKEN
+						# 设置的RPC访问用户名, 此选项新版已废弃, 建议改用 --rpc-secret 选项
+						#rpc-user=USER
+						# 设置的RPC访问密码, 此选项新版已废弃, 建议改用 --rpc-secret 选项
+						#rpc-passwd=PASSWD
+						 
+						## BT/PT下载相关 ##
+						# 当下载的是一个种子(以.torrent结尾)时, 自动开始BT任务, 默认:true
+						#follow-torrent=true
+						# BT监听端口, 当端口被屏蔽时使用, 默认:6881-6999
+						listen-port=51111
+						# 单个种子最大连接数, 默认:55
+						bt-max-peers=500
+						# 打开DHT功能, PT需要禁用, 默认:true
+						enable-dht=true
+						# 打开IPv6 DHT功能, PT需要禁用
+						#enable-dht6=true
+						# DHT网络监听端口, 默认:6881-6999
+						dht-listen-port=16881-16999
+						# 客户端伪装, PT需要
+						peer-id-prefix=-TR2770-
+						user-agent=Transmission/2.77
+						# 继续之前的BT任务时, 无需再次校验, 默认:false
+						bt-seed-unverified=true
+						# 保存磁力链接元数据为种子文件(.torrent文件), 默认:false
+						bt-save-metadata=true
+						# 当速度总是低于200K/s，aria2将临时增加连接数来试着提高下载速度
+						bt-request-peer-speed-limit=100K
+					</pre>
+					<p>Ps：经过测试，aria2对热门的bt资源下载速度可以达到带宽上限，对于一些冷门的资源，建议大家用迅雷离线下好后再用aria2下载到本地。</p>
+				<!-- /正文 -->
+
+				<footer class="text-footer">
+					<p>
+						*转载请注明来自:<a title="晴刃-自由、互助、分享、专注计算机技术。" href="http://www.qingsword.com" target="_blank">晴刃(QingSword.COM)</a>
+					</p>
+					<p>*原文连接:<a title="[ubuntu入门手册]-9-使用断点续传下载器uGet" href="http://www.qingsword.com/qing/1284.html" target="_blank">http://www.qingsword.com/qing/1284.html</a></p>
+				</footer>
+			</article>
+			<!-- /文章区 -->	
+		</div>
+	</div>
+	<!-- /content -->
+	
+	<!-- footer -->
+	<footer id="footer">
+		<div class="footer-container">
+			QingSword.COM &nbsp;<img src="../logo/by-nc-sa.png" alt="Creative Commons" title="Creative Commons">
+		</div>
+	</footer>
+	<!-- /footer -->
+</body>
+</html>

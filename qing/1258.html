@@ -7,6 +7,7 @@
 	<meta name="description" content="晴刃,是一个致力推广实用计算机技术的个人博客;我们分享计算机知识;为计算机系统以及网络安全防范做出一份贡献。【专注技术 创造价值 共同进步】">
 	<meta name="keywords" content="晴刃,晴,qing,qingsword,ccna图文笔记,ubuntu,linux,ubuntu server,mysql,node.js,javascript,python,计算机技术博客">
 	<title>[ubuntu入门手册]-1-如何安装ubuntu操作系统| QingSword.COM </title>
+	<link rel="shortcut icon" type="image/x-icon" href="../logo/favicon.ico">
 	<link rel="stylesheet" type="text/css" href="../css/basic.css">
 	<link rel="stylesheet" type="text/css" href="../css/text.css">
 	<!-- 代码块高亮js 
@@ -96,7 +97,7 @@
 					<h2 id="ubuntu-install-2">0×2.如何安装ubuntu系统</h2>
 					<p>准备一个容量大于2G的u盘，按照以下步骤操作:</p>
 					<p class="indent-p">
-						1）参考本站这篇文章中的方法将下载的iso文件制作成u盘启动盘：<a title="如何制作u盘系统启动盘"href="http://www.qingsword.com/qing/85.html"target="_blank">如何制作u盘系统启动盘</a>；<br>
+						1）参考本站这篇文章中的方法将下载的iso文件制作成u盘启动盘：<a title="如何制作u盘系统启动盘"href="85.html"target="_blank">如何制作u盘系统启动盘</a>；<br>
 						2）开机笔记本按住F2（台式机Delete），进入BIOS>Boot，设置u盘启动优先，F10保存重启；<br>
 						3）如果重启后进入安装界面，请跳过此步，在这里笔者曾经遇到过一个问题，u盘启动后显示"gfxboot.c32:not a COM32R image"，这个时候只需要在boot后面输入"live-install"就可以正常加载安装程序了，如果你想用u盘试用一下系统，输入"live"即可进入u盘系统环境；<br>
 						4）Welcome界面语言选择最下面的中文，如果你英文好就直接默认，点击"安装Ubuntu"；<br>
@@ -115,7 +116,7 @@
 
 					<h2 id="ubuntu-install-3">0×3.ubuntu系统需要安装驱动吗</h2>
 					<p>如果你的计算机使用的是intel芯片组，使用的是intel集成显卡，恭喜你，不需要安装任何驱动了，这些硬件驱动都是开源的，linux的内核已经集成了这些驱动，不需要像windows那样去网上下载和安装声卡驱动无线网卡驱动等等。</p>
-					<p>现在大多数都是双显卡笔记本，例如Intel+Nvidia，N卡是需要安装驱动的，请参考本站这一篇文章：<a title="ubuntu双显卡笔记本如何安装NVIDIA卡驱动" href="http://www.qingsword.com/qing/1020.html" target="_blank">ubuntu双显卡笔记本如何安装NVIDIA卡驱动</a>；Intel+ATI（AMD），我没做过测试，以后有机会更新安装方法，大家可以百度一下，因为A卡官方是有linux驱动的，应该不难。</p>
+					<p>现在大多数都是双显卡笔记本，例如Intel+Nvidia，N卡是需要安装驱动的，请参考本站这一篇文章：<a title="ubuntu双显卡笔记本如何安装NVIDIA卡驱动" href="1020.html" target="_blank">ubuntu双显卡笔记本如何安装NVIDIA卡驱动</a>；Intel+ATI（AMD），我没做过测试，以后有机会更新安装方法，大家可以百度一下，因为A卡官方是有linux驱动的，应该不难。</p>
 					<p>除了这两个独立显卡（N/A）外，不需要安装任何驱动了，部分机型（联想的某些）因为自己研发了芯片但又没有开源芯片驱动，Linux内核兼容性可能存在问题。</p>
 					<p>对于windows系统来说，升级驱动需要去独立下载安装包进行安装，而ubuntu系统只需要升级内核就可以了，它包含在自动提示的更新中，无需担心。</p>
 			

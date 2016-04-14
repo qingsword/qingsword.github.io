@@ -113,12 +113,14 @@
 .syntaxhighlighter .comments,
 .syntaxhighlighter .comments a
 { 
+	
 	color: #878A85 !important;
 }
 
 .syntaxhighlighter .string,
 .syntaxhighlighter .string a
 {
+	
 	color: #5CE638 !important; 
 }
 
