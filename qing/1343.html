@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<!--Copyright©QingSword.COM︻☼1010D>-->
+<html lang="zh-ch">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
+	<meta name="description" content="晴刃,是一个致力推广实用计算机技术的个人博客;我们分享计算机知识;为计算机系统以及网络安全防范做出一份贡献。【专注技术 创造价值 共同进步】">
+	<meta name="keywords" content="晴刃,晴,qing,qingsword,ccna图文笔记,ubuntu,linux,ubuntu server,mysql,node.js,javascript,python,计算机技术博客">
+	<title>[ubuntu入门手册]-19-解决Sublime编辑器无法输入中文| QingSword.COM </title>
+	<link rel="shortcut icon" type="image/x-icon" href="../logo/favicon.ico">
+	<link rel="stylesheet" type="text/css" href="../css/basic.css">
+	<link rel="stylesheet" type="text/css" href="../css/text.css">
+	<!-- 代码块高亮js -->
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shCore.css"/>
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shThemeRDark.css"/>
+	 <script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shCore.js"></script>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shBrushBash.js"></script>
+	<script type="text/javascript">
+	SyntaxHighlighter.all();
+	</script>
+</head>
+<body>
+	<!--header -->
+	<header id="nav">
+			<div class="nav-container"> 
+				<!-- 根大纲-->
+				<a href="http://www.qingsword.com" title="晴刃">
+					<h1 class="nav-logo">晴刃</h1>
+				</a>
+				<h2 class="nav-site-description desc-hidden">
+					自由、互助、分享、专注计算机技术
+				</h2>
+				<nav class="nav-links"> 
+					<!-- nav连接大纲-->
+					<h1 style="display:none;">网站导航</h1> 
+					<ul>
+						<li  class="li-hidden">
+							<a href="../index.html" title="home">
+								<span class="link-word"><img src="../logo/home.png" alt="home" class="link-img">首页</span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../web.html" title="web">
+								<span class="link-word"><img src="../logo/web.png" alt="web" class="link-img">前端<span class="word-hidden">设计</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../system.html" title="system">
+								<span class="link-word"><img src="../logo/linux.png" alt="linux" class="link-img">系统<span class="word-hidden">应用</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../net.html" title="net">
+								<span class="link-word"><img src="../logo/net.png" alt="net" class="link-img">网络<span class="word-hidden">技术</span></span>
+							</a>
+						</li>
+						<li>
+							<a href="../sitemap.html" title="sitemap">
+								<span class="link-word"><img src="../logo/archives.png" alt="archives" class="link-img"><span class="word-hidden">文章</span>归档</span>
+							</a>
+						</li>
+					</ul>
+				</nav>
+			</div>		
+	</header>
+	<!-- /header -->
+
+	<!-- content-->
+	<div id="content">
+		<div class="content-container">
+			<!-- 文章区 -->
+			<article class="text-container">
+				<header class="text-header">
+					<h1>[ubuntu入门手册]-19-解决Sublime编辑器无法输入中文</h1>	
+				</header><!-- /header -->
+				<section class="text-body">
+					<h2>引言</h2>
+					<p>SublimeText是一款跨平台的代码编辑器，功能十分强大，但其在Ubuntu系统中却无法调用中文输入法，这篇文章提供一种解决方案，使Ubuntu下的"Sublime Text 3"能够支持中文输入。</p>
+					<!-- 目录 -->
+					<h2>文章目录</h2>
+					<ul class="contents">	
+						 <li><a href="#Sublime-Text-1">0×1.安装SublimeText3</a></li>
+						 <li><a href="#Sublime-Text-2">0×2.解决Ubuntu下SublimeText3无法输入中文</a></li>
+					 </ul>
+					<!-- /目录 -->
+
+					<!-- 正文 -->
+					<h2 id="Sublime-Text-1">0×1.安装SublimeText3</h2>
+					<p>获取软件：</p>
+					<p>通过SublimeText官方网站下载安装包：<a title="SublimeText官方网站" href="http://www.sublimetext.com/" target="_blank" rel="nofollow">SublimeText官方网站</a></p>
+					<p>目前的最新版是3103，如有更新并且激活Key失效，请留意本页更新。</p>
+					<pre class="brush: bash;">
+					#安装最新版
+					qing@qingsword.com:~$ sudo dpkg -i sublime-text_build-3103_amd64.deb
+
+					#安装完成后可以在终端输入"subl"启动它，也可以在快速启动栏Ubuntu按钮中搜索"sublime"启动它
+					</pre>
+					<p>启动后，在软件顶部点击"Help"&gt;"Enter License",粘贴下面的激活序列号：</p>
+					<p>3103版序列号</p>
+					<p class="indent-p">
+						—– BEGIN LICENSE —–<br>
+						Michael Barnes<br>
+						Single User License<br>
+						EA7E-821385<br>
+						8A353C41 872A0D5C DF9B2950 AFF6F667<br>
+						C458EA6D 8EA3C286 98D1D650 131A97AB<br>
+						AA919AEC EF20E143 B361B1E7 4C8B7F04<br>
+						B085E65E 2F5F5360 8489D422 FB8FC1AA<br>
+						93F6323C FD7F7544 3F39C318 D95E6480<br>
+						FCCC7561 8A4A1741 68FA4223 ADCEDE07<br>
+						200C25BE DBBC4855 C4CFB774 C5EC138C<br>
+						0FEC1CEF D9DCECEC D3A5DAD1 01316C36<br>
+						—— END LICENSE ——
+					</p>
+					<h2 id="Sublime-Text-2">0×2.解决Ubuntu下SublimeText3无法输入中文</h2>
+					<p>1）保存以下代码为 sublime-imfix.c 文件</p>
+					<pre class="brush: bash;">
+					/*
+					sublime-imfix.c
+					Use LD_PRELOAD to interpose some function to fix sublime input method support for linux.
+					By Cjacker Huang
+
+					gcc -shared -o libsublime-imfix.so sublime_imfix.c  `pkg-config --libs --cflags gtk+-2.0` -fPIC
+					LD_PRELOAD=./libsublime-imfix.so sublime_text
+					*/
+
+					#include &lt;gtk/gtk.h&gt;
+					#include &lt;gdk/gdkx.h&gt;
+					#include &lt;stdlib.h&gt;
+
+					typedef GdkSegment GdkRegionBox;
+
+					struct _GdkRegion
+					{
+						long size;
+						long numRects;
+						GdkRegionBox *rects;
+						GdkRegionBox extents;
+					};
+
+					GtkIMContext *local_context;
+
+					// This function is added to prevent some bugs caused by subprocess inheriting `LD_PRELOAD` settings
+					// For example, without it, `Preferences - Browse Packages` function won't work.
+					void __attribute__ ((constructor)) on_load(void)
+					{
+						// Clear `LD_PRELOAD` environment variable
+						putenv("LD_PRELOAD=");
+					}
+
+					void gdk_region_get_clipbox (const GdkRegion *region, GdkRectangle *rectangle)
+					{
+						g_return_if_fail(region != NULL);
+						g_return_if_fail(rectangle != NULL);
+
+						rectangle->x = region->extents.x1;
+						rectangle->y = region->extents.y1;
+						rectangle->width = region->extents.x2 - region->extents.x1;
+						rectangle->height = region->extents.y2 - region->extents.y1;
+
+						// The caret width is 2; 
+						// Maybe sometimes we will make a mistake, but for most of the time, it should be the caret.
+						if(rectangle->width == 2 &amp;&amp; GTK_IS_IM_CONTEXT(local_context)) {
+							gtk_im_context_set_cursor_location(local_context, rectangle);
+						}
+					}
+
+					// This is needed, for example, if you input something in file dialog and return back the edit area
+					// context will lost, so here we set it again.
+
+					static GdkFilterReturn event_filter (GdkXEvent *xevent, GdkEvent *event, gpointer im_context)
+					{
+						XEvent *xev = (XEvent *)xevent;
+						if(xev->type == KeyRelease &amp;&amp; GTK_IS_IM_CONTEXT(im_context)) {
+							GdkWindow *win = g_object_get_data(G_OBJECT(im_context), "window");
+							if(GDK_IS_WINDOW(win))
+								gtk_im_context_set_client_window(im_context, win);
+						}
+						return GDK_FILTER_CONTINUE;
+					}
+
+					void gtk_im_context_set_client_window (GtkIMContext *context, GdkWindow *window)
+					{
+						g_return_if_fail(GTK_IS_IM_CONTEXT(context));
+						g_return_if_fail(GDK_IS_WINDOW(window));
+
+						GtkIMContextClass *klass = GTK_IM_CONTEXT_GET_CLASS(context);
+						if(klass->set_client_window)
+							klass->set_client_window (context, window);
+
+						g_object_set_data(G_OBJECT(context),"window",window);
+						int width = gdk_window_get_width(window);
+						int height = gdk_window_get_height(window);
+						if(width != 0 &amp;&amp; height != 0) {
+							gtk_im_context_focus_in(context);
+							local_context = context;
+						}
+						gdk_window_add_filter(window, event_filter, context); 
+					}
+					</pre>
+					<p>2）安装编译环境</p>
+					<pre class="brush: bash;">
+						qing@qingsword.com:~$ sudo apt-get install build-essential libgtk2.0-dev
+					</pre>
+					<p>3）在sublime-imfix.c文件所在目录执行下面的命令，编译库文件</p>
+					<pre class="brush: bash;">
+						qing@qingsword.com:~$ gcc -shared -o libsublime-imfix.so sublime-imfix.c `pkg-config --libs --cflags gtk+-2.0` -fPIC
+					</pre>
+					<p>4）将编译好的库文件复制到Sublime安装目录下</p>
+					<pre class="brush: bash;">
+						qing@qingsword.com:~$ sudo cp libsublime-imfix.so /opt/sublime_text/
+					</pre>	
+					<p>5）修改命令行启动文件subl和桌面启动文件sublime_text.desktop</p>
+					<pre class="brush: bash;">
+						#修改subl命令行启动文件内容
+						qing@qingsword.com:~$ sudo gedit /usr/bin/subl
+
+						#用下面的内容替换原内容
+						#!/bin/sh
+						sublime_dir="/opt/sublime_text"
+						LD_PRELOAD="$sublime_dir/libsublime-imfix.so" "$sublime_dir/sublime_text" "$@"
+
+						#修改sublime_text.desktop桌面启动文件内容
+						qing@qingsword.com:~$ sudo gedit /usr/share/applications/sublime_text.desktop
+
+						#用下面的内容替换原内容
+						[Desktop Entry]
+						Version=1.0
+						Type=Application
+						Name=Sublime Text
+						GenericName=Text Editor
+						Comment=Sophisticated text editor for code, markup and prose
+						Exec=/usr/bin/subl %F
+						Terminal=false
+						MimeType=text/plain;
+						Icon=sublime-text
+						Categories=TextEditor;Development;
+						StartupNotify=true
+						Actions=Window;Document;
+
+						[Desktop Action Window]
+						Name=New Window
+						Exec=/opt/sublime_text/sublime_text -n
+						OnlyShowIn=Unity;
+
+						[Desktop Action Document]
+						Name=New File
+						Exec=/opt/sublime_text/sublime_text --command new_file
+						OnlyShowIn=Unity;
+					</pre>
+					<p>至此，无论是命令行输入subl启动，还是通过ubuntu按钮搜索到sublime桌面图标启动，都能正常使用中文输入法了，唯一存在的bug就是，输入法只能定格在sublime的右下方，暂无解决方法，不过并不影响使用。</p>
+					<p>为了方便大家，我已经将以上源码打包到百度网盘中提供下载，源码包中包含"sublime-imfix.c"源文件，一个已经编译好的"libsublime-imfix.so"，修改好的"subl"和"sublime_text.desktop"文件，大家可以根据上面的步骤将这些现成的文件复制到对应目录即可，下载地址：<a title="Sublime支持中文源码" href="http://pan.baidu.com/s/1mhMaNpe" target="_blank" rel="nofollow">Sublime支持中文源码</a>。</p>
+					
+				<!-- /正文 -->
+
+				<footer class="text-footer">
+					<p>
+						*转载请注明来自:<a title="晴刃-自由、互助、分享、专注计算机技术。" href="http://www.qingsword.com" target="_blank">晴刃(QingSword.COM)</a>
+					</p>
+					<p>*原文连接:<a title="[ubuntu入门手册]-19-解决Sublime编辑器无法输入中文" href="http://www.qingsword.com/qing/1343.html" target="_blank">http://www.qingsword.com/qing/1343.html</a></p>
+				</footer>
+			</article>
+			<!-- /文章区 -->	
+		</div>
+	</div>
+	<!-- /content -->
+	
+	<!-- footer -->
+	<footer id="footer">
+		<div class="footer-container">
+			QingSword.COM &nbsp;<img src="../logo/by-nc-sa.png" alt="Creative Commons" title="Creative Commons">
+		</div>
+	</footer>
+	<!-- /footer -->
+</body>
+</html>

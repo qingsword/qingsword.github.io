@@ -106,10 +106,10 @@
 					qing@qingsword.com:~$ cd freshplayerplugin/
 					qing@qingsword.com:~/freshplayerplugin$ mkdir build
 					qing@qingsword.com:~/freshplayerplugin$ cd build
-					qing@qingsword.com:~/freshplayerplugin/build$ cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo .. && make
+					qing@qingsword.com:~/freshplayerplugin/build$ cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo .. &amp;&amp; make
 
 					#5.编译完成后在当前文件夹中会得到一个叫做"libfreshwrapper-flashplayer.so"的文件，这就是我们需要的flashplayer插件主文件，将这个文件去掉可执行权限后，复制到Firefox插件目录下
-					qing@qingsword.com:~/freshplayerplugin/build$ sudo chmod -x libfreshwrapper-flashplayer.so && sudo cp libfreshwrapper-flashplayer.so /usr/lib/mozilla/plugins/
+					qing@qingsword.com:~/freshplayerplugin/build$ sudo chmod -x libfreshwrapper-flashplayer.so &amp;&amp; sudo cp libfreshwrapper-flashplayer.so /usr/lib/mozilla/plugins/
 					</pre>
 					<p>至此，重新打开Firefox，就能用上最新的FlashPlayer了，如果FlashPlayer发布了新版本，请按照上面的步骤重新编译新的插件替换旧插件即可，如有变动，请参阅freshplayerplugin项目主页中的内容。</p>
 					<p>Ps：手动安装过官方11.2版本的朋友，需要先将官方版本的插件删除，否则两个插件会有冲突。</p>

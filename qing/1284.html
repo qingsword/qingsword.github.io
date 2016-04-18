@@ -95,7 +95,7 @@
 					#2.安装uGet和aria2
 					qing@qingsword.com:~$  sudo apt-get install uget aria2
 
-					#3.使用启动栏最上方的ubuntu搜索按钮搜索uget，或者在终端中直接输入uget-gtk，启动uGet
+					#3.点击启动栏"ubuntu按钮"搜索uget，或者在终端中直接输入uget-gtk，启动uGet
 					qing@qingsword.com:~$  uget-gtk
 					</pre>
 					<p>启动后打开软件设置界面，开启aria2插件支持；</p>
@@ -177,11 +177,14 @@
 
 						#i.下载磁力连接
 						qing@qingsword.com:~$ aria2c "magnet:?xxx"
+
+						#j.选择下载种子中的哪些文件，配合-S参数使用，先列出种子文件内容，再根据内容选择下载哪几个文件,本例选择下载种子文件中第1~3以及第6个文件
+						qing@qingsword.com:~$ aria2c --select-file=1-3,6 -T "file.torrent"
 					</pre>
 					<p>4）使用本地配置文件中的属性</p>
 					<p>上面的例子中的所有属性都可以直接写在aria2的本地配置文件aria2.conf中，在使用aria2下载的时候，只需要在aria2c后面写上文件或者bt连接地址就可以了，aria2会自动调用本地配置文件中的参数下载；</p>
 					<pre class="brush: bash;">
-						#j.创建本地配置文件
+						#k.创建本地配置文件
 						qing@qingsword.com:~$ gedit ~/.aria2/aria2.conf
 						#在文件中输入下面的内容，请根据自己的环境修改部分参数（比如下载文件夹，监听端口等）
 
@@ -191,7 +194,7 @@
 						# 文件的保存路径(可使用绝对路径或相对路径，推荐使用绝对路径), 默认: 当前启动位置
 						dir=/home/qing/download
 						# 文件预分配方式, 能有效降低磁盘碎片, 默认:prealloc
-						# 预分配所需时间: none < falloc ? trunc < prealloc
+						# 预分配所需时间: none &lt; falloc &lt; trunc &lt; prealloc
 						# falloc和trunc则需要文件系统和内核支持
 						# NTFS建议使用falloc, EXT3/4建议trunc, MAC 下需要注释此项
 						file-allocation=trunc
@@ -253,8 +256,10 @@
 						bt-save-metadata=true
 						# 当速度总是低于200K/s，aria2将临时增加连接数来试着提高下载速度
 						bt-request-peer-speed-limit=100K
+						# 下载完成多少分钟后停止做种，本例设置为1分钟
+						seed-time=1
 					</pre>
-					<p>Ps：经过测试，aria2对热门的bt资源下载速度可以达到带宽上限，对于一些冷门的资源，建议大家用迅雷离线下好后再用aria2下载到本地。</p>
+					<p>Ps：经过测试，aria2对热门的bt资源下载速度可以达到带宽上限，对于一些冷门的资源，建议大家用迅雷离线下好后再以上方法下载到本地。另外，aria2的本地配置文件与uGet并不兼容，创建了本地aria2.conf后会导致uGet启动后不能启动aria2，所以，建议大家选择一种自己喜欢的下载方式，或者不创建本地配置文件，在使用aria2终端下载的时候手动添加一些常用参数。</p>
 				<!-- /正文 -->
 
 				<footer class="text-footer">
