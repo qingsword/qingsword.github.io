@@ -107,23 +107,23 @@
 					<p>在Linux命令行终端中使用的最多的命令是ls，它可以帮助我们列出当前目录下都有哪些文件，下面是一些实例：</p>
 					<pre class="brush: bash;">
 					#使用pwd，查看当前是在哪个目录中，显示为"/home/qingsword"，这就是当前命令行所在目录
-					[qingsword@localhost ~]$ pwd
+					qing@qingsword.com:~$ pwd
 					/home/qingsword
 
 					#切换到根目录
-					[qingsword@localhost ~]$ cd /
+					qing@qingsword.com:~$ cd /
 
 					#验证一下，确实在根目录下了
-					[qingsword@localhost /]$ pwd
+					qing@qingsword.com:/$ pwd
 					/
 
 					#查看根目录下面都有哪些文件和文件夹
-					[qingsword@localhost /]$ ls
+					qing@qingsword.com:/$ ls
 					bin   dev  home  lost+found  mnt  proc  sbin     srv  tmp  var
 					boot  etc  lib   media       opt  root  selinux  sys  usr
 
 					#可以使用两个ll详细输出，这个命令和ls -l效果相同
-					[qingsword@localhost /]$ ll
+					qing@qingsword.com:/$ ll
 					total 78
 					dr-xr-xr-x.   2 root root  4096 Aug  9 01:21 bin
 					dr-xr-xr-x.   5 root root  1024 Aug  8 23:54 boot
@@ -132,7 +132,7 @@
 					...
 
 					#添加参数a将显示隐藏文件和文件夹（同ls -al），在Linux中所有隐藏的文件和文件夹都是以符号.开头，例如下面的".autofsck"
-					[qingsword@localhost /]$ ll -a
+					qing@qingsword.com:/$ ll -a
 					total 86
 					dr-xr-xr-x.  21 root root  4096 Aug  8 17:39 .
 					dr-xr-xr-x.  21 root root  4096 Aug  8 17:39 ..
@@ -143,16 +143,16 @@
 					<p>上面为ls最常见的用法，下面是一些并不长用的方法：</p>
 					<pre class="brush: bash;">
 					#使用递归模式，显示目录以及下级子目录，后面的more是当输出超出终端屏幕显示范围时，显示一个more,按任意键可以继续显示下面的内容（按ctrl+c可以提前结束命令显示内容的输出）。
-					[qingsword@localhost /]$ ls -R | more
+					qing@qingsword.com:/$ ls -R | more
 
 					#按文件修改时间先后顺序显示
-					[qingsword@localhost /]$ ls -t
+					qing@qingsword.com:/$ ls -t
 
 					#横排输出,中间用逗号分隔
-					[qingsword@localhost /]$ ls -m
+					qing@qingsword.com:/$ ls -m
 
 					#按大小排列，先大后小
-					[qingsword@localhost /]$ ls -S
+					qing@qingsword.com:/$ ls -S
 					</pre>
 					<p>除此之外ls会显示不同颜色，下面是这些颜色的含义：</p>
 					<p class="indent-p">
@@ -171,26 +171,26 @@
 					<p>使用cd（Change Directory）命令可以在不同目录之间切换，下面是一些实例：</p>
 					<pre class="brush: bash;">
 					#当前目录是根目录
-					[qingsword@localhost /]$ pwd
+					qing@qingsword.com:/$ pwd
 					/
 
 					#使用cd切换到/dev这个目录
-					[qingsword@localhost /]$ cd /dev
-					[qingsword@localhost dev]$ pwd
+					qing@qingsword.com:/$ cd /dev
+					qing@qingsword.com:/dev$ pwd
 					/dev
 
 					#这条命令可以用来回到前一个工作目录，即根目录
-					[qingsword@localhost dev]$ cd -
+					qing@qingsword.com:/dev$ cd -
 					/
 
 					#进入当前用户的家目录（在Linux终端中，～代表当前用户的家目录）
-					[qingsword@localhost /]$ cd ~
-					[qingsword@localhost ~]$ pwd
+					qing@qingsword.com:/$ cd ~
+					qing@qingsword.com:~$ pwd
 					/home/qingsword
 
 					#返回上一层目录（一个点代表当前目录，两个点代表当前目录上一层目录）
-					[qingsword@localhost ~]$ cd ..
-					[qingsword@localhost home]$ pwd
+					qing@qingsword.com:~$ cd ..
+					qing@qingsword.com:/home$ pwd
 					/home
 					</pre>
 
@@ -199,37 +199,37 @@
 					<p>创建目录，或者创建嵌套目录：</p>
 					<pre class="brush: bash;">
 					#在当前用户的家目录中，创建一个单层目录
-					[qingsword@localhost ~]$ mkdir qing
-					[qingsword@localhost ~]$ ls
+					qing@qingsword.com:~$ mkdir qing
+					qing@qingsword.com:~$ ls
 					qing
 
 					#试着创建一个嵌套的目录，提示错误
-					[qingsword@localhost ~]$ mkdir top/sub/sub2
+					qing@qingsword.com:~$ mkdir top/sub/sub2
 					mkdir: cannot create directory `top/sub/sub2': No such file or directory
 
 					#添加-p参数才能创建多层的嵌套目录
-					[qingsword@localhost ~]$ mkdir -p top/sub/sub2
+					qing@qingsword.com:~$ mkdir -p top/sub/sub2
 					</pre>
 					<p>删除目录或者文件：</p>
 					<pre class="brush: bash;">
 					#强制删除刚才创建的top目录"rm -rf"后面可以接任何目录或者文件（删除目录或文件的命令，只要会这一条就足够了）
-					[qingsword@localhost ~]$ rm -rf top
+					qing@qingsword.com:~$ rm -rf top
 					</pre>
 					<p>创建文本文件：</p>
 					<pre class="brush: bash;">
 					#使用touch命令可以创建一个空文本文件
-					[qingsword@localhost ~]$ touch testfile
+					qing@qingsword.com:~$ touch testfile
 
 					#使用echo命令将hello这几个字符写入这个文件中
-					[qingsword@localhost ~]$ echo hello&gt;&gt;testfile
+					qing@qingsword.com:~$ echo hello&gt;&gt;testfile
 
 					#使用more命令显示这个文件中的内容
-					[qingsword@localhost ~]$ more testfile
+					qing@qingsword.com:~$ more testfile
 					hello
 
 					#追加一行，再次显示
-					[qingsword@localhost ~]$ echo My name is QingSword&gt;&gt;testfile
-					[qingsword@localhost ~]$ more testfile
+					qing@qingsword.com:~$ echo My name is QingSword&gt;&gt;testfile
+					qing@qingsword.com:~$ more testfile
 					hello
 					My name is QingSword
 
@@ -238,33 +238,33 @@
 					<p>复制文件或文件夹：</p>
 					<pre class="brush: bash;">
 					#首先创建两个文件夹
-					[qingsword@localhost ~]$ mkdir dir1
-					[qingsword@localhost ~]$ mkdir dir2
-					[qingsword@localhost ~]$ ls
+					qing@qingsword.com:~$ mkdir dir1
+					qing@qingsword.com:~$ mkdir dir2
+					qing@qingsword.com:~$ ls
 					dir1  dir2  qing  testfile
 
 					#将testfile这个文本文件复制到dir2目录中
-					[qingsword@localhost ~]$ cp testfile dir2
-					[qingsword@localhost ~]$ ls dir2
+					qing@qingsword.com:~$ cp testfile dir2
+					qing@qingsword.com:~$ ls dir2
 					testfile
 
 					#将dir2目录复制到dir1目录中,复制非空目录要添加参数-r
-					[qingsword@localhost ~]$ cp -r dir2 dir1
+					qing@qingsword.com:~$ cp -r dir2 dir1
 
 					#复制多个目标到一个文件夹中，将dir1和dir2这两个文件夹以及testfile这个文本文件，复制到后面的qing文件夹中。
-					[qingsword@localhost ~]$ cp -r dir1 dir2 testfile qing
+					qing@qingsword.com:~$ cp -r dir1 dir2 testfile qing
 					</pre>
 					<p>移动目录或文件(剪切)：</p>
 					<pre class="brush: bash;">
 					#vm可以操作目录和文件，和cp一样可以一次性操作多个目标
 					#将dir1移动到qing目录中
-					[qingsword@localhost ~]$ mv dir1 qing
-					[qingsword@localhost ~]$ ls
+					qing@qingsword.com:~$ mv dir1 qing
+					qing@qingsword.com:~$ ls
 					dir2  qing  testfile
 
 					#将testfile dir2一起移动到qing目录中
-					[qingsword@localhost ~]$ mv testfile dir2 qing
-					[qingsword@localhost ~]$ ls
+					qing@qingsword.com:~$ mv testfile dir2 qing
+					qing@qingsword.com:~$ ls
 					qing
 					</pre>
 
@@ -272,21 +272,21 @@
 					<p>使用下面的命令重启和关机(这个命令必须使用sudo或使用root权限才能执行)，sudo能让普通用户暂时获得root的执行权利：</p>
 					<pre class="brush: bash;">
 					#一分钟后关机
-					[qingsword@localhost ~]$ sudo shutdown -h 1
+					qing@qingsword.com:~$ sudo shutdown -h 1
 
 					#如果是定时关机，可以打开另外一个终端，使用下面这个命令取消关机
-					[qingsword@localhost ~]$ sudo shutdown -c
+					qing@qingsword.com:~$ sudo shutdown -c
 
 					#马上关机
-					[qingsword@localhost ~]$ sudo shutdown -h now
+					qing@qingsword.com:~$ sudo shutdown -h now
 
 					#下面这两条命令也是马上关机
-					[qingsword@localhost ~]$ sudo init 0
-					[qingsword@localhost ~]$ sudo poweroff
+					qing@qingsword.com:~$ sudo init 0
+					qing@qingsword.com:~$ sudo poweroff
 
 					#下面这两条命令都能马上重启
-					[qingsword@localhost ~]$ sudo reboot
-					[qingsword@localhost ~]$ sudo init 6
+					qing@qingsword.com:~$ sudo reboot
+					qing@qingsword.com:~$ sudo init 6
 					</pre>
 					<p>除了定时关机外，最常用的两个命令就是reboot（重启）和poweroff（关机）。</p>
 						

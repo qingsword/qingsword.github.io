@@ -32,6 +32,14 @@
 	margin:6px 0;
 	letter-spacing: 0.5px;
 }
+#content .text-body h3{
+	color: #d6d6d6;
+	font-size: 21px;
+	border-left: 2px solid #1ea65c;
+	padding: 6px 0 6px 10px;
+	margin:6px 0 6px 10px;
+	letter-spacing: 0.5px;
+}
 #content .contents{
 	margin: 15px;
 }
@@ -40,6 +48,9 @@
 	border-bottom: 1px solid #1ea65c;
 	letter-spacing: 0.5px;
 	line-height: 1.5;
+}
+#content .contents .subli{
+	margin-left: 24px;
 }
 #content .text-body p{
 	margin: 15px;
@@ -82,16 +93,21 @@
 @media (min-width: 480px) and (max-width: 767px) {
 	#content .text-container{
 		padding: 8px;
-		font-size: 16px;
+		font-size: 17px;
 	}
 	#content .text-header h1{
-		font-size: 18px;
+		font-size: 19px;
 		margin: 15px 0 35px 0;
 	}
 	#content .text-body h2{
-		font-size: 17px;
+		font-size: 18px;
 		padding: 4px;
 		margin:4px 0;
+	}
+	#content .text-body h3{
+		font-size: 17px;
+		padding: 4px 0 4px 8px;
+		margin:4px 0 4px 8px;
 	}
 	#content .text-body p{
 		margin: 10px;
@@ -99,25 +115,29 @@
 	#content .text-body .indent-p{
 		margin-left: 20px;
 	}
-	#content .text-body .codearea{
-		font-size: 15px;
-		padding: 10px 10px 0 10px;
+	#content .contents .subli{
+		margin-left: 19px;
 	}
 }
 /*小于480像素的屏幕，低分辨率手机端*/
 @media (max-width: 479px) {
 	#content .text-container{
 		padding: 8px;
-		font-size: 16px;
+		font-size: 17px;
 	}
 	#content .text-header h1{
-		font-size: 18px;
+		font-size: 19px;
 		margin: 15px 0 35px 0;
 	}
 	#content .text-body h2{
-		font-size: 17px;
+		font-size: 18px;
 		padding: 4px;
 		margin:4px 0;
+	}
+	#content .text-body h3{
+		font-size: 17px;
+		padding: 4px 0 4px 8px;
+		margin:4px 0 4px 8px;
 	}
 	#content .text-body p{
 		margin: 10px;
@@ -125,8 +145,7 @@
 	#content .text-body .indent-p{
 		margin-left: 20px;
 	}
-	#content .text-body .codearea{
-		font-size: 15px;
-		padding: 10px 10px 0 10px;
+	#content .contents .subli{
+		margin-left: 19px;
 	}
 }
