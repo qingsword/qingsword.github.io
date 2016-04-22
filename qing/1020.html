@@ -99,16 +99,8 @@
 					#3.使用下面的命令查看都有哪些可用的驱动,末尾的[Tab]表示在这个位置按下键盘的[Tab]键
 					qing@qingsword.com:~$ sudo apt-get install nvidia-[Tab]
 
-					#在输出的末尾会看到类似下面这样的settings，记下你看到nvidia-settings-后面最大的那个数字，比如本例是319
-					 nvidia-settings-310
-					 nvidia-settings-319
-					 ....
-					 
-					 #4.安装驱动以及驱动设置工具，这里的319就是上面最大的那个数字，随着时间的推移会出现更新的版本，替换掉下面这个数字即可
-					 qing@qingsword.com:~$ sudo apt-get install nvidia-settings-319 nvidia-319 nvidia-prime
-
-					 #笔者在这里做了一个实验，并没有按照上面这一步，而是使用了最新的驱动nvidia-352，虽然并没有配套的设置程序nvidia-settings-352，所以直接使用nvidia-settings代替，安装过程也没有出什么问题，但是考虑到稳定性，大家还是使用上面的方法，测试命令如下
-					 qing@qingsword.com:~$ sudo apt-get install nvidia-settings nvidia-352 nvidia-prime
+					#选择你看到的最大的那个后缀数字安装，本例使用当前最新的驱动nvidia-361，然后安装几个必要组件，命令如下
+					 qing@qingsword.com:~$ sudo apt-get install nvidia-settings nvidia-361 nvidia-prime
 					
 					#5.安装双显卡切换指示器
 					 qing@qingsword.com:~$ sudo add-apt-repository ppa:nilarimogard/webupd8

@@ -96,7 +96,16 @@
 					</pre>
 					<p>准备工作做完之后，下面直接安装。</p>
 					<h2 id="ubuntu-sogoupinying-2">0×2.安装实例</h2>
-					<p>在Ubuntu14.04往后的版本中，只需要直接双击下载下来的deb安装包，系统会自动调用软件中心，在软件中心点击"安装"按钮，等待几分钟就会自动安装上了，重启后在右上角就能看到搜狗输入法的logo了。</p>
+					<p>在Ubuntu14.04以上版本，安装步骤（本例在16.04下测试安装成功）：</p>
+					<pre class="brush: bash;">
+						#1.打开终端切换到deb安装包所在目录安装
+						qing@qingsword.com:~$ sudo dpkg -i sogoupinyin_2.0.0.0066_amd64.deb
+
+						#2.解决软件依赖
+						qing@qingsword.com:~$ sudo apt-get -f install
+
+						#3.再次执行第一步，完成后重启计算机
+					</pre>	
 					<p>出于历史的原因，这里简单介绍一下Ubuntu12.04版本使用终端安装搜狗输入法的方法，此方法同样适用于12.04往后的高版本。</p>
 					<pre class="brush: bash;">
 						#1.Ubuntu12.04版本中fcitx版本太老的，需要先更新它，12.04以上版本，跳过这一步
