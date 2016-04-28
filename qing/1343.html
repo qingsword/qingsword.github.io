@@ -113,91 +113,8 @@
 						—— END LICENSE ——
 					</p>
 					<h2 id="Sublime-Text-2">0×2.解决Ubuntu下SublimeText3无法输入中文</h2>
-					<p>1）保存以下代码为 sublime-imfix.c 文件（在本文的最后提供了所有源码的云盘下载地址）</p>
-					<pre class="brush: bash;">
-					/*
-					sublime-imfix.c
-					Use LD_PRELOAD to interpose some function to fix sublime input method support for linux.
-					By Cjacker Huang
-
-					gcc -shared -o libsublime-imfix.so sublime_imfix.c  `pkg-config --libs --cflags gtk+-2.0` -fPIC
-					LD_PRELOAD=./libsublime-imfix.so sublime_text
-					*/
-
-					#include &lt;gtk/gtk.h&gt;
-					#include &lt;gdk/gdkx.h&gt;
-					#include &lt;stdlib.h&gt;
-
-					typedef GdkSegment GdkRegionBox;
-
-					struct _GdkRegion
-					{
-						long size;
-						long numRects;
-						GdkRegionBox *rects;
-						GdkRegionBox extents;
-					};
-
-					GtkIMContext *local_context;
-
-					// This function is added to prevent some bugs caused by subprocess inheriting `LD_PRELOAD` settings
-					// For example, without it, `Preferences - Browse Packages` function won't work.
-					void __attribute__ ((constructor)) on_load(void)
-					{
-						// Clear `LD_PRELOAD` environment variable
-						putenv("LD_PRELOAD=");
-					}
-
-					void gdk_region_get_clipbox (const GdkRegion *region, GdkRectangle *rectangle)
-					{
-						g_return_if_fail(region != NULL);
-						g_return_if_fail(rectangle != NULL);
-
-						rectangle->x = region->extents.x1;
-						rectangle->y = region->extents.y1;
-						rectangle->width = region->extents.x2 - region->extents.x1;
-						rectangle->height = region->extents.y2 - region->extents.y1;
-
-						// The caret width is 2; 
-						// Maybe sometimes we will make a mistake, but for most of the time, it should be the caret.
-						if(rectangle->width == 2 &amp;&amp; GTK_IS_IM_CONTEXT(local_context)) {
-							gtk_im_context_set_cursor_location(local_context, rectangle);
-						}
-					}
-
-					// This is needed, for example, if you input something in file dialog and return back the edit area
-					// context will lost, so here we set it again.
-
-					static GdkFilterReturn event_filter (GdkXEvent *xevent, GdkEvent *event, gpointer im_context)
-					{
-						XEvent *xev = (XEvent *)xevent;
-						if(xev->type == KeyRelease &amp;&amp; GTK_IS_IM_CONTEXT(im_context)) {
-							GdkWindow *win = g_object_get_data(G_OBJECT(im_context), "window");
-							if(GDK_IS_WINDOW(win))
-								gtk_im_context_set_client_window(im_context, win);
-						}
-						return GDK_FILTER_CONTINUE;
-					}
-
-					void gtk_im_context_set_client_window (GtkIMContext *context, GdkWindow *window)
-					{
-						g_return_if_fail(GTK_IS_IM_CONTEXT(context));
-						g_return_if_fail(GDK_IS_WINDOW(window));
-
-						GtkIMContextClass *klass = GTK_IM_CONTEXT_GET_CLASS(context);
-						if(klass->set_client_window)
-							klass->set_client_window (context, window);
-
-						g_object_set_data(G_OBJECT(context),"window",window);
-						int width = gdk_window_get_width(window);
-						int height = gdk_window_get_height(window);
-						if(width != 0 &amp;&amp; height != 0) {
-							gtk_im_context_focus_in(context);
-							local_context = context;
-						}
-						gdk_window_add_filter(window, event_filter, context); 
-					}
-					</pre>
+					<p>1）请<a title="解决Ubuntu下SublimeText3无法输入中文" href="src/sublime-imfix.c" target="_blank">点击这里</a>，在打开的页面中复制所有源代码，保存为"sublime-imfix.c"文件。</p>
+					
 					<p>2）安装编译环境</p>
 					<pre class="brush: bash;">
 						qing@qingsword.com:~$ sudo apt-get install build-essential libgtk2.0-dev
@@ -249,7 +166,7 @@
 						OnlyShowIn=Unity;
 					</pre>
 					<p>至此，无论是命令行输入subl启动，还是通过ubuntu按钮搜索到sublime桌面图标启动，都能正常使用中文输入法了，唯一存在的bug就是，输入法只能定格在sublime的右下方，暂无解决方法，不过并不影响使用。</p>
-					<p>为了方便大家，我已经将以上源码打包到百度网盘中提供下载，源码包中包含"sublime-imfix.c"源文件，一个已经编译好的"libsublime-imfix.so"，修改好的"subl"和"sublime_text.desktop"文件，大家可以根据上面的步骤将这些现成的文件复制到对应目录即可，下载地址：<a title="Sublime支持中文源码" href="http://pan.baidu.com/s/1mhMaNpe" target="_blank" rel="nofollow">Sublime支持中文源码</a>。</p>
+					<p>为了方便大家，我已经将以上源码打包到百度网盘中提供下载，源码包中包含"sublime-imfix.c"源文件，一个已经编译好的"libsublime-imfix.so"，修改好的"subl"和"sublime_text.desktop"文件，大家可以根据上面的步骤将这些现成的文件复制到对应目录即可，下载地址：<a title="Sublime支持中文源码" href="http://pan.baidu.com/s/1jHQjeYU" target="_blank" rel="nofollow">Sublime支持中文源码</a>。</p>
 					
 				<!-- /正文 -->
 
