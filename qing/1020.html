@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<!--Copyright©QingSword.COM︻☼1010D>-->
+<html lang="zh-ch">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
+	<meta name="description" content="晴刃,是一个致力推广实用计算机技术的个人博客;我们分享计算机知识;为计算机系统以及网络安全防范做出一份贡献。【专注技术 创造价值 共同进步】">
+	<meta name="keywords" content="晴刃,晴,qing,qingsword,ccna图文笔记,ubuntu,linux,ubuntu server,mysql,node.js,javascript,python,计算机技术博客">
+	<title>[ubuntu入门手册]-2-双显卡笔记本如何安装NVIDIA卡驱动| QingSword.COM </title>
+	<link rel="shortcut icon" type="image/x-icon" href="../logo/favicon.ico">
+	<link rel="stylesheet" type="text/css" href="../css/basic.css">
+	<link rel="stylesheet" type="text/css" href="../css/text.css">
+	<!-- 代码块高亮js -->
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shCore.css"/>
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shThemeRDark.css"/>
+	 <script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shCore.js"></script>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shBrushBash.js"></script>
+	<script type="text/javascript">
+	SyntaxHighlighter.all();
+	</script>
+</head>
+<body>
+	<!--header -->
+	<header id="nav">
+			<div class="nav-container"> 
+				<!-- 根大纲-->
+				<a href="http://www.qingsword.com" title="晴刃">
+					<h1 class="nav-logo">晴刃</h1>
+				</a>
+				<h2 class="nav-site-description desc-hidden">
+					自由、互助、分享、专注计算机技术
+				</h2>
+				<nav class="nav-links"> 
+					<!-- nav连接大纲-->
+					<h1 style="display:none;">网站导航</h1> 
+					<ul>
+						<li  class="li-hidden">
+							<a href="../index.html" title="home">
+								<span class="link-word"><img src="../logo/home.png" alt="home" class="link-img">首页</span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../web.html" title="web">
+								<span class="link-word"><img src="../logo/web.png" alt="web" class="link-img">前端<span class="word-hidden">设计</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../system.html" title="system">
+								<span class="link-word"><img src="../logo/linux.png" alt="linux" class="link-img">系统<span class="word-hidden">应用</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../net.html" title="net">
+								<span class="link-word"><img src="../logo/net.png" alt="net" class="link-img">网络<span class="word-hidden">技术</span></span>
+							</a>
+						</li>
+						<li>
+							<a href="../sitemap.html" title="sitemap">
+								<span class="link-word"><img src="../logo/archives.png" alt="archives" class="link-img"><span class="word-hidden">文章</span>归档</span>
+							</a>
+						</li>
+					</ul>
+				</nav>
+			</div>		
+	</header>
+	<!-- /header -->
+
+	<!-- content-->
+	<div id="content">
+		<div class="content-container">
+			<!-- 文章区 -->
+			<article class="text-container">
+				<header class="text-header">
+					<h1>[ubuntu入门手册]-2-双显卡笔记本如何安装NVIDIA卡驱动</h1>	
+				</header><!-- /header -->
+				<section class="text-body">
+					<h2>引言</h2>
+					<p>这篇文章介绍Intel+Nvidia双显卡笔记本安装Ubuntu系统后，如何安装NVIDIA卡驱动，如何手动切换Intel和Nvidia卡，本文提供了两种可行的方案供读者选择。</p>
+					<!-- 目录 -->
+					<h2>文章目录</h2>
+					<ul class="contents">	
+						 <li><a href="#ubuntu-nvidia-prime">0×1.使用Nvidia Prime</a></li>
+						 <li><a href="#ubuntu-bumblebee">0×2.使用Bumblebee</a></li>
+					 </ul>
+					<!-- /目录 -->
+
+					<!-- 正文 -->
+					<h2 id="ubuntu-nvidia-prime">0×1.使用Nvidia Prime</h2>
+					<p>首先，确保网络连接畅通，打开终端（ctrl+t），按照下面的步骤</p>
+					<pre class="brush: bash;">
+					#1.编辑blacklist.conf将默认的驱动添加到禁用黑名单
+					qing@qingsword.com:~$ sudo vim /etc/modprobe.d/blacklist.conf 
+					#在文件的末尾添加下面这一句，保存退出
+					blacklist nouveau
+					
+					#2.更新系统软件仓库列表
+					qing@qingsword.com:~$ sudo apt-get update
+
+					#3.使用下面的命令查看都有哪些可用的驱动,末尾的[Tab]表示在这个位置按下键盘的[Tab]键
+					qing@qingsword.com:~$ sudo apt-get install nvidia-[Tab]
+
+					#选择你看到的最大的那个后缀数字安装，本例使用当前最新的驱动nvidia-361，然后安装几个必要组件，命令如下
+					 qing@qingsword.com:~$ sudo apt-get install nvidia-settings nvidia-361 nvidia-prime
+					
+					#5.安装双显卡切换指示器
+					 qing@qingsword.com:~$ sudo add-apt-repository ppa:nilarimogard/webupd8
+					 qing@qingsword.com:~$ sudo apt-get update
+					 qing@qingsword.com:~$ sudo apt-get install prime-indicator
+
+					 #6.重新启动
+					 qing@qingsword.com:~$ sudo reboot	
+					</pre>
+					<p>重新启动后会在右上角看到一个显卡指示器，默认情况下是Nvidia图标，说明现在使用的是N卡，点击这个图标选择"Quick switch graphics...",按下确认后会自动重启桌面，此时就会切换到Intel显卡了，图标也变成了Intel。</p>
+
+					<p>大家可以尝试着在两个显卡之间切换，并使用下面的命令查看是否切换成功，然后测试其性能</p>
+					<pre class="brush: bash;">
+					#切换到Intel卡后，查看N卡是否关闭,如果N卡末尾是（rev ff），则表示成功关闭了N卡，现在使用的是I卡，如果末尾不是ff，则说明现在使用的是N卡
+					qing@qingsword.com:~$ lspci | grep VGA
+					00:02.0 VGA compatible controller: Intel Corporation .... (rev 09)
+					01:00.0 VGA compatible controller: NVIDIA Corporation .... (rev ff)
+					
+					#使用下面的命令来测试显卡的性能，数字越大代表显卡性能越好，这条命令可以明显看到N卡的性能强于I卡
+					qing@qingsword.com:~$ glxspheres64 
+					</pre>
+					<p>总结：此方法适用于Ubuntu14.04以上版本，能使用鼠标方便的切换I卡和N卡，需要重启桌面。</p>
+					
+					<h2 id="ubuntu-bumblebee">0×2.使用Bumblebee</h2>
+					<p>早在nvidia-prime项目还没有出现之前，Bumblebee是使用的最多的I+N双显卡方案，其作用和nvidia-prime一样，在不必要的时候关闭N卡，减小系统的发热量和功耗，在需要的时候调用它，下面是安装步骤</p>
+					<pre class="brush: bash;">
+					#Ubuntu12.04安装方法
+					 qing@qingsword.com:~$ sudo add-apt-repository ppa:bumblebee/stable
+					 qing@qingsword.com:~$ sudo apt-get update
+					 qing@qingsword.com:~$ sudo apt-get install bumblebee bumblebee-nvidia virtualgl linux-headers-generic
+
+					 #Ubuntu14.04及以后的版本
+					 qing@qingsword.com:~$ sudo apt-get update
+					 qing@qingsword.com:~$ sudo apt-get install bumblebee bumblebee-nvidia primus linux-headers-generic
+
+					 #安装完成后重启
+					 qing@qingsword.com:~$ sudo reboot
+
+					 #重启后N卡默认就关闭了，使用下面的命令调用它打开指定的程序
+					 qing@qingsword.com:~$ optirun [程序名]
+					 #例如，打开测试软件
+					 qing@qingsword.com:~$ optirun glxspheres64
+					</pre>
+					<p>总结：此方法适用于Ubuntu12.04以上版本，需要使用命令指定程序名来调用，无需重启桌面。</p>
+					
+					<!-- /正文 -->
+
+				<footer class="text-footer">
+					<p>
+						*转载请注明来自:<a title="晴刃-自由、互助、分享、专注计算机技术。" href="http://www.qingsword.com" target="_blank">晴刃(QingSword.COM)</a>
+					</p>
+					<p>*原文连接:<a title="[ubuntu入门手册]-2-双显卡笔记本如何安装NVIDIA卡驱动" href="http://www.qingsword.com/qing/1020.html" target="_blank">http://www.qingsword.com/qing/1020.html</a></p>
+				</footer>
+			</article>
+			<!-- /文章区 -->	
+		</div>
+	</div>
+	<!-- /content -->
+	
+	<!-- footer -->
+	<footer id="footer">
+		<div class="footer-container">
+			QingSword.COM &nbsp;<img src="../logo/by-nc-sa.png" alt="Creative Commons" title="Creative Commons">
+		</div>
+	</footer>
+	<!-- /footer -->
+</body>
+</html>

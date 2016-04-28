@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<!--Copyright©QingSword.COM︻☼1010D>-->
+<html lang="zh-ch">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
+	<meta name="description" content="晴刃,是一个致力推广实用计算机技术的个人博客;我们分享计算机知识;为计算机系统以及网络安全防范做出一份贡献。【专注技术 创造价值 共同进步】">
+	<meta name="keywords" content="晴刃,晴,qing,qingsword,ccna图文笔记,ubuntu,linux,ubuntu server,mysql,node.js,javascript,python,计算机技术博客">
+	<title>[Linux实用命令]-9-磁盘阵列(RAID)实例详解| QingSword.COM </title>
+	<link rel="shortcut icon" type="image/x-icon" href="../logo/favicon.ico">
+	<link rel="stylesheet" type="text/css" href="../css/basic.css">
+	<link rel="stylesheet" type="text/css" href="../css/text.css">
+	<!-- 代码块高亮js -->
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shCore.css"/>
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shThemeRDark.css"/>
+	 <script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shCore.js"></script>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shBrushBash.js"></script>
+	<script type="text/javascript">
+	SyntaxHighlighter.all();
+	</script>
+</head>
+<body>
+	<!--header -->
+	<header id="nav">
+			<div class="nav-container"> 
+				<!-- 根大纲-->
+				<a href="http://www.qingsword.com" title="晴刃">
+					<h1 class="nav-logo">晴刃</h1>
+				</a>
+				<h2 class="nav-site-description desc-hidden">
+					自由、互助、分享、专注计算机技术
+				</h2>
+				<nav class="nav-links"> 
+					<!-- nav连接大纲-->
+					<h1 style="display:none;">网站导航</h1> 
+					<ul>
+						<li  class="li-hidden">
+							<a href="../index.html" title="home">
+								<span class="link-word"><img src="../logo/home.png" alt="home" class="link-img">首页</span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../web.html" title="web">
+								<span class="link-word"><img src="../logo/web.png" alt="web" class="link-img">前端<span class="word-hidden">设计</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../system.html" title="system">
+								<span class="link-word"><img src="../logo/linux.png" alt="linux" class="link-img">系统<span class="word-hidden">应用</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../net.html" title="net">
+								<span class="link-word"><img src="../logo/net.png" alt="net" class="link-img">网络<span class="word-hidden">技术</span></span>
+							</a>
+						</li>
+						<li>
+							<a href="../sitemap.html" title="sitemap">
+								<span class="link-word"><img src="../logo/archives.png" alt="archives" class="link-img"><span class="word-hidden">文章</span>归档</span>
+							</a>
+						</li>
+					</ul>
+				</nav>
+			</div>		
+	</header>
+	<!-- /header -->
+
+	<!-- content-->
+	<div id="content">
+		<div class="content-container">
+			<!-- 文章区 -->
+			<article class="text-container">
+				<header class="text-header">
+					<h1>[Linux实用命令]-9-磁盘阵列(RAID)实例详解</h1>	
+				</header><!-- /header -->
+				<section class="text-body">
+					<h2>引言</h2>
+					<p>这篇文章介绍几种常用的磁盘阵列技术（Raid0、Raid1、Raid4、Raid5、Raid10、Raid01），演示如何在CentOS7环境下使用mdadm命令去创建和维护磁盘阵列；RAID又称“廉价磁盘冗余阵列”，可以使用硬件和软件两种方式来实现，硬件RAID可以参考购买硬件时附带的参考手册，设置方法与软件RAID有差异；现如今软件RAID大多用作研究和熟悉RAID的工作方式。</p>
+					<!-- 目录 -->
+					<h2>文章目录</h2>
+					<ul class="contents">	
+						 <li><a href="#Linux-mdadm-1">0×1.Raid（磁盘阵列）级别介绍</a></li>
+						 <li class="subli"><a href="#Linux-mdadm-2">a.Raid0</a></li>
+						 <li class="subli"><a href="#Linux-mdadm-3">b.Raid1</a></li>
+						 <li class="subli"><a href="#Linux-mdadm-4">c.Raid4</a></li>
+						 <li class="subli"><a href="#Linux-mdadm-5">d.Raid5</a></li>
+						 <li class="subli"><a href="#Linux-mdadm-6">e.Raid10</a></li>
+						 <li class="subli"><a href="#Linux-mdadm-7">f.Raid01</a></li>
+						 <li><a href="#Linux-mdadm-8">0×2.Linux创建磁盘阵列实例</a></li>
+						 <li class="subli"><a href="#Linux-mdadm-9">a.实验环境介绍</a></li>
+						 <li class="subli"><a href="#Linux-mdadm-10">b.创建磁盘阵列Raid10</a></li>
+						 <li class="subli"><a href="#Linux-mdadm-11">c.配置开机自启动磁盘阵列</a></li>
+						 <li class="subli"><a href="#Linux-mdadm-12">d.将磁盘阵列挂载到目录使用</a></li>
+						 <li><a href="#Linux-mdadm-13">0×3.创建冗余磁盘阵列</a></li>
+						 <li><a href="#Linux-mdadm-14">0×4.删除磁盘阵列</a></li>
+						 
+					 </ul>
+					<!-- /目录 -->
+
+					<!-- 正文 -->
+					<h2 id="Linux-mdadm-1">0×1.Raid（磁盘阵列）级别介绍</h2>
+
+					<p>Raid有"廉价磁盘冗余阵列"的意思，就是利用多块廉价的硬盘组成磁盘组，让数据分部储存在这些硬盘里面，从而达到读取和写入加速的目的；也可以用作数据的冗余，当某块硬盘损毁后，其他硬盘可以通过冗余数据计算出损坏磁盘的数据，这样就提高了数据储存的安全性。</p>
+
+					<h3 id="Linux-mdadm-2">a.Raid0</h3>
+
+					<p>Raid0数据储存方法如下（假设有两块硬盘D1、D2）:</p>
+					<table border="2" style="margin:10px 0 10px 10px;border-collapse: collapse;width:300px;text-align: center;">
+					<tr>
+					<th>D1</th>
+					<th>D2</th>
+					</tr>
+					<tr>
+					<td>数据1</td>
+					<td>数据2</td>
+					</tr>
+					<tr>
+					<td>数据3</td>
+					<td>数据4</td>
+					</tr>
+					<tr>
+					<td>数据5</td>
+					<td>数据6</td>
+					</tr>
+					</table>				
+					<p>特点：数据被并行写入每个磁盘，每个磁盘都保存了完整数据的一部分，读取也采用并行方式，磁盘数量越多，读取和写入速度越快。因为没有冗余，一个硬盘坏掉全部数据丢失。至少两块硬盘才能组成Raid0阵列。</p>
+					<p>容量：所有硬盘之和。</p>
+
+					<h3 id="Linux-mdadm-3">b.Raid1</h3>
+
+					<p>Raid1数据储存方法如下（假设有两块硬盘D1、D2）:</p>
+					<table border="2" style="margin:10px 0 10px 10px;border-collapse: collapse;width:300px;text-align: center;">
+					<tr>
+					<th>D1</th>
+					<th>D2</th>
+					</tr>
+					<tr>
+					<td>数据1</td>
+					<td>数据1</td>
+					</tr>
+					<tr>
+					<td>数据2</td>
+					<td>数据2</td>
+					</tr>
+					<tr>
+					<td>数据3</td>
+					<td>数据3</td>
+					</tr>
+					</table>
+					<p>特点：有数据冗余，可靠性强，D1、D2被写入相同的数据，其中D2可以作为D1的完整备份。读取时，从两块硬盘上并行读取，写入慢，读取快。任何一块硬盘坏掉不会丢失数据，至少两块硬盘并且两块硬盘大小相等才能组成Raid1阵列。</p>
+					<p>容量：所有硬盘容量之和的一半（一半写数据，一半用来做备份）。</p>
+
+					<h3 id="Linux-mdadm-4">c.Raid4</h3>
+
+					<p>Raid4数据储存方法如下（假设有三块硬盘D1、D2、D3）:</p>
+					<table border="2" style="margin:10px 0 10px 10px;border-collapse: collapse;width:300px;text-align: center;">
+					<tr>
+					<th>D1</th>
+					<th>D2</th>
+					<th>D3</th>
+					</tr>
+					<tr>
+					<td>数据1</td>
+					<td>数据2</td>
+					<td>校验和1</td>
+					</tr>
+					<tr>
+					<td>数据3</td>
+					<td>数据4</td>
+					<td>校验和2</td>
+					</tr>
+					<tr>
+					<td>数据5</td>
+					<td>数据6</td>
+					<td>校验和3</td>
+					</tr>
+					</table>
+					<p>特点：有数据冗余校验，可靠性强。其中任何一块硬盘坏掉都不会引起数据丢失，D1丢失时，D3根据校验和以及D2的数据进行逆运算，计算出D1的数据。但当写入大量数据时校验盘D3会是一个数据瓶颈，导致写入慢。只有当两块磁盘同时丢失时，数据才无法恢复。至少三块硬盘并且磁盘大小应该相等才能组成Raid4阵列（不常用）。</p>
+					<p>容量：所有硬盘容量之和减去其中一块硬盘的容量。</p>
+
+					<h3 id="Linux-mdadm-5">d.Raid5</h3>
+
+					<p>Raid5数据储存方法如下（假设有三块硬盘D1、D2、D3）:</p>
+					<table border="2" style="margin:10px 0 10px 10px;border-collapse: collapse;width:300px;text-align: center;">
+					<tr>
+					<th>D1</th>
+					<th>D2</th>
+					<th>D3</th>
+					</tr>
+					<tr>
+					<td>数据1</td>
+					<td>数据2</td>
+					<td>校验和1</td>
+					</tr>
+					<tr>
+					<td>校验和2</td>
+					<td>数据3</td>
+					<td>数据4</td>
+					</tr>
+					<tr>
+					<td>数据5</td>
+					<td>校验和3</td>
+					<td>数据6</td>
+					</tr>
+					</table>
+					<p>特点：采用奇偶校验，可靠性强，磁盘校验和被散列到不同的磁盘里面，增加了读写速率。只有当两块磁盘同时丢失时，数据才无法恢复，至少三块硬盘并且硬盘大小应该相等才能组成Raid5阵列。</p>
+					<p>容量：所有硬盘容量之和减去其中一块硬盘的容量，被减去的容量被分配到三块硬盘的不同区域用来存放数据校验信息。</p>
+
+					<h3 id="Linux-mdadm-6">e.Raid10</h3>
+
+					<p>Raid10（Raid1+Raid0）是现在比较常用的一种磁盘阵列级别，它的容错好，读写数据效率较高，但经费相对也较高。</p>
+					<p>Raid10数据储存方法如下（假设有四块硬盘D1、D2、D3、D4）:</p>
+					<table border="2" style="margin:10px 0 10px 10px;border-collapse: collapse;width:300px;text-align: center;">
+					<tr>
+					<th>D1</th>
+					<th>D2</th>
+					<th>D3</th>
+					<th>D4</th>
+					</tr>
+					<tr>
+					<td>数据1</td>
+					<td>数据1</td>
+					<td>数据2</td>
+					<td>数据2</td>
+					</tr>
+					<tr>
+					<td>数据3</td>
+					<td>数据3</td>
+					<td>数据4</td>
+					<td>数据4</td>
+					</tr>
+					</table>
+					<p>特点：备份和并发式存取数据，可靠性强。D1、D2组成一个阵列Raid1，其中D1是数据盘，D2是备份盘；D3、D4也组成一个Raid1，其中D3是数据盘,D4是备份盘；在这个基础上将D1、D2作为一个整体，将D3、D4也作为一个整体，这两个整体之间再组成一个Raid0阵列。这样不仅仅读取数据会非常快，并发写入的速度也会随着磁盘的增多而变快。至少四块硬盘并且每块硬盘大小应该相等才能组成Raid10阵列。</p>
+					<p>容量：所有硬盘容量之和的一半（一半写数据，一半用来备份数据）。</p>
+
+					<h3 id="Linux-mdadm-7">f.Raid01</h3>
+
+					<p>Raid01数据储存方法如下（假设有四块硬盘D1、D2、D3、D4）:</p>
+					<table border="2" style="margin:10px 0 10px 10px;border-collapse: collapse;width:300px;text-align: center;">
+					<tr>
+					<th>D1</th>
+					<th>D2</th>
+					<th>D3</th>
+					<th>D4</th>
+					</tr>
+					<tr>
+					<td>数据1</td>
+					<td>数据2</td>
+					<td>数据1</td>
+					<td>数据2</td>
+					</tr>
+					<tr>
+					<td>数据3</td>
+					<td>数据4</td>
+					<td>数据3</td>
+					<td>数据4</td>
+					</tr>
+					</table>
+					<p>特点：D1、D2组成一个阵列Raid0，D3、D4也组成一个阵列Raid0，D1、D2和D3、D4再组成一个Raid1。D1和D2作为数据盘阵列，D3和D4作为数据备份阵列，这种方式并不常用，至少四块硬盘并且每块硬盘大小应该相等才能组成Raid01阵列。</p>
+					<p>容量：所有硬盘容量之和的一半。</p>
+
+					<h2 id="Linux-mdadm-8">0×2.Linux创建磁盘阵列实例</h2>
+
+					<p>这一部分通过Linux上的mdadm命令来实现Raid10磁盘阵列。</p>
+
+					<h3 id="Linux-mdadm-9">a.实验环境介绍</h3>
+
+					<p>实验环境为一台安装了5块硬盘的计算机，操作系统是CentOS7，除系统所在硬盘(/dev/sda)外，其余四块20G的硬盘盘符分别为（/dev/sdb、/dev/sdc、/dev/sdd、/dev/sde）；</p>
+					<p>主要用到的命令：mdadm；</p>
+					<p>CentOS7中mdadm默认已安装，如果没有安装，可以使用yum在线安装，如下：</p>
+					<pre class="brush: bash;">
+					#首先确保已经连接到互联网，搜索一下yum服务器上是否存在mdadm
+					qing@qingsword.com:~$ sudo yum search mdadm
+
+					#根据搜索结果和系统环境选择对应的版本安装
+					qing@qingsword.com:~$ sudo yum install mdadm.x86_64
+
+					#安装需要root权限，请确保普通用户可用sudo或切换到root权限操作
+					</pre>
+					<p>将四块用作磁盘阵列的硬盘都使用fdisk创建一个主分区，并将所有容量都划分到这个主分区里面，然后将他们格式化成ext4文件系统，对划分硬盘分区不熟悉的朋友建议去看一下我前面写的一篇文章"<a title="[Linux实用命令]-8-硬盘分区与管理" href="917.html" target="_blank">[Linux实用命令]-8-硬盘分区与管理</a>"。</p>
+
+					<p>划分完成后硬盘分区号如下：</p>
+					<p class="indent-p">
+						/dev/sdb1<br>
+						/dev/sdc1<br>
+						/dev/sdd1<br>
+						/dev/sde1
+					</p>
+					<p>到这里，实验的准备工作完成。</p>
+
+					<h3 id="Linux-mdadm-10">b.创建磁盘阵列Raid10</h3>
+
+					<pre class="brush: bash;">
+					#参数详解：
+					# 磁盘阵列创建需要root权限；
+					# -C 创建一个新的RAID起名为md0；
+					# -a yes 自动创建对应设备；
+					# -l 指定RAID级别，本例是10；
+					# -n 活动的磁盘数量（备份盘除外）；
+					# 因为RAID10最少需要4块硬盘，后面的sd[b-e]都被添加到md0中；
+					# 如果要创建其他级别的RAID，只需要更改-l参数后的级别，并根据所需要的硬盘的数量更改-n参数后面的数量即可；
+					qing@qingsword.com:~$ sudo mdadm -C /dev/md0 -a yes -l 10 -n 4 /dev/sd[b-e]
+					Continue creating array? (y/n)  y #输入y继续
+
+					#如果每块硬盘容量都很大，RAID的创建不是瞬间完成的，通过查看下面这个文件，可以看到一个创建进度，确保全部完成后再进行下一步
+					qing@qingsword.com:~$ cat /proc/mdstat 
+					Personalities : [raid10] 
+					[====>................]  resync = 24.0%
+					#只有这个到达100%才算完成
+
+					#查看刚才创建的磁盘阵列md0详细信息
+					qing@qingsword.com:~$  sudo mdadm -D /dev/md0
+					</pre>
+
+					<h3 id="Linux-mdadm-11">c.配置开机自启动磁盘阵列</h3>
+
+					<p>新创建的磁盘阵列默认是不能开机自启动的，需要手动创建一个配置文件，让系统在启动的时候自动启动Raid(经过测试，CentOS7并不需要创建这个配置文件，如果重启后磁盘阵列没有随机启动，请使用下面的方法配置一次)：</p>
+					<pre class="brush: bash;">
+					#这个配置文件的创建需要root权限才可进行，切换到root
+					qing@qingsword.com:~$ su root
+
+					#将mdadm信息写入配置文件
+					root@qingsword.com:~# mdadm -D --scan > /etc/mdadm.conf
+					</pre>
+
+					<h3 id="Linux-mdadm-12">d.将磁盘阵列挂载到目录使用</h3>
+					<pre class="brush: bash;">
+					#挂载前先需要对磁盘阵列格式化
+					qing@qingsword.com:~$ sudo mkfs.ext4 /dev/md0
+
+					#挂载，本例挂载到/mnt目录
+					qing@qingsword.com:~$ sudo mount /dev/md0 /mnt
+
+					#查看已经挂载的设备，可以看到/dev/md0可使用的大小是40G，上面已经介绍过，Raid10可用大小是活动硬盘总和的一半
+					qing@qingsword.com:~$ sudo df -h
+					Filesystem                   Size  Used Avail Use% Mounted on
+					...
+					/dev/md0                     40G   176M   38G  1%  /mnt
+					</pre>
+
+					<h2 id="Linux-mdadm-13">0×3.创建冗余磁盘阵列</h2>
+					<p>可以在创建RAID的时候指定有几块冗余磁盘，当工作磁盘出现故障的时候，冗余磁盘自动启动，顶替出现故障的磁盘继续工作，请看下面的实例：</p>
+					<pre class="brush: bash;">
+						#假设有6块硬盘，前面4块用作RAID10,后面两块将被用作冗余（参数-x 2表示有2块硬盘用作冗余）
+						qing@qingsword.com:~$ sudo mdadm -C /dev/md0 -a yes -l 10 -n 4 -x 2 /dev/sd[b-g]
+
+						#查看磁盘阵列详细详细
+						qing@qingsword.com:~$ sudo mdadm -D /dev/md0
+						...
+						Raid Level : raid10
+						...
+						Raid Devices : 4 #参与磁盘阵列硬盘数4
+						Total Devices : 6 #总硬盘数6
+						...
+						Active Devices : 4 #正在工作的硬盘4
+						Working Devices : 6 #能够工作的硬盘6个
+						Failed Devices : 0  #故障硬盘数0
+						Spare Devices : 2 #空闲硬盘数2
+
+						Number Major Minor RaidDevice State
+						  0  8  16   0  active sync set-A  /dev/sdb
+						  1  8  32   1  active sync set-B  /dev/sdc
+						  2  8  48   2  active sync set-A  /dev/sdd
+						  3  8  64   3  active sync set-B  /dev/sde
+
+						  4  8  80   -   spare   /dev/sdf #两个冗余磁盘
+						  5  8  96   -   spare   /dev/sdg
+					</pre>
+					<p>下面手动将一块磁盘标记为故障，看看冗余盘是否起作用：</p>
+					<pre class="brush: bash;">
+						#将md0中sdc标记为故障
+						qing@qingsword.com:~$ sudo mdadm /dev/md0 -f /dev/sdc
+						mdadm: set /dev/sdc faulty in /dev/md0
+
+						qing@qingsword.com:~$ sudo mdadm -D 
+						...
+						Active Devices : 4 
+						Working Devices : 5 
+						#还有5个能工作的磁盘（包括剩下冗余的1个）
+						Failed Devices : 1 #坏掉1个
+						Spare Devices : 1 #空闲1个
+
+						Number Major Minor RaidDevice State
+						  0  8  16  0  active sync set-A  /dev/sdb
+						  5  8  96  1  active sync set-B  /dev/sdg
+						  2  8  48  2  active sync set-A  /dev/sdd
+						  3  8  64  3  active sync set-B  /dev/sde
+
+						  1  8  32  -  faulty  /dev/sdc
+						  4  8  80  -  spare  /dev/sdf
+					</pre>
+
+					<h2 id="Linux-mdadm-14">0×4.删除磁盘阵列</h2>
+
+					<p>要想彻底清除RAID以及数据，请使用下面的方法：</p>
+					<pre class="brush: bash;">
+					#1.如果已经挂载，先卸载
+					qing@qingsword.com:~$ sudo umount /dev/md0
+
+					#2.关闭RAID
+					qing@qingsword.com:~$ sudo mdadm -S /dev/md0
+
+					#3.将磁盘sdb至sdf中的所有数据全部用0填充（创建时有多少块硬盘，这里就写多少块，例如上面创建了冗余是从b-g，那么这里就写/dev/sd[b-g]）
+					qing@qingsword.com:~$ sudo mdadm --zero-superblock /dev/sd[b-f]
+
+					#4.删除启动配置文件（如果有）
+					qing@qingsword.com:~$ sudo rm -rf /etc/mdadm.conf
+					</pre>
+
+				<!-- /正文 -->
+
+				<footer class="text-footer">
+					<p>
+						*转载请注明来自:<a title="晴刃-自由、互助、分享、专注计算机技术。" href="http://www.qingsword.com" target="_blank">晴刃(QingSword.COM)</a>
+					</p>
+					<p>*原文连接:<a title="[Linux实用命令]-9-磁盘阵列(RAID)实例详解" href="http://www.qingsword.com/qing/922.html" target="_blank">http://www.qingsword.com/qing/922.html</a></p>
+				</footer>
+			</article>
+			<!-- /文章区 -->	
+		</div>
+	</div>
+	<!-- /content -->
+	
+	<!-- footer -->
+	<footer id="footer">
+		<div class="footer-container">
+			QingSword.COM &nbsp;<img src="../logo/by-nc-sa.png" alt="Creative Commons" title="Creative Commons">
+		</div>
+	</footer>
+	<!-- /footer -->
+</body>
+</html>

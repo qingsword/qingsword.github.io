@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<!--Copyright©QingSword.COM︻☼1010D>-->
+<html lang="zh-ch">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
+	<meta name="description" content="晴刃,是一个致力推广实用计算机技术的个人博客;我们分享计算机知识;为计算机系统以及网络安全防范做出一份贡献。【专注技术 创造价值 共同进步】">
+	<meta name="keywords" content="晴刃,晴,qing,qingsword,ccna图文笔记,ubuntu,linux,ubuntu server,mysql,node.js,javascript,python,计算机技术博客">
+	<title>[Linux实用命令]-5-文件的压缩和归档| QingSword.COM </title>
+	<link rel="shortcut icon" type="image/x-icon" href="../logo/favicon.ico">
+	<link rel="stylesheet" type="text/css" href="../css/basic.css">
+	<link rel="stylesheet" type="text/css" href="../css/text.css">
+	<!-- 代码块高亮js -->
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shCore.css"/>
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shThemeRDark.css"/>
+	 <script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shCore.js"></script>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shBrushBash.js"></script>
+	<script type="text/javascript">
+	SyntaxHighlighter.all();
+	</script>
+</head>
+<body>
+	<!--header -->
+	<header id="nav">
+			<div class="nav-container"> 
+				<!-- 根大纲-->
+				<a href="http://www.qingsword.com" title="晴刃">
+					<h1 class="nav-logo">晴刃</h1>
+				</a>
+				<h2 class="nav-site-description desc-hidden">
+					自由、互助、分享、专注计算机技术
+				</h2>
+				<nav class="nav-links"> 
+					<!-- nav连接大纲-->
+					<h1 style="display:none;">网站导航</h1> 
+					<ul>
+						<li  class="li-hidden">
+							<a href="../index.html" title="home">
+								<span class="link-word"><img src="../logo/home.png" alt="home" class="link-img">首页</span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../web.html" title="web">
+								<span class="link-word"><img src="../logo/web.png" alt="web" class="link-img">前端<span class="word-hidden">设计</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../system.html" title="system">
+								<span class="link-word"><img src="../logo/linux.png" alt="linux" class="link-img">系统<span class="word-hidden">应用</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../net.html" title="net">
+								<span class="link-word"><img src="../logo/net.png" alt="net" class="link-img">网络<span class="word-hidden">技术</span></span>
+							</a>
+						</li>
+						<li>
+							<a href="../sitemap.html" title="sitemap">
+								<span class="link-word"><img src="../logo/archives.png" alt="archives" class="link-img"><span class="word-hidden">文章</span>归档</span>
+							</a>
+						</li>
+					</ul>
+				</nav>
+			</div>		
+	</header>
+	<!-- /header -->
+
+	<!-- content-->
+	<div id="content">
+		<div class="content-container">
+			<!-- 文章区 -->
+			<article class="text-container">
+				<header class="text-header">
+					<h1>[Linux实用命令]-5-文件的压缩和归档</h1>	
+				</header><!-- /header -->
+				<section class="text-body">
+					<h2>引言</h2>
+					<p>这篇文章主要介绍Linux下如何对单个文件进行压缩和解压缩，如何对一个文件夹中的多个文件进行归档压缩和解压缩。最后会补充一个创建文件软连接的小技巧。</p>
+					<!-- 目录 -->
+					<h2>文章目录</h2>
+					<ul class="contents">	
+						 <li><a href="#Linux-compress-1">0×1.使用Gzip对文件进行压缩和解压缩</a></li>
+						 <li><a href="#Linux-compress-2">0×2.使用Bzip2对文件进行压缩和解压缩</a></li>
+						 <li><a href="#Linux-compress-3">0×3.使用Gzip方式创建文件夹归档</a></li>
+						 <li><a href="#Linux-compress-4">0×4.使用Bzip2方式创建文件夹归档</a></li>
+						 <li><a href="#Linux-compress-5">0×5.如何创建软连接</a></li>
+					 </ul>
+					<!-- /目录 -->
+
+					<!-- 正文 -->
+					<h2 id="Linux-compress-1">0×1.使用Gzip对文件进行压缩和解压缩</h2>
+
+					<p>就好像Windows下有"rar"的压缩方式、"zip"的压缩方式等，"gzip"是Linux下的一种压缩方式，下面请看几个实例：</p>
+					<pre class="brush: bash;">
+					#在当前用户的家目录中有一个文件"testfile"和一个文件夹"vmtools"
+					qing@qingsword.com:~$ ls -l
+					-rw-r--r--. 1 qingsword qingsword 218273 Jan  1 10:15 testfile
+					drwxr-xr-x. 3 qingsword qingsword   4096 Jan  1 10:08 vmtools
+
+					#使用gzip对"testfile"进行压缩，这个命令其实不需要携带任何参数，比较有用的参数是-[1-9]指定压缩比率,9为最大压缩比，压缩的时间也相对较长
+					qing@qingsword.com:~$ gzip -9 testfile
+
+					#这种压缩方式是直接将源文件压缩成一个后缀为".gz"的压缩包，不会保留源文件，这和Windows下的WinRAR的"压缩后删除源文件"功能相同，文件大小也从"218273"降至"17797"。
+					qing@qingsword.com:~$ ls -l
+					-rw-r--r--. 1 qingsword qingsword 17797 Jan  1 10:15 testfile.gz
+					drwxr-xr-x. 3 qingsword qingsword  4096 Jan  1 10:08 vmtools
+
+					#解压缩
+					qing@qingsword.com:~$ gzip -d testfile.gz
+					</pre>
+
+					<h2 id="Linux-compress-2">0×2.使用Bzip2对文件进行压缩和解压缩</h2>
+
+					<p>bzip2相对gzip拥有更大的压缩比，但压缩时间也较长：</p>
+					<pre class="brush: bash;">
+						#使用bzip2进行压缩，压缩率同样设置成9，最大压缩率
+						qing@qingsword.com:~$ bzip2 -9 testfile
+
+						#可以查看到，文件大小比gzip压缩后的要小，bzip2压缩后的后缀是".bz2"
+						qing@qingsword.com:~$ ls -l
+						-rw-r--r--. 1 qingsword qingsword 14851 Jan  1 10:15 testfile.bz2
+						drwxr-xr-x. 3 qingsword qingsword  4096 Jan  1 10:08 vmtools
+
+						#解压缩
+						qing@qingsword.com:~$ bzip2 -d testfile.bz2
+					</pre>
+
+					<h2 id="Linux-compress-3">0×3.使用Gzip方式创建文件夹归档</h2>
+
+					<p>可以使用tar命令对文件夹进行归档压缩，下面是gzip方式的归档压缩实例：</p>
+					<pre class="brush: bash;">
+					#tar的选项参数中"vczf"解释如下:
+					#v 显示详细信息
+					#c 创建归档
+					#z 使用gzip压缩
+					#f 文件名（可带路径）
+					#紧接着选项参数的，是压缩后的文件名称"vmtools.tar.gz"
+					#一般使用gzip压缩归档，在文件名后面添加.tar.gz后缀（或.tgz），这样能更直观的明白归档是用什么压缩的，否则使用不同方式的解压缩会出现错误
+					#最后一个参数是被归档的文件夹"vmtools/"
+					qing@qingsword.com:~$ tar -vczf vmtools.tar.gz vmtools/
+
+					#归档不同于对单个文件的压缩，归档后不会删除源文件夹
+					qing@qingsword.com:~$ ls -l
+					-rw-r--r--. 1 qingsword qingsword   218273 Jan  1 10:15 testfile
+					drwxr-xr-x. 3 qingsword qingsword     4096 Jan  1 10:08 vmtools
+					-rw-rw-r--. 1 qingsword qingsword 59410183 Jan  1 10:34 vmtools.tar.gz
+
+					#解压缩归档文件，参数x代表"释放归档"
+					qing@qingsword.com:~$ tar -vxzf vmtools.tar.gz
+
+					# 释放到指定的目录
+					#-C后面接目标目录的绝对路径或相对路径，本例是将当前目录的"vmtools.tar.gz"释放到当前目录的"testdir"这个目录中，"./"代表当前目录，这是一个相对路径的写法
+					qing@qingsword.com:~$ tar -vxzf vmtools.tar.gz -C ./testdir
+					</pre>
+
+					<h2 id="Linux-compress-4">0×4.使用Bzip2方式创建文件夹归档</h2>
+
+					<p>bzip2的归档和gzip归档的参数大致相同，-z代表使用使用gzip压缩创建归档，-j则是使用bzip2压缩创建归档，唯一需要注意的就是归档文件后缀的写法：</p>
+					<pre class="brush: bash;">
+					#使用bzip2方式归档（后缀.tar.bz2或.tbz2）
+					qing@qingsword.com:~$ tar -vcjf vmtools.tar.bz2 vmtools
+
+					#释放归档文件，不使用-C参数指定释放位置，就是释放到当前文件夹中
+					qing@qingsword.com:~$ tar -vxjf vmtools.tar.bz2 -C ./testdir
+					 </pre>
+
+					<h2 id="Linux-compress-5">0×5.如何创建软连接</h2>
+					<p>可以使用ln命令来为一些经常用到的文件或者文件夹创建一个软连接放置桌面上，这种软连接和Windows下的快捷方式类似（但软连接的概念和快捷方式并不相同）：</p>
+					<pre class="brush: bash;">
+					#命令格式：
+					#ln -s [源文件位置] [目标位置]
+					#给qingsword家目录下的testfile制作一个软连接放置桌面，软连接最好使绝对路径，完成之后双击桌面上的filelink就可以打开qingsword家目录中的testfile
+					qing@qingsword.com:~$ ln -s /home/qingsword/testfile /home/qingsword/Desktop/filelink
+					</pre>
+						
+				<!-- /正文 -->
+
+				<footer class="text-footer">
+					<p>
+						*转载请注明来自:<a title="晴刃-自由、互助、分享、专注计算机技术。" href="http://www.qingsword.com" target="_blank">晴刃(QingSword.COM)</a>
+					</p>
+					<p>*原文连接:<a title="[Linux实用命令]-5-文件的压缩和归档" href="http://www.qingsword.com/qing/888.html" target="_blank">http://www.qingsword.com/qing/888.html</a></p>
+				</footer>
+			</article>
+			<!-- /文章区 -->	
+		</div>
+	</div>
+	<!-- /content -->
+	
+	<!-- footer -->
+	<footer id="footer">
+		<div class="footer-container">
+			QingSword.COM &nbsp;<img src="../logo/by-nc-sa.png" alt="Creative Commons" title="Creative Commons">
+		</div>
+	</footer>
+	<!-- /footer -->
+</body>
+</html>

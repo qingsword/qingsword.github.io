@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<!--Copyright©QingSword.COM︻☼1010D>-->
+<html lang="zh-ch">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
+	<meta name="description" content="晴刃,是一个致力推广实用计算机技术的个人博客;我们分享计算机知识;为计算机系统以及网络安全防范做出一份贡献。【专注技术 创造价值 共同进步】">
+	<meta name="keywords" content="晴刃,晴,qing,qingsword,ccna图文笔记,ubuntu,linux,ubuntu server,mysql,node.js,javascript,python,计算机技术博客">
+	<title>[mysql基础文档]-31-union查询| QingSword.COM </title>
+	<link rel="shortcut icon" type="image/x-icon" href="../logo/favicon.ico">
+	<link rel="stylesheet" type="text/css" href="../css/basic.css">
+	<link rel="stylesheet" type="text/css" href="../css/text.css">
+	<!-- 代码块高亮js -->
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shCore.css"/>
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shThemeRDark.css"/>
+	 <script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shCore.js"></script>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shBrushSql.js"></script>
+	<script type="text/javascript">
+	SyntaxHighlighter.all();
+	</script>
+</head>
+<body>
+	<!--header -->
+	<header id="nav">
+			<div class="nav-container"> 
+				<!-- 根大纲-->
+				<a href="http://www.qingsword.com" title="晴刃">
+					<h1 class="nav-logo">晴刃</h1>
+				</a>
+				<h2 class="nav-site-description desc-hidden">
+					自由、互助、分享、专注计算机技术
+				</h2>
+				<nav class="nav-links"> 
+					<!-- nav连接大纲-->
+					<h1 style="display:none;">网站导航</h1> 
+					<ul>
+						<li  class="li-hidden">
+							<a href="../index.html" title="home">
+								<span class="link-word"><img src="../logo/home.png" alt="home" class="link-img">首页</span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../web.html" title="web">
+								<span class="link-word"><img src="../logo/web.png" alt="web" class="link-img">前端<span class="word-hidden">设计</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../system.html" title="system">
+								<span class="link-word"><img src="../logo/linux.png" alt="linux" class="link-img">系统<span class="word-hidden">应用</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../net.html" title="net">
+								<span class="link-word"><img src="../logo/net.png" alt="net" class="link-img">网络<span class="word-hidden">技术</span></span>
+							</a>
+						</li>
+						<li>
+							<a href="../sitemap.html" title="sitemap">
+								<span class="link-word"><img src="../logo/archives.png" alt="archives" class="link-img"><span class="word-hidden">文章</span>归档</span>
+							</a>
+						</li>
+					</ul>
+				</nav>
+			</div>		
+	</header>
+	<!-- /header -->
+
+	<!-- content-->
+	<div id="content">
+		<div class="content-container">
+			<!-- 文章区 -->
+			<article class="text-container">
+				<header class="text-header">
+					<h1>[mysql基础文档]-31-union查询</h1>	
+				</header><!-- /header -->
+				<section class="text-body">
+					<!-- 目录 -->
+					<h2>文章目录</h2>
+					<ul class="contents">	
+						 <li><a href="#How-to-use-union-select">0×1.如何使用union查询</a></li>
+						 <li><a href="#union-query-instance">0×2.union查询实例</a></li>
+					 </ul>
+					<!-- /目录 -->
+
+					<!-- 正文 -->
+					<h2 id="How-to-use-union-select">0×1.如何使用union查询</h2>
+					<p>让我们来看一个简单的实例，使用union连接两个select查询的结果集</p>
+					<pre class="brush: sql;">
+						//假设有表a和表b，内容如下
+						mysql&gt; select * from a;
+						+------+------+
+						| id   | num  |
+						+------+------+
+						| a    |    5 |
+						| b    |   10 |
+						| c    |   15 |
+						| d    |   10 |
+						+------+------+
+
+						mysql&gt; select * from b;
+						+------+------+
+						| id   | num  |
+						+------+------+
+						| b    |    5 |
+						| c    |   15 |
+						| d    |   20 |
+						| e    |   99 |
+						+------+------+
+
+						//使用union将前后两条select返回的结果联合起来，union操作时，前后两条select所返回的列数目必须相同，本例前后select都返回两列数据，并且，在连接的时候，union将完全相同的记录合并成一条显示（必须是记录完全相同，只有单个字段相同并不会合并），本例中“c 15”是两个表中都共有并完全相同的一条记录，所以合并成一条显示
+						mysql&gt; select id,num from a
+						    -&gt; union
+						    -&gt; select id,num from b;
+						+------+------+
+						| id   | num  |
+						+------+------+
+						| a    |    5 |
+						| b    |   10 |
+						| c    |   15 |
+						| d    |   10 |
+						| b    |    5 |
+						| d    |   20 |
+						| e    |   99 |
+						+------+------+
+
+						//如果想要union加快合并速度，不将相同的记录合并，可以在union后面添加all参数，如下，“c 15”出现了两次
+						mysql&gt; select id,num from a
+						    -&gt; union all
+						    -&gt; select id,num from b;
+						+------+------+
+						| id   | num  |
+						+------+------+
+						| a    |    5 |
+						| b    |   10 |
+						| c    |   15 |
+						| d    |   10 |
+						| b    |    5 |
+						| c    |   15 |
+						| d    |   20 |
+						| e    |   99 |
+						+------+------+
+
+						//union不仅仅只能合并两张表数据，可以用下面的语法合并任意多个表，前提是他们的列数目必须相同
+						mysql&gt; select id,num from a
+						    -&gt; union
+						    -&gt; select id,num from b
+						    -&gt; union
+						    -&gt; select id,num from c
+						    -&gt; union
+						    -&gt; select id,num from d
+						    -&gt; union
+						    -&gt; ....; //此处可以重复上面的结构连接不同的表
+
+						//在union连接的select中使用order by排序毫无意义（比如select * from a order by num desc union all select....），数据库会自动将这种语句优化掉，但是可以对union后的总表进行order by排序，例如
+						mysql&gt; select id,num from a
+						    -&gt; union
+						    -&gt; select id,num from b
+						    -&gt; order by num desc;
+						+------+------+
+						| id   | num  |
+						+------+------+
+						| e    |   99 |
+						| d    |   20 |
+						| c    |   15 |
+						| b    |   10 |
+						| d    |   10 |
+						| a    |    5 |
+						| b    |    5 |
+						+------+------+
+					</pre>
+					<h2 id="union-query-instance">0×2.union查询实例</h2>
+						<p>实例1，要求将本文第一部分给出的a，b两表使用union联合，并将相同id的num值相加，输出id以及num相加后的结果</p>
+						<pre class="brush: sql;">
+							//还记得以前介绍过的拆分思想吗？可以先求出a和b表的union结果集，将这个结果集当做一个子查询，将其定义成tmp表，外层select查询就是对这个tmp表的查询，最后使用id对tmp表进行分组，再用sum()函数将相同id分组的num值相加，最后得到下面的结果，子查询联合时使用了union all，因为两表有同一条记录“c 15”，如果不使用all参数，它们将被合并成一条记录，这不符合题目要求。
+							mysql&gt; select id,sum(num)
+							    -&gt; from
+							    -&gt; (select * from a union all select * from b) as tmp
+							    -&gt; group by id;
+							+------+----------+
+							| id   | sum(num) |
+							+------+----------+
+							| a    |        5 |
+							| b    |       15 |
+							| c    |       30 |
+							| d    |       30 |
+							| e    |       99 |
+							+------+----------+
+						</pre>
+
+						<p>实例2，计算本文第一部分表a中num列所有字段的和，将其结果union到表a的底部，id字段填充’Total:’</p>
+						<pre class="brush: sql;">
+							//当union前后列的列头名称不同时，union使用前面的那select中的列头名称作为联合表的列头名称
+							mysql> select * from a
+							    -> union
+							    -> select 'Total:',sum(num) from a;
+							+--------+------+
+							| id     | num  |
+							+--------+------+
+							| a      |    5 |
+							| b      |   10 |
+							| c      |   15 |
+							| d      |   10 |
+							| Total: |   40 |
+							+--------+------+
+						</pre>
+				<!-- /正文 -->
+
+				<footer class="text-footer">
+					<p>
+						*转载请注明来自: <a title="晴刃-自由、互助、分享、专注计算机技术。" href="http://www.qingsword.com" target="_blank">晴刃(QingSword.COM)</a>
+					</p>
+					<p>*原文连接:<a title="[mysql基础文档]-31-union查询" href="http://www.qingsword.com/qing/1523.html" target="_blank">http://www.qingsword.com/qing/1523.html</a></p>
+				</footer>
+			</article>
+			<!-- /文章区 -->	
+		</div>
+	</div>
+	<!-- /content -->
+
+	<!-- footer -->
+	<footer id="footer">
+		<div class="footer-container">
+			QingSword.COM &nbsp;<img src="../logo/by-nc-sa.png" alt="Creative Commons" title="Creative Commons">
+		</div>
+	</footer>
+	<!-- /footer -->
+</body>
+</html>
