@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<!--Copyright©QingSword.COM︻☼1010D>-->
+<html lang="zh-ch">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
+	<meta name="description" content="晴刃,是一个致力推广实用计算机技术的个人博客;我们分享计算机知识;为计算机系统以及网络安全防范做出一份贡献。【专注技术 创造价值 共同进步】">
+	<meta name="keywords" content="晴刃,晴,qing,qingsword,ccna图文笔记,ubuntu,linux,ubuntu server,mysql,node.js,javascript,python,计算机技术博客">
+	<title>利用Ubuntu启动U盘破解Windows开机密码| QingSword.COM </title>
+	<link rel="shortcut icon" type="image/x-icon" href="../logo/favicon.ico">
+	<link rel="stylesheet" type="text/css" href="../css/basic.css">
+	<link rel="stylesheet" type="text/css" href="../css/text.css">
+	<!-- 代码块高亮js -->
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shCore.css"/>
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shThemeRDark.css"/>
+	 <script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shCore.js"></script>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shBrushBash.js"></script>
+	<script type="text/javascript">
+	SyntaxHighlighter.all();
+	</script>
+</head>
+<body>
+	<!--header -->
+	<header id="nav">
+			<div class="nav-container"> 
+				<!-- 根大纲-->
+				<a href="http://www.qingsword.com" title="晴刃">
+					<h1 class="nav-logo">晴刃</h1>
+				</a>
+				<h2 class="nav-site-description desc-hidden">
+					自由、互助、分享、专注计算机技术
+				</h2>
+				<nav class="nav-links"> 
+					<!-- nav连接大纲-->
+					<h1 style="display:none;">网站导航</h1> 
+					<ul>
+						<li  class="li-hidden">
+							<a href="../index.html" title="home">
+								<span class="link-word"><img src="../logo/home.png" alt="home" class="link-img">首页</span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../web.html" title="web">
+								<span class="link-word"><img src="../logo/web.png" alt="web" class="link-img">前端<span class="word-hidden">设计</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../system.html" title="system">
+								<span class="link-word"><img src="../logo/linux.png" alt="linux" class="link-img">系统<span class="word-hidden">应用</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../net.html" title="net">
+								<span class="link-word"><img src="../logo/net.png" alt="net" class="link-img">网络<span class="word-hidden">技术</span></span>
+							</a>
+						</li>
+						<li>
+							<a href="../sitemap.html" title="sitemap">
+								<span class="link-word"><img src="../logo/archives.png" alt="archives" class="link-img"><span class="word-hidden">文章</span>归档</span>
+							</a>
+						</li>
+					</ul>
+				</nav>
+			</div>		
+	</header>
+	<!-- /header -->
+
+	<!-- content-->
+	<div id="content">
+		<div class="content-container">
+			<!-- 文章区 -->
+			<article class="text-container">
+				<header class="text-header">
+					<h1>利用Ubuntu启动U盘破解Windows开机密码</h1>	
+				</header><!-- /header -->
+				<section class="text-body">
+					<h2>引言</h2>
+					<p>这篇文章给大家介绍如何利用Ubuntu启动U盘（或光盘）巧妙破解windows开机密码。如果你不小心忘记了密码但又不想重装系统，那么这个方法能让你在不重装的前提下重置密码。</p>
+					<p>此方法适用于WindowsXP/7/8/10，在往后的版本中，只要windows登陆界面的“轻松访问”（Utilman）功能不被取消，就能使用这个破解方法。</p>
+					<!-- 目录 -->
+					<h2>文章目录</h2>
+					<ul class="contents">	
+						 <li><a href="#crack-windows-login-1">0×1.windows开机密码破解思路</a></li>
+						 <li><a href="#crack-windows-login-2">0×2.windows开机密码破解实例</a></li>
+						 <li><a href="#crack-windows-login-3">0×3.如何防范利用u盘或光盘破解windows开机密码</a></li>
+
+					 </ul>
+					<!-- /目录 -->
+
+					<!-- 正文 -->
+					<h2 id="crack-windows-login-1">0×1.windows开机密码破解思路</h2>
+
+					<p>在WindowsXP以后的操作系统中，启动界面加入了一项叫做"轻松访问"（Utilman）的功能，这项功能的主要目的，是帮助一些视力、听力不太好，或者不能用键盘输入的用户完成一些操作。</p>
+					<p>这个叫做"轻松访问"的功能能够在输入密码前被执行，这就给我们提供了一个思路，<span style="color: #ff0000;">如果我们替换"轻松访问"中的某项功能，那么就能实现在输入密码前执行替换过后的某个程序，即可达到破解密码的目的。</span></p>
+					<p>下面为WIN8的启动界面（Win7同样有这个图标，只是弹出来的界面不一样，但是同样能看到"屏幕键盘"，XP需要按键盘上的"Win键+U"即可打开轻松访问。注意：精简版的系统可能将这个功能删除，这时候可以将cmd.exe复制成Utilman.exe，只要在开机界面调用“轻松访问”功能即可打开cmd，之所以替换屏幕键盘osk.exe，是因为这样更加隐蔽。）</p>
+					<img src="images/crack-windows-login-1.jpg" alt="crack-windows-login-1">
+
+					<h2 id="crack-windows-login-2">0×2.windows开机密码破解实例</h2>
+
+					<p>1） 准备一张Ubuntu启动U盘（不一定要Ubuntu的系统，任何可以读取计算机系统盘的系统或者PE都可以），U盘启动盘制作方法请参考：<a href="85.html" target="_blank" title="Linux环境怎样制作u盘系统启动盘">Linux环境怎样制作u盘系统启动盘</a>； 利用U盘引导，进入U盘系统。</p>
+
+					<p>2）找到或挂载Windows系统所在分区，进入分区，将Windows/system32/osk.exe替换成cmd.exe文件，本例使用Ubuntu，进入U盘系统后，打开终端（Ctrl+Alt+t）请看下面的示例：</p>
+					<pre class="brush: bash;">
+					#查看硬盘分区列表
+					qing@qingsword.com:~$ sudo fdisk -l
+					</pre>
+					<p>这一步的判断取决于你对硬盘分区的了解，一般安装系统时使用Windows自带的分区界面分区，就会产生一个100M的boot分区，也就是下图中的/dev/sda1，看到这个分区代表Windows可能就安装在/dev/sda2中；如果是使用PE分区后再安装系统，可能就没有这个分区，如果有多块硬盘，那就将每块硬盘的第一个分区分别挂载上来查看一下有没有windows文件夹即可；</p>
+					<p>另外，Windows分区Type大多数为NTFS/FAT32，如果在这一步看到了后面的Type是ext4之类的，那肯定不是Windows分区，是Linux类系统的分区格式；</p>
+					<img src="images/crack-windows-login-2.jpg" alt="crack-windows-login-2">
+					<p>通过上面的分析，尝试着将boot下面的/dev/sda2分区挂载到/mnt查看其内容，看到了Windows熟悉的目录结构；</p>
+					<img src="images/crack-windows-login-3.jpg" alt="crack-windows-login-3">
+					<p>进入Windows/System32文件夹（注意目录名称大小写），将其中的osk.exe使用cmd.exe替换，然后重启计算机；</p>
+					<img src="images/crack-windows-login-4.jpg" alt="crack-windows-login-4">
+					<p>3）现在不需要这个U盘了，可以拔掉它，重启来到Windows的登陆界面，使用快捷键"Win键+u"，或点击"轻松访问"-&gt;启动"屏幕键盘"，看看发生了什么？</p>
+					<img src="images/crack-windows-login-5.jpg" alt="crack-windows-login-5">
+					<p>到这里更改密码就完成了，只需要用更改后的密码123456登录这个账户即可。</p>
+					<p>最后需要注意的是，你进入系统之后，最好将系统盘下的"\Windows\System32\osk.exe"更改回去，前面做了一个备份文件叫osk.exe.bk，将这个伪装的osk.exe删除，将osk.exe.bk重新命名成osk.exe，这样一切又恢复了正常；</p>
+
+					<h2 id="crack-windows-login-3">0×3.如何防范利用u盘或光盘破解windows开机密码</h2>
+
+					<p>比较推荐的方法就是，给BIOS加密，这样别人要进入BIOS设置界面需要先输入密码，不然就无法更改系统启动顺序设置U盘或者光盘启动，虽然可以通过给BIOS放电来破解bios密码，但毕竟需要拆机，会麻烦很多。</p>
+					<img src="images/crack-windows-login-6.jpg" alt="crack-windows-login-6">
+					<p>前面提到的删除系统"轻松访问"程序的做法不能完全防止这种破解，因为可以将cmd复制成Utilman.exe，这样只需要在开机界面调用“轻松访问”功能，即可打开cmd。</p>
+					
+						
+				<!-- /正文 -->
+
+				<footer class="text-footer">
+					<p>
+						*转载请注明来自:<a title="晴刃-自由、互助、分享、专注计算机技术。" href="http://www.qingsword.com" target="_blank">晴刃(QingSword.COM)</a>
+					</p>
+					<p>*原文连接:<a title="利用Ubuntu启动U盘破解Windows开机密码" href="http://www.qingsword.com/qing/91.html" target="_blank">http://www.qingsword.com/qing/91.html</a></p>
+				</footer>
+			</article>
+			<!-- /文章区 -->	
+		</div>
+	</div>
+	<!-- /content -->
+	
+	<!-- footer -->
+	<footer id="footer">
+		<div class="footer-container">
+			QingSword.COM &nbsp;<img src="../logo/by-nc-sa.png" alt="Creative Commons" title="Creative Commons">
+		</div>
+	</footer>
+	<!-- /footer -->
+</body>
+</html>

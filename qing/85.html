@@ -107,6 +107,8 @@
 					<p>因为是使用dd命令直接将将iso文件数据写入U盘，所以U盘不包含一个标准的分区表，从而导致系统无法正常的识别其大小，也无法正常使用，使用它安装系统后，如果不需要U盘安装盘了，可以使用下面的方法来恢复U盘。</p>
 					<p>恢复U盘示例：</p>
 					<pre class="brush: bash;">
+					#0.操作前请用sudo fdisk -l查看U盘分区号，请谨慎操作，不要误写硬盘分区，本例U盘分区号是/dev/sdc
+
 					#1.使用dd命令，将0写入U盘的前512字节（代表主引导记录中的引导代码和分区表）
 					# count=1，写入一次
 					# bs=512，写入的大小512（byte）
@@ -114,11 +116,28 @@
 					# of=/dev/sdc，写入到U盘中
 					qing@qingsword.com:~$ sudo dd count=1 bs=512 if=/dev/zero of=/dev/sdc
 
-					#2.重新将U盘拔出插入，使用fdisk分区（删除现有分区，重新创建分区），例如只重新划分了一个分区sdc1
+					#2.使用fdisk分区（最好先使用p查看一下还有没有分区，如果第一步操作无误，p将查看不到分区，如果还保留着原有分区，则删除现有分区，重新创建分区），例如只重新划分了一个分区sdc1
 					qing@qingsword.com:~$ sudo fdisk /dev/sdc
+					#查看现有分区，如果第一步成功，下面将看不到分区
+					命令(输入 m 获取帮助)： p 
+					Disk /dev/sdc: 8019 MB
 
-					#3.重新将U盘拔出插入，如果分区自动挂载，请先卸载，然后对该分区进行格式化，格式化成ntfs是为了让Windows也能识别
-					qing@qingsword.com:~$ sudo mkfs.ntfs /dev/sdc1
+					#创建新分区，一路默认回车
+					命令(输入 m 获取帮助)： n 
+					...
+
+					#将分区更改成NTFS类型，以便Win系统也能识别
+					命令(输入 m 获取帮助)： t
+					Selected partition 1
+					Hex code (type L to list codes): 7
+					Changed system type of partition 1 to 7 (HPFS/NTFS/exFAT)
+
+					#保存
+					命令(输入 m 获取帮助)： w
+
+					#3.重新将U盘拔出插入，如果分区自动挂载，请先卸载，然后对该分区进行格式化，格式化成fat是为了让Windows也能识别（mkfs格式化ntfs非常慢，如果想要格式化成ntfs的，可以用mkfs.ntfs替换）
+					qing@qingsword.com:~$ sudo umount /dev/sdc1
+					qing@qingsword.com:~$ sudo mkfs.fat /dev/sdc1
 					</pre>
 					<p>硬盘分区和格式化请参阅：<a title="[Linux实用命令]-8-硬盘分区与管理。" href="917.html" target="_blank">[Linux实用命令]-8-硬盘分区与管理</a></p>
 					<p>Ps：dd命令可以用来制作任何Linux发行版的iso操作系统到U盘，因为引导方式的不同，所以用dd将Windows的iso写入U盘将不能开机引导，Windows的U盘启动盘制作方法，请参考本文第三小节。</p>
