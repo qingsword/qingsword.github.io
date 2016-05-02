@@ -31,19 +31,23 @@ SyntaxHighlighter.brushes.Bash = function()
 {
 	var keywords =	'if fi then elif else for do done until while break continue case function return in eq ne gt lt ge le';
 	var commands =  'alias apropos awk basename bash bc bg builtin bzip2 cal cat cd cfdisk chgrp chmod chown chroot' +
-					'cksum clear cmp comm command cp cron crontab csplit cut date dc dd ddrescue declare df ' +
+					'cksum clear cmp comm cp crontab csplit cut date dc dd ddrescue declare df ' +
 					'diff diff3 dig dir dircolors dirname dirs du echo egrep eject enable env ethtool eval ' +
-					'exec exit expand export expr false fdformat fdisk fg fgrep file find fmt fold format ' +
+					'exec exit expand export expr false fdformat fdisk fg fgrep find fmt fold format ' +
 					'free fsck ftp gawk getopts grep groups gzip hash head history hostname id ifconfig ' +
 					'import install join kill less let ln local locate logname logout look lpc lpr lprint ' +
-					'lprintd lprintq lprm ls lsof make man mkdir mkfifo mkisofs mknod more mount mtools ' +
+					'lprintd lprintq lprm ls ll lsof make man mkdir mkfifo mkisofs mknod more mount mtools ' +
 					'mv netstat nice nl nohup nslookup open op passwd paste pathchk ping popd pr printcap ' +
 					'printenv printf ps pushd pwd quota quotacheck quotactl ram rcp read readonly renice ' +
 					'remsync rm rmdir rsync screen scp sdiff sed select seq set sftp shift shopt shutdown ' +
-					'sleep sort source split ssh strace su sudo sum symlink sync tail tar tee test time ' +
+					'sleep sort source split ssh strace su sudo sum symlink sync tail tar tee get put time ' +
 					'times touch top traceroute trap tr true tsort tty type ulimit umask umount unalias ' +
-					'uname unexpand uniq units unset unshar useradd usermod users uuencode uudecode v vdir ' +
-					'vi watch wc whereis which who whoami Wget xargs yes'
+					'uname unexpand uniq units unset unshar useradd usermod users uuencode uudecode vdir ' +
+					'vi watch wc whereis which who whoami Wget wget xargs apt-get git clone vim gedit ' +
+					'iw  add-apt-repository dpkg update upgrade aria2c gcc mdadm mkfs.ext4 mkfs.fat mkfs.ntfs ' +
+					'yum pvcreate lvcreate vgcreate lvs pvs vgs vgextend e2fsck lvreduce resize2fs vgreduce lvextend ' +
+					'lvremove vgremove pvremove edquota quotaon quotaoff'
+
 					;
 	
 	this.findMatches = function(regexList, code)
