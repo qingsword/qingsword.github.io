@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<!--Copyright©QingSword.COM︻☼1010D>-->
+<html lang="zh-ch">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
+	<meta name="description" content="晴刃,是一个致力推广实用计算机技术的个人博客;我们分享计算机知识;为计算机系统以及网络安全防范做出一份贡献。【专注技术 创造价值 共同进步】">
+	<meta name="keywords" content="晴刃,晴,qing,qingsword,ccna图文笔记,ubuntu,linux,ubuntu server,mysql,node.js,javascript,python,计算机技术博客">
+	<title>[CCNA图文笔记]-4-IP地址详解| QingSword.COM </title>
+	<link rel="shortcut icon" type="image/x-icon" href="../logo/favicon.ico">
+	<link rel="stylesheet" type="text/css" href="../css/basic.css">
+	<link rel="stylesheet" type="text/css" href="../css/text.css">
+</head>
+<body>
+	<!--header -->
+	<header id="nav">
+			<div class="nav-container"> 
+				<!-- 根大纲-->
+				<a href="http://www.qingsword.com" title="晴刃">
+					<h1 class="nav-logo">晴刃</h1>
+				</a>
+				<h2 class="nav-site-description desc-hidden">
+					自由、互助、分享、专注计算机技术
+				</h2>
+				<nav class="nav-links"> 
+					<!-- nav连接大纲-->
+					<h1 style="display:none;">网站导航</h1> 
+					<ul>
+						<li  class="li-hidden">
+							<a href="../index.html" title="home">
+								<span class="link-word"><img src="../logo/home.png" alt="home" class="link-img">首页</span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../web.html" title="web">
+								<span class="link-word"><img src="../logo/web.png" alt="web" class="link-img">前端<span class="word-hidden">设计</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../system.html" title="system">
+								<span class="link-word"><img src="../logo/linux.png" alt="linux" class="link-img">系统<span class="word-hidden">应用</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../net.html" title="net">
+								<span class="link-word"><img src="../logo/net.png" alt="net" class="link-img">网络<span class="word-hidden">技术</span></span>
+							</a>
+						</li>
+						<li>
+							<a href="../sitemap.html" title="sitemap">
+								<span class="link-word"><img src="../logo/archives.png" alt="archives" class="link-img"><span class="word-hidden">文章</span>归档</span>
+							</a>
+						</li>
+					</ul>
+				</nav>
+			</div>		
+	</header>
+	<!-- /header -->
+
+	<!-- content-->
+	<div id="content">
+		<div class="content-container">
+			<!-- 文章区 -->
+			<article class="text-container">
+				<header class="text-header">
+					<h1>[CCNA图文笔记]-4-IP地址详解</h1>	
+				</header><!-- /header -->
+				<section class="text-body">
+					<h2>引言</h2>
+					<p>这篇文章给大家介绍关于IP地址十进制和二进制之间的转换、IP地址的分类、IP子网划分、子网掩码以及公有地址和私有地址等CCNA基础知识。</p>
+					<!-- 目录 -->
+					<h2>文章目录</h2>
+					<ul class="contents">	
+						 <li><a href="#CCNA-ipv4-1">0×1.二进制和十进制之间的转换</a></li>
+						 <li><a href="#CCNA-ipv4-2">0×2.IPv4地址分类</a></li>
+						 <li class="subli"><a href="#CCNA-ipv4-3">a.保留IP地址</a></li>
+						 <li class="subli"><a href="#CCNA-ipv4-4">b.私有地址</a></li>
+						 <li><a href="#CCNA-ipv4-5">0×2.IP子网划分</a></li>
+						 <li class="subli"><a href="#CCNA-ipv4-6">a.实例一</a></li>
+						 <li class="subli"><a href="#CCNA-ipv4-7">b.实例二</a></li>
+						 <li class="subli"><a href="#CCNA-ipv4-8">c.实例三</a></li>
+						 <li class="subli"><a href="#CCNA-ipv4-9">d.实例四</a></li>
+					 </ul>
+					<!-- /目录 -->
+
+					<!-- 正文 -->
+					<h2 id="CCNA-ipv4-1">0×1.二进制和十进制之间的转换</h2>
+
+					<p>IPv4地址使用32位二进制数格式，通常使用点分十进制数来表示，如202.101.123.21,对应的二进制数就是(11001010.01100101.01111011.00010101)下面是这个二进制和十进制之间的转换方法；</p>
+					<p>二进制转十进制：</p>
+					<p class="indent-p">
+						11001010.01100101.01111011.00010101<br>
+						第一组二进制是11001010，可以使用1×2^7+1×2^6+0×2^5+0×2^4+1×2^3+0×2^2+1×2^1+0×2^0=202，后面几组同理，但是这样计算太麻烦，有一个简便方法，因为每组二进制都是8位，而每一位对应的十进制数都是不变的；<br>
+						比如：二进制11111111等于128+64+32+16+8+4+2+1=255，而我们只要记住这八位从大到小的对应的十进制就可以了（128、64、32、16、8、4、2、1），11001010就可以直接得出128+64+8+2=202，10000001=128+1=129，00010101=16+4+1=21；
+					</p>
+					<p>十进制转换二进制：</p>
+					<p class="indent-p">
+						202.101.123.21<br>
+						可以使用短除法除以2直到商0，比如<br>
+						202/2=101余0<br>
+						101/2=50余1<br>
+						50/2=25余0<br>
+						25/2=12余1<br>
+						12/2=6余0<br>
+						6/2=3余0<br>
+						3/2=1余1<br>
+						1/2=0余1<br>
+						然后从下往上，将余数写出来就是11001010，也就是202的二进制形式；<br>
+						实际上也有简便方法，就是将IP地址对应的十进制数凑成（128、64、32、16、8、4、2、1）可以组合出的那个数，比如202=128+64+8+2，按照十进制数字表（128、64、32、16、8、4、2、1）从高位到低位，如果出现这个数字就填1，没有出现这个数字就填0，很容易就能得,202就是二进制的11001010，再比如101=64+32+4+1也就是二进制的01100101；
+					</p>
+
+					<h2 id="CCNA-ipv4-2">0×2.IPv4地址分类</h2>
+
+					<p>一个IPv4地址主要有两部分组成：一部分用于标识该地址所属网络号，一部分用于标识该网络中某个特定主机。</p>
+					<p><span style="color: #ff0000;">* IPv4将IP地址分为5类：</span></p>
+					<p class="indent-p">
+						A类：前8位用来标识网络号，后面24位用来标识主机，所以每个A类网络可以有2^24次方个IP地址，全球只有126个A类网络，2^8-2=126(规定0不允许使用，而127被用作回环测试地址)。A类网络第一个字节十进制范围是1（00000001）-126（01111110）；<br>
+						B类：前16位用来标识网络号，后16位用来标识主机，第一个字节十进制范围从128(10000000)-191(10111111),全球共有2^14个B类网络，每个B类网络可以容纳2^16个主机；<br>
+						C类：前24位用来标识网络号，后8位用来标识主机，第一个字节十进制范围从192（11000000）-223（11011111），全球共有2^21个C类网络，每个C类网络的主机数是2^8=256个；<br>
+						D类：第一个字节十进制范围从224(11100000)-239(11101111)，这类地址用于组播，全球共用2^28个组播地址；<br>
+						E类：第一个字节十进制范围从240-255，科研保留地址，共2^28个；
+					</p>
+
+					<h3 id="CCNA-ipv4-3">a.保留IP地址</h3>
+
+					<p>每个网络中实际可容纳的主机数量是理论主机数量减2，这是因为有两个地址被保留：</p>
+					<p class="indent-p">
+						网络地址——网络位不变，主机位全0的地址，表示网路本身，如192.168.1.0/24；<br>
+						广播地址——网络位不变，主机位全1的地址，表示本网络的广播，如192.168.1.255/24（/24表示网络位是24位，也就是子网掩码为255.255.255.0）；
+					</p>
+
+					<h3 id="CCNA-ipv4-4">b.私有地址</h3>
+
+					<p>RFC1918规定了三段私有地址，作为内部组网使用，分为三类：</p>
+					<p class="indent-p">
+						A类：10.0.0.0—10.255.255.255（共2^24个）<br>
+						B类：172.16.0.0—172.31.255.255（共2^20个）<br>
+						C类：192.168.0.0—192.168.255.255（共2^16个）
+					</p>
+					<p>Internet上的路由不会配置这些IP地址，如果有去往这些私有地址的数据包，会被路由丢弃。</p>
+					<p>有了这些私有地址段，一些组织或团体对外只需要一个公网IP，通过端口地址转换（PAT）让内外网进行通信，如今互联网上的IPv4地址仍然没有被消耗尽，私有地址功不可没。</p>
+
+					<h2 id="CCNA-ipv4-5">0×2.IP子网划分</h2>
+					<h3 id="CCNA-ipv4-6">a.实例一</h3>
+
+					<p>四台PC的IP地址如下图，他们连接在一台交换机上，交换机工作正常，设备之间连线没有问题，如何让它们之间都可以正常互访？（不考虑防火墙等因素）</p>
+					<img src="images/Cisco-CCNA-IPv4-1.jpg" alt="Cisco-CCNA-IPv4-1">
+					<p>问题分析：上图中A、B、C、D的网络位都是24位(子网掩码255.255.255.0)，那么A和B同处在一个子网192.168.1.0，而C和D处在一个子网192.168.2.0，这个时候A和B能够互访，C和D能够互访，而AB和CD之间无法互访。</p>
+					<p>方法一：将他们改成一个子网，可以将C和D都改成192.168.1.0/24子网，反之可以将AB都改成192.168.2.0/24子网，这样四台计算机处于相同的子网中，可以相互通信。</p>
+					<p>方法二：修改四台PC的子网掩码为/22(255.255.252.0),这样他们同处在192.168.0.0子网中。</p>
+					<p>方法三：将中间的二层交换机换成三层交换机，并将A和B划分到一个VLAN里面，给这个VLAN分配一个IP地址192.168.1.254，将A和B的默认网关改成192.168.1.254，同时将C和D划分到另外一个VLAN给这个VLAN分配一个IP地址192.168.2.254，将C和D的默认网关改成192.168.2.254，这样通过三层交换机路由模块将两个不同网段连接起来，实现互访。</p>
+
+					<h3 id="CCNA-ipv4-7">b.实例二</h3>
+
+					<p>某个C类网络地址被某公司申请，网络地址是202.1.1.0/24，该公司有5个项目组，每个项目组有28台计算机，问：仅使用202.1.1.0/24，如何将这5个项目组分配到不同子网中？</p>
+					<p>问题分析：202.1.1.0/24属于C类地址，前24位是服务商提供，不能改变，所以只能调整后8位主机位，有5个项目组，所以需要从后8位中借出至少3位(2^3=8)可以分成8个子网，而剩余的5位（2^5=32）能容纳32-2=30台计算机，刚好符合5个项目组，每个项目组只有28台PC的情况。</p>
+					<p>从主机位中借出三位，网络位变成24+3=27位，子网掩码为 255.255.255.224</p>
+					<p>借出的三位可以组合成下面8种形式：</p>
+					<p class="indent-p">
+						000<br>
+						001<br>
+						010<br>
+						011<br>
+						100<br>
+						101<br>
+						110<br>
+						111
+					</p>
+					<p>加上固定的前24位，转换成十进制就是：</p>
+					<p class="indent-p">
+						202.1.1.0/27<br>
+						202.1.1.32/27<br>
+						202.1.1.64/27<br>
+						202.1.1.96/27<br>
+						202.1.1.128/27<br>
+						202.1.1.160/27<br>
+						202.1.1.192/27<br>
+						202.1.1.224/27
+					</p>
+					<p>在Cisco-CCNA考试中默认是不支持全0和全1的子网的，除非特别说明。</p>
+					<p>公司只有5个项目组，在不使用全0和全1的子网的前提下(不使用202.1.1.0/27和202.1.1.224/27)，划分如下：</p>
+					<p>IP范围202.1.1.32-202.1.1.63，子网202.1.1.32，网关202.1.1.33，子网广播202.1.1.63，可用IP从34-62，掩码/27<br>
+					IP范围202.1.1.64-202.1.1.95，子网202.1.1.64，网关202.1.1.65，子网广播202.1.1.95，可用IP从66-94，掩码/27<br>
+					IP范围202.1.1.96-202.1.1.127，子网202.1.1.96，网关202.1.1.96，子网广播202.1.1.127，可用IP从97-126，掩码/27<br>
+					IP范围202.1.1.128-202.1.1.159，子网202.1.1.128，网关202.1.1.129，子网广播202.1.1.159，可用IP从130-158，掩码/27<br>
+					IP范围202.1.1.160-202.1.1.191，子网202.1.1.160，网关202.1.1.161，子网广播202.1.1.191，可用IP从162-190，掩码/27<br>
+					IP范围202.1.1.192-202.1.1.223，子网202.1.1.192，网关202.1.1.193，子网广播202.1.1.223，可用IP从194-222，掩码/27 (暂时没有使用)
+					</p>
+
+					<h3 id="CCNA-ipv4-8">c.实例三</h3>
+
+					<p>一台计算机的IP和子网掩码是192.168.1.160/26，问：这台计算机所在子网、子网广播、子网中第一个可用IP、子网中最后一个IP、子网一共有多少IP可用？</p>
+					<p>其实这个例子在经常划分子网的高手眼里几乎就是一眼能看出来，但是为了让新手朋友能够很好的理解，下面给出一个比较通用的步骤：</p>
+					<img src="images/Cisco-CCNA-IPv4-2.jpg" alt="Cisco-CCNA-IPv4-2">
+					<p>上图中，Host对应的是主机IP的二进制表示，Mask是子网掩码的二进制表示，子网掩码26位，所以主机位全0的就是子网地址Subnet，换算成十进制就是（192.168.1.128），主机位全1的就是广播地址Broadcast，换算成十进制就是（192.168.1.191）,而子网中第一个IP地址就是（192.168.1.129），最后一个IP地址自然就是（192.168.1.190），子网中一共2^6-2=62个IP地址可用。</p>
+
+					<h3 id="CCNA-ipv4-9">d.实例四</h3>
+
+					<p>将下面这组C类IP地址汇总成一条IP地址：</p>
+					<p class="indent-p">
+						192.168.1.1/24<br>
+						192.168.2.1/24<br>
+						192.168.3.1/24<br>
+						192.168.4.1/24
+					</p>
+					<p>汇总可以减小路由表的大小，汇总的方法就是将需要汇总的IP转换成二进制，将共同的部分取出来，然后在根据共同的部分占用的位数来写出子网掩码。上面的4个IP地址转换成二进制如下图：</p>
+					<img src="images/Cisco-CCNA-IPv4-3.jpg" alt="Cisco-CCNA-IPv4-3">
+					<p>不难看出，红线前面的部分对于四个IP地址来说是相同的，一共21位，所以这组IP汇总后的IP是（192.168.0.0/21）</p>
+						
+				<!-- /正文 -->
+
+				<footer class="text-footer">
+					<p>
+						*转载请注明来自:<a title="晴刃-自由、互助、分享、专注计算机技术。" href="http://www.qingsword.com" target="_blank">晴刃(QingSword.COM)</a>
+					</p>
+					<p>*原文连接:<a title="[CCNA图文笔记]-4-IP地址详解" href="http://www.qingsword.com/qing/451.html" target="_blank">http://www.qingsword.com/qing/451.html</a></p>
+				</footer>
+			</article>
+			<!-- /文章区 -->	
+		</div>
+	</div>
+	<!-- /content -->
+	
+	<!-- footer -->
+	<footer id="footer">
+		<div class="footer-container">
+			QingSword.COM &nbsp;<img src="../logo/by-nc-sa.png" alt="Creative Commons" title="Creative Commons">
+		</div>
+	</footer>
+	<!-- /footer -->
+</body>
+</html>
