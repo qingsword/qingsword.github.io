@@ -180,12 +180,12 @@
 
 					<p>Ubuntu终端中输入gns3来打开GNS3图形界面，第一次打开会弹出引导配置窗口，我们不用这个来配置，所以选择不再弹出，然后cancel；</p>
 					<img src="images/Cisco-CCNA-GNS3-10.jpg" alt="Cisco-CCNA-GNS3-10">
-					<p>在GNS3图形界面菜单中选择"Edit"-&gt;"Preferences"，在Server选项中，首先将"Local server"中本地IP设置成127.0.0.1，端口8000，然后去掉"Local GNS3 VM"下面的勾选，如果这里勾选上，每次启动GNS3，VMware也会被启动，并且自动启动其中的IOU虚拟机，我们并不是每次都需要做交换实验，所以不用让VMware每次都一起启动，如果你想让VMware每次都随GNS3启动，可以勾选"Enable The Local GNS3 VM"，并将启动虚拟机设置成下面第二张图红框中那样；</p>
+					<p>在GNS3图形界面菜单中选择"Edit"-&gt;"Preferences"，在Server选项中，首先将"Local server"中本地IP设置成vmnet1这块虚拟网卡的地址192.168.100.2，端口8000，这样就能确保IOU中的交换机与物理机中的路由器进行连接（如果连线的时候提示交换机和路由器不能连接，请检查vmnet1是否被禁用，IP地址是否配置正确）；然后去掉"Local GNS3 VM"下面的勾选，如果这里勾选上，每次启动GNS3，VMware也会被启动，并且自动启动其中的IOU虚拟机，我们并不是每次都需要做交换实验，所以不用让VMware每次都一起启动，如果你想让VMware每次都随GNS3启动，可以勾选"Enable The Local GNS3 VM"，并将启动虚拟机设置成下面第二张图红框中那样；</p>
 					<img src="images/Cisco-CCNA-GNS3-11-0.jpg" alt="Cisco-CCNA-GNS3-11-0">
 					<img src="images/Cisco-CCNA-GNS3-11-1.jpg" alt="Cisco-CCNA-GNS3-11-1">
 					<p>切换到"Remote Services"，添加IOU虚拟机的IP地址和对应端口8000，Server选项就配置完成了；</p>
 					<img src="images/Cisco-CCNA-GNS3-12.jpg" alt="Cisco-CCNA-GNS3-12">
-					<p>在VPCS选项中，选择下载的vpcs组件，本例我将它放在了/usr/bin目录中；</p>
+					<p>在VPCS选项中，选择下载的vpcs组件，请先在vpcs所在目录使用终端运行"sudo chmod +x vpcs"命令给vpcs添加可执行权限，本例我将它放在了/usr/bin目录中；</p>
 					<img src="images/Cisco-CCNA-GNS3-13.jpg" alt="Cisco-CCNA-GNS3-13">
 					<p>在"IOS routers"选项中，点击"New"按钮，新增一个IOS，选择在本地运行IOS，通过实验发现，路由IOS直接在物理机运行比在IOU中运行占用资源更少，所以只让交换机IOS在虚拟机中运行就可以了；</p>
 					<img src="images/Cisco-CCNA-GNS3-14.jpg" alt="Cisco-CCNA-GNS3-14">
