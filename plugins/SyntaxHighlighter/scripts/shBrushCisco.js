@@ -29,8 +29,13 @@
  */
 SyntaxHighlighter.brushes.Vb = function()
 {
-	var keywords =	'en conf t logg syn exec-time ip add no shut int cdp run host exit end show ip route ' +
-					'ping ';
+	var keywords =	'enable disable en configure terminal conf t logg syn exec-timeout exec-t ' +
+			'ip add no shut int cdp run host exit end show ip route ping hostname ' +
+			'password secret interface serial aux console login pass address ' +
+			'clock shutdown rate description address logging synchronous vty ' +
+			'access-class permit access-list banner sh brief write running-config ' +
+			'startup-config '
+			;
 
 	this.regexList = [
 		{ regex: /'.*$/gm,										css: 'comments' },			// one line comments
