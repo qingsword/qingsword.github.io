@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<!--Copyright©QingSword.COM︻☼1010D>-->
+<html lang="zh-ch">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
+	<meta name="description" content="晴刃,是一个致力推广实用计算机技术的个人博客;我们分享计算机知识;为计算机系统以及网络安全防范做出一份贡献。【专注技术 创造价值 共同进步】">
+	<meta name="keywords" content="晴刃,晴,qing,qingsword,ccna图文笔记,ubuntu,linux,ubuntu server,mysql,node.js,javascript,python,计算机技术博客">
+	<title>[CCNA图文笔记]-12-配置文件备份与还原| QingSword.COM </title>
+	<link rel="shortcut icon" type="image/x-icon" href="../logo/favicon.ico">
+	<link rel="stylesheet" type="text/css" href="../css/basic.css">
+	<link rel="stylesheet" type="text/css" href="../css/text.css">
+	<!-- 代码块高亮js -->
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shCore.css"/>
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shThemeRDark.css"/>
+	 <script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shCore.js"></script>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shBrushCisco.js"></script>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shBrushBash.js"></script>
+	<script type="text/javascript">
+	SyntaxHighlighter.all();
+	</script>
+</head>
+<body>
+	<!--header -->
+	<header id="nav">
+			<div class="nav-container"> 
+				<!-- 根大纲-->
+				<a href="http://www.qingsword.com" title="晴刃">
+					<h1 class="nav-logo">晴刃</h1>
+				</a>
+				<h2 class="nav-site-description desc-hidden">
+					自由、互助、分享、专注计算机技术
+				</h2>
+				<nav class="nav-links"> 
+					<!-- nav连接大纲-->
+					<h1 style="display:none;">网站导航</h1> 
+					<ul>
+						<li  class="li-hidden">
+							<a href="../index.html" title="home">
+								<span class="link-word"><img src="../logo/home.png" alt="home" class="link-img">首页</span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../web.html" title="web">
+								<span class="link-word"><img src="../logo/web.png" alt="web" class="link-img">前端<span class="word-hidden">设计</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../system.html" title="system">
+								<span class="link-word"><img src="../logo/linux.png" alt="linux" class="link-img">系统<span class="word-hidden">应用</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../net.html" title="net">
+								<span class="link-word"><img src="../logo/net.png" alt="net" class="link-img">网络<span class="word-hidden">技术</span></span>
+							</a>
+						</li>
+						<li>
+							<a href="../sitemap.html" title="sitemap">
+								<span class="link-word"><img src="../logo/archives.png" alt="archives" class="link-img"><span class="word-hidden">文章</span>归档</span>
+							</a>
+						</li>
+					</ul>
+				</nav>
+			</div>		
+	</header>
+	<!-- /header -->
+
+	<!-- content-->
+	<div id="content">
+		<div class="content-container">
+			<!-- 文章区 -->
+			<article class="text-container">
+				<header class="text-header">
+					<h1>[CCNA图文笔记]-12-配置文件备份与还原</h1>	
+				</header><!-- /header -->
+				<section class="text-body">
+					<h2>引言</h2>
+					<p>本篇文章通过具体实例演示一下如何将Cisco设备的运行配置文件(running-config)保存到启动配置文件（startup-config），如何将启动配置文件或运行配置文件直接备份到同网段下的一台开启了TFTP服务的计算机上。</p>
+					<!-- 目录 -->
+					<h2>文章目录</h2>
+					<ul class="contents">	
+						 <li><a href="#CCNA-backup-config-1">0×1.实验拓扑图</a></li>
+						 <li><a href="#CCNA-backup-config-2">0×2.如何在Ubuntu上安装TFTP服务</a></li>
+						 <li><a href="#CCNA-backup-config-3">0×3.Cisco设备配置文件备份与还原实例</a></li>
+					 </ul>
+					<!-- /目录 -->
+
+					<!-- 正文 -->
+					<h2 id="CCNA-backup-config-1">0×1.实验拓扑图</h2>
+
+					<p>实验拓扑图如下：C1是局域网中安装了Ubuntu16.04系统的一台服务器，服务器上安装了TFTP服务（第二节会介绍具体安装步骤），现在将这台服务器的以太网接口接在路由器的fa 0/0接口上，各设备IP如下图所示：</p>
+					<img src="images/Cisco-CCNA-backup-config-1.jpg" alt="Cisco-CCNA-backup-config-1">
+					<p>Ps：本来想在GNS3中桥接到虚拟机完成这个实验，但由于作者的物理机环境是Linux，Linux下的VMware网络适配器里默认只提供了VMnet0/1/8，GNS3桥接上之后一直无法与物理机通信（使用Windows系统的朋友可以尝试着桥接一下到VMnet2~7），所以这一部分的模拟实验不太好做，但下面提供的备份还原思路在真实环境中是能够完成的；</p>
+
+					<h2 id="CCNA-backup-config-2">0×2.如何在Ubuntu上安装TFTP服务</h2>
+
+					<p>打开终端安装tftp服务端：</p>
+					<pre class="brush: bash;">
+					#1.安装tftpd-hpa服务端
+					qing@qingsword.com:~$ sudo apt-get install tftpd-hpa
+
+					#下面是配套的客户端，如果不需要可以不安装，客户端只是提供了连接到tftp服务器的功能
+					qing@qingsword.com:~$ sudo apt-get install tftp-hpa
+
+					#2.创建TFTP上传下载目录并添加权限，本例直接创建在当前用户家目录了，请根据实际环境修改
+					qing@qingsword.com:~$ mkdir tftpdir
+					qing@qingsword.com:~$ sudo chmod 777 tftpdir
+
+					#3.修改tftp配置文件，将tftp主目录改成上面创建的目录路径
+					qing@qingsword.com:~$ sudo vim /etc/default/tftpd-hpa
+
+					#上面两行保持默认，修改后面两行
+					TFTP_USERNAME="tftp"
+					TFTP_ADDRESS="0.0.0.0:69"
+					TFTP_DIRECTORY="/home/qing/tftpdir"  #tftp主目录
+					TFTP_OPTIONS="-l -c -s" #允许上传和下载参数，不配置将无法远程上传和下载
+
+					#4.重新启动TFTP服务
+					qing@qingsword.com:~$ sudo service tftpd-hpa restart
+					</pre>
+
+					<h2 id="CCNA-backup-config-3">0×3.Cisco设备配置文件备份与还原实例</h2>
+					<p>R1配置如下：</p>
+					<pre class="brush: cisco;">
+					R1&gt;en
+					R1#conf t
+					R1(config)#no ip domain-lookup
+					R1(config)#line co 0
+					R1(config-line)#logg syn
+					R1(config-line)#exec-t 0 0
+					R1(config-line)#exit
+					R1(config)#int fa 0/0
+					R1(config-if)#ip add 192.168.1.1 255.255.255.0
+					R1(config-if)#no shut
+					R1(config-if)#end
+					</pre>
+					<p>将运行配置文件保存到启动配置文件中：</p>
+					<pre class="brush: cisco;">
+					/*查看启动配置文件，在没有将运行配置文件保存到启动配置文件前，启动配置文件什么都没有*/
+					R1#show startup-config  
+
+					/*将运行配置文件写入启动配置文件中*/
+					R1#write                
+					Building configuration...
+					[OK]
+
+					/*再次查看启动配置文件就能看到里面和当前运行配置文件内容一致*/
+					R1#show startup-config   
+
+					/*方法二，下面的命令和上面的write执行效果相同*/
+					R1#copy running-config startup-config
+					Destination filename [startup-config]?   /*指定文件名，本例使用默认*/
+					Building configuration...
+					[OK]
+					</pre>
+					<p>将配置文件备份到计算机C1上：</p>
+					<pre class="brush: cisco;">
+					/*将启动配置文件保存到tftp*/
+					R1#copy startup-config tftp
+
+					/*输入运行了TFTP服务器IP*/
+					Address or name of remote host []? 192.168.1.2
+					/*保存的文件名，输入一个名称或使用默认名称回车*/
+					Destination filename [r1-confg]? 
+					.!!
+					/*出现感叹号表示传输成功，出现句号表示超时，请检查路由器是否可以和TFTP服务器正常通信*/
+
+					/*备份运行配置文件，同上*/
+					R1#copy running-config tftp
+					</pre>
+					<p>将TFTP服务器上备份的配置文件恢复到路由：</p>
+					<pre class="brush: cisco;">
+					/*首先删除startup-config，模拟其丢失的情况*/
+					R1#erase startup-config
+					Erasing the nvram filesystem will remove all configuration files! Continue? [confirm]
+					[OK]
+					Erase of nvram: complete
+
+					/*显示startup-config，被告知不存在*/
+					R1#show startup-config
+					startup-config is not present
+
+					/*从备份文件恢复startup-config*/
+					R1#copy tftp startup-config
+					/*tftp服务器IP*/
+					Address or name of remote host []? 192.168.1.2
+					/*输入备份的文件名称*/ 
+					Source filename []?  r1-confg
+					/*恢复到启动配置文件，默认回车即可*/
+					Destination filename [startup-config]?
+					Accessing tftp://192.168.1.2/r1-confg...
+					Loading r1-confg from 192.168.1.2 (via FastEthernet0/0): !
+					[OK - 552 bytes]
+
+					/*恢复成功，查看一下*/
+					R1#show startup-config
+					Using 552 out of 129016 bytes
+					!
+					version 12.4
+
+					/*
+					 * 同样的方法可以恢复到running-config
+					 * # copy tftp running-config
+					 */
+					</pre>
+						
+				<!-- /正文 -->
+
+				<footer class="text-footer">
+					<p>
+						*转载请注明来自:<a title="晴刃-自由、互助、分享、专注计算机技术。" href="http://www.qingsword.com" target="_blank">晴刃(QingSword.COM)</a>
+					</p>
+					<p>*原文连接:<a title="[CCNA图文笔记]-12-配置文件备份与还原" href="http://www.qingsword.com/qing/501.html" target="_blank">http://www.qingsword.com/qing/501.html</a></p>
+				</footer>
+			</article>
+			<!-- /文章区 -->	
+		</div>
+	</div>
+	<!-- /content -->
+	
+	<!-- footer -->
+	<footer id="footer">
+		<div class="footer-container">
+			QingSword.COM &nbsp;<img src="../logo/by-nc-sa.png" alt="Creative Commons" title="Creative Commons">
+		</div>
+	</footer>
+	<!-- /footer -->
+</body>
+</html>
