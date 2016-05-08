@@ -34,7 +34,8 @@ SyntaxHighlighter.brushes.Vb = function()
 			'password secret interface serial aux console login pass address ' +
 			'clock shutdown rate description address logging synchronous vty ' +
 			'access-class permit access-list banner sh brief write running-config ' +
-			'startup-config loopback lo domain-lookup erase copy '
+			'startup-config loopback lo domain-lookup erase copy protocols ' +
+			'rip net passive-interface split-horizon '
 			;
 
 	this.regexList = [
