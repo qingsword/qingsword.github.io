@@ -35,7 +35,9 @@ SyntaxHighlighter.brushes.Vb = function()
 			'clock shutdown rate description address logging synchronous vty ' +
 			'access-class permit access-list banner sh brief write running-config ' +
 			'startup-config loopback lo domain-lookup erase copy protocols ' +
-			'rip net passive-interface split-horizon unnumbered cef '
+			'rip net network passive-interface split-horizon unnumbered cef version ' +
+			'redistribute static auto-summary ver auto summary-address ' +
+			'chain authentication key-chain mode key-string '
 			;
 
 	this.regexList = [
