@@ -37,7 +37,9 @@ SyntaxHighlighter.brushes.Vb = function()
 			'startup-config loopback lo domain-lookup erase copy protocols ' +
 			'rip net network passive-interface split-horizon unnumbered cef version ' +
 			'redistribute static auto-summary ver auto summary-address ' +
-			'chain authentication key-chain mode key-string classless '
+			'chain authentication key-chain mode key-string classless eigrp ' +
+			'hello-interval hold-time neighbors interfaces detail ' +
+			' '
 			;
 
 	this.regexList = [
