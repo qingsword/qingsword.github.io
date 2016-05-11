@@ -36,9 +36,12 @@ SyntaxHighlighter.brushes.Vb = function()
 			'access-class permit access-list banner sh brief write running-config ' +
 			'startup-config loopback lo domain-lookup erase copy protocols ' +
 			'rip net network passive-interface split-horizon unnumbered cef version ' +
-			'redistribute static auto-summary ver auto summary-address ' +
+			'redistribute static auto-summary ver summary-address ' +
 			'chain authentication key-chain mode key-string classless eigrp ' +
-			'hello-interval hold-time neighbors interfaces detail ' +
+			'hello-interval hold-time neighbors interfaces detail ospf dead-interval ' +
+			'point-to-point area router-id priority auto-cost reference-bandwidth ' +
+			'authentication-key message-digest message-digest-key ' +
+			'default-information originate always ' +
 			' '
 			;
 
