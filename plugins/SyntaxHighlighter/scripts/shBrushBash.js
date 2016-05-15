@@ -46,7 +46,8 @@ SyntaxHighlighter.brushes.Bash = function()
 					'vi watch wc whereis which who whoami Wget wget xargs apt-get git clone vim gedit ' +
 					'iw  add-apt-repository dpkg update upgrade aria2c gcc mdadm mkfs.ext4 mkfs.fat mkfs.ntfs ' +
 					'yum pvcreate lvcreate vgcreate lvs pvs vgs vgextend e2fsck lvreduce resize2fs vgreduce lvextend ' +
-					'lvremove vgremove pvremove edquota quotaon quotaoff'
+					'lvremove vgremove pvremove edquota quotaon quotaoff route add default gw netmask telnet ' +
+					' '
 
 					;
 	

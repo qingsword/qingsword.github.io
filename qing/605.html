@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<!--Copyright©QingSword.COM︻☼1010D>-->
+<html lang="zh-ch">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
+	<meta name="description" content="晴刃,是一个致力推广实用计算机技术的个人博客;我们分享计算机知识;为计算机系统以及网络安全防范做出一份贡献。【专注技术 创造价值 共同进步】">
+	<meta name="keywords" content="晴刃,晴,qing,qingsword,ccna图文笔记,ubuntu,linux,ubuntu server,mysql,node.js,javascript,python,计算机技术博客">
+	<title>[CCNA图文笔记]-21-交换机安全浅析| QingSword.COM </title>
+	<link rel="shortcut icon" type="image/x-icon" href="../logo/favicon.ico">
+	<link rel="stylesheet" type="text/css" href="../css/basic.css">
+	<link rel="stylesheet" type="text/css" href="../css/text.css">
+	<!-- 代码块高亮js -->
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shCore.css"/>
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shThemeRDark.css"/>
+	 <script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shCore.js"></script>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shBrushCisco.js"></script>
+	<script type="text/javascript">
+	SyntaxHighlighter.all();
+	</script>
+</head>
+<body>
+	<!--header -->
+	<header id="nav">
+			<div class="nav-container"> 
+				<!-- 根大纲-->
+				<a href="http://www.qingsword.com" title="晴刃">
+					<h1 class="nav-logo">晴刃</h1>
+				</a>
+				<h2 class="nav-site-description desc-hidden">
+					自由、互助、分享、专注计算机技术
+				</h2>
+				<nav class="nav-links"> 
+					<!-- nav连接大纲-->
+					<h1 style="display:none;">网站导航</h1> 
+					<ul>
+						<li  class="li-hidden">
+							<a href="../index.html" title="home">
+								<span class="link-word"><img src="../logo/home.png" alt="home" class="link-img">首页</span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../web.html" title="web">
+								<span class="link-word"><img src="../logo/web.png" alt="web" class="link-img">前端<span class="word-hidden">设计</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../system.html" title="system">
+								<span class="link-word"><img src="../logo/linux.png" alt="linux" class="link-img">系统<span class="word-hidden">应用</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../net.html" title="net">
+								<span class="link-word"><img src="../logo/net.png" alt="net" class="link-img">网络<span class="word-hidden">技术</span></span>
+							</a>
+						</li>
+						<li>
+							<a href="../sitemap.html" title="sitemap">
+								<span class="link-word"><img src="../logo/archives.png" alt="archives" class="link-img"><span class="word-hidden">文章</span>归档</span>
+							</a>
+						</li>
+					</ul>
+				</nav>
+			</div>		
+	</header>
+	<!-- /header -->
+
+	<!-- content-->
+	<div id="content">
+		<div class="content-container">
+			<!-- 文章区 -->
+			<article class="text-container">
+				<header class="text-header">
+					<h1>[CCNA图文笔记]-21-交换机安全浅析</h1>	
+				</header><!-- /header -->
+				<section class="text-body">
+					<h2>引言</h2>
+					<p></p>
+					<!-- 目录 -->
+					<h2>文章目录</h2>
+					<ul class="contents">	
+						 <li><a href="#CCNA-switch-security-1">0×1.如何查看某IP所属端口</a></li>
+						 <li><a href="#CCNA-switch-security-2">0×2.MAC地址泛洪防范</a></li>
+						 <li><a href="#CCNA-switch-security-3">0×3.DHCP欺骗防范</a></li>
+						 <li><a href="#CCNA-switch-security-4">0×4.ARP攻击原理与防范</a></li>
+						 <li><a href="#CCNA-switch-security-5">0×5.其他安全威胁</a></li>
+					 </ul>
+					<!-- /目录 -->
+
+					<!-- 正文 -->
+					<h2 id="CCNA-switch-security-1">0×1.如何查看某IP所属端口</h2>
+
+					<p>实际工作中的交换机上的MAC地址可能有几百甚至几千条，想从这些条目中用眼睛找出某个IP对应MAC地址或者某个MAC地址对应端口无疑是一件费时间的事情，下面这个方法可以很快的查找出某个IP对应的MAC和端口，首先配置下面的拓扑图（图1），然后在IOU交换机中，查找一下路由器192.168.2.1的MAC在交换机MAC表中对应了哪个端口（本例图中很明显可以看出，所有PC的MAC地址在IOU交换机MAC表中都对应了e0/0端口，但真实环境可能没有这种直观的拓扑图）：</p>
+					<img src="images/Cisco-CCNA-switch-security-1.jpg" alt="Cisco-CCNA-switch-security-1" title="图1">
+					<p>上图中，IOU1是IOU虚拟机中的交换机，9台vpsc模拟9台PC，SW1是GNS3中不可网管交换机"Ethernet switch"，因为"Ethernet switch"默认只有8个接口，连线前请右击它，在"Configure"中点击"Add"增加两个接口；</p>
+					<p>PC1~9配置：</p>
+					<pre class="brush: cisco;">
+					/*依次进入PC1~9控制台，使用下面的命令配置各PC，本例仅给出PC1的配置*/
+					vpcs> set pcname PC1
+					PC1> ip 192.168.2.1 255.255.255.0 192.168.2.254
+					Checking for duplicate address...
+					PC1 : 192.168.2.1 255.255.255.0 gateway 192.168.2.254
+					</pre>
+					<p>IOU交换机配置：</p>
+					<pre class="brush: cisco;">
+						IOU1#conf t
+						IOU1(config)#host IOU-SW
+						IOU-SW(config)#int vlan1
+						IOU-SW(config-if)#ip add 192.168.2.254 255.255.255.0
+						IOU-SW(config-if)#no shut
+						IOU-SW(config-if)#end
+					</pre>
+					<p>在PC1~4上面启用连续ping，模拟与外界的通信：</p>
+					<pre class="brush: cisco;">
+						/*10秒ping一次网关，本例仅给出PC1的命令*/
+						PC1> ping 192.168.2.254 -t -i 10000
+					</pre>
+					<p>此时查看交换机上的arp表，应该能看到下面的输出：</p>
+					<pre class="brush: cisco;">
+					IOU-SW#show arp 
+					Protocol  Address          Age (min)  Hardware Addr   Type   Interface
+					Internet  192.168.2.1             1   0050.7966.6800  ARPA   Vlan1
+					Internet  192.168.2.2             0   0050.7966.6801  ARPA   Vlan1
+					Internet  192.168.2.3             0   0050.7966.6802  ARPA   Vlan1
+					Internet  192.168.2.4             0   0050.7966.6803  ARPA   Vlan1
+					Internet  192.168.2.254           -   aabb.cc80.0100  ARPA   Vlan1
+
+					/*假如看到的不是5条，而是几百条甚至更多，想找出某个IP对应的MAC以及在MAC表中对应的端口，可以使用下面的方法*/
+
+					/*首先找出目标IP对应的MAC地址*/
+					IOU-SW#show arp | include 192.168.2.1
+					Internet  192.168.2.1   3   0050.7966.6800  ARPA   Vlan1
+
+					/*使用找到的MAC地址获得对应的端口，本例为e0/0，与拓扑一致*/
+					IOU-SW#show mac address-table | include 0050.7966.6800
+					1  0050.7966.6800  DYNAMIC   Et0/0
+					</pre>
+					<p>不要关闭PC1~4的ping，继续下面的实验。</p>
+
+					<h2 id="CCNA-switch-security-2">0×2.MAC地址泛洪防范</h2>
+
+					<p>MAC地址泛洪(Flooding)攻击的原理：</p>
+					<p class="indent-p">
+						根据交换机工作原理，即根据数据帧中的源MAC地址进行学习。当某台主机伪造大量的虚假MAC地址发往交换机，交换机的地址表容量有限（大约几千条）当交换机的MAC地址表被填满之后，交换机将不再学习其他MAC地址，此时不论是单播组播，交换机都进行泛洪转发；这样，攻击主机只需要在本地开启一个抓包软件即可捕获局域网中的所有数据包；MAC地址表的老化时间默认是5分钟，为了保证这种攻击有效性，攻击主机必须持续发动攻击。
+					</p>
+					<p>MAC地址泛洪攻击的防范方法：</p>
+					<p class="indent-p">
+						可以在接入端口上配置每个端口允许学习的MAC地址数量；
+					</p>
+					<pre class="brush: cisco;">
+					 /*
+					  * 将交换机端口配置成接入端口，三层交换机端口或二层的主干端口都不支持端口安全，
+					  * 端口安全只能配置在二层的接入端口上
+					  */
+
+					IOU-SW#conf t
+					IOU-SW(config)#int e0/0
+					/将端口e0/0设置成接入端口/
+					IOU-SW(config-if)#switchport mode access
+					/*开启端口安全*/
+					IOU-SW(config-if)#switchport port-security
+					/*允许最大学习5个MAC地址*/
+					IOU-SW(config-if)#switchport port-security maximum 5
+
+					/*查看一下违规可以进行的操作*/
+					IOU-SW(config-if)#switchport port-security violation ?
+					  protect   Security violation protect mode  /*阻止新的MAC学习*/
+					  restrict  Security violation restrict mode /*大致功能同上*/
+					  shutdown  Security violation shutdown mode /*关闭端口*/
+
+					 /*这里选择保护，本例即超过5 MAC后不学习新的MAC*/
+					IOU-SW(config-if)#switchport port-security violation protect
+					IOU-SW(config-if)#exit
+
+					/*命令简写，效果同上*/
+					IOU-SW(config)#int e0/0
+					IOU-SW(config-if)#swi m a
+					IOU-SW(config-if)#swi po
+					IOU-SW(config-if)#swi po max 10
+					IOU-SW(config-if)#swi po v p       
+					IOU-SW(config-if)#end
+					</pre>
+					<p>XXXXX使用下面的命令可以查看某个接入端口的安全规则：</p>
+					<pre class="brush: cisco;">
+					IOU-SW#show port-security int e0/2
+					/*开启了端口安全*/
+					Port Security              : Enabled
+					Port Status                : Secure-up
+					/*违规执行模式*/
+					Violation Mode             : Protect
+					Aging Time                 : 0 mins
+					Aging Type                 : Absolute
+					SecureStatic Address Aging : Disabled
+					/*最大可学习MAC数*/
+					Maximum MAC Addresses      : 10  
+					Total MAC Addresses        : 0
+					Configured MAC Addresses   : 0
+					Sticky MAC Addresses       : 0
+					Last Source Address:Vlan   : 0000.0000.0000:0
+					Security Violation Count   : 0
+					</pre>
+					<p>交换机可以使用range命令一次配置多个端口：</p>
+					<pre class="brush: cisco;">
+					/*统一配置交换机的e1/0至e1/2以及e2/1至e2/3号端口*/
+					IOU-SW(config)#int range e1/0-2,e2/1-3
+					IOU-SW(config-if-range)#swi m a
+					IOU-SW(config-if-range)#swi po
+					IOU-SW(config-if-range)#swi po max 10
+					IOU-SW(config-if-range)#swi po v p
+					IOU-SW(config-if-range)#end
+					</pre>
+
+					<h2 id="CCNA-switch-security-3">0×3.DHCP欺骗防范</h2>
+					<h2 id="CCNA-switch-security-4">0×4.ARP攻击原理与防范</h2>
+					<h2 id="CCNA-switch-security-5">0×5.其他安全威胁</h2>
+
+					<p></p>
+					<pre class="brush: cisco;">
+					
+					</pre>
+					<img src="images/Cisco-CCNA-switch-security-1.jpg" alt="Cisco-CCNA-switch-security-1">
+						
+				<!-- /正文 -->
+
+				<footer class="text-footer">
+					<p>
+						*转载请注明来自:<a title="晴刃-自由、互助、分享、专注计算机技术。" href="http://www.qingsword.com" target="_blank">晴刃(QingSword.COM)</a>
+					</p>
+					<p>*原文连接:<a title="[CCNA图文笔记]-21-交换机安全浅析" href="http://www.qingsword.com/qing/605.html" target="_blank">http://www.qingsword.com/qing/605.html</a></p>
+				</footer>
+			</article>
+			<!-- /文章区 -->	
+		</div>
+	</div>
+	<!-- /content -->
+	
+	<!-- footer -->
+	<footer id="footer">
+		<div class="footer-container">
+			QingSword.COM &nbsp;<img src="../logo/by-nc-sa.png" alt="Creative Commons" title="Creative Commons">
+		</div>
+	</footer>
+	<!-- /footer -->
+</body>
+</html>

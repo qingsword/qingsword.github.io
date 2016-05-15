@@ -150,7 +150,7 @@
 					<img src="images/Cisco-CCNA-GNS3-1.jpg" alt="Cisco-CCNA-GNS3-1">
 					<p>导入成功后就能看到配置界面，先不要急着开机，根据自己机器的内存调整一下这个虚拟机的内存大小；"Network Adapter2"是NAT方式，暂时用不到，可以在配置页面中将"Connect at power on"取消；</p>
 					<img src="images/Cisco-CCNA-GNS3-2.jpg" alt="Cisco-CCNA-GNS3-2">
-					<p>在VMware菜单"Edit"-&gt;"Virtual Network Editor"中，查看vmnet1所对应的网段，本例是"192.168.100.0/24"，如下图；</p>
+					<p>在VMware菜单"Edit"-&gt;"Virtual Network Editor"中，查看vmnet1所对应的网段，本例是"192.168.100.0/24"（建议都更改成这个网段，本系列文章后面使用到IOU时，都是使用这个网段），如下图；</p>
 					<img src="images/Cisco-CCNA-GNS3-3.jpg" alt="Cisco-CCNA-GNS3-3">
 					<p>并且在终端中可以查看到vmnet1这块虚拟网卡所对应的IP地址是192.168.100.1</p>
 					<pre class="brush: bash;">
@@ -233,6 +233,7 @@
 					<p>回到主界面就能看到刚才配置的R1连接，点击Save保存连接，以后只要双击R1，就能连接上本地回环的2000端口，对应了GNS3中的路由设备；</p>
 					<img src="images/Cisco-CCNA-GNS3-26.jpg" alt="Cisco-CCNA-GNS3-26">
 					<p>重复上面的步骤，依次可以创建R2，R3等设备，在以后的实验中，使用几个路由，就直接双击几个路由直接就能连接上他们的控制台，十分方便。</p>
+					<p>注意：如果GNS3中"Local server"配置的地址是本例中的"192.168.100.1"，那么PAC中的telnet连接地址也要更改为这个IP，而不是"127.0.0.1"。</p>
 						
 				<!-- /正文 -->
 

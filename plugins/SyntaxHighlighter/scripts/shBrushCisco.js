@@ -40,9 +40,11 @@ SyntaxHighlighter.brushes.Vb = function()
 			'chain authentication key-chain mode key-string classless eigrp ' +
 			'hello-interval hold-time neighbors interfaces detail ospf dead-interval ' +
 			'point-to-point area router-id priority auto-cost reference-bandwidth ' +
-			'authentication-key message-digest message-digest-key ' +
-			'default-information originate always ' +
-			' '
+			'authentication-key message-digest message-digest-key default-gateway ' +
+			'default-information originate always routing privilege username ' +
+			'switchport port-security maximum max swi access violation protect ' +
+			'include restrict mod acc nonegotiate trunk encapsulation voice native ' +
+			'reload '
 			;
 
 	this.regexList = [

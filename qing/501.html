@@ -89,13 +89,17 @@
 					<!-- 正文 -->
 					<h2 id="CCNA-backup-config-1">0×1.实验拓扑图</h2>
 
-					<p>实验拓扑图如下：C1是局域网中安装了Ubuntu16.04系统的一台服务器，服务器上安装了TFTP服务（第二节会介绍具体安装步骤），现在将这台服务器的以太网接口接在路由器的fa 0/0接口上，各设备IP如下图所示：</p>
-					<img src="images/Cisco-CCNA-backup-config-1.jpg" alt="Cisco-CCNA-backup-config-1">
-					<p>Ps：本来想在GNS3中桥接到虚拟机完成这个实验，但由于作者的物理机环境是Linux，Linux下的VMware网络适配器里默认只提供了VMnet0/1/8，GNS3桥接上之后一直无法与物理机通信（使用Windows系统的朋友可以尝试着桥接一下到VMnet2~7），所以这一部分的模拟实验不太好做，但下面提供的备份还原思路在真实环境中是能够完成的；</p>
+					<p>实验拓扑图如下：Cloud1被桥接到VMware的虚拟网卡vmnet1上，稍后会介绍如何桥接，vmnet1的网段是192.168.100.0/24，这在本系列第6篇搭建实验环境的文章中已经配置过，这里不再赘述；在VMware中安装了一台Ubuntu系统的虚拟机，用来模拟服务器，服务器上安装了TFTP服务（第二节会介绍具体安装步骤），路由器的fa 1/0接口接在vmnet1上，各设备IP如下图所示：</p>
+					<img src="images/Cisco-CCNA-backup-1.jpg" alt="Cisco-CCNA-backup-1">
+					<p>Cloud1桥接到vmnet1的方法如下：</p>
+					<p>对工作区中的"Cloud1"右击，选择菜单中的"Configure"，按照下图设置，添加vmnet1接口；</p>
+					<img src="images/Cisco-CCNA-switch-base-3.jpg" alt="Cisco-CCNA-switch-base-3">
+					<p>如果将vmnet1网卡想象成一台独立的"交换机"，所有VMware中的虚拟机只要使用"Host-Only"网卡模式，就等于是连接到了这台交换机上，而GNS3中的"Cloud"只要桥接到vmnet1，就相当于在vmnet1这台"交换机"上添加了一个接口，所有GNS3中的设备只要连接到"Cloud"这个接口，就等价与连接到了vmnet1这台"交换机"上，就能够与同样连接在vmnet1这台"交换机"上的其他VMware虚拟机通信，只要他们的IP都被配置在同一个网段中。</p>
+					<p>如果不习惯使用Ubuntu的朋友，可以安装Windows，然后去下载个TFTP软件，将系统的IP与默认网关设置成上面拓扑中的那样，将虚拟机网卡设置成"Host-Only"，确保能与R1通信即可，思路是相同的，操作上请自行变通。</p>
 
 					<h2 id="CCNA-backup-config-2">0×2.如何在Ubuntu上安装TFTP服务</h2>
 
-					<p>打开终端安装tftp服务端：</p>
+					<p>首先将VMware中Ubuntu虚拟机接入真实网络，确保能从网络上下载TFTP（如果是物理机连接在路由器上的上网方式就将虚拟机网卡设置成"Bridged"，如果是物理机直接ppp拨号方式就将虚拟机网卡模式设置成"NAT"）打开终端安装tftp服务端：</p>
 					<pre class="brush: bash;">
 					#1.安装tftpd-hpa服务端
 					qing@qingsword.com:~$ sudo apt-get install tftpd-hpa
@@ -112,13 +116,14 @@
 
 					#上面两行保持默认，修改后面两行
 					TFTP_USERNAME="tftp"
-					TFTP_ADDRESS="0.0.0.0:69"
+					TFTP_ADDRESS="[::]:69"
 					TFTP_DIRECTORY="/home/qing/tftpdir"  #tftp主目录
 					TFTP_OPTIONS="-l -c -s" #允许上传和下载参数，不配置将无法远程上传和下载
 
 					#4.重新启动TFTP服务
 					qing@qingsword.com:~$ sudo service tftpd-hpa restart
 					</pre>
+					<p>安装完成后，将这台虚拟机的网卡模式设置成"Host-Only"，进入下面的备份还原实例。</p>
 
 					<h2 id="CCNA-backup-config-3">0×3.Cisco设备配置文件备份与还原实例</h2>
 					<p>R1配置如下：</p>
@@ -130,8 +135,8 @@
 					R1(config-line)#logg syn
 					R1(config-line)#exec-t 0 0
 					R1(config-line)#exit
-					R1(config)#int fa 0/0
-					R1(config-if)#ip add 192.168.1.1 255.255.255.0
+					R1(config)#int fa 1/0
+					R1(config-if)#ip add 192.168.100.100 255.255.255.0
 					R1(config-if)#no shut
 					R1(config-if)#end
 					</pre>
@@ -154,13 +159,13 @@
 					Building configuration...
 					[OK]
 					</pre>
-					<p>将配置文件备份到计算机C1上：</p>
+					<p>将配置文件备份到TFTP服务器上：</p>
 					<pre class="brush: cisco;">
 					/*将启动配置文件保存到tftp*/
 					R1#copy startup-config tftp
 
 					/*输入运行了TFTP服务器IP*/
-					Address or name of remote host []? 192.168.1.2
+					Address or name of remote host []? 192.168.100.200
 					/*保存的文件名，输入一个名称或使用默认名称回车*/
 					Destination filename [r1-confg]? 
 					.!!
@@ -169,6 +174,7 @@
 					/*备份运行配置文件，同上*/
 					R1#copy running-config tftp
 					</pre>
+					<p>此时可以在服务器上进入TFTP对应的目录，查看到备份文件。</p>
 					<p>将TFTP服务器上备份的配置文件恢复到路由：</p>
 					<pre class="brush: cisco;">
 					/*首先删除startup-config，模拟其丢失的情况*/
@@ -184,13 +190,13 @@
 					/*从备份文件恢复startup-config*/
 					R1#copy tftp startup-config
 					/*tftp服务器IP*/
-					Address or name of remote host []? 192.168.1.2
+					Address or name of remote host []? 192.168.100.200
 					/*输入备份的文件名称*/ 
 					Source filename []?  r1-confg
 					/*恢复到启动配置文件，默认回车即可*/
 					Destination filename [startup-config]?
-					Accessing tftp://192.168.1.2/r1-confg...
-					Loading r1-confg from 192.168.1.2 (via FastEthernet0/0): !
+					Accessing tftp://192.168.100.200/r1-confg...
+					Loading r1-confg from 192.168.100.200 (via FastEthernet1/0): !
 					[OK - 552 bytes]
 
 					/*恢复成功，查看一下*/
