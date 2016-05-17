@@ -44,7 +44,8 @@ SyntaxHighlighter.brushes.Vb = function()
 			'default-information originate always routing privilege username ' +
 			'switchport port-security maximum max swi access violation protect ' +
 			'include restrict mod acc nonegotiate trunk encapsulation voice native ' +
-			'reload vtp status pruning '
+			'reload vtp status pruning spanning-tree primary ' +
+			' '
 			;
 
 	this.regexList = [
