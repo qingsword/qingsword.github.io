@@ -45,7 +45,8 @@ SyntaxHighlighter.brushes.Vb = function()
 			'switchport port-security maximum max swi access violation protect ' +
 			'include restrict mod acc nonegotiate trunk encapsulation voice native ' +
 			'reload vtp status pruning spanning-tree primary frame-relay lmi-type ' +
-			'ppp multilink intf-type broadcast ietf map inverse-arp '
+			'ppp multilink intf-type broadcast ietf map inverse-arp extended standard ' +
+			'deny permit resequence '
 			;
 
 	this.regexList = [
