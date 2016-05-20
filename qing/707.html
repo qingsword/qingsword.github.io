@@ -98,7 +98,7 @@
 
 					<p>出于安全考虑我们可以对思科路由器的IOS进行备份，以便在不小心删除IOS文件或其他意外情况时，能够很快的恢复；下面看一个实例：</p>
 					<img src="images/Cisco-CCNA-ios-manager-1.jpg" alt="Cisco-CCNA-ios-manager-1" title="图1">
-					<p>上图（图1）中，笔记本用控制线连接到了路由器的console接口（在"Cisco Packet Tracer"模拟器中使用线缆中那条天蓝色的控制线连接计算机的"RS 232"到路由器的Console接口，然后点击计算机，选择Desktop选项卡中的terminal，点击OK即可，如果大家想模拟的真实一些可以参考[<a href="qing/501.html" title="[CCNA图文笔记]-12-配置文件备份与还原" target="_blank">[CCNA图文笔记]-12-配置文件备份与还原</a>]中的内容，使用GNS3+vmware运行的服务器来完成这个实验），路由器的以太网接口fa0/1连接了一台服务器，服务器在"Cisco Packet Tracer"模拟器"终端设备"中可以找到，请根据前面学习到的知识配置好路由器接口IP和服务器IP，服务器网关指向路由器的fa0/1接口，可以在服务器的配置界面"services"选项中找到TFTP服务，将里面的文件全部删除，这样当路由器的ios备份上来后，这个列表就会多出一个ios文件，说明操作是成功的，各设备IP如图所示，下面演示通过笔记本控制路由器使用TFTP将路由器的IOS文件备份到服务器上：</p>
+					<p>上图（图1）中，笔记本用控制线连接到了路由器的console接口（在"Cisco Packet Tracer"模拟器中使用线缆中那条天蓝色的控制线连接计算机的"RS 232"到路由器的Console接口，然后点击计算机，选择Desktop选项卡中的terminal，点击OK即可，如果大家想模拟的真实一些可以参考[<a href="501.html" title="[CCNA图文笔记]-12-配置文件备份与还原" target="_blank">[CCNA图文笔记]-12-配置文件备份与还原</a>]中的内容，使用GNS3+vmware运行的服务器来完成这个实验），路由器的以太网接口fa0/1连接了一台服务器，服务器在"Cisco Packet Tracer"模拟器"终端设备"中可以找到，请根据前面学习到的知识配置好路由器接口IP和服务器IP，服务器网关指向路由器的fa0/1接口，可以在服务器的配置界面"services"选项中找到TFTP服务，将里面的文件全部删除，这样当路由器的ios备份上来后，这个列表就会多出一个ios文件，说明操作是成功的，各设备IP如图所示，下面演示通过笔记本控制路由器使用TFTP将路由器的IOS文件备份到服务器上：</p>
 					<pre class="brush: cisco;">
 					/*连接上R1的console后首先查看一下Flash中都有哪些文件*/
 					R1#show flash:
