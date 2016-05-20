@@ -46,7 +46,9 @@ SyntaxHighlighter.brushes.Vb = function()
 			'include restrict mod acc nonegotiate trunk encapsulation voice native ' +
 			'reload vtp status pruning spanning-tree primary frame-relay lmi-type ' +
 			'ppp multilink intf-type broadcast ietf map inverse-arp extended standard ' +
-			'deny permit resequence '
+			'deny permit resequence crypto key generate rsa transport input ssh ' +
+			'default-router dns-server domain-name excluded-address pool lease ' +
+			'helper-address '
 			;
 
 	this.regexList = [
