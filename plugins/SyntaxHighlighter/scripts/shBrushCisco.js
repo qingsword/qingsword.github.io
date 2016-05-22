@@ -48,7 +48,7 @@ SyntaxHighlighter.brushes.Vb = function()
 			'ppp multilink intf-type broadcast ietf map inverse-arp extended standard ' +
 			'deny permit resequence crypto key generate rsa transport input ssh ' +
 			'default-router dns-server domain-name excluded-address pool lease ' +
-			'helper-address '
+			'helper-address nat overload inside source translations outside '
 			;
 
 	this.regexList = [

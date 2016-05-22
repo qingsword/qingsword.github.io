@@ -6,7 +6,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
 	<meta name="description" content="晴刃,是一个致力推广实用计算机技术的个人博客;我们分享计算机知识;为计算机系统以及网络安全防范做出一份贡献。【专注技术 创造价值 共同进步】">
 	<meta name="keywords" content="晴刃,晴,qing,qingsword,ccna图文笔记,ubuntu,linux,ubuntu server,mysql,node.js,javascript,python,计算机技术博客">
-	<title>[CCNA图文笔记]-21-交换机安全浅析| QingSword.COM </title>
+	<title>[CCNA图文笔记]-30-交换机安全浅析| QingSword.COM </title>
 	<link rel="shortcut icon" type="image/x-icon" href="../logo/favicon.ico">
 	<link rel="stylesheet" type="text/css" href="../css/basic.css">
 	<link rel="stylesheet" type="text/css" href="../css/text.css">
@@ -71,11 +71,11 @@
 			<!-- 文章区 -->
 			<article class="text-container">
 				<header class="text-header">
-					<h1>[CCNA图文笔记]-xx-交换机安全浅析</h1>	
+					<h1>[CCNA图文笔记]-30-交换机安全浅析</h1>	
 				</header><!-- /header -->
 				<section class="text-body">
 					<h2>引言</h2>
-					<p></p>
+					<p>这篇文章介绍交换机上最常见的几个安全威胁，包括MAC地址泛洪，伪DHCP服务器欺骗，ARP中间人欺骗等。</p>
 					<!-- 目录 -->
 					<h2>文章目录</h2>
 					<ul class="contents">	
@@ -253,16 +253,119 @@
 					</pre>
 
 					<h2 id="CCNA-switch-security-3">0×3.DHCP欺骗防范</h2>
+					
+					<p>下图中，R1运行了DHCP服务，R2也运行了DHCP服务，R1-2和PC1-2连接在IOU虚拟机中运行的交换机中，PC1-2是两台vpcs来模拟PC终端，现在如果让两台vpcs自动获取IP，则可能随机从R1或R2上获取到IP地址（看谁先应答），如果此时R1所在线路出现故障，那么全部的PC将获得R2上DHCP地址池中的地址，如果连接R2的线路存在安全隐患，就有可能让其他人使用这种方法在这条线路上搭建一个DHCP服务器来欺骗正常的PC获取到他指定的IP，请看下面的实例：</p>
+					<img src="images/Cisco-CCNA-switch-security-3.jpg" alt="Cisco-CCNA-switch-security-3">
+					<p>R1配置：</p>
+					<pre class="brush: cisco;">
+					R1>en
+					R1#conf t
+					R1(config)#int f1/0
+					R1(config-if)#ip add 192.168.1.1 255.255.255.0
+					R1(config-if)#no shut
+					R1(config-if)#exit
+					R1(config)#ip dhcp excluded-address 192.168.1.1
+					R1(config)#ip dhcp pool 192pool
+					R1(dhcp-config)#network 192.168.1.0 255.255.255.0
+					R1(dhcp-config)#default-router 192.168.1.1
+					R1(dhcp-config)#dns-server 192.168.1.1
+					R1(dhcp-config)#domain-name www.qingsword.com
+					R1(dhcp-config)#lease 1
+					R1(dhcp-config)#end
+					</pre>
 
+					<p>R2配置：</p>
+					<pre class="brush: cisco;">
+					R2>en
+					R2#conf t
+					R2(config)#int fa 1/0
+					R2(config-if)#ip add 172.16.1.1 255.255.255.0
+					R2(config-if)#no shut
+					R2(config-if)#exit
+					R2(config)#ip dhcp excluded-address 172.16.1.1
+					R2(config)#ip dhcp pool 172pool
+					R2(dhcp-config)#network 172.16.1.0 255.255.255.0
+					R2(dhcp-config)#default-router 172.16.1.1
+					R2(dhcp-config)#dns-server 172.16.1.1
+					R2(dhcp-config)#domain-name www.qingsword.com
+					R2(dhcp-config)#lease 9
+					R2(dhcp-config)#end
+					</pre>
+
+					<p>PC获取IP：</p>
+					<pre class="brush: cisco;">
+					/*在没有配置IOU交换机前，PC可能获取到两台路由器上的任何一个DHCP池中的IP地址*/
+					VPCS> ip dhcp
+					DDORA IP 192.168.1.2/24 GW 192.168.1.1
+
+					/*释放这个IP，再次获取，多试几次，会发现IP在R1的DHCP地址池和R2地址池中交替获取*/
+					VPCS> ip dhcp -x
+					VPCS> ip dhcp
+					DDORA IP 172.16.1.2/24 GW 172.16.1.1
+					</pre>
+					<p>现在配置IOU交换机，让PC1-2只能在R1上获取，并限制其他端口DHCP请求发送速率：</p>
+					<pre class="brush: cisco;">
+					IOU1#conf t
+
+					/*启用DHCP防欺骗功能*/
+					IOU1(config)#ip dhcp snooping 
+					/*
+					 * 在Vlan1上启用DHCP防欺骗功能,
+					 * 默认情况下交换机所有端口都属于Vlan1，如果创建了其他VLAN，
+					 * 可以使用相同的方法启动在那个Vlan上的DHCP防欺骗功能,
+					 * 比如:"ip dhcp snooping vlan 2"。
+					 */
+					IOU1(config)#ip dhcp snooping vlan 1
+
+					/*设置下面这几个端口为可信任端口，不可信任端口将不会接受DHCP应答包，如果可信端口中不包含与PC相连的端口，那么PC也不能接收到DHCP应答包了*/
+					IOU1(config)#int range e3/2,e0/0,e0/1
+					IOU1(config-if)#ip dhcp snooping trust 
+					IOU1(config-if)#exit
+
+					/*
+					 * 限制这个交换机上其他端口的DHCP请求包的发送速率，
+					 * 避免非法用户发送大量DHCP请求耗尽DHCP服务器资源。
+					 */
+					IOU1(config)#int range e0/2-3,e1/0-3,e2/0-3,e3/0-1,e3/3
+					IOU1(config-if-range)#ip dhcp snooping limit rate 2
+					IOU1(config-if-range)#end
+					</pre>
+					<p>现在再从PC上面用DHCP获取IP，就只能获取到R1上面的IP了：</p>
+					<pre class="brush: cisco;">
+					VPCS> ip dhcp -x
+					VPCS> ip dhcp
+					DDORA IP 192.168.1.3/24 GW 192.168.1.1
+					</pre>
 
 					<h2 id="CCNA-switch-security-4">0×4.ARP攻击原理与防范</h2>
+
+					<p>这一部分我专门写了篇两文章[<a title="Windows环境下局域网ARP攻击实现与防范" href="404.html" target="_blank">Windows环境下局域网ARP攻击实现与防范</a>][<a title="Linux环境下ARP攻击的实现与防范" href="1142.html" target="_blank">Linux环境下ARP攻击的实现与防范</a>]；文中提到了局域网ARP攻击形成的原因，如何发动攻击以及如何防范。想要进一步了解的朋友可以参考一下这两篇文章。</p>
+					<p>在一个小型局域网中，可以使用双向绑定的方法，在计算机上使用arp命令，或第三方ARP防火墙绑定网关MAC，然后在交换设备或路由上使用下面的命令静态绑定计算机IP对应的MAC地址：</p>
+					<pre class="brush: cisco;">
+					/*查看R1上的arp地址表*/
+					R1#show arp
+					Protocol  Address          Age (min)  Hardware Addr   Type   Interface
+					Internet  192.168.1.1             -   cc01.0f47.0010  ARPA   FastEthernet1/0
+					Internet  192.168.1.3            37   0050.7966.6801  ARPA   FastEthernet1/0
+					Internet  192.168.1.2            16   0050.7966.6800  ARPA   FastEthernet1/0
+
+					/*静态绑定192.168.1.2这个地址的MAC，前面是要绑定的IP后面是个IP对应的MAC地址*/
+					R1#conf t
+					R1(config)#arp 192.168.1.2 0050.7966.6800 arpa 
+					R1(config)#end
+					/*再次查看R1上的arp地址表发现静态绑定后，arp条目没有了失效时间*/
+					R1#show arp
+					Protocol  Address          Age (min)  Hardware Addr   Type   Interface
+					Internet  192.168.1.1             -   cc01.0f47.0010  ARPA   FastEthernet1/0
+					Internet  192.168.1.3            38   0050.7966.6801  ARPA   FastEthernet1/0
+					Internet  192.168.1.2             -   0050.7966.6800  ARPA 
+					</pre>
+					<p>在一些大型的局域网中，可以在交换或路由设备上使用ARP动态绑定技术。</p>
+
 					<h2 id="CCNA-switch-security-5">0×5.其他安全威胁</h2>
 
-					<p></p>
-					<pre class="brush: cisco;">
-					
-					</pre>
-					<img src="images/Cisco-CCNA-switch-security-1.jpg" alt="Cisco-CCNA-switch-security-1">
+					<p>除上面几种交换机的完全威胁以外，还有很多我们需要注意的地方比如：</p>
+					<p>交换机远程登录密码过于简单导致的暴力破解、Telnet明文传输（在命令行登录路由器的时候建议使用SSH代替明文telnet）、CDP攻击（建议不使用这个协议的时候关闭它，因为攻击者可以从CDP信息中获得设备的IP以及IOS版本，有些IOS版本存在Bug）、DOS攻击等。</p>
 						
 				<!-- /正文 -->
 
@@ -270,7 +373,7 @@
 					<p>
 						*转载请注明来自:<a title="晴刃-自由、互助、分享、专注计算机技术。" href="http://www.qingsword.com" target="_blank">晴刃(QingSword.COM)</a>
 					</p>
-					<p>*原文连接:<a title="[CCNA图文笔记]-21-交换机安全浅析" href="http://www.qingsword.com/qing/605.html" target="_blank">http://www.qingsword.com/qing/605.html</a></p>
+					<p>*原文连接:<a title="[CCNA图文笔记]-30-交换机安全浅析" href="http://www.qingsword.com/qing/727.html" target="_blank">http://www.qingsword.com/qing/727.html</a></p>
 				</footer>
 			</article>
 			<!-- /文章区 -->	
