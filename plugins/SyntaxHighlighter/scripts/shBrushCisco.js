@@ -49,7 +49,7 @@ SyntaxHighlighter.brushes.Vb = function()
 			'deny permit resequence crypto key generate rsa transport input ssh ' +
 			'default-router dns-server domain-name excluded-address pool lease ' +
 			'helper-address nat overload inside source translations outside ipv6 ' +
-			'unicast-routing tunnel destination '
+			'unicast-routing tunnel destination snooping '
 			;
 
 	this.regexList = [
