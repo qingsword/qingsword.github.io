@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<!--Copyright©QingSword.COM︻☼1010D>-->
+<html lang="zh-ch">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
+	<meta name="description" content="晴刃,是一个致力推广实用计算机技术的个人博客;我们分享计算机知识;为计算机系统以及网络安全防范做出一份贡献。【专注技术 创造价值 共同进步】">
+	<meta name="keywords" content="晴刃,晴,qing,qingsword,ccna图文笔记,ubuntu,linux,ubuntu server,mysql,node.js,javascript,python,计算机技术博客">
+	<title>使用Windows命令行reg控制注册表键值| QingSword.COM </title>
+	<link rel="shortcut icon" type="image/x-icon" href="../logo/favicon.ico">
+	<link rel="stylesheet" type="text/css" href="../css/basic.css">
+	<link rel="stylesheet" type="text/css" href="../css/text.css">
+	<!-- 代码块高亮js -->
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shCore.css"/>
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shThemeRDark.css"/>
+	 <script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shCore.js"></script>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shBrushCmd.js"></script>
+	<script type="text/javascript">
+	SyntaxHighlighter.all();
+	</script>
+</head>
+<body>
+	<!--header -->
+	<header id="nav">
+			<div class="nav-container"> 
+				<!-- 根大纲-->
+				<a href="http://www.qingsword.com" title="晴刃">
+					<h1 class="nav-logo">晴刃</h1>
+				</a>
+				<h2 class="nav-site-description desc-hidden">
+					自由、互助、分享、专注计算机技术
+				</h2>
+				<nav class="nav-links"> 
+					<!-- nav连接大纲-->
+					<h1 style="display:none;">网站导航</h1> 
+					<ul>
+						<li  class="li-hidden">
+							<a href="../index.html" title="home">
+								<span class="link-word"><img src="../logo/home.png" alt="home" class="link-img">首页</span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../web.html" title="web">
+								<span class="link-word"><img src="../logo/web.png" alt="web" class="link-img">前端<span class="word-hidden">设计</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../system.html" title="system">
+								<span class="link-word"><img src="../logo/linux.png" alt="linux" class="link-img">系统<span class="word-hidden">应用</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../net.html" title="net">
+								<span class="link-word"><img src="../logo/net.png" alt="net" class="link-img">网络<span class="word-hidden">技术</span></span>
+							</a>
+						</li>
+						<li>
+							<a href="../sitemap.html" title="sitemap">
+								<span class="link-word"><img src="../logo/archives.png" alt="archives" class="link-img"><span class="word-hidden">文章</span>归档</span>
+							</a>
+						</li>
+					</ul>
+				</nav>
+			</div>		
+	</header>
+	<!-- /header -->
+
+	<!-- content-->
+	<div id="content">
+		<div class="content-container">
+			<!-- 文章区 -->
+			<article class="text-container">
+				<header class="text-header">
+					<h1>使用Windows命令行reg控制注册表键值</h1>	
+				</header><!-- /header -->
+				<section class="text-body">
+					<h2>引言</h2>
+					<p>熟悉Windows操作系统的朋友可能都知道，Windows操作系统下的注册表相当于系统的数据库 ，部分软件将自己的配置信息都放在注册表里面，而注册表的破坏可以直接导致系统的崩溃。</p>
+					<p>而熟悉注册表的朋友对"注册表编辑器（regedit.exe）"一点也不陌生，它提供了一个图形化管理注册表的操作界面，本文要介绍的是另一种管理注册表的方法"控制台注册表编辑器(reg.exe)"，它可以使用纯命令行的模式对注册表进行添加、删除、查看等操作；适用于在批处理中对注册表进行操作。</p></p>
+					<!-- 目录 -->
+					<h2>文章目录</h2>
+					<ul class="contents">	
+						 <li><a href="#windows-reg-1">0×1.控制台注册表编辑器在系统中的位置</a></li>
+						 <li><a href="#windows-reg-2">0×2.注册表类型结构</a></li>
+						 <li><a href="#windows-reg-3">0×3.reg常用命令详解</a></li>
+					 </ul>
+					<!-- /目录 -->
+
+					<!-- 正文 -->
+					<h2 id="windows-reg-1">0×1.控制台注册表编辑器在系统中的位置</h2>
+
+					<p>如果我们的系统装在"C盘"，那么控制台注册表编辑器reg.exe就在"C:\Windows\System32\reg.exe"（一些精简版的系统将这些程序都删除了，这样的情况你可以从其他系统中拷贝一个放置这个目录下）。</p>
+
+					<p>要调用"控制台注册表编辑器"只需要打开一个CMD命令行，输入"reg /?"就能看到帮助文件了，如下图所示（注意，Win7以后的系统中必须用管理员身份运行CMD才能对注册表的一些项进行操作，否则会因为权限不足而报错）</p>
+					<img src="images/windows-reg-1.jpg" alt="windows-reg-1" title="图1">
+
+					<h2 id="windows-reg-2">0×2.注册表类型结构</h2>
+
+					<p>首先可以使用管理员权限打开cmd，在其中输入"regedit"回车，就能打开图形界面的注册表编辑器，下面用一张图说明注册表中的三个关键术语："键"、"值"、"值类型"；</p>
+					<img src="images/windows-reg-2.jpg" alt="windows-reg-2" title="图2">
+					<p>实际上图形界面的注册表编辑器已经可以完成所有注册表编辑操作，但有时并没有图形界面，比如只有一个shell，这时想修改注册表的值，就可以用到命令行的注册表编辑器了。</p>
+
+					<h2 id="windows-reg-3">0×3.reg常用命令详解</h2>
+					
+					<p>本节将实例演示如何对注册表进行添加、删除、查看、备份、还原操作，对于其他不常用的功能大家可以自己去摸索。</p>
+					<p>实例一：使用CMD在根键"HKEY_CURRENT_USER"下创建一个子键"qingsword"，在这个子键中，添加一个值名称为"hello"，类型为"REG_ZS"，数据为"welcome to my website"；</span></p>
+					<pre class="brush: cmd;">
+					C:\>reg add hkcu\qingsword /v hello /t REG_SZ /d "welcome to my website"
+					操作成功完成。
+					</pre>
+					<p>在上面的命令中，"reg add" 是添加的意思，HKCU是根键"HKEY_CURRENT_USER"的缩写，另外几个根键的缩写分别为"HKCR"、"HKLM"、"HKU"、"HKCC"，取根键的第一个单词的前两个字母和后面两个单词的前一个字母。</p>
+					<p>hkcu\qingsword就是在根键"HKEY_CURRENT_USER"下添加一个叫做qingsword的子键，如果这个子键存在，则不作任何操作。</p>
+					<p>/v  后面跟需要创建的值的名称。/t 后面是值的类型，/d 后面是这个值的数据。</p>
+					<p>命令成功后，在图形化注册表编辑器中可以查看到改动，显示结果如下图所示，如果没有出现变化请按"F5"刷新：</p>
+					<img src="images/windows-reg-3.jpg" alt="windows-reg-3" title="图3">
+					<p>上图中，值hello上面还有一个默认值，如何更改这个默认值的类型和数据呢？请看下面的命令，需要将/v参数更改成/ve，意思是添加名称是空的默认值（ve=value empty），并将其类型（type）改变成DWORD，数据改成1：</p>
+					<pre class="brush: cmd;">
+					C:\>reg add hkcu\qingsword /ve /t REG_DWORD /d 1
+					操作成功完成。
+					</pre>
+					<p>更改完成后，大家可以刷新看看默认值是不是更改成了我们设置的样子。</p>
+
+					<p>实例二：查看某个注册表项下面的值</p>
+					<pre class="brush: cmd;">
+					#查看刚才创建的整个键下面的所有值的数据
+					C:\>reg query hkcu\qingsword
+					
+					HKEY_CURRENT_USER\qingsword
+					    (默认)    REG_DWORD    0x1
+					    hello    REG_SZ    welcome to my website
+
+					#如果一个键下面的数据过多，可以使用下面的命令单独查看hello值的数据
+					C:\>reg query hkcu\qingsword /v hello
+
+					HKEY_CURRENT_USER\qingsword
+					    hello    REG_SZ    welcome to my website
+
+					#单独查看默认值的数据
+					C:\>reg query hkcu\qingsword /ve
+
+					HKEY_CURRENT_USER\qingsword
+					    (默认)    REG_DWORD    0x1
+					</pre>
+
+					<p>实例三：导出和导入注册表</p>
+					<pre class="brush: cmd;">
+					#导出hkcu\qingsword这个键到C盘下命名为qingsword.reg
+					C:\>reg export hkcu\qingsword c:\qingsword.reg
+
+					#删除hkcu\qingsword键，稍后用导出的注册表文件恢复
+					C:\>reg delete hkcu\qingsword /f
+
+					#这时候查看这个键会发生错误，因为上面删除了
+					C:\>reg query hkcu\qingsword
+					错误: 系统找不到指定的注册表项或值。
+
+					#将刚才备份的文件导入注册表（会覆盖现有数据）
+					C:\>reg import c:\qingsword.reg
+					操作成功完成。
+
+					#再次查询，看到原来的数据了，说明导入成功
+					C:\>reg query hkcu\qingsword
+
+					HKEY_CURRENT_USER\qingsword
+					    (默认)    REG_DWORD    0x1
+					    hello    REG_SZ    welcome to my website
+
+					#这个方法可以用来备份注册表的五个根键到指定的目录，以便在注册表被破坏时恢复，比如，备份hkcr这个根键到c盘中，其他的以此类推（图形化界面注册表编辑器可以一次性备份整个注册表）
+					C:\>reg export hkcr c:\hkcr.reg
+					</pre>
+
+
+					<p>实例四：删除hkcu\qingsword下刚才创建的"hello"值</p>
+					<pre class="brush: cmd;">
+					#删除"hkcu\qingsword"键下的"hello"值，/f参数表强制删除且不询问，如果不添加则会询问是否删除
+					C:\>reg delete hkcu\qingsword /v hello /f
+					操作成功完成。
+					</pre>
+
+					<p>实例五：删除hkcu\qingsword下刚才修改的"默认"值</p>
+					<pre class="brush: cmd;">
+					#操作完成后，默认值恢复了默认的样子
+					C:\>reg delete hkcu\qingsword /ve /f
+					操作成功完成。
+					</pre>
+					<p>通过这篇文章，相信大家对控制台注册表编辑器有了初步的了解，更多的操作可以使用"reg /?"去查看帮助文件；需要注意的是，有些根键下是不能直接创建子键的比如"HKEY_LOCAL_MACHINE"下就算是管理员也不能创建子键，但是可以在更下一级子键中创建比如"HKLM\software\"；当需要操作的键中存在空格，需要用双引号将整个路径引起来。</p>
+						
+				<!-- /正文 -->
+
+				<footer class="text-footer">
+					<p>
+						*转载请注明来自:<a title="晴刃-自由、互助、分享、专注计算机技术。" href="http://www.qingsword.com" target="_blank">晴刃(QingSword.COM)</a>
+					</p>
+					<p>*原文连接:<a title="使用Windows命令行reg控制注册表键值" href="http://www.qingsword.com/qing/163.html" target="_blank">http://www.qingsword.com/qing/163.html</a></p>
+				</footer>
+			</article>
+			<!-- /文章区 -->	
+		</div>
+	</div>
+	<!-- /content -->
+	
+	<!-- footer -->
+	<footer id="footer">
+		<div class="footer-container">
+			QingSword.COM &nbsp;<img src="../logo/by-nc-sa.png" alt="Creative Commons" title="Creative Commons">
+		</div>
+	</footer>
+	<!-- /footer -->
+</body>
+</html>
