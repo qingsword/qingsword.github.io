@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<!--Copyright©QingSword.COM︻☼1010D>-->
+<html lang="zh-ch">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
+	<meta name="description" content="晴刃,是一个致力推广实用计算机技术的个人博客;我们分享计算机知识;为计算机系统以及网络安全防范做出一份贡献。【专注技术 创造价值 共同进步】">
+	<meta name="keywords" content="晴刃,晴,qing,qingsword,ccna图文笔记,ubuntu,linux,ubuntu server,mysql,node.js,javascript,python,计算机技术博客">
+	<title>Windows系统IFEO映像劫持分析| QingSword.COM </title>
+	<link rel="shortcut icon" type="image/x-icon" href="../logo/favicon.ico">
+	<link rel="stylesheet" type="text/css" href="../css/basic.css">
+	<link rel="stylesheet" type="text/css" href="../css/text.css">
+	<!-- 代码块高亮js -->
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shCore.css"/>
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shThemeRDark.css"/>
+	 <script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shCore.js"></script>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shBrushCmd.js"></script>
+	<script type="text/javascript">
+	SyntaxHighlighter.all();
+	</script>
+</head>
+<body>
+	<!--header -->
+	<header id="nav">
+			<div class="nav-container"> 
+				<!-- 根大纲-->
+				<a href="http://www.qingsword.com" title="晴刃">
+					<h1 class="nav-logo">晴刃</h1>
+				</a>
+				<h2 class="nav-site-description desc-hidden">
+					自由、互助、分享、专注计算机技术
+				</h2>
+				<nav class="nav-links"> 
+					<!-- nav连接大纲-->
+					<h1 style="display:none;">网站导航</h1> 
+					<ul>
+						<li  class="li-hidden">
+							<a href="../index.html" title="home">
+								<span class="link-word"><img src="../logo/home.png" alt="home" class="link-img">首页</span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../web.html" title="web">
+								<span class="link-word"><img src="../logo/web.png" alt="web" class="link-img">前端<span class="word-hidden">设计</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../system.html" title="system">
+								<span class="link-word"><img src="../logo/linux.png" alt="linux" class="link-img">系统<span class="word-hidden">应用</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../net.html" title="net">
+								<span class="link-word"><img src="../logo/net.png" alt="net" class="link-img">网络<span class="word-hidden">技术</span></span>
+							</a>
+						</li>
+						<li>
+							<a href="../sitemap.html" title="sitemap">
+								<span class="link-word"><img src="../logo/archives.png" alt="archives" class="link-img"><span class="word-hidden">文章</span>归档</span>
+							</a>
+						</li>
+					</ul>
+				</nav>
+			</div>		
+	</header>
+	<!-- /header -->
+
+	<!-- content-->
+	<div id="content">
+		<div class="content-container">
+			<!-- 文章区 -->
+			<article class="text-container">
+				<header class="text-header">
+					<h1>Windows系统IFEO映像劫持分析</h1>	
+				</header><!-- /header -->
+				<section class="text-body">
+					<h2>引言</h2>
+					<p>本文将介绍Windows系列操作系统中的IFEO（Image File Execution Options）映像劫持功能，这也是一些流行的系统病毒最喜欢使用的一个功能。</p>
+					<p>那么，什么是映像劫持呢？简单的解释就是，当你执行某一程序A的时候，运行的却是另外一个程序B。</p>
+					<p>在Win7之后的版本中，需要使用管理员权限才能对注册表中这一键值做出修改。</p>
+					<!-- 目录 -->
+					<h2>文章目录</h2>
+					<ul class="contents">	
+						 <li><a href="#windows-IFEO-1">0×1.IFEO在系统注册表的位置</a></li>
+						 <li><a href="#windows-IFEO-2">0×2.如何实施映像劫持</a></li>
+					 </ul>
+					<!-- /目录 -->
+
+					<!-- 正文 -->
+					<h2 id="windows-IFEO-1">0×1.IFEO在系统注册表的位置</h2>
+
+					<p>打开图形化的注册表编辑器（regedit.exe），定位到下面这一项注册表键值，这就是配置系统镜像劫持的位置（在cmd中输入regedit回车就能打开注册表编辑器了，按照下面的路径依次展开即可）。</p>
+					<pre class="brush: cmd;">
+					[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options]
+					</pre>
+
+					<h2 id="windows-IFEO-2">0×2.如何实施映像劫持</h2>
+
+					<p>首先，使用图形化的注册表编辑器熟悉一次这个操作过程，在"Image File Execution Options"这个键下，新建一个子键，子键的名称设置成你要劫持的程序的名字，比如本例劫持计算器程序（calc.exe），我想让打开计算器程序的时候运行的却是任务管理器（taskmgr.exe），操作如下图：</p>
+					<img src="images/windows-IFEO-1.jpg" alt="windows-IFEO-1">
+					<img src="images/windows-IFEO-2.jpg" alt="windows-IFEO-2">
+					<img src="images/windows-IFEO-3.jpg" alt="windows-IFEO-3">
+
+					<p>设置完成之后，在CMD下执行calc.exe（或在开始菜单>所有程序>附件中去启动计算器）运行的就是任务管理器，而非计算器程序，想要还原只需要在注册表中删除刚才创建的calc.exe键即可。</p>
+
+					<p>但有时候，我们并不能在图形界面下完成，而是只有一个shell，或者通过程序去完成这一操作，那么就需要使用控制台注册表编辑器reg了，在cmd中执行下面的命令效果是相同的（如果对控制台注册表编辑器不熟悉的朋友，可以参考这篇文章[<a href="163.html" title="使用Windows命令行reg控制注册表键值" target="_blank">使用Windows命令行reg控制注册表键值</a>]）：</p>
+					<pre class="brush: cmd;">
+					C:\>reg add "hklm\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\calc.exe" /v debugger /t REG_SZ /d "c:\windows\system32\taskmgr.exe"
+					</pre>
+					<p>这就是映像劫持的简单原理，一些病毒利用系统的这一特性，将一些杀毒软件的程序名称添加到这里，并且在debugger中输入的是病毒的路径，就会让运行杀毒软件程序的操作变成了再次执行病毒体，而一些病毒会在系统不同目录存在多个副本，利用映像劫持劫持不同的程序，指向不同的副本路径，这也是一些病毒被杀死进程删除单个病毒体后又能重新复活的原因之一。</p>
+						
+				<!-- /正文 -->
+
+				<footer class="text-footer">
+					<p>
+						*转载请注明来自:<a title="晴刃-自由、互助、分享、专注计算机技术。" href="http://www.qingsword.com" target="_blank">晴刃(QingSword.COM)</a>
+					</p>
+					<p>*原文连接:<a title="Windows系统IFEO映像劫持分析" href="http://www.qingsword.com/qing/180.html" target="_blank">http://www.qingsword.com/qing/180.html</a></p>
+				</footer>
+			</article>
+			<!-- /文章区 -->	
+		</div>
+	</div>
+	<!-- /content -->
+	
+	<!-- footer -->
+	<footer id="footer">
+		<div class="footer-container">
+			QingSword.COM &nbsp;<img src="../logo/by-nc-sa.png" alt="Creative Commons" title="Creative Commons">
+		</div>
+	</footer>
+	<!-- /footer -->
+</body>
+</html>

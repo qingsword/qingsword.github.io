@@ -29,7 +29,7 @@
  */
 SyntaxHighlighter.brushes.Vb = function()
 {
-	var keywords =	'reg echo Wscript CreateObject Set run ';
+	var keywords =	'reg echo Wscript CreateObject Set run net user active ';
 
 	this.regexList = [
 		{ regex: /'.*$/gm,										css: 'comments' },			// one line comments
