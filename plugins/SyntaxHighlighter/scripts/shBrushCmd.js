@@ -29,7 +29,9 @@
  */
 SyntaxHighlighter.brushes.Vb = function()
 {
-	var keywords =	'reg echo Wscript CreateObject Set run net user active ';
+	var keywords =	'reg echo Wscript CreateObject Set run net user active dir copy move ' +
+	'ipconfig ping start type mspaint mklink '
+	;
 
 	this.regexList = [
 		{ regex: /'.*$/gm,										css: 'comments' },			// one line comments
