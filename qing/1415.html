@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<!--Copyright©QingSword.COM︻☼1010D>-->
+<html lang="zh-ch">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
+	<meta name="description" content="晴刃,是一个致力推广实用计算机技术的个人博客;我们分享计算机知识;为计算机系统以及网络安全防范做出一份贡献。【专注技术 创造价值 共同进步】">
+	<meta name="keywords" content="晴刃,晴,qing,qingsword,ccna图文笔记,ubuntu,linux,ubuntu server,mysql,node.js,javascript,python,计算机技术博客">
+	<title>[mysql基础文档]-1-搭建MySql学习环境| QingSword.COM </title>
+	<link rel="shortcut icon" type="image/x-icon" href="../logo/favicon.ico">
+	<link rel="stylesheet" type="text/css" href="../css/basic.css">
+	<link rel="stylesheet" type="text/css" href="../css/text.css">
+	<!-- 代码块高亮js -->
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shCore.css"/>
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shThemeRDark.css"/>
+	 <script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shCore.js"></script>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shBrushSql.js"></script>
+	<script type="text/javascript">
+	SyntaxHighlighter.all();
+	</script>
+</head>
+<body>
+	<!--header -->
+	<header id="nav">
+			<div class="nav-container"> 
+				<!-- 根大纲-->
+				<a href="http://www.qingsword.com" title="晴刃">
+					<h1 class="nav-logo">晴刃</h1>
+				</a>
+				<h2 class="nav-site-description desc-hidden">
+					自由、互助、分享、专注计算机技术
+				</h2>
+				<nav class="nav-links"> 
+					<!-- nav连接大纲-->
+					<h1 style="display:none;">网站导航</h1> 
+					<ul>
+						<li  class="li-hidden">
+							<a href="../index.html" title="home">
+								<span class="link-word"><img src="../logo/home.png" alt="home" class="link-img">首页</span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../web.html" title="web">
+								<span class="link-word"><img src="../logo/web.png" alt="web" class="link-img">前端<span class="word-hidden">设计</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../system.html" title="system">
+								<span class="link-word"><img src="../logo/linux.png" alt="linux" class="link-img">系统<span class="word-hidden">应用</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../net.html" title="net">
+								<span class="link-word"><img src="../logo/net.png" alt="net" class="link-img">网络<span class="word-hidden">技术</span></span>
+							</a>
+						</li>
+						<li>
+							<a href="../sitemap.html" title="sitemap">
+								<span class="link-word"><img src="../logo/archives.png" alt="archives" class="link-img"><span class="word-hidden">文章</span>归档</span>
+							</a>
+						</li>
+					</ul>
+				</nav>
+			</div>		
+	</header>
+	<!-- /header -->
+
+	<!-- content-->
+	<div id="content">
+		<div class="content-container">
+			<!-- 文章区 -->
+			<article class="text-container">
+				<header class="text-header">
+					<h1>[mysql基础文档]-1-搭建MySql学习环境</h1>	
+				</header><!-- /header -->
+				<section class="text-body">
+					<h2>引言</h2>
+					<p>这一系列的文章将给大家带来SQL相关的语法知识，讲解最常用的SQL语句，用实例的形式描述其功能，方便大家的学习与查阅。</p>
+					<p>本文介绍目前最常用的几款数据库，如何在Ubuntu系统中安装Mysql，最后介绍MySQL官方推荐的数据库图形管理软件WorkBench在ubuntu下的安装与使用。</p>
+					<p>本系列文章主要使用MySql数据库，系统环境为UbuntuServer16.04，虽然系统环境为Linux，但Windows环境的朋友完全不需要担心，因为本系列的所有sql命令都能在windows环境下运行，与linux不同的部分，会在文中注明。</p>
+					<!-- 目录 -->
+					<h2>文章目录</h2>
+					<ul class="contents">	
+						 <li><a href="#What-is-a-database">0×1.什么是数据库</a></li>
+						 <li><a href="#How-to-install-MySQL-on-Ubuntu">0×2.Ubuntu如何安装MySql</a></li>
+						 <li><a href="#How-to-install-MySQL-on-Windows">0×3.Windows如何安装MySql</a></li>
+					 </ul>
+					<!-- /目录 -->
+
+					<!-- 正文 -->
+					<h2 id="What-is-a-database">0×1.什么是数据库</h2>
+
+					<p>数据库是——存储电子文件的处所，用户可以对文件中的数据进行新增、截取、更新、删除等操作。 它能为多个用户共享、具有尽可能小的冗余度的特点、是与应用程序彼此独立的数据集合（百科）。</p>
+					<p>简而言之，数据库是以某种约定的数据结构高效的储存数据，并在用户需要时通过检索展现给用户。</p>
+					<p>如今较为常见的数据库有Oracle、MySQL、IBM DB2、Microsoft Access、Microsoft SQL Server。本系列文章中所使用的大部分SQL语句均能够在这五种数据库中执行，但他们之间仍然有一小部分不同之处。</p>
+
+					<h2 id="How-to-install-MySQL-on-Ubuntu">0×2.Ubuntu如何安装MySql</h2>
+
+					<p>1）安装，确保网络畅通打开终端，使用apt-get在线安装：</p>
+					<pre class="brush: sql;">
+					/**
+					 -- sudo apt-get update 更新系统源列表
+					 -- sudo apt-get install mysql-server 安装mysql服务端
+					 -- 安装过程中会让我们设置root的密码，这个密码很重要，登陆数据库时候要用到
+					 **/
+					www@qingsword.com:~$ sudo apt-get update &amp;&amp; sudo apt-get install mysql-server
+
+					--workbench为mysql官方发布的数据库可视化管理软件，可图形化管理数据库（类似phpmyadmin）
+					www@qingsword.com:~$ sudo apt-get install mysql-workbench
+					</pre>
+					<p>2）连接到数据库</p>
+					<pre class="brush: sql;">
+					--在本地，使用root用户登陆数据库
+					www@qingsword.com:~$ mysql -u root -p
+					Enter password: &lt;--在这里输入刚才安装时候设置的root密码
+
+					--登陆成功提示符如下，输入exit可以退出
+					mysql&gt;  
+					</pre>
+					<h2 id="How-to-install-MySQL-on-Windows">0×3.Windows如何安装MySql</h2>
+					
+					<p>1）下载</p>
+					<p class="indent-p">
+						建议到[<a title="Mysql官方网站" href="http://www.mysql.com/downloads/" target="_blank" rel="nofollow">Mysql官方网站</a>]下载，如果是学习用，下载社区版就足够了（MySQL Community Edition (GPL)），企业版功能很全面（MySQL Enterprise Edition (commercial)），但安装文件相对大很多；
+					</p>
+					<p>版本选择注意事项：</p>
+					<p class="indent-p">
+						分为压缩版（ZIP）和安装版（MSI），压缩版需要手动更改配置文件使用命令行安装，建议大家选择MSI安装版；其次，根据自己系统架构，选择32或64位安装包。下载相关图文教程请参考——[<a title="如何在官网上下载可安装版的MySQL数据库" href="http://jingyan.baidu.com/article/eb9f7b6da17ccc869364e8d9.html" target="_blank" rel="nofollow">如何在官网上下载可安装版的MySQL数据库</a>]（最新的mysql页面能自动检测系统架构，所以文中第五步可能和你看到的不一样，只会显示一个MSI下载地址和两个ZIP地址，选择MSI下载即可）
+					</p>
+					<p>2）安装</p>
+					<p class="indent-p">
+						相关图文教程请参考——[<a title="MySQL5.7安装图文教程" href="http://jingyan.baidu.com/article/363872ecd8235d6e4ba16fc7.html" target="_blank" rel="nofollow">MySQL5.7安装图文教程</a>]
+					</p>
+					<p>3）连接到数据库</p>
+					<p class="indent-p">
+						开始菜单MySQL文件夹下MySQL Server中提供了一个快速连接接口"MySQL Command Line Client”，这个就是数据库的命令行管理接口了，打开它会提示：
+					</p>
+					<pre class="brush: sql;">
+					--输入密码连接到数据库，安装时候设定的超级用户密码，即可连接到数据库
+					Enter password: **********
+					Welcome to the MySQL monitor. 
+					.....
+					mysql&gt;
+					</pre>
+					<p>好了，欢迎进入sql的世界～</p>
+						
+				<!-- /正文 -->
+
+				<footer class="text-footer">
+					<p>
+						*转载请注明来自:<a title="晴刃-自由、互助、分享、专注计算机技术。" href="http://www.qingsword.com" target="_blank">晴刃(QingSword.COM)</a>
+					</p>
+					<p>*原文连接:<a title="[mysql基础文档]-1-搭建MySql学习环境" href="http://www.qingsword.com/qing/1415.html" target="_blank">http://www.qingsword.com/qing/1415.html</a></p>
+				</footer>
+			</article>
+			<!-- /文章区 -->	
+		</div>
+	</div>
+	<!-- /content -->
+	
+	<!-- footer -->
+	<footer id="footer">
+		<div class="footer-container">
+			QingSword.COM &nbsp;<img src="../logo/by-nc-sa.png" alt="Creative Commons" title="Creative Commons">
+		</div>
+	</footer>
+	<!-- /footer -->
+</body>
+</html>
