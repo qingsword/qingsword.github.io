@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<!--Copyright©QingSword.COM︻☼1010D>-->
+<html lang="zh-ch">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
+	<meta name="description" content="晴刃,是一个致力推广实用计算机技术的个人博客;我们分享计算机知识;为计算机系统以及网络安全防范做出一份贡献。【专注技术 创造价值 共同进步】">
+	<meta name="keywords" content="晴刃,晴,qing,qingsword,ccna图文笔记,ubuntu,linux,ubuntu server,mysql,node.js,javascript,python,计算机技术博客">
+	<title>[mysql基础文档]-4-MySql数据库创建与管理| QingSword.COM </title>
+	<link rel="shortcut icon" type="image/x-icon" href="../logo/favicon.ico">
+	<link rel="stylesheet" type="text/css" href="../css/basic.css">
+	<link rel="stylesheet" type="text/css" href="../css/text.css">
+	<!-- 代码块高亮js -->
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shCore.css"/>
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shThemeRDark.css"/>
+	 <script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shCore.js"></script>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shBrushSql.js"></script>
+	<script type="text/javascript">
+	SyntaxHighlighter.all();
+	</script>
+</head>
+<body>
+	<!--header -->
+	<header id="nav">
+			<div class="nav-container"> 
+				<!-- 根大纲-->
+				<a href="http://www.qingsword.com" title="晴刃">
+					<h1 class="nav-logo">晴刃</h1>
+				</a>
+				<h2 class="nav-site-description desc-hidden">
+					自由、互助、分享、专注计算机技术
+				</h2>
+				<nav class="nav-links"> 
+					<!-- nav连接大纲-->
+					<h1 style="display:none;">网站导航</h1> 
+					<ul>
+						<li  class="li-hidden">
+							<a href="../index.html" title="home">
+								<span class="link-word"><img src="../logo/home.png" alt="home" class="link-img">首页</span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../web.html" title="web">
+								<span class="link-word"><img src="../logo/web.png" alt="web" class="link-img">前端<span class="word-hidden">设计</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../system.html" title="system">
+								<span class="link-word"><img src="../logo/linux.png" alt="linux" class="link-img">系统<span class="word-hidden">应用</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../net.html" title="net">
+								<span class="link-word"><img src="../logo/net.png" alt="net" class="link-img">网络<span class="word-hidden">技术</span></span>
+							</a>
+						</li>
+						<li>
+							<a href="../sitemap.html" title="sitemap">
+								<span class="link-word"><img src="../logo/archives.png" alt="archives" class="link-img"><span class="word-hidden">文章</span>归档</span>
+							</a>
+						</li>
+					</ul>
+				</nav>
+			</div>		
+	</header>
+	<!-- /header -->
+
+	<!-- content-->
+	<div id="content">
+		<div class="content-container">
+			<!-- 文章区 -->
+			<article class="text-container">
+				<header class="text-header">
+					<h1>[mysql基础文档]-4-MySql数据库创建与管理</h1>	
+				</header><!-- /header -->
+				<section class="text-body">
+					<h2>引言</h2>
+					<p>这篇文章使用MySQL实例演示创建，删除，备份和还原数据库。</p>
+					<!-- 目录 -->
+					<h2>文章目录</h2>
+					<ul class="contents">	
+						 <li><a href="#How-To-Create-a-New-Database-in-MySQL">0×1.MySQL如何创建数据库</a></li>
+						 <li><a href="#How-To-Delete-a-Database-in-MySQL">0×2.MySQL如何删除数据库</a></li>
+						 <li><a href="#How-To-Backup-and-Restore-MySQL-Database">0×3.MySQL如何备份和还原数据库</a></li>
+					 </ul>
+					<!-- /目录 -->
+
+					<!-- 正文 -->
+					<h2 id="How-To-Create-a-New-Database-in-MySQL">0×1.MySQL如何创建数据库</h2>
+
+					<p>● 创建数据库</p>
+					<pre class="brush: sql;">
+					--语法：create database [新数据库名];
+					mysql&gt; create database qingsword_com;
+
+					--显示服务器上所有数据库，除qingsword_com外，其他的数据库是mysql安装时就有的，其中包含了mysql的一些架构和参数，不要去删除他们。
+					mysql&gt; show databases;
+					+--------------------+
+					| Database           |
+					+--------------------+
+					| information_schema |
+					| mysql              |
+					| performance_schema |
+					| qingsword_com      |
+					| sakila             |
+					| test               |
+					| world              |
+					+--------------------+
+
+					--如果我们要在数据库中创建表，就需要先使用这个数据库，use命令后面接你要使用的数据库名称，表的创建会在下一篇文章中详解。
+					mysql&gt; use qingsword_com;
+					Database changed
+					</pre>
+					<p>P.s：数据库就像是一个大的"档案袋"，其中包含一张张的表（类似excle），表中存放着我们的数据，每张表上还贴有一个标签（index）；新建的数据库是不包含任何数据的，就像一个空的档案袋一样，每个档案袋都有一个自定义名称（比如：qingsword_com ）。</p>
+
+					<h2 id="How-To-Delete-a-Database-in-MySQL">0×2.MySQL如何删除数据库</h2>
+
+					<p>● 删除数据库</p>
+					<pre class="brush: sql;">
+					--语法：drop database [数据库名称];
+					mysql&gt; drop database qingsword_com;
+					</pre>
+					<p>使用这条命令之前请做好数据库的备份。</p>
+
+					<h2 id="How-To-Backup-and-Restore-MySQL-Database">0×3.MySQL如何备份和还原数据库</h2>
+
+					<p>● Ubuntu本地备份和还原数据库</p>
+					<pre class="brush: sql;">
+					#备份数据库
+					-- 使用mysqldump将qingsword_com数据库备份到当前用户家目录下，命名为qingsword_com.sql
+					-- mysqldump -u [可连接到数据库的用户] -p [要备份的库名称]&gt;[存放在系统中的位置]
+					www@qingsword.com:~$ mysqldump -u root -p qingsword_com&gt;~/qingsword_com.sql
+					password: &lt;-输入root连接密码
+
+					#还原数据库
+					-- 比如我现在想将上面的数据库qingsword_com更名成qingsword，先在数据库中创建以此名称命名的数据库
+					mysql&gt; create database qingsword;
+
+					-- 然后在另外一个终端中，将上面备份好的数据库文件中的内容，写入这个数据库中
+					-- mysql -u [可连接到数据库的用户] -p [被写入数据的库名称]&lt;[备份的数据库文件在系统中的路径]
+					www@qingsword.com:~$ mysql -u root -p qingsword&lt;~/qingsword_com.sql
+					password: &lt;-输入root连接密码
+
+					#备份数据表（单独的一张表）
+					-- mysqldump -u root -p [数据库名] [表名]&gt;[存放在系统中的位置]
+					www@qingsword.com:~$ mysqldump -u root -p qingsword t1&gt;~/qingsword_t1.sql
+
+					#还原数据表
+					-- mysql -u root -p [将数据表放入此数据库中]&lt;[数据表备份文件在系统中的位置]
+					www@qingsword.com:~$ mysql -u root -p qingsword&lt;~/qingsword_t1.sql
+					</pre>
+					<p>P.s：使用备份和还原，可以给数据库重命名。</p>
+
+					<p>● 远程备份与还原数据库</p>
+					<pre class="brush: sql;">
+					-- 仅比本地备份多了一个参数-h，后面是远程服务器IP地址，其他命令完全相同，也能备份单张表，请参考本文备份数据表部分的实例。
+					www@qingsword.com:~$ mysqldump -h 192.168.1.101 -u root -p qingsword&gt;~/qingsword.sql
+
+					-- 远程还原数据库实例
+					www@qingsword.com:~$ mysql -h 192.168.1.101 -u root -p qingsword&lt;~/qingsword.sql
+					</pre>
+					<p>P.s：Windows环境，请参考这篇文章[<a title="Windows系统如何将mysql加入环境变量" href="http://jingyan.baidu.com/article/3c48dd34782b68e10be35882.html" target="_blank" rel="nofollow">Windows系统如何将mysql加入环境变量</a>]（文中mysql.exe所在路径和我们的安装路径肯定有出入，如果忘记了MySQL安装路径，请参考前面的文章通过服务判断程序所在路径，mysqldump.exe同mysql.exe都存放在Mysql安装目录的bin文件夹下），将mysql.exe，mysqldump.exe都加入系统环境变量，配置好后，打开cmd就能直接使用mysql和mysqldump了，所有的备份还原命令和Ubuntu一致。</p>
+						
+				<!-- /正文 -->
+
+				<footer class="text-footer">
+					<p>
+						*转载请注明来自:<a title="晴刃-自由、互助、分享、专注计算机技术。" href="http://www.qingsword.com" target="_blank">晴刃(QingSword.COM)</a>
+					</p>
+					<p>*原文连接:<a title="[mysql基础文档]-4-MySql数据库创建与管理" href="http://www.qingsword.com/qing/1423.html" target="_blank">http://www.qingsword.com/qing/1423.html</a></p>
+				</footer>
+			</article>
+			<!-- /文章区 -->	
+		</div>
+	</div>
+	<!-- /content -->
+	
+	<!-- footer -->
+	<footer id="footer">
+		<div class="footer-container">
+			QingSword.COM &nbsp;<img src="../logo/by-nc-sa.png" alt="Creative Commons" title="Creative Commons">
+		</div>
+	</footer>
+	<!-- /footer -->
+</body>
+</html>

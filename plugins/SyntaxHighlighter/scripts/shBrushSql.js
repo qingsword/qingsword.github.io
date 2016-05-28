@@ -49,7 +49,9 @@ SyntaxHighlighter.brushes.Sql = function()
 					'second section select sequence serializable set size smallint static ' +
 					'statistics table temp temporary then time timestamp to top transaction ' +
 					'translation trigger true truncate uncommitted union unique update values ' +
-					'varchar varying view when where with work';
+					'varchar varying view when where with work show databases use mysqldump ' +
+					'engine charset tinyint unsigned rename '
+					;
 
 	var operators =	'all and any between cross in join like not null or outer some';
 
