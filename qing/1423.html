@@ -157,7 +157,7 @@
 					www@qingsword.com:~$ mysqldump -h 192.168.1.101 -u root -p qingsword&gt;~/qingsword.sql
 
 					-- 远程还原数据库实例
-					www@qingsword.com:~$ mysql -h 192.168.1.101 -u root -p qingsword&lt;~/qingsword.sql
+					www@qingsword.com:~$ mysqldump -h 192.168.1.101 -u root -p qingsword&lt;~/qingsword.sql
 					</pre>
 					<p>P.s：Windows环境，请参考这篇文章[<a title="Windows系统如何将mysql加入环境变量" href="http://jingyan.baidu.com/article/3c48dd34782b68e10be35882.html" target="_blank" rel="nofollow">Windows系统如何将mysql加入环境变量</a>]（文中mysql.exe所在路径和我们的安装路径肯定有出入，如果忘记了MySQL安装路径，请参考前面的文章通过服务判断程序所在路径，mysqldump.exe同mysql.exe都存放在Mysql安装目录的bin文件夹下），将mysql.exe，mysqldump.exe都加入系统环境变量，配置好后，打开cmd就能直接使用mysql和mysqldump了，所有的备份还原命令和Ubuntu一致。</p>
 						
