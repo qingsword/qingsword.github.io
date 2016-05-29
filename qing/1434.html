@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<!--Copyright©QingSword.COM︻☼1010D>-->
+<html lang="zh-ch">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
+	<meta name="description" content="晴刃,是一个致力推广实用计算机技术的个人博客;我们分享计算机知识;为计算机系统以及网络安全防范做出一份贡献。【专注技术 创造价值 共同进步】">
+	<meta name="keywords" content="晴刃,晴,qing,qingsword,ccna图文笔记,ubuntu,linux,ubuntu server,mysql,node.js,javascript,python,计算机技术博客">
+	<title>[mysql基础文档]-9-数据类型之字符型| QingSword.COM </title>
+	<link rel="shortcut icon" type="image/x-icon" href="../logo/favicon.ico">
+	<link rel="stylesheet" type="text/css" href="../css/basic.css">
+	<link rel="stylesheet" type="text/css" href="../css/text.css">
+	<!-- 代码块高亮js -->
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shCore.css"/>
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shThemeRDark.css"/>
+	 <script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shCore.js"></script>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shBrushSql.js"></script>
+	<script type="text/javascript">
+	SyntaxHighlighter.all();
+	</script>
+</head>
+<body>
+	<!--header -->
+	<header id="nav">
+			<div class="nav-container"> 
+				<!-- 根大纲-->
+				<a href="http://www.qingsword.com" title="晴刃">
+					<h1 class="nav-logo">晴刃</h1>
+				</a>
+				<h2 class="nav-site-description desc-hidden">
+					自由、互助、分享、专注计算机技术
+				</h2>
+				<nav class="nav-links"> 
+					<!-- nav连接大纲-->
+					<h1 style="display:none;">网站导航</h1> 
+					<ul>
+						<li  class="li-hidden">
+							<a href="../index.html" title="home">
+								<span class="link-word"><img src="../logo/home.png" alt="home" class="link-img">首页</span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../web.html" title="web">
+								<span class="link-word"><img src="../logo/web.png" alt="web" class="link-img">前端<span class="word-hidden">设计</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../system.html" title="system">
+								<span class="link-word"><img src="../logo/linux.png" alt="linux" class="link-img">系统<span class="word-hidden">应用</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../net.html" title="net">
+								<span class="link-word"><img src="../logo/net.png" alt="net" class="link-img">网络<span class="word-hidden">技术</span></span>
+							</a>
+						</li>
+						<li>
+							<a href="../sitemap.html" title="sitemap">
+								<span class="link-word"><img src="../logo/archives.png" alt="archives" class="link-img"><span class="word-hidden">文章</span>归档</span>
+							</a>
+						</li>
+					</ul>
+				</nav>
+			</div>		
+	</header>
+	<!-- /header -->
+
+	<!-- content-->
+	<div id="content">
+		<div class="content-container">
+			<!-- 文章区 -->
+			<article class="text-container">
+				<header class="text-header">
+					<h1>[mysql基础文档]-9-数据类型之字符型</h1>	
+				</header><!-- /header -->
+				<section class="text-body">
+					<h2>引言</h2>
+					<p>本文介绍char和varchar这两种常见字符类型，详解不同编码中varchar的储存大小对MySQL数据表一条记录各字段的影响。</p>
+					<!-- 目录 -->
+					<h2>文章目录</h2>
+					<ul class="contents">	
+						 <li><a href="#The-difference-between-char-and-varchar">0×1.MySQL中char与varchar的区别</a></li>
+						 <li><a href="#varchar-type-the-maximum-storage-length">0×2.MySQL中varchar字符最大储存长度与列数目的关系</a></li>
+					 </ul>
+					<!-- /目录 -->
+
+					<!-- 正文 -->
+					<h2 id="The-difference-between-char-and-varchar">0×1.MySQL中char与varchar的区别</h2>
+
+					<p>● char和varchar储存字符数介绍：</p>
+					<p class="indent-p">
+						char和varchar都能储存字符串，声明语法char(N)，N代表能够储存的字符长度，如果是utf8编码，储存N个汉字，每个汉字占用3字节，那char占用的字节数就是N*3。
+					</p>
+					<p class="indent-p">
+						char是定长类型，最大可储存255个字符，即char(255)；varchar是可变长类型，最大可储存的字符数是一个变量，请参考本文第二部分内容。
+					</p>
+					<p class="indent-p">
+						在MySQL4.0以前的版本中N代表的是占用字节数，MySQL5.0后将其重新定义为字符数。
+					</p>
+					<p>● char和varchar储存方式的区别：</p>
+					<p class="indent-p">
+						例如——char(10)和varchar(10)
+					</p>
+					<p class="indent-p">
+						在char(10)中，不论你存没存10个字符的长度，数据库都将划分10个字符长度的空间来储存数据，并且如果没有储存10个字符长度，数据库自动在字符串末尾补上"空格符"填充到10个字符长度，查询时，以10字符为单位取出数据，再将末尾的空格符去除。
+					</p>
+					<p class="indent-p">
+						而varchar(10)中，假设我们只储存了"abc"这三个字符，数据库会在每个varchar字符数据前插入这个字符长度的标识，标识占用一个到两个字节，当varchar储存的字符数小于255时，标识符占用1个字节，反之大于255个字符时占用2个字节，比如"abc"长度是3，就在长度标识中插入一个字节，并且储存了此长度3，mysql查询到长度标识字节时，就知道这个varchar类型占用了3个字符长度，向后取3个字符就结束了。
+					</p>
+					<p class="indent-p">
+						当储存的字符数不多的时候（比如10个），推荐使用char，固定长度的存取效率更高，如果储存字符数偏多的时候（大于20或上百）的时候，推荐使用varchar或text类型。
+					</p>
+					<p>● char和varchar建表实例：</p>
+					<pre class="brush: sql;">
+					--新建表t7，第一列ch，固定长度6，第二列vch，可变长度6，字符编码utf8
+					mysql&gt; create table t7(ch char(6),vch varchar(6)) charset=utf8;
+
+					--插入一条记录
+					mysql&gt; insert into t7 values('111','111');
+
+					--插入另一条记录，因为两列都只允许最长6个字符，所以末尾的7会被舍去，每个被包含在字符串中的数字、字母或汉字，都叫一个字符
+					mysql&gt; insert into t7 values('1234567','1234567');
+
+					mysql&gt; select * from t7;
+					+--------+--------+
+					| ch     | vch    |
+					+--------+--------+
+					| 111    | 111    |
+					| 123456 | 123456 |
+					+--------+--------+
+
+					--注意，部分数据库中，插入超过范围的值会报错，插入不成功。
+					</pre>
+					<p>● char和varchar储存数据的区别</p>
+					<p class="indent-p">
+						当储存的字符没有到达声明的字符数时，char会在末尾补空格储存，取出的时候会将末尾空格全部去除，下面就来演示这个过程：
+					</p>
+					<pre class="brush: sql;">
+					--两列插入相同的字符，qing前后都有一个空格
+					mysql&gt; insert into t7 values(' qing ',' qing ');
+
+					--使用concat函数将两列每个字段前后都连接一个字母H取出，ch列最后一行中末尾的H是紧挨着qing的，前面已经解释为什么会这样，使用的时候应该特别注意，如果要存入的字符串末尾存在空格，请不要使用char类型储存，否则末尾空格会被清除
+
+					mysql&gt; select concat('H',ch,'H'),concat('H',vch,'H') from t7;
+					+--------------------+---------------------+
+					| concat('H',ch,'H') | concat('H',vch,'H') |
+					+--------------------+---------------------+
+					| H111H              | H111H               |
+					| H123456H           | H123456H            |
+					| H qingH            | H qing H            |
+					+--------------------+---------------------+
+					</pre>
+					<p>P.s：字符和字节的关系是根据我们使用的编码变化的；UTF8编码一个中文字符占用3个字节，英文和数字一个字符占用一个字节；GBK编码一个中文字符占用2个字节，英文和数字每个字符占用一个字节。</p>
+
+					<h2 id="varchar-type-the-maximum-storage-length">0×2.MySQL中varchar字符最大储存长度与列数目的关系</h2>
+					
+					<p>varchar是变长类型，数据库无法知道某一个字段中到底储存了多长的varchar数据，所以需要在储存的数据前插入字符长度标识；</p>
+					<p>当储存的字符长度小于255时插入1个字节，大于255时插入2个字节（为什么？因为一个字节能够储存的最大无符号整数是255）；</p>
+					<p>通过插入的2字节标识符可以推出，理论上varchar可以索引的最大字符数应该是2^16-1=65536-1=65535，但实际上varchar并不能储存这么多字符数，在MySQL5.0以后的版本中，官方规定"<span style="color:#FFEE0A;">在MySQL中表的一条记录的长度，不能超过65535字节</span>"；</p>
+					<p>现在假设使用utf8编码，在一张表中，创建长度为char(255)的列（允许输入255个字符），假设我储存的全部是汉字（每个汉字在utf8中占用3字节），并且这张表只创建这种类型的列，那么这种列一共可以创建的个数就是：<br><br>
+					65535/(255*3)=85（列）<br><br>
+					因为，官方规定中一条记录只能储存65535个字节，而我们一条记录中每个字段允许255个字符，每个字段占用的空间就是255*3（字节），最后用总字节长度除以每个字段占用的字节长度，就得到了这条记录一共能够创建多少列。</p>
+					<p>当明白了一条记录的长度限制后，我们再假设现在一张表中仅存在一列,请看下面的语句：</p>
+					<pre class="brush: sql;">
+					mysql&gt; create table tn(vctest varchar(N)) charset=utf8;
+					</pre>
+					<p>现在问，如果字符串储存的全部是汉字，N能填写的最大值是多少？</p>
+					<p>前面已经提到过，理论可以索引的最大值是65535，但是如果我们N=65535，肯定会报错，当储存字符大于255的时候，varchar列前面需要插入2字节长度标识，除此之外，MySQL官方规定，varchar最前端还有1字节保留空间，用来判断这个字段是否为NULL，这就意味着实际储存数据是从第4个字节开始的，又因为utf8用3字节储存一个汉字，由此可得（(65535-1-2)/3=21844），验证如下：</p>
+					<pre class="brush: sql;">
+					--首先我们来尝试着创建一个超过限制的值，出现了错误，但是表格创建成功了
+					mysql&gt; create table t8(vctest varchar(65535)) charset=utf8;
+					Query OK, 0 rows affected, 1 warning (0.02 sec)
+
+					--实际上，如果超过了varchar能够支持的最大值，MySQL将自动强制转换成text类型，text类型下一篇文章中会详细介绍
+					mysql&gt; desc t8;
+					+--------+------------+------+-----+---------+-------+
+					| Field  | Type       | Null | Key | Default | Extra |
+					+--------+------------+------+-----+---------+-------+
+					| vctest | mediumtext | YES  |     | NULL    |       |
+					+--------+------------+------+-----+---------+-------+
+
+					--注意！部分数据库会报错而不转换成text类型。
+
+					--使用计算出来的最大值创建，成功
+					mysql&gt; create table t9(vctest varchar(21844)) charset=utf8;
+					Query OK, 0 rows affected (0.01 sec)
+
+					mysql&gt; desc t9;
+					+--------+----------------+------+-----+---------+-------+
+					| Field  | Type           | Null | Key | Default | Extra |
+					+--------+----------------+------+-----+---------+-------+
+					| vctest | varchar(21844) | YES  |     | NULL    |       |
+					+--------+----------------+------+-----+---------+-------+
+					1 row in set (0.01 sec)
+
+					--下面的实验说明，超过最大临界值1的时候会给出警告,建表失败，超过临界值2的时候，自动强制转换成text类型创建（部分数据库会报错而创建失败，在后面的实例中不再强调）
+					mysql&gt; create table t10(vctest varchar(21845)) charset=utf8;
+					ERROR 1118 (42000): Row size too large...
+
+					mysql&gt; create table t10(vctest varchar(21846)) charset=utf8;
+					Query OK, 0 rows affected, 1 warning (0.18 sec)
+
+					mysql&gt; desc t10;
+					+--------+------------+------+-----+---------+-------+
+					| Field  | Type       | Null | Key | Default | Extra |
+					+--------+------------+------+-----+---------+-------+
+					| vctest | mediumtext | YES  |     | NULL    |       |
+					+--------+------------+------+-----+---------+-------+
+					1 row in set (0.01 sec)
+					</pre>
+					<p>那么再来看另外一个问题，同样是插入一条记录：</p>
+					<pre class="brush: sql;">
+					mysql&gt; create table tn(id int,ch char(60),vctest varchar(N)) charset=utf8;
+					</pre>
+					<p>现在问，如果字符串储存的全部是汉字，N能填写的最大值是多少？</p>
+					<p>相信有了第一问的经验，这一问应该很容易解决<br />
+					(65535-4-60*3-1-2)/3 = 21782.666&#8230;<br />
+					int列占用了4字节，char列占用了180字节，再减去1字节的NULL判断，2字节长度标识，剩余的字节数除以3，就得到了能够储存的最大字符数；</p>
+					<p>那么N能够填写的最大值就是21782，超过此临界值2个字符，将会被强制转换成text类型储存，验证如下：</p>
+					<pre class="brush: sql;">
+					--超过临界值1，报错
+					mysql&gt; create table t11(id int,ch char(60),vctest varchar(21783)) charset=utf8;
+					ERROR 1118 (42000): Row size too large...
+
+					mysql&gt; create table t11(id int,ch char(60),vctest varchar(21782)) charset=utf8;
+					Query OK, 0 rows affected (0.02 sec)
+
+					mysql&gt; desc t11;
+					+--------+----------------+------+-----+---------+-------+
+					| Field  | Type           | Null | Key | Default | Extra |
+					+--------+----------------+------+-----+---------+-------+
+					| id     | int(11)        | YES  |     | NULL    |       |
+					| ch     | char(60)       | YES  |     | NULL    |       |
+					| vctest | varchar(21782) | YES  |     | NULL    |       |
+					+--------+----------------+------+-----+---------+-------+
+					</pre>
+					<p>P.s：相信看完这篇文章，大家对MySQL中一条记录到底能创建多少列应该有了一个全新的认识，能够创建的列的数量是由此条记录中所有数据类型占用的字节数决定的，并不是一个固定值。</p>
+						
+				<!-- /正文 -->
+
+				<footer class="text-footer">
+					<p>
+						*转载请注明来自:<a title="晴刃-自由、互助、分享、专注计算机技术。" href="http://www.qingsword.com" target="_blank">晴刃(QingSword.COM)</a>
+					</p>
+					<p>*原文连接:<a title="[mysql基础文档]-9-数据类型之字符型" href="http://www.qingsword.com/qing/1434.html" target="_blank">http://www.qingsword.com/qing/1434.html</a></p>
+				</footer>
+			</article>
+			<!-- /文章区 -->	
+		</div>
+	</div>
+	<!-- /content -->
+	
+	<!-- footer -->
+	<footer id="footer">
+		<div class="footer-container">
+			QingSword.COM &nbsp;<img src="../logo/by-nc-sa.png" alt="Creative Commons" title="Creative Commons">
+		</div>
+	</footer>
+	<!-- /footer -->
+</body>
+</html>

@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<!--Copyright©QingSword.COM︻☼1010D>-->
+<html lang="zh-ch">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
+	<meta name="description" content="晴刃,是一个致力推广实用计算机技术的个人博客;我们分享计算机知识;为计算机系统以及网络安全防范做出一份贡献。【专注技术 创造价值 共同进步】">
+	<meta name="keywords" content="晴刃,晴,qing,qingsword,ccna图文笔记,ubuntu,linux,ubuntu server,mysql,node.js,javascript,python,计算机技术博客">
+	<title>[mysql基础文档]-16-Unique约束| QingSword.COM </title>
+	<link rel="shortcut icon" type="image/x-icon" href="../logo/favicon.ico">
+	<link rel="stylesheet" type="text/css" href="../css/basic.css">
+	<link rel="stylesheet" type="text/css" href="../css/text.css">
+	<!-- 代码块高亮js -->
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shCore.css"/>
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shThemeRDark.css"/>
+	 <script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shCore.js"></script>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shBrushSql.js"></script>
+	<script type="text/javascript">
+	SyntaxHighlighter.all();
+	</script>
+</head>
+<body>
+	<!--header -->
+	<header id="nav">
+			<div class="nav-container"> 
+				<!-- 根大纲-->
+				<a href="http://www.qingsword.com" title="晴刃">
+					<h1 class="nav-logo">晴刃</h1>
+				</a>
+				<h2 class="nav-site-description desc-hidden">
+					自由、互助、分享、专注计算机技术
+				</h2>
+				<nav class="nav-links"> 
+					<!-- nav连接大纲-->
+					<h1 style="display:none;">网站导航</h1> 
+					<ul>
+						<li  class="li-hidden">
+							<a href="../index.html" title="home">
+								<span class="link-word"><img src="../logo/home.png" alt="home" class="link-img">首页</span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../web.html" title="web">
+								<span class="link-word"><img src="../logo/web.png" alt="web" class="link-img">前端<span class="word-hidden">设计</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../system.html" title="system">
+								<span class="link-word"><img src="../logo/linux.png" alt="linux" class="link-img">系统<span class="word-hidden">应用</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../net.html" title="net">
+								<span class="link-word"><img src="../logo/net.png" alt="net" class="link-img">网络<span class="word-hidden">技术</span></span>
+							</a>
+						</li>
+						<li>
+							<a href="../sitemap.html" title="sitemap">
+								<span class="link-word"><img src="../logo/archives.png" alt="archives" class="link-img"><span class="word-hidden">文章</span>归档</span>
+							</a>
+						</li>
+					</ul>
+				</nav>
+			</div>		
+	</header>
+	<!-- /header -->
+
+	<!-- content-->
+	<div id="content">
+		<div class="content-container">
+			<!-- 文章区 -->
+			<article class="text-container">
+				<header class="text-header">
+					<h1>[mysql基础文档]-16-Unique约束</h1>	
+				</header><!-- /header -->
+				<section class="text-body">
+					<h2>引言</h2>
+					<p>Unique约束能够防止数据表中指定的列中出现两个完全相同的值。</p>
+					<!-- 目录 -->
+					<h2>文章目录</h2>
+					<ul class="contents">	
+						 <li><a href="#How-to-Create-Unique-constraints">0×1.如何在建表时添加Unique约束</a></li>
+						 <li><a href="#How-to-Add-Unique-Constraints">0×2.如何给已存在的列添加Unique约束</a></li>
+						 <li><a href="#How-to-Create-named-Unique-constraints">0×3.如何创建命名Unique约束</a></li>
+						 <li><a href="#How-to-delete-Unique-constraints">0×4.如何删除Unique约束</a></li>
+					 </ul>
+					<!-- /目录 -->
+
+					<!-- 正文 -->
+					<h2 id="How-to-Create-Unique-constraints">0×1.如何在建表时添加Unique约束</h2>
+
+					<p>● 在创建数据表时，有三种不同的方法可以添加unique约束：</p>
+					<pre class="brush: sql;">
+					--方法一：同not null约束一样，直接写在数据类型后面，此时id列数据具有唯一性
+					mysql&gt; create table t22(id int unique);
+
+					--另两种方法，效果相同，写在所有列创建语句的最后，用逗号单独隔开，constraint在普通unique约束声明语法中，可以省略（后面介绍的命名unique约束中，必须要写constraint）
+					mysql&gt; create table t22(id int,constraint unique(id));
+					mysql&gt; create table t22(id int,unique(id));
+
+					--key下面有UNI就代表列拥有unique属性
+					mysql&gt; desc t22;
+					+-------+---------+------+-----+---------+-------+
+					| Field | Type    | Null | Key | Default | Extra |
+					+-------+---------+------+-----+---------+-------+
+					| id    | int(11) | YES  | UNI | NULL    |       |
+					+-------+---------+------+-----+---------+-------+
+
+					--unique约束特性，插入相同值会报错
+					mysql&gt; insert into t22 values(1);
+					mysql&gt; insert into t22 values(1);
+					ERROR 1062 (23000): Duplicate entry '1' for key 'id'
+					mysql&gt; insert into t22 values(2);
+
+					mysql&gt; select * from t22;
+					+------+
+					| id   |
+					+------+
+					|    1 |
+					|    2 |
+					+------+
+					</pre>
+					<p>● Unique约束不仅限于一列，可以给多列创建联合unique约束，只有当联合的列数据都相同时，才抛出错误：</p>
+					<pre class="brush: sql;">
+					--在末尾括号中用逗号隔开每一个联合unique约束成员
+					mysql&gt; create table t23(id int,uid int,unique(id,uid));
+
+					mysql&gt; desc t23;
+					+-------+---------+------+-----+---------+-------+
+					| Field | Type    | Null | Key | Default | Extra |
+					+-------+---------+------+-----+---------+-------+
+					| id    | int(11) | YES  | MUL | NULL    |       |
+					| uid   | int(11) | YES  |     | NULL    |       |
+					+-------+---------+------+-----+---------+-------+
+
+					--只有一列数据相同时，数据正常写入
+					mysql&gt; insert into t23 values(1,1);
+					mysql&gt; insert into t23 values(1,2);
+
+					--当unique联合约束里面的所有成员数据与已经存在的数据相同时，才抛出错误
+					mysql&gt; insert into t23 values(1,1);
+					ERROR 1062 (23000): Duplicate entry '1-1' for key 'id'
+					</pre>
+
+					<h2 id="How-to-Add-Unique-Constraints">0×2.如何给已存在的列添加Unique约束</h2>
+
+					<p>● 如果建表时没有给某列添加unique约束，后期因为需求需要添加，有四种添加unique约束的方法：</p>
+					<pre class="brush: sql;">
+					--创建表t24，仅一列整型，无约束属性
+					mysql&gt; create table t24(id int);
+
+					--同not null约束，使用change参数改变列属性（重命名，添加属性都可以通过change）
+					mysql&gt; alter table t24 change id id int unique;
+
+					--下面三种方法效果同上，在MySQL中都能给id列添加unique属性
+					mysql&gt; alter table t24 modify id int unique;
+
+					mysql&gt; alter table t24 add unique(id);
+
+					mysql&gt; alter table t24 add constraint unique(id);
+					</pre>
+
+					<h2 id="How-to-Create-named-Unique-constraints">0×3.如何创建命名Unique约束</h2>
+
+					<p>命名Unique约束与普通约束功能相同，可以通过命名，添加注释，解释这一列其数据是什么，为日后的维护做铺垫，下面是命名Unique约束创建，追加，删除实例：</p>
+					<pre class="brush: sql;">
+					--建表时创建命名Unique约束只能将语句放在所有列声明的结尾，CustomName是自定义名称
+					mysql&gt; create table t24(id int,constraint CustomName unique(id));
+
+					--如果建表时id列没有约束属性，可以用下面的方法给id列添加一个命名Unique约束
+					mysql&gt; alter table t24 add constraint CustomName unique(id);
+
+					--MySQL中删除命名Unique约束的方法如下
+					mysql&gt; alter table t24 drop index CustomName;
+
+					--其他类型数据库删除命名约束的方法如下，两者参数有细微差别
+					mysql&gt; alter table t24 drop constraint CustomName;
+					</pre>
+
+					<h2 id="How-to-delete-Unique-constraints">0×4.如何删除Unique约束</h2>
+					
+					<pre class="brush: sql;">
+					--MySQL中使用drop index删除id列的unique约束
+					mysql&gt; alter table t23 drop index id;
+
+					--在非MySQL中，使用drop constraint来删除id列的unique约束
+					db001&gt; alter table t23 drop constraint id;
+					</pre>
+					<p>P.s：前面介绍的Not Null约束是不允许列有Null值，但允许重复值；本文中介绍的Unique约束是不允许列中出现重复值，但允许有NULL值；由此推得，前面介绍的主键，就是Not Null约束与Unique约束的交集，即列数据不允许有重复值也不允许有NULL值，其实，主键也叫Primary Key约束。</p>
+						
+				<!-- /正文 -->
+
+				<footer class="text-footer">
+					<p>
+						*转载请注明来自:<a title="晴刃-自由、互助、分享、专注计算机技术。" href="http://www.qingsword.com" target="_blank">晴刃(QingSword.COM)</a>
+					</p>
+					<p>*原文连接:<a title="[mysql基础文档]-16-Unique约束" href="http://www.qingsword.com/qing/1455.html" target="_blank">http://www.qingsword.com/qing/1455.html</a></p>
+				</footer>
+			</article>
+			<!-- /文章区 -->	
+		</div>
+	</div>
+	<!-- /content -->
+	
+	<!-- footer -->
+	<footer id="footer">
+		<div class="footer-container">
+			QingSword.COM &nbsp;<img src="../logo/by-nc-sa.png" alt="Creative Commons" title="Creative Commons">
+		</div>
+	</footer>
+	<!-- /footer -->
+</body>
+</html>

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<!--Copyright©QingSword.COM︻☼1010D>-->
+<html lang="zh-ch">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
+	<meta name="description" content="晴刃,是一个致力推广实用计算机技术的个人博客;我们分享计算机知识;为计算机系统以及网络安全防范做出一份贡献。【专注技术 创造价值 共同进步】">
+	<meta name="keywords" content="晴刃,晴,qing,qingsword,ccna图文笔记,ubuntu,linux,ubuntu server,mysql,node.js,javascript,python,计算机技术博客">
+	<title>[mysql基础文档]-10-数据类型之文本型| QingSword.COM </title>
+	<link rel="shortcut icon" type="image/x-icon" href="../logo/favicon.ico">
+	<link rel="stylesheet" type="text/css" href="../css/basic.css">
+	<link rel="stylesheet" type="text/css" href="../css/text.css">
+	<!-- 代码块高亮js -->
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shCore.css"/>
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shThemeRDark.css"/>
+	 <script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shCore.js"></script>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shBrushSql.js"></script>
+	<script type="text/javascript">
+	SyntaxHighlighter.all();
+	</script>
+</head>
+<body>
+	<!--header -->
+	<header id="nav">
+			<div class="nav-container"> 
+				<!-- 根大纲-->
+				<a href="http://www.qingsword.com" title="晴刃">
+					<h1 class="nav-logo">晴刃</h1>
+				</a>
+				<h2 class="nav-site-description desc-hidden">
+					自由、互助、分享、专注计算机技术
+				</h2>
+				<nav class="nav-links"> 
+					<!-- nav连接大纲-->
+					<h1 style="display:none;">网站导航</h1> 
+					<ul>
+						<li  class="li-hidden">
+							<a href="../index.html" title="home">
+								<span class="link-word"><img src="../logo/home.png" alt="home" class="link-img">首页</span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../web.html" title="web">
+								<span class="link-word"><img src="../logo/web.png" alt="web" class="link-img">前端<span class="word-hidden">设计</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../system.html" title="system">
+								<span class="link-word"><img src="../logo/linux.png" alt="linux" class="link-img">系统<span class="word-hidden">应用</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../net.html" title="net">
+								<span class="link-word"><img src="../logo/net.png" alt="net" class="link-img">网络<span class="word-hidden">技术</span></span>
+							</a>
+						</li>
+						<li>
+							<a href="../sitemap.html" title="sitemap">
+								<span class="link-word"><img src="../logo/archives.png" alt="archives" class="link-img"><span class="word-hidden">文章</span>归档</span>
+							</a>
+						</li>
+					</ul>
+				</nav>
+			</div>		
+	</header>
+	<!-- /header -->
+
+	<!-- content-->
+	<div id="content">
+		<div class="content-container">
+			<!-- 文章区 -->
+			<article class="text-container">
+				<header class="text-header">
+					<h1>[mysql基础文档]-10-数据类型之文本型</h1>	
+				</header><!-- /header -->
+				<section class="text-body">
+					<h2>引言</h2>
+					<p>前面的文章已经详细解释了MySQL表对一条记录的长度限制，那么如果我们要储存大量的文字数据，而一条记录能够储存的字符数又是有限的，这时候要怎么做呢？别急，本文介绍的文本类型，能够帮到你。</p>
+					<!-- 目录 -->
+					<h2>文章目录</h2>
+					<ul class="contents">	
+						 <li><a href="#How-to-use-the-text-type-in-the-Mysql">0×1.MySQL text类型</a></li>
+						 <li><a href="#How-to-use-the-blob-type-in-the-Mysql">0×2.MySQL blob类型</a></li>
+					 </ul>
+					<!-- /目录 -->
+
+					<!-- 正文 -->
+					<h2 id="How-to-use-the-text-type-in-the-Mysql">0×1.MySQL text类型</h2>
+
+					<p>●  text类型介绍</p>
+					<p>text类型采用了长度索引和数据分离储存的方式，建表时，声明一个text字段，实际上，表记录中只储存了text类型的长度索引，而真实的数据存放在另外的文件中，根据这个长度索引再去读取另一个文件，这种分离储存的方法避免了因为一条记录的长度限制，导致文本无法全部储存的情况。</p>
+					<p>到目前为止（MySQL5.6），一共有四种长度的text类型供选择，详细参数如下：</p>
+					<p class="indent-p">
+						tinytext：索引占用1字节，最大储存的字符长度为2^8-1；<br>
+						text：索引占用2字节，最大储存的字符长度为2^16-1；<br>
+						mediumtext：索引占用3字节，最大储存的字符长度为2^24-1；<br>
+						longtext：索引占用4字节，最大储存的字符长度为2^32-1
+					</p>
+					<p>●  text类型建表实例</p>
+					<pre class="brush: sql;">
+					--创建表t12，仅一列，tinytext类型列，能储存255个字符
+					mysql&gt; create table t12(tx tinytext);
+
+					--插入数据
+					mysql&gt; insert into t12 values('此处能输入255个字符，超出的部分将被直接丢弃')
+					</pre>
+
+					<h2 id="How-to-use-the-blob-type-in-the-Mysql">0×2.MySQL blob类型</h2>
+					
+					<p>●  blob类型介绍</p>
+					<p>blob（binary large object）全称二进制大对象，同text类型一样也能够储存字符，储存机制也完全相同，所不同的是blob将要储存的数据先转换成二进制，然后再储存到数据库文件中；</p>
+					<p>在不同的字符环境中，储存可能会丢失数据（比如将汉字储存到ASCII编码下），但几乎所有计算机，都能支持二进制编码，blob的做法就是将要储存的数据转化成二进制（0和1）再储存，这样不论字符集怎么转换，存入的都只是一堆0和1，读取时再翻译成当前环境编码即可。</p>
+					<p>到目前为止（MySQL5.6），一共有四种长度的blob类型可供选择，详细参数如下：</p>
+					<p class="indent-p">
+						tinyblob：索引占用1字节，最大储存的字符长度为2^8-1；<br>
+						blob：索引占用2字节，最大储存的字符长度为2^16-1；<br>
+						mediumblob：索引占用3字节，最大储存的字符长度为2^24-1；<br>
+						longblob：索引占用4字节，最大储存的字符长度为2^32-1
+					</p>
+					<p>●  blob类型建表实例</p>
+					<pre class="brush: sql;">
+					--看上去同text没有区别，输入的都是字符，但在储存到数据库文件之前，blob数据先被转换成了二进制再储存
+					mysql&gt; create table t13(bl tinyblob);
+					mysql&gt; insert into t13 values('此处能输入255个字符，超出的部分将被直接丢弃')
+					</pre>
+						
+				<!-- /正文 -->
+
+				<footer class="text-footer">
+					<p>
+						*转载请注明来自:<a title="晴刃-自由、互助、分享、专注计算机技术。" href="http://www.qingsword.com" target="_blank">晴刃(QingSword.COM)</a>
+					</p>
+					<p>*原文连接:<a title="[mysql基础文档]-10-数据类型之文本型" href="http://www.qingsword.com/qing/1436.html" target="_blank">http://www.qingsword.com/qing/1436.html</a></p>
+				</footer>
+			</article>
+			<!-- /文章区 -->	
+		</div>
+	</div>
+	<!-- /content -->
+	
+	<!-- footer -->
+	<footer id="footer">
+		<div class="footer-container">
+			QingSword.COM &nbsp;<img src="../logo/by-nc-sa.png" alt="Creative Commons" title="Creative Commons">
+		</div>
+	</footer>
+	<!-- /footer -->
+</body>
+</html>

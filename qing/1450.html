@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<!--Copyright©QingSword.COM︻☼1010D>-->
+<html lang="zh-ch">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
+	<meta name="description" content="晴刃,是一个致力推广实用计算机技术的个人博客;我们分享计算机知识;为计算机系统以及网络安全防范做出一份贡献。【专注技术 创造价值 共同进步】">
+	<meta name="keywords" content="晴刃,晴,qing,qingsword,ccna图文笔记,ubuntu,linux,ubuntu server,mysql,node.js,javascript,python,计算机技术博客">
+	<title>[mysql基础文档]-15-Not NULL约束与默认值| QingSword.COM </title>
+	<link rel="shortcut icon" type="image/x-icon" href="../logo/favicon.ico">
+	<link rel="stylesheet" type="text/css" href="../css/basic.css">
+	<link rel="stylesheet" type="text/css" href="../css/text.css">
+	<!-- 代码块高亮js -->
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shCore.css"/>
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shThemeRDark.css"/>
+	 <script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shCore.js"></script>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shBrushSql.js"></script>
+	<script type="text/javascript">
+	SyntaxHighlighter.all();
+	</script>
+</head>
+<body>
+	<!--header -->
+	<header id="nav">
+			<div class="nav-container"> 
+				<!-- 根大纲-->
+				<a href="http://www.qingsword.com" title="晴刃">
+					<h1 class="nav-logo">晴刃</h1>
+				</a>
+				<h2 class="nav-site-description desc-hidden">
+					自由、互助、分享、专注计算机技术
+				</h2>
+				<nav class="nav-links"> 
+					<!-- nav连接大纲-->
+					<h1 style="display:none;">网站导航</h1> 
+					<ul>
+						<li  class="li-hidden">
+							<a href="../index.html" title="home">
+								<span class="link-word"><img src="../logo/home.png" alt="home" class="link-img">首页</span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../web.html" title="web">
+								<span class="link-word"><img src="../logo/web.png" alt="web" class="link-img">前端<span class="word-hidden">设计</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../system.html" title="system">
+								<span class="link-word"><img src="../logo/linux.png" alt="linux" class="link-img">系统<span class="word-hidden">应用</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../net.html" title="net">
+								<span class="link-word"><img src="../logo/net.png" alt="net" class="link-img">网络<span class="word-hidden">技术</span></span>
+							</a>
+						</li>
+						<li>
+							<a href="../sitemap.html" title="sitemap">
+								<span class="link-word"><img src="../logo/archives.png" alt="archives" class="link-img"><span class="word-hidden">文章</span>归档</span>
+							</a>
+						</li>
+					</ul>
+				</nav>
+			</div>		
+	</header>
+	<!-- /header -->
+
+	<!-- content-->
+	<div id="content">
+		<div class="content-container">
+			<!-- 文章区 -->
+			<article class="text-container">
+				<header class="text-header">
+					<h1>[mysql基础文档]-15-Not NULL约束与默认值</h1>	
+				</header><!-- /header -->
+				<section class="text-body">
+					<h2>引言</h2>
+					<p>我们在使用数据库的过程中，有时候因为操作失误，常常会产生一些NULL数据，从而导致一些提取信息时不可预知的问题；本文介绍两种策略来防止NULL数据的产生——Not NULL约束与默认值设定。</p>
+					<!-- 目录 -->
+					<h2>文章目录</h2>
+					<ul class="contents">	
+						 <li><a href="#How-to-set-Not-Null-constraint">0×1.MySQL如何设置Not Null约束</a></li>
+						 <li><a href="#How-to-set-the-default-value-for-a-column">0×2.MySQL如何设置列默认值</a></li>
+					 </ul>
+					<!-- /目录 -->
+
+					<!-- 正文 -->
+					<h2 id="How-to-set-Not-Null-constraint">0×1.MySQL如何设置Not Null约束</h2>
+
+					<p>首先来看一个包含NULL数据的表的查询实例：</p>
+					<pre class="brush: sql;">
+					--创建表t19
+					mysql&gt; create table t19(id int,dt date);
+
+					--插入四行数据，最后一行仅插入id字段的数据
+					mysql&gt; insert into t19 values(1,'2015-10-01');
+					mysql&gt; insert into t19 values(2,'2015-10-02');
+					mysql&gt; insert into t19 values(3,'2015-10-03');
+					mysql&gt; insert into t19(id) values(4);
+
+					--通过where筛选查询结果，不论dt大于等于2号还是小于等于2号，都没有NULL数据，但实际上NULL是真是存在的，并且id=4
+					mysql&gt; select * from t19 where dt&gt;='2015-10-02';
+					+------+------------+
+					| id   | dt         |
+					+------+------------+
+					|    2 | 2015-10-02 |
+					|    3 | 2015-10-03 |
+					+------+------------+
+
+					mysql&gt; select * from t19 where dt&lt;='2015-10-02';
+					+------+------------+
+					| id   | dt         |
+					+------+------------+
+					|    1 | 2015-10-01 |
+					|    2 | 2015-10-02 |
+					+------+------------+
+
+					--必须用is null这个特殊的判断语法才能查询到NULL数据
+					mysql&gt; select * from t19 where dt&lt;='2015-10-02' or dt is null;
+					+------+------------+
+					| id   | dt         |
+					+------+------------+
+					|    1 | 2015-10-01 |
+					|    2 | 2015-10-02 |
+					|    4 | NULL       |
+					+------+------------+
+					</pre>
+					<p>可能大家会觉得本例中"select * from t19"一眼就能看到NULL数据，但如果表格记录非常庞大，其中出现几个NULL就不那么容易被察觉了，这时就可以通过给字段添加Not Null约束来限制那一列的数据中，不能出现NULL数据。</p>
+					<p>● 建表时设置Not Null约束</p>
+					<pre class="brush: sql;">
+					--在数据类型后面添加not null参数即可实现
+					mysql&gt; create table t20(id int not null,uname char(20) not null);
+
+					--测试仅添加id列数据
+					mysql&gt; insert into t20(id) values(1);
+
+					--uname列并不是NULL，而是一个空字符串
+					mysql&gt; select * from t20;
+					+----+-------+
+					| id | uname |
+					+----+-------+
+					|  1 |       |
+					+----+-------+
+
+					--可以通过where筛选直接将空字符串的记录筛选出来
+					mysql&gt; select * from t20 where uname='';
+
+					--如果不给int列添加数据
+					mysql&gt; insert into t20(uname) values('qingsword.com');
+					mysql&gt; insert into t20(uname) values('www.qingsword.com');
+
+					--MySQL缺省的默认值是0
+					mysql&gt; select * from t20;
+					+----+-------------------+
+					| id | uname             |
+					+----+-------------------+
+					|  1 |                   |
+					|  0 | qingsword.com     |
+					|  0 | www.qingsword.com |
+					+----+-------------------+
+					</pre>
+					<p>那如果建表时忘记添加Not Null约束了怎么办，请看下面的实例；</p>
+					<p>● 给已经存在的表添加Not Null约束</p>
+					<pre class="brush: sql;">
+					--拿上面的t19表举例，有两种方法，第一种使用change参数
+					--语法:alter table [表名] change [旧列名] [新列名] [数据类型] not null;
+					--change不仅仅可以给列重命名，还可以给列增加或删除某些属性
+					mysql&gt; alter table t19 change id id int not null;
+
+					--更加专业的修改某列参数的做法是使用modify
+					mysql&gt; alter table t19 modify dt date not null;
+
+					--dt的第四条记录因为前面故意设置成了NULL，添加了not null约束后被自动设置成了缺省默认值
+					mysql&gt; select * from t19;
+					+----+------------+
+					| id | dt         |
+					+----+------------+
+					|  1 | 2015-10-01 |
+					|  2 | 2015-10-02 |
+					|  3 | 2015-10-03 |
+					|  4 | 0000-00-00 |
+					+----+------------+
+					</pre>
+					<p>注意！上面的实例在部分数据库中，如果给某列设定了not null属性，在insert into中故意给这一列插入NULL值会返回一个错误；而给存在NULL值的某列追加not null属性也会返回一个错误。</p>
+
+					<h2 id="How-to-set-the-default-value-for-a-column">0×2.MySQL如何设置列默认值</h2>
+					
+					<p>默认值的设置同Not Null一样，在声明字段的末尾添加default属性即可，请看下面的实例：</p>
+					<pre class="brush: sql;">
+					--创建表t13，一共4列，每列都设置了Not Null约束与对应的默认值
+					mysql&gt; create table t21(
+					    -&gt; id int not null default 0,
+					    -&gt; uname char(30) not null default '',
+					    -&gt; gender tinyint not null default 0,
+					    -&gt; login datetime not null default '0000-00-00 00:00:00'
+					    -&gt; );
+
+					mysql&gt; desc t21;
+					+--------+------------+------+-----+---------------------+-------+
+					| Field  | Type       | Null | Key | Default             | Extra |
+					+--------+------------+------+-----+---------------------+-------+
+					| id     | int(11)    | NO   |     | 0                   |       |
+					| uname  | char(30)   | NO   |     |                     |       |
+					| gender | tinyint(4) | NO   |     | 0                   |       |
+					| login  | datetime   | NO   |     | 0000-00-00 00:00:00 |       |
+					+--------+------------+------+-----+---------------------+-------+
+
+					--当设置了默认值之后，插入数据时如果没有给某个字段赋值，数据库会给这个字段填充我们设置的默认值
+					</pre>
+					<p>应该尽量避免使用NULL数据填充字段，如果暂时没有数据可以填充，建议使用默认值取代NULL，比如对一个integer的年龄字段填充-1或0作为默认值，对一个字符串字段填充一个空字符作为默认值，这样会让以后数据库的检索更加方便。</p>
+				<!-- /正文 -->
+
+				<footer class="text-footer">
+					<p>
+						*转载请注明来自:<a title="晴刃-自由、互助、分享、专注计算机技术。" href="http://www.qingsword.com" target="_blank">晴刃(QingSword.COM)</a>
+					</p>
+					<p>*原文连接:<a title="[mysql基础文档]-15-Not NULL约束与默认值" href="http://www.qingsword.com/qing/1450.html" target="_blank">http://www.qingsword.com/qing/1450.html</a></p>
+				</footer>
+			</article>
+			<!-- /文章区 -->	
+		</div>
+	</div>
+	<!-- /content -->
+	
+	<!-- footer -->
+	<footer id="footer">
+		<div class="footer-container">
+			QingSword.COM &nbsp;<img src="../logo/by-nc-sa.png" alt="Creative Commons" title="Creative Commons">
+		</div>
+	</footer>
+	<!-- /footer -->
+</body>
+</html>

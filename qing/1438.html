@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<!--Copyright©QingSword.COM︻☼1010D>-->
+<html lang="zh-ch">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
+	<meta name="description" content="晴刃,是一个致力推广实用计算机技术的个人博客;我们分享计算机知识;为计算机系统以及网络安全防范做出一份贡献。【专注技术 创造价值 共同进步】">
+	<meta name="keywords" content="晴刃,晴,qing,qingsword,ccna图文笔记,ubuntu,linux,ubuntu server,mysql,node.js,javascript,python,计算机技术博客">
+	<title>[mysql基础文档]-11-数据类型之枚举型| QingSword.COM </title>
+	<link rel="shortcut icon" type="image/x-icon" href="../logo/favicon.ico">
+	<link rel="stylesheet" type="text/css" href="../css/basic.css">
+	<link rel="stylesheet" type="text/css" href="../css/text.css">
+	<!-- 代码块高亮js -->
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shCore.css"/>
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shThemeRDark.css"/>
+	 <script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shCore.js"></script>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shBrushSql.js"></script>
+	<script type="text/javascript">
+	SyntaxHighlighter.all();
+	</script>
+</head>
+<body>
+	<!--header -->
+	<header id="nav">
+			<div class="nav-container"> 
+				<!-- 根大纲-->
+				<a href="http://www.qingsword.com" title="晴刃">
+					<h1 class="nav-logo">晴刃</h1>
+				</a>
+				<h2 class="nav-site-description desc-hidden">
+					自由、互助、分享、专注计算机技术
+				</h2>
+				<nav class="nav-links"> 
+					<!-- nav连接大纲-->
+					<h1 style="display:none;">网站导航</h1> 
+					<ul>
+						<li  class="li-hidden">
+							<a href="../index.html" title="home">
+								<span class="link-word"><img src="../logo/home.png" alt="home" class="link-img">首页</span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../web.html" title="web">
+								<span class="link-word"><img src="../logo/web.png" alt="web" class="link-img">前端<span class="word-hidden">设计</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../system.html" title="system">
+								<span class="link-word"><img src="../logo/linux.png" alt="linux" class="link-img">系统<span class="word-hidden">应用</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../net.html" title="net">
+								<span class="link-word"><img src="../logo/net.png" alt="net" class="link-img">网络<span class="word-hidden">技术</span></span>
+							</a>
+						</li>
+						<li>
+							<a href="../sitemap.html" title="sitemap">
+								<span class="link-word"><img src="../logo/archives.png" alt="archives" class="link-img"><span class="word-hidden">文章</span>归档</span>
+							</a>
+						</li>
+					</ul>
+				</nav>
+			</div>		
+	</header>
+	<!-- /header -->
+
+	<!-- content-->
+	<div id="content">
+		<div class="content-container">
+			<!-- 文章区 -->
+			<article class="text-container">
+				<header class="text-header">
+					<h1>[mysql基础文档]-11-数据类型之枚举型</h1>	
+				</header><!-- /header -->
+				<section class="text-body">
+					<h2>引言</h2>
+					<p>这篇文章介绍两种枚举类型enum和set，枚举类型能限制某些特定列（比如性别列）的插入数据。</p>
+					<!-- 目录 -->
+					<h2>文章目录</h2>
+					<ul class="contents">	
+						 <li><a href="#How-to-create-an-enum-column">0×1.MySQL如何创建enum列</a></li>
+						 <li><a href="#How-to-create-a-set-column">0×2.MySQL如何创建set列</a></li>
+					 </ul>
+					<!-- /目录 -->
+
+					<!-- 正文 -->
+					<h2 id="How-to-create-an-enum-column">0×1.MySQL如何创建enum列</h2>
+
+					<p>● 枚举声明语法ENUM("value1","value2",...)，占用1到2字节，同text类型一样，枚举字段仅仅储存的是一个索引值，括号中的每个value都储存在其他的文件中，当索引小于255时占用1字节，当索引在255~65535之间时，占用2字节，理论可以索引65535个value，但实际还受数据库单个文件大小限制。</p>
+					<p>● 在枚举声明中应尽量避免使用整数（如enum(3,2,1)），因为枚举的索引也是整数，查询时很容易出错，储存整数请使用int类型，或将成员用单引号引起来作为字符串类型储存（例如enum("3","2","1")）； 建议不要在索引列中使用空字符或NULL（存入一个枚举中不存在的值也会自动被转换成空字符，索引是0），如果枚举中设定了空字符成员，这时插入一个空字符会得到一个正确的索引值，这两种空字符表面上看起来完全一样，应尽量避免出现这种情况；NULL对应的索引是NULL，其他正常数据的索引是从1开始的，请看下面实例：</p>
+					<pre class="brush: sql;">
+					--创建表t13，包含一个枚举列enum_column，枚举中给出了两个有效字符串成员,每个成员之间用逗号分隔
+					mysql&gt; create table t13(enum_column enum('male','female'));
+
+					--插入一个空字符串到这个枚举列，虽然给出了警告，但仍然插入成功了
+					mysql&gt; insert into t13 values('');
+
+					--插入一个null
+					mysql&gt; insert into t13 values(null);
+
+					--插入一个有效值
+					mysql&gt; insert into t13 values('male');
+
+					--插入一个输入错误的无效值
+					mysql&gt; insert into t13 values('famale');
+
+					--最后插入另一个有效值
+					mysql&gt; insert into t13 values('female');
+
+					--最后的结果如下，无效值会自动转换成空字符串
+					mysql&gt; select * from t13;
+					+-------------+
+					| enum_column |
+					+-------------+
+					|             |
+					| NULL        |
+					| male        |
+					|             |
+					| female      |
+					+-------------+
+
+					--注意！部分数据库中，插入空字符串和无效值会返回一个错误，插入失败，在这些数据库中，上面的实例，NULL的索引将被设置成1，以此类推。
+
+					--使用索引查询，有效值由上往下索引从1开始递增
+					mysql&gt; select * from t13 where enum_column=1;
+					+-------------+
+					| enum_column |
+					+-------------+
+					| male        |
+					+-------------+
+
+					mysql&gt; select * from t13 where enum_column=2;
+					+-------------+
+					| enum_column |
+					+-------------+
+					| female      |
+					+-------------+
+
+					--直接使用字符串和使用索引的效果是一样的
+					mysql&gt; select * from t13 where enum_column='male';
+					+-------------+
+					| enum_column |
+					+-------------+
+					| male        |
+					+-------------+
+
+					--空字符串的索引都是0
+					mysql&gt; select * from t13 where enum_column=0;
+					+-------------+
+					| enum_column |
+					+-------------+
+					|             |
+					|             |
+					+-------------+
+
+					--查询NULL数据要用到is运算符，直接等于是不能查出NULL数据的
+					mysql&gt; select * from t13 where enum_column=NULL;
+					Empty set (0.00 sec)
+
+					mysql&gt; select * from t13 where enum_column is NULL;
+					+-------------+
+					| enum_column |
+					+-------------+
+					| NULL        |
+					+-------------+
+					</pre>
+					<p>● 枚举列数据的修改操作：</p>
+					<pre class="brush: sql;">
+					--将所有空字符字段修改成male,将所有NULL字段修改成female
+					mysql&gt; update t13 set enum_column='male' where enum_column=0;
+					mysql&gt; update t13 set enum_column='female' where enum_column is null;
+
+					mysql&gt; select * from t13;
+					+-------------+
+					| enum_column |
+					+-------------+
+					| male        |
+					| female      |
+					| male        |
+					| male        |
+					| female      |
+					+-------------+
+					</pre>
+					<p>P.s：enum尽量避免空字符成员，请看下面实例：</p>
+					<pre class="brush: sql;">
+					--创建一个包含空字符的枚举
+					mysql&gt; create table t15(en enum('','hello'));
+
+					--插入三条记录，其中第一条是空字符，最后一条因为没有包含在枚举中，所以也会自动转换成空字符
+					mysql&gt; insert into t15 values('');
+					mysql&gt; insert into t15 values('hello');
+					mysql&gt; insert into t15 values('sdfaf');
+
+					--使用索引1，看到的是空字符，这个空字符是枚举中的空字符
+					mysql&gt; select * from t15 where en=1;
+					+------+
+					| en   |
+					+------+
+					|      |
+					+------+
+
+					--使用索引0也会看到一个空字符，这个空字符是错误数据转化的
+					mysql&gt; select * from t15 where en=0;
+					+------+
+					| en   |
+					+------+
+					|      |
+					+------+
+
+					--如果这样看，根本不知道哪个空字符是错误的数据，所以应该尽量避免这种设计
+					mysql&gt; select * from t15;
+					+-------+
+					| en    |
+					+-------+
+					|       |
+					| hello |
+					|       |
+					+-------+
+					</pre>
+
+					<h2 id="How-to-create-a-set-column">0×2.MySQL如何创建set列</h2>
+					
+					<p>● set同enum类似，也可以声明多个有效值，但在set列中，插入数据时可以选择多个有效值，set类型占用的字节大小不是固定的，可占用1，2，3，4或8个字节，虽然set有最大8个字节的索引，但实际储存的value还受MySQL最大文件限制。</p>
+<p>请看下面实例：</p>
+					<pre class="brush: sql;">
+					--创建表t14，包含一列，此列包含4个可选成员，插入的数据只能是这些成员中的一个或几个，错误的数据输入同样会被转换成空字符
+					mysql&gt; create table t14(set_column set('a','b','c','d'));
+
+					--使用逗号分隔，可以选择多个成员
+					mysql&gt; insert into t14 values('a,b');
+					mysql&gt; insert into t14 values('a,d');
+					mysql&gt; insert into t14 values('a,d,c');
+
+					mysql&gt; select * from t14;
+					+------------+
+					| set_column |
+					+------------+
+					| a,b        |
+					| a,d        |
+					| a,c,d      |
+					+------------+
+					</pre>
+						
+				<!-- /正文 -->
+
+				<footer class="text-footer">
+					<p>
+						*转载请注明来自:<a title="晴刃-自由、互助、分享、专注计算机技术。" href="http://www.qingsword.com" target="_blank">晴刃(QingSword.COM)</a>
+					</p>
+					<p>*原文连接:<a title="[mysql基础文档]-11-数据类型之枚举型" href="http://www.qingsword.com/qing/1438.html" target="_blank">http://www.qingsword.com/qing/1438.html</a></p>
+				</footer>
+			</article>
+			<!-- /文章区 -->	
+		</div>
+	</div>
+	<!-- /content -->
+	
+	<!-- footer -->
+	<footer id="footer">
+		<div class="footer-container">
+			QingSword.COM &nbsp;<img src="../logo/by-nc-sa.png" alt="Creative Commons" title="Creative Commons">
+		</div>
+	</footer>
+	<!-- /footer -->
+</body>
+</html>
