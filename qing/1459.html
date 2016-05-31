@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<!--Copyright©QingSword.COM︻☼1010D>-->
+<html lang="zh-ch">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
+	<meta name="description" content="晴刃,是一个致力推广实用计算机技术的个人博客;我们分享计算机知识;为计算机系统以及网络安全防范做出一份贡献。【专注技术 创造价值 共同进步】">
+	<meta name="keywords" content="晴刃,晴,qing,qingsword,ccna图文笔记,ubuntu,linux,ubuntu server,mysql,node.js,javascript,python,计算机技术博客">
+	<title>[mysql基础文档]-18-如何创建View视图| QingSword.COM </title>
+	<link rel="shortcut icon" type="image/x-icon" href="../logo/favicon.ico">
+	<link rel="stylesheet" type="text/css" href="../css/basic.css">
+	<link rel="stylesheet" type="text/css" href="../css/text.css">
+	<!-- 代码块高亮js -->
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shCore.css"/>
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shThemeRDark.css"/>
+	 <script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shCore.js"></script>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shBrushSql.js"></script>
+	<script type="text/javascript">
+	SyntaxHighlighter.all();
+	</script>
+</head>
+<body>
+	<!--header -->
+	<header id="nav">
+			<div class="nav-container"> 
+				<!-- 根大纲-->
+				<a href="http://www.qingsword.com" title="晴刃">
+					<h1 class="nav-logo">晴刃</h1>
+				</a>
+				<h2 class="nav-site-description desc-hidden">
+					自由、互助、分享、专注计算机技术
+				</h2>
+				<nav class="nav-links"> 
+					<!-- nav连接大纲-->
+					<h1 style="display:none;">网站导航</h1> 
+					<ul>
+						<li  class="li-hidden">
+							<a href="../index.html" title="home">
+								<span class="link-word"><img src="../logo/home.png" alt="home" class="link-img">首页</span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../web.html" title="web">
+								<span class="link-word"><img src="../logo/web.png" alt="web" class="link-img">前端<span class="word-hidden">设计</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../system.html" title="system">
+								<span class="link-word"><img src="../logo/linux.png" alt="linux" class="link-img">系统<span class="word-hidden">应用</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../net.html" title="net">
+								<span class="link-word"><img src="../logo/net.png" alt="net" class="link-img">网络<span class="word-hidden">技术</span></span>
+							</a>
+						</li>
+						<li>
+							<a href="../sitemap.html" title="sitemap">
+								<span class="link-word"><img src="../logo/archives.png" alt="archives" class="link-img"><span class="word-hidden">文章</span>归档</span>
+							</a>
+						</li>
+					</ul>
+				</nav>
+			</div>		
+	</header>
+	<!-- /header -->
+
+	<!-- content-->
+	<div id="content">
+		<div class="content-container">
+			<!-- 文章区 -->
+			<article class="text-container">
+				<header class="text-header">
+					<h1>[mysql基础文档]-18-如何创建View视图</h1>	
+				</header><!-- /header -->
+				<section class="text-body">
+					<h2>引言</h2>
+					<p>视图View有两个基本功能；其一：简化查询，将一个复杂查询结果集储存为一个视图，能简化查询语句的复杂度；其二：权限控制，开放表中一部分列数据储存为视图，这样可以隐藏一些不想让外部看到的信息。</p>
+					<!-- 目录 -->
+					<h2>文章目录</h2>
+					<ul class="contents">	
+						 <li><a href="#How-to-create-a-view">0×1.如何创建视图</a></li>
+						 <li><a href="#View-Management">0×2.视图管理</a></li>
+						 <li><a href="#View-algorithm-Brief">0×3.视图算法简述</a></li>
+					 </ul>
+					<!-- /目录 -->
+
+					<!-- 正文 -->
+					<h2 id="How-to-create-a-view">0×1.如何创建视图</h2>
+
+					<p>View可以储存一条Select查询语句，当我们Select视图的时候，实际上就是调用了这条查询语句：</p>
+					<pre class="brush: sql;">
+					--创建表t28
+					mysql&gt; create table t28(
+					    -&gt; id int primary key auto_increment,
+					    -&gt; uname char(30) not null default ''
+					    -&gt; );
+
+					--插入三条记录
+					mysql&gt; insert into t28(uname) values('qingsword');
+					mysql&gt; insert into t28(uname) values('qingsword.com');
+					mysql&gt; insert into t28(uname) values('www.qingsword.com');
+
+					--完整的t28表内容
+					mysql&gt; select * from t28;
+					+----+-------------------+
+					| id | uname             |
+					+----+-------------------+
+					|  1 | qingsword         |
+					|  2 | qingsword.com     |
+					|  3 | www.qingsword.com |
+					+----+-------------------+
+
+					--现在我想将下面的这条语句查询到了id=2或3的结果集储存为一个视图，方便以后再查询或筛选
+					mysql&gt; select * from t28 where id=2 or id=3;
+					+----+-------------------+
+					| id | uname             |
+					+----+-------------------+
+					|  2 | qingsword.com     |
+					|  3 | www.qingsword.com |
+					+----+-------------------+
+
+					--view视图创建语法：
+					--create view [视图名称] as [原查询语句];
+					mysql&gt; create view v1 as select * from t28 where id=2 or id=3;
+
+					--这样v1就储存了上面那条select语句
+					mysql&gt; select * from v1;
+					+----+-------------------+
+					| id | uname             |
+					+----+-------------------+
+					|  2 | qingsword.com     |
+					|  3 | www.qingsword.com |
+					+----+-------------------+
+
+					--可以像对待一张表一样来对待这个视图v1，可以对它再进行where筛选查询
+					mysql&gt; select * from v1 where id=3;
+					+----+-------------------+
+					| id | uname             |
+					+----+-------------------+
+					|  3 | www.qingsword.com |
+					+----+-------------------+
+
+					--在show tables里面也可以看到v1这个名字，就好像一张真是存在的表一样
+					mysql&gt; show tables;
+					</pre>
+
+					<h2 id="View-Management">0×2.视图管理</h2>
+
+					<p>从第一部分的实例可以看出，既然View视图会出现在show tables里面，那应该怎么分辨这个名字对应的到底只是视图，还是一张完整的表呢？</p>
+					<p>● 可以通过show table status判断是view还是table</p>
+					<pre class="brush: sql;">
+					--如果不加where筛选，就是显示本数据库中所有表和视图的结构，本例仅显示v1的结构
+					mysql&gt; show table status where name='v1' \G
+					************** 1. row **************
+					           Name: v1
+					         Engine: NULL
+					        Version: NULL
+					        .............
+					        Comment: VIEW  &lt;-这一行是View，说明v1是一个视图，如果是表，Comment后面是空
+
+					--知道了v1是视图之后，可以show出它的创建语法，可以看到视图的显示编码utf8，创建语法，使用的算法ALGORITHM=UNDEFINED，在本文第三部分介绍
+					mysql&gt; show create view v1 \G
+					************** 1. row **************
+					                View: v1
+					         Create View: CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `v1` AS select `t28`.`id` AS `id`,`t28`.`uname` AS `uname` from `t28` where ((`t28`.`id` = 2) or (`t28`.`id` = 3))
+					character_set_client: utf8
+					collation_connection: utf8_general_ci
+					</pre>
+					<p>● 修改视图：</p>
+					<p class="indent-p">
+						修改真实表数据会同时影响视图显示，因为视图只是真实表的一个投影；与此相对，对视图的修改会出现两种情况，如果视图是和真实表一一对应，那么可以通过修改视图来修改真实表数据；但如果视图是真实表的几列通过某些计算得到的结果集，那么不能对这个视图进行任何修改，请看下面的实例；
+					</p>
+					<pre class="brush: sql;">
+					--现在创建t29，设置3列，第一列储存产品种类id，第二列储存产品名称，第三列储存产品价格
+					mysql&gt; create table t29(
+					    -&gt; product_id int not null default 0,
+					    -&gt; product_name varchar(100) not null default '',
+					    -&gt; product_price decimal(8,2) not null default 0.00
+					    -&gt; );
+
+					--插入三条记录
+					mysql&gt; insert into t29 values(1,'iPhone4',4333.12);
+					mysql&gt; insert into t29 values(1,'iPhone4s',4999.86);
+					mysql&gt; insert into t29 values(2,'iPhone6',5666.18);
+
+					mysql&gt; select * from t29;
+					+------------+--------------+---------------+
+					| product_id | product_name | product_price |
+					+------------+--------------+---------------+
+					|          1 | iPhone4      |       4333.12 |
+					|          1 | iPhone4s     |       4999.86 |
+					|          2 | iPhone6      |       5666.18 |
+					+------------+--------------+---------------+
+
+					--创建视图v2，这是一个与t29每条记录数据一一对应的视图
+					mysql&gt; create view v2 as select * from t29 where product_id=1;
+
+					mysql&gt; select * from v2;
+					+------------+--------------+---------------+
+					| product_id | product_name | product_price |
+					+------------+--------------+---------------+
+					|          1 | iPhone4      |       4333.12 |
+					|          1 | iPhone4s     |       4999.86 |
+					+------------+--------------+---------------+
+
+					--创建视图v3，以产品种类id分组，对产品价格做avg()运算（求平均值），这种视图是经过运算得到的，不可能和t29数据一一对应
+					mysql&gt; create view v3 as select product_id,avg(product_price) from t29 group by product_id;
+
+					mysql&gt; select * from v3;
+					+------------+--------------------+
+					| product_id | avg(product_price) |
+					+------------+--------------------+
+					|          2 |        5666.180000 |
+					|          1 |        4666.490000 |
+					+------------+--------------------+
+
+					--现在对v3进行修改，报错了
+					mysql&gt; update v3 set product_id=3 where avg(product_price)=4666.49;
+					ERROR 1288 (HY000): The target table v3 of the UPDATE is not updatable
+
+					--对v2进行修改，修改被写入t29
+					mysql&gt; update v2 set product_price=4111 where product_name='iPhone4';
+
+					--查看修改的记录
+					mysql&gt; select * from t29 where product_name='iphone4';
+					+------------+--------------+---------------+
+					| product_id | product_name | product_price |
+					+------------+--------------+---------------+
+					|          1 | iPhone4      |       4111.00 |
+					+------------+--------------+---------------+
+
+					--与此同时，v3因为是对原表数据进行计算得到的，当原表数据改变时，运算结果也会改变
+					mysql&gt; select * from v3;
+					+------------+--------------------+
+					| product_id | avg(product_price) |
+					+------------+--------------------+
+					|          2 |        5666.180000 |
+					|          1 |        4555.430000 |
+					+------------+--------------------+
+					</pre>
+					<p>P.S：上面这个实例出现了前面并没有介绍到的一些查询语句以及运算函数，这些会在后面的文章详细介绍，这里只要明白在什么情况下视图是可修改，对可修改视图的修改会被写入原表，明白这些就可以了。</p>
+					<p>● 删除视图，可以使用drop，如同删除表一样：</p>
+					<pre class="brush: sql;">
+					mysql&gt; drop view v1;
+					</pre>
+
+					<h2 id="View-algorithm-Brief">0×3.视图算法简述t</h2>
+					
+					<p>view实际上只是储存了创建时候的查询语句，当我们对视图再次筛选查询的时候，数据库会根据创建视图时候的复杂度自动选择是使用什么算法来执行你的查询，一般分为两种，merge算法以及temptable算法；</p>
+					<p>● merge算法</p>
+					<p class="indent-p">
+						将储存的视图查询语句和第二次对视图本身的查询的语句进行合并（merge）；
+					</p>
+					<pre class="brush: sql;">
+					--如果创建的是简单的视图，比如第2小节中的v2，语句不是很复杂,也没有对列进行复杂计算，这时数据库将选择使用merge算法查询
+					mysql&gt; select * from v2 where product_name='iPhone4';
+					+------------+--------------+---------------+
+					| product_id | product_name | product_price |
+					+------------+--------------+---------------+
+					|          1 | iPhone4      |       4111.00 |
+					+------------+--------------+---------------+
+
+					--merge算法将创建v2时的查询部分和现在这条对v2的查询语句进行拼接，得到最终查询语句
+					--（select * from t29 where product_id=1）和（select * from v2 where product_name='iPhone4'）拼接得到
+					--select * from t29 where product_id=1 and product_name='iPhone4';
+					</pre>
+					<p>● temptable算法</p>
+					<p class="indent-p">
+						但有时，我们创建视图的时候语句复杂，比如v3(实际可能比这更加复杂)，对这种复杂视图查询时，数据库就可能使用temptable算法查询；
+					</p>
+					<p class="indent-p">
+						temptable算法将声明v3时的select语句先在内存中运行，得到一个结果集表，再对内存中的这个结果集表进行二次查询；
+					</p>
+					<pre class="brush: sql;">
+					--对v3的avg列进行asc排序，asc排序将此列结果从小到大排列
+					mysql&gt; select * from v3 order by product_id asc;
+					+------------+--------------------+
+					| product_id | avg(product_price) |
+					+------------+--------------------+
+					|          1 |        4555.430000 |
+					|          2 |        5666.180000 |
+					+------------+--------------------+
+
+					--使用temptable算法查询时，数据库先将创建v3时的select语句（select product_id,avg(product_price) from t29 group by product_id;）在内存中运行，得到结果集（一张查询后的结果表），然后对内存中的此表，再使用（select * from 内存中的表 order by product_id asc;）,得到最后的结果。
+					</pre>
+					<p>这就是不同复杂度下查询视图，数据库可能做出的两种查询算法选择。</p>
+						
+				<!-- /正文 -->
+
+				<footer class="text-footer">
+					<p>
+						*转载请注明来自:<a title="晴刃-自由、互助、分享、专注计算机技术。" href="http://www.qingsword.com" target="_blank">晴刃(QingSword.COM)</a>
+					</p>
+					<p>*原文连接:<a title="[mysql基础文档]-18-如何创建View视图" href="http://www.qingsword.com/qing/1459.html" target="_blank">http://www.qingsword.com/qing/1459.html</a></p>
+				</footer>
+			</article>
+			<!-- /文章区 -->	
+		</div>
+	</div>
+	<!-- /content -->
+	
+	<!-- footer -->
+	<footer id="footer">
+		<div class="footer-container">
+			QingSword.COM &nbsp;<img src="../logo/by-nc-sa.png" alt="Creative Commons" title="Creative Commons">
+		</div>
+	</footer>
+	<!-- /footer -->
+</body>
+</html>

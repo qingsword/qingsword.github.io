@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<!--Copyright©QingSword.COM︻☼1010D>-->
+<html lang="zh-ch">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
+	<meta name="description" content="晴刃,是一个致力推广实用计算机技术的个人博客;我们分享计算机知识;为计算机系统以及网络安全防范做出一份贡献。【专注技术 创造价值 共同进步】">
+	<meta name="keywords" content="晴刃,晴,qing,qingsword,ccna图文笔记,ubuntu,linux,ubuntu server,mysql,node.js,javascript,python,计算机技术博客">
+	<title>[mysql基础文档]-22-如何创建索引| QingSword.COM </title>
+	<link rel="shortcut icon" type="image/x-icon" href="../logo/favicon.ico">
+	<link rel="stylesheet" type="text/css" href="../css/basic.css">
+	<link rel="stylesheet" type="text/css" href="../css/text.css">
+	<!-- 代码块高亮js -->
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shCore.css"/>
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shThemeRDark.css"/>
+	 <script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shCore.js"></script>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shBrushSql.js"></script>
+	<script type="text/javascript">
+	SyntaxHighlighter.all();
+	</script>
+</head>
+<body>
+	<!--header -->
+	<header id="nav">
+			<div class="nav-container"> 
+				<!-- 根大纲-->
+				<a href="http://www.qingsword.com" title="晴刃">
+					<h1 class="nav-logo">晴刃</h1>
+				</a>
+				<h2 class="nav-site-description desc-hidden">
+					自由、互助、分享、专注计算机技术
+				</h2>
+				<nav class="nav-links"> 
+					<!-- nav连接大纲-->
+					<h1 style="display:none;">网站导航</h1> 
+					<ul>
+						<li  class="li-hidden">
+							<a href="../index.html" title="home">
+								<span class="link-word"><img src="../logo/home.png" alt="home" class="link-img">首页</span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../web.html" title="web">
+								<span class="link-word"><img src="../logo/web.png" alt="web" class="link-img">前端<span class="word-hidden">设计</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../system.html" title="system">
+								<span class="link-word"><img src="../logo/linux.png" alt="linux" class="link-img">系统<span class="word-hidden">应用</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../net.html" title="net">
+								<span class="link-word"><img src="../logo/net.png" alt="net" class="link-img">网络<span class="word-hidden">技术</span></span>
+							</a>
+						</li>
+						<li>
+							<a href="../sitemap.html" title="sitemap">
+								<span class="link-word"><img src="../logo/archives.png" alt="archives" class="link-img"><span class="word-hidden">文章</span>归档</span>
+							</a>
+						</li>
+					</ul>
+				</nav>
+			</div>		
+	</header>
+	<!-- /header -->
+
+	<!-- content-->
+	<div id="content">
+		<div class="content-container">
+			<!-- 文章区 -->
+			<article class="text-container">
+				<header class="text-header">
+					<h1>[mysql基础文档]-22-如何创建索引</h1>	
+				</header><!-- /header -->
+				<section class="text-body">
+					<h2>引言</h2>
+					<p>MySQL中的索引就是一个高效组织的数据结构，能够提高数据检索的速度。</p>
+					<!-- 目录 -->
+					<h2>文章目录</h2>
+					<ul class="contents">	
+						 <li><a href="#Index-Introduction">0×1.MySQL索引简介</a></li>
+						 <li><a href="#Index-Case">0×2.索引实例</a></li>
+						 <li class="subli"><a href="#General-index">a.普通索引</a></li>
+						 <li class="subli"><a href="#Primary-key-index">b.主键索引</a></li>
+						 <li class="subli"><a href="#Unique-key-index">c.唯一索引</a></li>
+						 <li class="subli"><a href="#Full-text-index">d.全文索引</a></li>
+						 <li class="subli"><a href="#Multi-column-index">e.多列索引</a></li>
+						 <li><a href="#Index-Management">0×3.索引管理</a></li>
+						 
+					 </ul>
+					<!-- /目录 -->
+
+					<!-- 正文 -->
+					<h2 id="Index-Introduction">0×1.MySQL索引简介</h2>
+
+					<p>索引的存放位置，对于Innodb储存引擎的表，索引会根据MySQL配置，集中存放在一个文件中，前面已经介绍过，而对于Myisam储存引擎的表，索引信息单独储存在表的.MYI文件中；</p>
+					<p>Index文件中不仅仅储存了要查询的数据的索引值，在索引值的下面还有这个索引所对应数据的指针信息，指向数据库文件真实数据位置，简单的说，索引就相当于书本的目录章节和对应页码，数据库可以根据章节标题和页码寻找对应数据，加快查询速度；</p>
+					<p>MySQL有以下几种常用索引：</p>
+					<p class="indent-p">
+						普通索引<br>
+						主键索引<br>
+						唯一索引<br>
+						全文索引<br>
+						多列索引<br>
+					</p>
+					<p>一般将索引添加在查询频繁且重复度低的列上，实际上主键索引和唯一索引就是本系列文章前面所介绍的"主键约束"和"Unique约束"，这两种约束就是两种特殊索引。</p>
+
+					<h2 id="Index-Case">0×2.索引实例</h2>
+					<h3 id="General-index">a.普通索引</h3>
+
+					<p>创建普通索引：</p>
+					<pre class="brush: sql;">
+					--在所有列声明后面，添加"key 索引名称(要索引的列名称)"，一般索引名称和被索引的列名称相同即可
+					mysql&gt; create table t52(id int,tx text,key id(id));
+
+					--将id列设置成主键索引，将tx列设置成普通索引并设置索引长度，tx(6)表示只取tx字段前六个字符成为索引依据（相当于一本书的目录，而目录每一行标题都只有六个字后面是对应页码）
+					mysql&gt; create table t54(id int primary key,tx text,key tx(tx(6)));
+
+					--普通索引在表结构中Key字段是MUL，主键不用多说自然是PRI了
+					mysql&gt; desc t54;
+					+-------+---------+------+-----+---------+-------+
+					| Field | Type    | Null | Key | Default | Extra |
+					+-------+---------+------+-----+---------+-------+
+					| id    | int(11) | NO   | PRI | NULL    |       |
+					| tx    | text    | YES  | MUL | NULL    |       |
+					+-------+---------+------+-----+---------+-------+
+					</pre>
+
+					<h3 id="Primary-key-index">b.主键索引</h3>
+
+					<p>主键索引又叫"主键约束"，前面的文章都有详细说明，实例：</p>
+					<pre class="brush: sql;">
+					--将id列设置为主键索引列，两种写法都可以
+					mysql&gt; create table t54(id int,tx text,primary key(id));
+					--或
+					mysql&gt; create table t54(id int primary key,tx text);
+					</pre>
+
+					<h3 id="Unique-key-index">c.唯一索引</h3>
+
+					<p>唯一索引又叫"Unique约束"前面已经详细介绍过，实例：</p>
+					<pre class="brush: sql;">
+					--将id列设置为唯一索引列，两种写法都可以
+					mysql&gt; create table t55(id int,tx text,unique key(id));
+					--或
+					mysql&gt; create table t55(id int unique key,tx text);
+					</pre>
+
+					<h3 id="Full-text-index">d.全文索引</h3>
+
+					<p>全文索引只对使用空格分隔字符的语言环境有效，比如英文是一条句子中每个单词中间有空格，而中文字符之间是没有空格的，另外，全文索引在MySQL5.6.4之前的版本中，只有Myisam引擎的表才能支持全文索引，但MySQL5.6.10版本后，InnoDB也能支持这种索引技术了，请看下面的实例：</p>
+					<pre class="brush: sql;">
+					--显示当前的MySQL版本
+					mysql&gt; select version();
+					+-------------------------+
+					| version()               |
+					+-------------------------+
+					| 5.5.43-0ubuntu0.14.04.1 |
+					+-------------------------+
+
+					--因为本地的版本低于5.6.4，所以只好在创建表的时候指定Myisam引擎，否则是不能使用fulltext参数的，全文索引的添加与普通索引语法没什么区别
+					mysql&gt; create table t56(id int primary key,tx text,fulltext key tx(tx)) engine=myisam;
+
+					mysql&gt; desc t56;
+					+-------+---------+------+-----+---------+-------+
+					| Field | Type    | Null | Key | Default | Extra |
+					+-------+---------+------+-----+---------+-------+
+					| id    | int(11) | NO   | PRI | NULL    |       |
+					| tx    | text    | YES  | MUL | NULL    |       |
+					+-------+---------+------+-----+---------+-------+
+					</pre>
+
+					<h3 id="Multi-column-index">e.多列索引</h3>
+
+					<p>时候需要将数据分开储存便于管理，但有时候又需要将他们看成一个整体索引查询，这个时候就可以使用多列索引：</p>
+					<pre class="brush: sql;">
+					--创建多列索引，在所有列声明的最后使用"key 多列索引自定义名称(索引列1,索引列2,....)"，用逗号分隔需要一起索引的全部列
+					mysql&gt; create table t57(firstname varchar(100),lastname varchar(100),key fandl(firstname,lastname));
+
+					--插入两条记录
+					mysql&gt; insert into t57 values('www.qingsword.com','qingsword');
+					mysql&gt; insert into t57 values('qingsword.com','qingsword');
+
+
+					--使用explain查看后面的select语句使用了哪些索引，explain也可以测试上面的普通索引等，看索引到底有没有被数据库用上，possible_keys和key说明这条查询语句用上了我们上面创建的fandl多列索引
+					mysql&gt; explain select * from t57 where firstname='qingsword.com' and lastname='qingsword' \G
+					************* 1. row *************
+					           id: 1
+					  select_type: SIMPLE
+					        table: t57
+					         type: ref
+					possible_keys: fandl
+					          key: fandl
+					      key_len: 606
+					          ref: const,const
+					         rows: 1
+					        Extra: Using where; Using index
+					</pre>
+					<p>不论查找过程中列名称如何前后排序，MySQL都能正确的组合，并且使用到正确的索引，前提是多列索引中位于开头的那些数据要包含在其中；假设有三段数据a,b,c都加入了多列索引（key keyName(a,b,c)），而我们仅仅b and c就不会主动去使用多列索引，但我们只要包含a,不论后面是c还是b,或仅仅只有a，都能主动使用多列索引查询；</p>
+					<p>这就是数据库中"左前缀"的概念，比如有一段数据‘ABCDEF’加入了索引，现在我们查询前面ABC这一部分，数据库可以根据索引去查找ABC开头的数据，但是我只知道DEF这一部分，数据库就不会主动使用索引去查找，因为索引中没有DEF开头的数据。</p>
+					<pre class="brush: sql;">
+					--仅使用多列索引后面的部分查询，并没有包含"左前缀"
+					mysql&gt; explain select * from t57 where lastname='qingsword' \G
+					************* 1. row *************
+					           id: 1
+					  select_type: SIMPLE
+					        table: t57
+					         type: index
+					possible_keys: NULL  --显示没有可用的索引
+					          key: fandl 
+					          --那么这里为什么会显示用到了索引呢？数据库中有个概念叫做"索引覆盖"，当被查询的列的值被包含在某个索引中时，数据库会根据这个包含关系找到对应的那个索引，再根据那个索引去找数据，类似于一个被动索引查找的过程，并非一开始就使用索引去查找。
+
+					mysql&gt; explain select * from t57 where firstname='qingsword.com' \G
+					************* 1. row *************
+					possible_keys: fandl --使用"左前缀"查找，会主动去使用索引
+					          key: fandl
+
+
+					mysql&gt; explain select * from t57 where lastname='qingsword' and firstname='qingsword.com' \G
+					************* 1. row *************
+					possible_keys: fandl 
+					--只要where中包含"左前缀"数据，and前后的位置并不会影响主动使用索引查找
+					          key: fandl
+					</pre>
+
+					<h2 id="Index-Management">0×3.索引管理</h2>
+					
+					<p>● 查看表索引信息</p>
+					<pre class="brush: sql;">
+					--查看上面创建的t56表的索引
+					mysql&gt; show index from t56 \G
+					************* 1. row *************
+					        Table: t56
+					   Non_unique: 0
+					     Key_name: PRIMARY --id列，主键索引
+
+					************* 1. row *************
+					        Table: t56
+					   Non_unique: 1
+					     Key_name: tx 
+					 Seq_in_index: 1
+					  Column_name: tx
+					   Index_type: FULLTEXT--tx列，多列索引
+					</pre>
+					<p>● 删除表索引信息</p>
+					<pre class="brush: sql;">
+					--删除普通索引和多列索引以及全文索引都可以使用下面两种方法
+					--方法一
+					--语法：drop index 索引名称 on 表名称;
+					mysql&gt; drop index tx on t56;
+
+					--方法二
+					--语法：alter table 表名称 drop index 索引名称;
+					mysql&gt; alter table t52 drop index id;
+
+					--主键索引和唯一索引删除方法相同，以主键索引为例
+					--语法：alter table 表名称 drop [primary key|unique key];
+					mysql&gt; alter table t56 drop primary key;
+					</pre>
+					<p>● 追加索引信息</p>
+					<pre class="brush: sql;">
+					--给t52表id列再次添加上普通索引
+					mysql&gt; alter table t52 add key id(id);
+					--或，效果同上
+					mysql&gt; alter table t52 add index id(id);
+
+					--给t56表添加主键索引
+					mysql&gt; alter table t56 add primary key(id);
+					--或添加唯一索引
+					mysql&gt; alter table t56 add unique key(id);
+
+					--多列索引添加语法
+					mysql&gt; alter table 表名称 add key(列1,列2,列3,...);
+
+					--全文索引添加语法
+					mysql&gt; alter table 表名称 add fulltext key(列名称);
+					</pre>
+
+				<!-- /正文 -->
+
+				<footer class="text-footer">
+					<p>
+						*转载请注明来自:<a title="晴刃-自由、互助、分享、专注计算机技术。" href="http://www.qingsword.com" target="_blank">晴刃(QingSword.COM)</a>
+					</p>
+					<p>*原文连接:<a title="[mysql基础文档]-22-如何创建索引" href="http://www.qingsword.com/qing/1492.html"  target="_blank">http://www.qingsword.com/qing/1492.html</a></p>
+				</footer>
+			</article>
+			<!-- /文章区 -->	
+		</div>
+	</div>
+	<!-- /content -->
+	
+	<!-- footer -->
+	<footer id="footer">
+		<div class="footer-container">
+			QingSword.COM &nbsp;<img src="../logo/by-nc-sa.png" alt="Creative Commons" title="Creative Commons">
+		</div>
+	</footer>
+	<!-- /footer -->
+</body>
+</html>

@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<!--Copyright©QingSword.COM︻☼1010D>-->
+<html lang="zh-ch">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
+	<meta name="description" content="晴刃,是一个致力推广实用计算机技术的个人博客;我们分享计算机知识;为计算机系统以及网络安全防范做出一份贡献。【专注技术 创造价值 共同进步】">
+	<meta name="keywords" content="晴刃,晴,qing,qingsword,ccna图文笔记,ubuntu,linux,ubuntu server,mysql,node.js,javascript,python,计算机技术博客">
+	<title>[mysql基础文档]-23-数据库事务| QingSword.COM </title>
+	<link rel="shortcut icon" type="image/x-icon" href="../logo/favicon.ico">
+	<link rel="stylesheet" type="text/css" href="../css/basic.css">
+	<link rel="stylesheet" type="text/css" href="../css/text.css">
+	<!-- 代码块高亮js -->
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shCore.css"/>
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shThemeRDark.css"/>
+	 <script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shCore.js"></script>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shBrushSql.js"></script>
+	<script type="text/javascript">
+	SyntaxHighlighter.all();
+	</script>
+</head>
+<body>
+	<!--header -->
+	<header id="nav">
+			<div class="nav-container"> 
+				<!-- 根大纲-->
+				<a href="http://www.qingsword.com" title="晴刃">
+					<h1 class="nav-logo">晴刃</h1>
+				</a>
+				<h2 class="nav-site-description desc-hidden">
+					自由、互助、分享、专注计算机技术
+				</h2>
+				<nav class="nav-links"> 
+					<!-- nav连接大纲-->
+					<h1 style="display:none;">网站导航</h1> 
+					<ul>
+						<li  class="li-hidden">
+							<a href="../index.html" title="home">
+								<span class="link-word"><img src="../logo/home.png" alt="home" class="link-img">首页</span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../web.html" title="web">
+								<span class="link-word"><img src="../logo/web.png" alt="web" class="link-img">前端<span class="word-hidden">设计</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../system.html" title="system">
+								<span class="link-word"><img src="../logo/linux.png" alt="linux" class="link-img">系统<span class="word-hidden">应用</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../net.html" title="net">
+								<span class="link-word"><img src="../logo/net.png" alt="net" class="link-img">网络<span class="word-hidden">技术</span></span>
+							</a>
+						</li>
+						<li>
+							<a href="../sitemap.html" title="sitemap">
+								<span class="link-word"><img src="../logo/archives.png" alt="archives" class="link-img"><span class="word-hidden">文章</span>归档</span>
+							</a>
+						</li>
+					</ul>
+				</nav>
+			</div>		
+	</header>
+	<!-- /header -->
+
+	<!-- content-->
+	<div id="content">
+		<div class="content-container">
+			<!-- 文章区 -->
+			<article class="text-container">
+				<header class="text-header">
+					<h1>[mysql基础文档]-23-数据库事务</h1>	
+				</header><!-- /header -->
+				<section class="text-body">
+					<h2>引言</h2>
+					<p>"MySQL事务"是一个过程，具有隔离性，原子性，一致性，持久性；通俗的讲，所有在"MySQL事务"过程中的操作在提交之前，都没有被真实的写入数据库，类似于数据库的一个"沙盒"。</p>
+					<!-- 目录 -->
+					<h2>文章目录</h2>
+					<ul class="contents">	
+						 <li><a href="#Transation-Brief-introduction">0×1.MySQL事务简介</a></li>
+						 <li><a href="#Transation-Examples">0×2.MySQL事务实例</a></li>
+					 </ul>
+					<!-- /目录 -->
+
+					<!-- 正文 -->
+					<h2 id="Transation-Brief-introduction">0×1.MySQL事务简介</h2>
+
+					<p>所有对数据库的修改在"沙盒"过程中是不会影响到真实数据的，只有使用commit命令提交后，这个沙盒过程中对数据库的修改才会真正被写入数据库；</p>
+					<p>MySQL事务具有以下特性：</p>
+					<p class="indent-p">
+						原子性（Atomic）：一个事务包含多个操作，这些操作要么全部执行，要么全都不执行，这取决于最后会不会执行commit命令；<br>
+						一致性（Consistency）：一致性是指事务使得系统从一个一致的状态转换到另一个一致状态；<br>
+						隔离性（Isolation）：并发事务之间互相影响的程度，比如一个事务会不会读取到另一个未提交的事务修改的数据；<br>
+						持久性（Durability）：事务提交后，对系统的影响是永久的；
+					</p>
+					<p>下面给出一个简单实例，让大家能更好的理解这些理论。</p>
+
+					<h2 id="Transation-Examples">0×2.MySQL事务实例</h2>
+					
+					<p>只有InnoDB引擎才支持事务，请看下面的实例：</p>
+					<pre class="brush: sql;">
+					--创建一个表bank，声明两个int字段，默认值都是0，现在假设当前连接到数据库的这个窗口是银行柜台工作人员，在这个银行中有两个账户，分别是A_money和B_money
+					mysql&gt; create table bank(A_money int not null default 0,B_money int not null default 0) engine=Innodb;
+
+					--此时，A来到银行，存了5000元到自己的账户，并且他想给B汇款1000元
+					mysql&gt; #银行窗口
+					mysql&gt; insert into bank(A_money) values(5000);
+
+					--在没有汇款前，两个账户的资金是这样的
+					mysql&gt; select * from bank;
+					+---------+---------+
+					| A_money | B_money |
+					+---------+---------+
+					|    5000 |       0 |
+					+---------+---------+
+
+					--如果此时银行窗口不使用事务，直接给A账户减去1000，给B账户加上1000
+					mysql&gt; #银行窗口
+					mysql&gt; update bank set A_money=A_money-1000;
+					mysql&gt; update bank set B_money=B_money+1000;
+
+					--在操作之后，打开另一个终端并且连上这个数据库，假设这个终端就是B使用的自动取款机终端
+					www@qingsword.com:~$ mysql -u root -p
+					Enter password: 
+					mysql&gt; use qingsword_com;
+
+					mysql&gt; #自动取款机终端
+					--在这个终端中查看bank表数据，钱已经打过来了，此时B立刻可以取走这笔钱
+					mysql&gt; select * from bank;
+					+---------+---------+
+					| A_money | B_money |
+					+---------+---------+
+					|    4000 |    1000 |
+					+---------+---------+
+
+					--当B取走这笔钱之后，在银行柜台前准备签字确认汇款的A说"对不起，我想取消这次汇款"，就这样，银行损失1000元；当然，这只是个故事，下面让我们用事务来进行一次上面的操作
+
+					--这次的银行是bank6，同样两个账户
+					mysql&gt; create table bank6(A_money int not null default 0,B_money int not null default 0);
+
+					--A来到银行，存了5000元到自己的账户，并且他想给B汇款1000元
+					mysql&gt; #银行窗口
+					mysql&gt; insert into bank6(A_money) values(5000);
+
+					--bank6因为很6，所以吸取了bank的教训，启用了事务过程
+					mysql&gt; #银行窗口
+					mysql&gt; start transaction; --启用事务
+
+					mysql&gt; update bank6 set A_money=A_money-1000;
+					mysql&gt; update bank6 set B_money=B_money+1000;
+
+					--在事务过程中的所有修改并没有真正写入数据库，这个时候，银行柜台给A看了这个结果，并且告诉他，你可以签字确定汇款了
+					mysql&gt; select * from bank6;
+					+---------+---------+
+					| A_money | B_money |
+					+---------+---------+
+					|    4000 |    1000 |
+					+---------+---------+
+
+					--新打开一个终端，模拟此时站在自动取款机前的B
+					www@qingsword.com:~$ mysql -u root -p
+					Enter password: 
+					mysql&gt; use qingsword_com;
+
+					mysql&gt; #自动取款机终端
+					--这个新终端中select的结果是这样的，并没有改变
+					mysql&gt; select * from bank6;
+					+---------+---------+
+					| A_money | B_money |
+					+---------+---------+
+					|    5000 |       0 |
+					+---------+---------+
+
+					--这个时候A以为大功告成，放弃签字确认，他说"我想取消汇款"，柜台工作人员微微一笑，输入了rollback命令，rollback命令可以让对数据库的修改回到"start transaction;"这条命令之前的状态，所有"start transaction;"之后的操作都不会被写入数据库
+					mysql&gt; #银行窗口
+					mysql&gt;rollback;
+					mysql&gt; select * from bank6;
+					+---------+---------+
+					| A_money | B_money |
+					+---------+---------+
+					|    5000 |       0 |
+					+---------+---------+
+
+					--只有当输入了下面的命令，提交事务，事务中所有的操作才会被写入数据库，也就是说A如果签字确认汇款，此时可以输入这条命令，与此同时"自动取款机终端"再次select时，就会发现B_money增加了1000。
+					mysql&gt; commit;
+					</pre>
+					<p>事务过程总结：</p>
+					<pre class="brush: sql;">
+					--开始事务过程
+					mysql&gt; start transaction;
+					--对数据的修改操作
+					--事务过程终止，对数据库的所有操作退回事务开始之前的状态
+					mysql&gt; rollback;
+
+					--开始事务过程
+					mysql&gt; start transaction;
+					--对数据的修改操作
+					--事务过程终止，对数据库的所有操作全部写入数据库
+					mysql&gt; commit;
+					</pre>
+					<p>P.s：利用事务的好处是，当事务中出现严重的数据库操作失误的时候，可以使用rollback回到事务启动前状态，只有当使用commit之后，才会将事务中的操作应用到数据库。</p>
+						
+				<!-- /正文 -->
+
+				<footer class="text-footer">
+					<p>
+						*转载请注明来自:<a title="晴刃-自由、互助、分享、专注计算机技术。" href="http://www.qingsword.com" target="_blank">晴刃(QingSword.COM)</a>
+					</p>
+					<p>*原文连接:<a title="[mysql基础文档]-23-数据库事务" href="http://www.qingsword.com/qing/1498.html" target="_blank">http://www.qingsword.com/qing/1498.html</a></p>
+				</footer>
+			</article>
+			<!-- /文章区 -->	
+		</div>
+	</div>
+	<!-- /content -->
+	
+	<!-- footer -->
+	<footer id="footer">
+		<div class="footer-container">
+			QingSword.COM &nbsp;<img src="../logo/by-nc-sa.png" alt="Creative Commons" title="Creative Commons">
+		</div>
+	</footer>
+	<!-- /footer -->
+</body>
+</html>

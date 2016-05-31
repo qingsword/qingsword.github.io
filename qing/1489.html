@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<!--Copyright©QingSword.COM︻☼1010D>-->
+<html lang="zh-ch">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
+	<meta name="description" content="晴刃,是一个致力推广实用计算机技术的个人博客;我们分享计算机知识;为计算机系统以及网络安全防范做出一份贡献。【专注技术 创造价值 共同进步】">
+	<meta name="keywords" content="晴刃,晴,qing,qingsword,ccna图文笔记,ubuntu,linux,ubuntu server,mysql,node.js,javascript,python,计算机技术博客">
+	<title>[mysql基础文档]-21-中文乱码原理与解决方法| QingSword.COM </title>
+	<link rel="shortcut icon" type="image/x-icon" href="../logo/favicon.ico">
+	<link rel="stylesheet" type="text/css" href="../css/basic.css">
+	<link rel="stylesheet" type="text/css" href="../css/text.css">
+	<!-- 代码块高亮js -->
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shCore.css"/>
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shThemeRDark.css"/>
+	 <script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shCore.js"></script>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shBrushSql.js"></script>
+	<script type="text/javascript">
+	SyntaxHighlighter.all();
+	</script>
+</head>
+<body>
+	<!--header -->
+	<header id="nav">
+			<div class="nav-container"> 
+				<!-- 根大纲-->
+				<a href="http://www.qingsword.com" title="晴刃">
+					<h1 class="nav-logo">晴刃</h1>
+				</a>
+				<h2 class="nav-site-description desc-hidden">
+					自由、互助、分享、专注计算机技术
+				</h2>
+				<nav class="nav-links"> 
+					<!-- nav连接大纲-->
+					<h1 style="display:none;">网站导航</h1> 
+					<ul>
+						<li  class="li-hidden">
+							<a href="../index.html" title="home">
+								<span class="link-word"><img src="../logo/home.png" alt="home" class="link-img">首页</span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../web.html" title="web">
+								<span class="link-word"><img src="../logo/web.png" alt="web" class="link-img">前端<span class="word-hidden">设计</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../system.html" title="system">
+								<span class="link-word"><img src="../logo/linux.png" alt="linux" class="link-img">系统<span class="word-hidden">应用</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../net.html" title="net">
+								<span class="link-word"><img src="../logo/net.png" alt="net" class="link-img">网络<span class="word-hidden">技术</span></span>
+							</a>
+						</li>
+						<li>
+							<a href="../sitemap.html" title="sitemap">
+								<span class="link-word"><img src="../logo/archives.png" alt="archives" class="link-img"><span class="word-hidden">文章</span>归档</span>
+							</a>
+						</li>
+					</ul>
+				</nav>
+			</div>		
+	</header>
+	<!-- /header -->
+
+	<!-- content-->
+	<div id="content">
+		<div class="content-container">
+			<!-- 文章区 -->
+			<article class="text-container">
+				<header class="text-header">
+					<h1>[mysql基础文档]-21-中文乱码原理与解决方法</h1>	
+				</header><!-- /header -->
+				<section class="text-body">
+					<h2>引言</h2>
+					<p>本文以MySQL字符集转换储存原理为基础，提供了MySQL中文乱码以及网页中文乱码的解决方法。</p>
+					<!-- 目录 -->
+					<h2>文章目录</h2>
+					<ul class="contents">	
+						 <li><a href="#Character-Set-Stored-Procedures">0×1.MySQL字符集转换过程</a></li>
+						 <li><a href="#Character-display-case-study">0×2.MySQL中文乱码实例分析</a></li>
+						 <li><a href="#Pages-garbled-solve">0×3.网页乱码解决方法</a></li>
+					 </ul>
+					<!-- /目录 -->
+
+					<!-- 正文 -->
+					<h2 id="Character-Set-Stored-Procedures">0×1.MySQL字符集转换过程</h2>
+
+					<p>先来简单看看MySQL是如何将我们输入的中文储存在数据库中的，了解这一部分内容对理解乱码产生的原因很有帮助，也更容易理解本文后面的内容。</p>
+					<p>●  MySQL系统变量中的字符集</p>
+					<pre class="brush: sql;">
+					--使用下面的命令，查看安装MySQL后默认的字符集转换参数
+					mysql&gt; show variables like '%char%';
+					+--------------------------+----------------------------+
+					| Variable_name            | Value                      |
+					+--------------------------+----------------------------+
+					| character_set_client     | utf8                       |
+					| character_set_connection | utf8                       |
+					| character_set_database   | latin1                     |
+					| character_set_filesystem | binary                     |
+					| character_set_results    | utf8                       |
+					| character_set_server     | latin1                     |
+					| character_set_system     | utf8                       |
+					| character_sets_dir       | /usr/share/mysql/charsets/ |
+					+--------------------------+----------------------------+
+					</pre>
+					<p>参数解析：</p>
+					<p class="indent-p">
+						character_set_server：默认的内部操作字符集；<br>
+						character_set_client：客户端来源数据使用的字符集；<br>
+						character_set_connection：连接层字符集；<br>
+						character_set_results：查询结果字符集；<br>
+						character_set_database：当前选中数据库的默认字符集；<br>
+						character_set_system：系统元数据(字段名等)字符集 ；
+					</p>
+					<p>● MySQL字符集转换过程遵循以下四步</p>
+					<p>1）当使用insert into或者其他方法向数据库插入中文数据时，原始数据首先被当做character_set_client值所设定的字符集；</p>
+					<p>2）将插入的数据转换为character_set_connection值所设定的编码（相当于转换层）；</p>
+					<p>3）character_set_connection转换结束后，将结果储存到"内部操作字符集"，其确定方法如下：</p>
+					<p class="indent-p">
+						■ 如果有，使用每个数据字段的CHARACTER SET设定值；<br>
+						■ 若上述值不存在，则使用对应数据表的DEFAULT CHARACTER SET设定值(MySQL扩展，非SQL标准)；<br>
+						■ 若上述值不存在，则使用对应数据库的DEFAULT CHARACTER SET设定值；<br>
+						■ 若上述值不存在，则使用默认的character_set_server值对应的编码集；
+					</p>
+					<p>4）如果遇到查询（select），MySQL将以上三步得到的"内部操作字符集"编码结果转换为character_set_results值所对应的编码集，返回给调用者；</p>
+
+					<p>这里有必要说明上面第3步中的前三条，下面分别演示"表中某字段单独的字符集修改方法"，"数据库默认字符集的修改方法"以及"数据表默认字符集的创建方法"</p>
+					<pre class="brush: sql;">
+					--1）表中某字段单独的字符集修改方法
+					--语法：
+					--ALTER TABLE tbl_name CHANGE c_name c_name CHARACTER SET character_name [COLLATE ...];
+					--或
+					----ALTER TABLE tbl_name MODIFY c_name CHARACTER SET character_name [COLLATE ...];
+
+					--例如，将表t28的uname字段修改成utf8编码，字符校对集为"utf8_general_ci"，校对集是可选参数
+					mysql&gt; alter table t28 modify uname varchar(200) character set utf8 collate utf8_general_ci;
+
+					--2）数据表默认字符集的创建与修改在本系列文章"[mysql基础文档]-5-数据表创建修改与删除"中有详细说明，这里不再赘述。
+
+					--3）数据库默认字符集的修改方法
+					--创建数据库时设定数据库编码集，ubuntu中不携带charset参数，默认使用latin1编码集
+					mysql&gt; create database qingsword_com charset=utf8;
+					
+					--修改已存在的数据库默认字符集
+					--语法：
+					--ALTER DATABASE db_name DEFAULT CHARACTER SET character_name [COLLATE ...];
+
+					--例如，将qingsword_com这个数据库的默认字符集修改成utf8，字符校对集为"utf8_general_ci"
+					mysql&gt; alter database qingsword_com default character set utf8 collate utf8_general_ci;
+
+					--查看数据库编码（看到最后那个utf8了没，那个就是这个数据库的默认编码集）
+					mysql&gt; show create database qingsword_com \G
+					************* 1. row *************
+					       Database: qingsword_com
+					Create Database: CREATE DATABASE `qingsword_com` /*!40100 DEFAULT CHARACTER SET utf8 */
+
+					--查看表编码
+					mysql&gt; show create table t28 \G
+
+					--查看t28表所有字段编码
+					mysql&gt; show full columns from t28\G
+
+					--最重要的一点，要明白第3步中的那些"DEFAULT CHARACTER SET设定值"，对应的就是这一部分实例中这三个地方的值。
+					</pre>
+					<p>P.s：字符校对集，_ci(表示大小写不敏感)，_cs(表示大小写敏感)，_bin(表示按编码值比较)结尾。例如：在字符序'utf8_general_ci'下，字符'a'和'A'是等价的，MySQL中都有哪些字符校对集在下面一小段中会介绍到；</p>
+					<p>● 字符集转换参数值的修改方法</p>
+					<p>MySQL可用的编码集以及校对集查看方法如下：</p>
+					<pre class="brush: sql;">
+					--查看全部编码集
+					mysql&gt; show character set;
+
+					--仅查看包含utf8的编码集
+					mysql&gt; show character set like '%utf8%';
+					</pre>
+					<p>下面是"show variables like '%char%'"命令所显示的列表中，对应值的修改方法：</p>
+					<pre class="brush: sql;">
+					--比如，将character_set_client的值，修改成latin1，其他名称修改方法以此类推
+					mysql&gt; set character_set_client=latin1;
+					</pre>
+					<p>明白了这些必要的基础知识后，来看看下面的MySQL中文乱码实例分析吧。</p>
+
+					<h2 id="Character-display-case-study">0×2.MySQL中文乱码实例分析</h2>
+
+					<p>实例环境为ubuntu系统，使用终端连接mysql，本地终端环境默认字符编码utf8：</p>
+					<pre class="brush: sql;">
+					--mysql默认的字符集参数如下
+					mysql&gt; show variables like '%char%';
+					+--------------------------+----------------------------+
+					| Variable_name            | Value                      |
+					+--------------------------+----------------------------+
+					| character_set_client     | utf8                       |
+					| character_set_connection | utf8                       |
+					| character_set_database   | utf8                       |
+					| character_set_filesystem | binary                     |
+					| character_set_results    | utf8                       |
+					| character_set_server     | latin1                     |
+					| character_set_system     | utf8                       |
+					| character_sets_dir       | /usr/share/mysql/charsets/ |
+					+--------------------------+----------------------------+
+
+					--首先创建一个表t50，设置表的内部编码为utf8，输入一个中文"码"字，显示毫无问题
+					mysql&gt; create table t50(tx text) charset=utf8;
+					mysql&gt; insert into t50 values('码');
+					mysql&gt; select * from t50;
+					+------+
+					| tx   |
+					+------+
+					| 码   |
+					+------+
+
+					--下面，将客户端来源数据使用的字符集设置成gbk，再次插入一个中文字符
+					mysql&gt; set character_set_client=gbk;
+					mysql&gt; insert into t50 values('码');
+
+					--根据本文第一部分字符集的转换步骤分析
+					--第1步，ubuntu终端本地字符集默认是utf8，但此时我们告诉数据库，本地终端所使用字符集是gbk，相当于欺骗了数据库
+					--第2步，数据库接收到这个utf8编码的字符，将其当做GBK编码，'码'字的utf8编码是三字节的，但gbk编码中文是2字节编码，所以数据库将这3字节数据前端补0，补充成4个字节，并当做两个gbk字符传递，在转换层根据character_set_connection设置的值，转换成了utf8（乱码在这一步产生）
+					--第3步，数据表的内部编码为utf8，无需再转换，直接储存
+					--第4步，使用select取出的时候，查询结果字符集character_set_results值也是utf8，所以数据库原封不动的将这个utf8编码数据返回给终端，终端也是utf8编码，显示如下
+					mysql&gt; select * from t50;
+					+------+
+					| tx   |
+					+------+
+					| 码   |
+					| 鐮   |
+					+------+
+
+					--继续将返回字符集以及连接字符集都改成gbk，下面这条命令相当于一次性将"character_set_client"，"character_set_connection"，"character_set_results"都改成gbk编码
+					mysql&gt; set names gbk;
+
+					mysql&gt; show variables like '%char%';
+					+--------------------------+----------------------------+
+					| Variable_name            | Value                      |
+					+--------------------------+----------------------------+
+					| character_set_client     | gbk                        |
+					| character_set_connection | gbk                        |
+					| character_set_database   | utf8                       |
+					| character_set_filesystem | binary                     |
+					| character_set_results    | gbk                        |
+					| character_set_server     | latin1                     |
+					| character_set_system     | utf8                       |
+					| character_sets_dir       | /usr/share/mysql/charsets/ |
+					+--------------------------+----------------------------+
+
+					--插入测试
+					mysql&gt; insert into t50 values('码');
+
+					--返回结果更加奇怪了，不是说set names可以解决一切吗？其实，看过本文第一部分就会明白，别忘记数据表t50的编码集是utf8；
+
+					--部分数据库在这一步会插入失败，返回一个错误，提示插入的数据过长，为什么会过长呢？因为我们连接mysql的终端使用的是utf8编码，插入一个字符的汉字相当于插入3个字节的数据，而gbk编码只接受一个字符占2个字节的汉字
+
+					--根据字符集转换步骤分析：
+					--第1步，ubuntu终端本地字符集是utf8，但此时我们告诉数据库，本地终端所使用字符集是gbk，相当于欺骗了数据库；
+					--第2步，被当做gbk的utf8编码被扩充成4个字节编码，传至转换层（character_set_connection），转换层设置了gbk编码，所以原封不动的将数据向内传递（已经出现乱码了）
+					--第3步，因为数据表设定了默认utf8编码，所以4字节的gbk编码数据被转成了utf8编码储存
+					--第4步，select时，内部的utf8编码字符根据character_set_results的值又被转换成4字节的gbk编码，但本地终端是使用utf8编码呢，终端直接将这个4字节的gbk编码当做utf8编码来处理，此时utf8模板与这个4字节gbk编码完全对不上，所以使用'?'代替，细心的朋友可能发现了，我们输入的是一个字符，这里却出现了两个问号，就是因为字符的字节数被扩充成了4字节。
+
+					mysql&gt; select * from t50;
+					+------+
+					| tx   |
+					+------+
+					| ��  |
+					| ��  |
+					| ��  |
+					+------+
+
+					--看到这里，可能有人会觉得，那将t50表的编码改成gbk不就好了吗？实际上就算将t50表的编码改成gbk，本地终端使用的还是utf8编码，除非将本地终端也改成gbk，但被破坏的数据是无法恢复的。
+					</pre>
+					<p>P.s：总结，根据上面的实验可以得到一个很重要的结论，"character_set_client"以及"character_set_results"的编码设置，要和我们连接数据库使用的终端编码一致，"character_set_connection"连接层使用的字符集要大于或等于"character_set_client"以及"内部操作字符集"（可以根据本文第一部分字符转换过程分析，如果连接层的字符集小于我们传递给数据库的字符集，比如我们传递一个GBK中文字符给数据库，但是连接层使用了ascii编码，ascii编码根本没有包含中文字符，2字节的gbk编码被转换成2字节的ascii编码，这些中文编码大小已经超出了ascii的范围，所以在连接层转换的时候数据全部丢失，最后会得到一堆问号未知数据），"内部操作字符集"，比如数据表的charset所设置的编码集要能够包含我们所需要储存的字符。</p>
+
+					<h2 id="Pages-garbled-solve">0×3.网页乱码解决方法</h2>
+					
+					<p>1）设置数据库"character_set_client"以及"character_set_results"值的编码与连接数据库的页面程序所使用的编码一致；</p>
+					<p>2）使用任何终端操作数据库时，确保终端所使用的编码与"character_set_client"以及"character_set_results"值的编码一致；</p>
+					<p>3）页面代码创建表时，使用charset参数定义表字符集，设置的字符集要能包含所有需要储存到表中的字符；</p>
+					<p>4）"character_set_connection"连接层使用的字符集要大于或等于"character_set_client"以及"内部操作字符集"；</p>
+					<p>5）将以上所有字符集统一成一种字符集，避免内部字符集转换能够提高数据库效率；</p>
+					<p>P.s：中文环境下Windows命令行终端所使用的编码为GBK，win下phpmyadmin的编码也被设置成了gbk，但是网页的编码却是utf8，win下数据库的"character_set_client"以及"character_set_results"的编码全部被设置成了utf8，根据本文前两部分的分析很容易理解，用win命令行或phpmyadmin对数据库插入数据的时候，在网页上调用这些数据显示乱码的原因。</p>					
+				<!-- /正文 -->
+
+				<footer class="text-footer">
+					<p>
+						*转载请注明来自:<a title="晴刃-自由、互助、分享、专注计算机技术。" href="http://www.qingsword.com" target="_blank">晴刃(QingSword.COM)</a>
+					</p>
+					<p>*原文连接:<a title="[mysql基础文档]-21-中文乱码原理与解决方法" href="http://www.qingsword.com/qing/1489.html" target="_blank">http://www.qingsword.com/qing/1489.html</a></p>
+				</footer>
+			</article>
+			<!-- /文章区 -->	
+		</div>
+	</div>
+	<!-- /content -->
+	
+	<!-- footer -->
+	<footer id="footer">
+		<div class="footer-container">
+			QingSword.COM &nbsp;<img src="../logo/by-nc-sa.png" alt="Creative Commons" title="Creative Commons">
+		</div>
+	</footer>
+	<!-- /footer -->
+</body>
+</html>

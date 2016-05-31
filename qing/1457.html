@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<!--Copyright©QingSword.COM︻☼1010D>-->
+<html lang="zh-ch">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
+	<meta name="description" content="晴刃,是一个致力推广实用计算机技术的个人博客;我们分享计算机知识;为计算机系统以及网络安全防范做出一份贡献。【专注技术 创造价值 共同进步】">
+	<meta name="keywords" content="晴刃,晴,qing,qingsword,ccna图文笔记,ubuntu,linux,ubuntu server,mysql,node.js,javascript,python,计算机技术博客">
+	<title>[mysql基础文档]-17-Foreign Key约束| QingSword.COM </title>
+	<link rel="shortcut icon" type="image/x-icon" href="../logo/favicon.ico">
+	<link rel="stylesheet" type="text/css" href="../css/basic.css">
+	<link rel="stylesheet" type="text/css" href="../css/text.css">
+	<!-- 代码块高亮js -->
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shCore.css"/>
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shThemeRDark.css"/>
+	 <script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shCore.js"></script>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shBrushSql.js"></script>
+	<script type="text/javascript">
+	SyntaxHighlighter.all();
+	</script>
+</head>
+<body>
+	<!--header -->
+	<header id="nav">
+			<div class="nav-container"> 
+				<!-- 根大纲-->
+				<a href="http://www.qingsword.com" title="晴刃">
+					<h1 class="nav-logo">晴刃</h1>
+				</a>
+				<h2 class="nav-site-description desc-hidden">
+					自由、互助、分享、专注计算机技术
+				</h2>
+				<nav class="nav-links"> 
+					<!-- nav连接大纲-->
+					<h1 style="display:none;">网站导航</h1> 
+					<ul>
+						<li  class="li-hidden">
+							<a href="../index.html" title="home">
+								<span class="link-word"><img src="../logo/home.png" alt="home" class="link-img">首页</span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../web.html" title="web">
+								<span class="link-word"><img src="../logo/web.png" alt="web" class="link-img">前端<span class="word-hidden">设计</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../system.html" title="system">
+								<span class="link-word"><img src="../logo/linux.png" alt="linux" class="link-img">系统<span class="word-hidden">应用</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../net.html" title="net">
+								<span class="link-word"><img src="../logo/net.png" alt="net" class="link-img">网络<span class="word-hidden">技术</span></span>
+							</a>
+						</li>
+						<li>
+							<a href="../sitemap.html" title="sitemap">
+								<span class="link-word"><img src="../logo/archives.png" alt="archives" class="link-img"><span class="word-hidden">文章</span>归档</span>
+							</a>
+						</li>
+					</ul>
+				</nav>
+			</div>		
+	</header>
+	<!-- /header -->
+
+	<!-- content-->
+	<div id="content">
+		<div class="content-container">
+			<!-- 文章区 -->
+			<article class="text-container">
+				<header class="text-header">
+					<h1>[mysql基础文档]-17-Foreign Key约束</h1>	
+				</header><!-- /header -->
+				<section class="text-body">
+					<h2>引言</h2>
+					<p>前面介绍的所有约束都只针对同一个表的某列，本文介绍的Foreign Key约束可以在两个或多个表中建立约束，也叫外键约束。</p>
+					<!-- 目录 -->
+					<h2>文章目录</h2>
+					<ul class="contents">	
+						 <li><a href="#How-to-Create-a-Foreign-Key-Constraint">0×1.建表时如何创建Foreign Key约束</a></li>
+						 <li><a href="#How-to-Add-Foreign-Key-Constraint">0×2.建表后如何追加Foreign Key约束</a></li>
+						 <li><a href="#How-to-delete-Foreign-Key-Constraint">0×3.如何删除Foreign Key约束</a></li>
+					 </ul>
+					<!-- /目录 -->
+
+					<!-- 正文 -->
+					<h2 id="How-to-Create-a-Foreign-Key-Constraint">0×1.建表时如何创建Foreign Key约束</h2>
+
+					<p>外键约束就是将A表的某列和B表某列做一个连接，只有当B表的那一列存在某值时，A表对应的那一列才能出现某值。</p>
+					<p>建表时可以使用下面的语法来创建外键：</p>
+					<pre class="brush: sql;">
+					--创建表t25，仅设置一列主键列
+					mysql&gt; create table t25(id int primary key);
+
+					--外键创建语法是写在所有列声明的后面，用逗号分隔，这种方法并没有给外键自定义名称
+					--foreign key(本表列) references [外表名](外表参考列)
+					mysql&gt; create table t26(id int primary key,foreign key(id) references t25(id));
+
+					--此时t25表为空，尝试向t26表的id列插入数值1，报错，因为t25表的id列并没有数值1
+					mysql&gt; insert into t26 values(1);
+					ERROR 1452 (23000): Cannot add or update a child row: a foreign key constraint fails 
+					...KEY (`id`) REFERENCES `t25` (`id`))
+
+					--只有先给t25的id列插入了数值1
+					mysql&gt; insert into t25 values(1);
+
+					--才能向t26的id列插入此数值，这就是外键的作用
+					mysql&gt; insert into t26 values(1);
+					</pre>
+					<p>创建自定义名称的外键：</p>
+					<pre class="brush: sql;">
+					--给外键约束自定义名称是一个好习惯，为未来数据表维护带来方便，CustomName是我们自定义的名称
+					mysql&gt; create table t26(id int primary key,constraint CustomName foreign key(id) references t25(id));
+					</pre>
+
+					<h2 id="How-to-Add-Foreign-Key-Constraint">0×2.建表后如何追加Foreign Key约束</h2>
+
+					<p>使用下面的语句可以向一个不存在Foreign Key约束的列追加此属性：</p>
+					<pre class="brush: sql;">
+					--建表时t27的id列并没有外键约束
+					mysql&gt; create table t27(id int primary key);
+
+					--给t27表的id列添加外键约束，连接到t25表的id列
+					mysql&gt; alter table t27 add foreign key(id) references t25(id);
+
+					--添加自定义名称外键语法，效果同上，但多了个名称CustomName
+					mysql&gt; alter table t27 add constraint CustomName foreign key (id) references t25 (id);
+					</pre>
+					<p>P.s：给已经存在的列追加Foreign Key时应该特别注意，这个已存在的列的列数据，必须在要连接到的表对应的参考列中已经存在，否则会报错添加外键约束失败，这一点同本文第一部分向外键列插入一个参考列不存在的值时报错是一个道理。</p>
+
+					<h2 id="How-to-delete-Foreign-Key-Constraint">0×3.如何删除Foreign Key约束</h2>
+					
+					<p>对于没有自定义名称的Foreign Key约束，删除稍微有点麻烦，此时，自定义名称的优势就显现出来了：</p>
+					<pre class="brush: sql;">
+					--（MySQL数据库）删除上面未命名的外键约束，需要先查看建表过程，会看到MySQL随机自定义的一个Foreign Key约束名`t27_ibfk_1`
+					mysql&gt; show create table t27\G
+					****************** 1. row ******************
+					       Table: t27
+					Create Table: CREATE TABLE `t27` (
+					  `id` int(11) NOT NULL,
+					  PRIMARY KEY (`id`),
+					  CONSTRAINT `t27_ibfk_1` FOREIGN KEY (`id`) REFERENCES `t25` (`id`)
+					) ENGINE=InnoDB DEFAULT CHARSET=latin1
+
+					--使用上面查看到的名称来删除外键约束（MySQL语法）
+					mysql&gt; alter table t27 drop foreign key t27_ibfk_1;
+
+					--其他数据库删除外键约束的方法
+					db001&gt; alter table t27 drop constraint t27_ibfk_1;
+
+					--如果是我们自定义的外键约束名称叫CustomName，删除方法相同
+					mysql&gt; alter table t27 drop foreign key CustomName;
+					</pre>
+						
+				<!-- /正文 -->
+
+				<footer class="text-footer">
+					<p>
+						*转载请注明来自:<a title="晴刃-自由、互助、分享、专注计算机技术。" href="http://www.qingsword.com" target="_blank">晴刃(QingSword.COM)</a>
+					</p>
+					<p>*原文连接:<a title="[mysql基础文档]-17-Foreign Key约束" href="http://www.qingsword.com/qing/1457.html" target="_blank">http://www.qingsword.com/qing/1457.html</a></p>
+				</footer>
+			</article>
+			<!-- /文章区 -->	
+		</div>
+	</div>
+	<!-- /content -->
+	
+	<!-- footer -->
+	<footer id="footer">
+		<div class="footer-container">
+			QingSword.COM &nbsp;<img src="../logo/by-nc-sa.png" alt="Creative Commons" title="Creative Commons">
+		</div>
+	</footer>
+	<!-- /footer -->
+</body>
+</html>

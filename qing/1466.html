@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<!--Copyright©QingSword.COM︻☼1010D>-->
+<html lang="zh-ch">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
+	<meta name="description" content="晴刃,是一个致力推广实用计算机技术的个人博客;我们分享计算机知识;为计算机系统以及网络安全防范做出一份贡献。【专注技术 创造价值 共同进步】">
+	<meta name="keywords" content="晴刃,晴,qing,qingsword,ccna图文笔记,ubuntu,linux,ubuntu server,mysql,node.js,javascript,python,计算机技术博客">
+	<title>[mysql基础文档]-19-如何设置储存引擎| QingSword.COM </title>
+	<link rel="shortcut icon" type="image/x-icon" href="../logo/favicon.ico">
+	<link rel="stylesheet" type="text/css" href="../css/basic.css">
+	<link rel="stylesheet" type="text/css" href="../css/text.css">
+	<!-- 代码块高亮js -->
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shCore.css"/>
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shThemeRDark.css"/>
+	 <script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shCore.js"></script>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shBrushSql.js"></script>
+	<script type="text/javascript">
+	SyntaxHighlighter.all();
+	</script>
+</head>
+<body>
+	<!--header -->
+	<header id="nav">
+			<div class="nav-container"> 
+				<!-- 根大纲-->
+				<a href="http://www.qingsword.com" title="晴刃">
+					<h1 class="nav-logo">晴刃</h1>
+				</a>
+				<h2 class="nav-site-description desc-hidden">
+					自由、互助、分享、专注计算机技术
+				</h2>
+				<nav class="nav-links"> 
+					<!-- nav连接大纲-->
+					<h1 style="display:none;">网站导航</h1> 
+					<ul>
+						<li  class="li-hidden">
+							<a href="../index.html" title="home">
+								<span class="link-word"><img src="../logo/home.png" alt="home" class="link-img">首页</span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../web.html" title="web">
+								<span class="link-word"><img src="../logo/web.png" alt="web" class="link-img">前端<span class="word-hidden">设计</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../system.html" title="system">
+								<span class="link-word"><img src="../logo/linux.png" alt="linux" class="link-img">系统<span class="word-hidden">应用</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../net.html" title="net">
+								<span class="link-word"><img src="../logo/net.png" alt="net" class="link-img">网络<span class="word-hidden">技术</span></span>
+							</a>
+						</li>
+						<li>
+							<a href="../sitemap.html" title="sitemap">
+								<span class="link-word"><img src="../logo/archives.png" alt="archives" class="link-img"><span class="word-hidden">文章</span>归档</span>
+							</a>
+						</li>
+					</ul>
+				</nav>
+			</div>		
+	</header>
+	<!-- /header -->
+
+	<!-- content-->
+	<div id="content">
+		<div class="content-container">
+			<!-- 文章区 -->
+			<article class="text-container">
+				<header class="text-header">
+					<h1>[mysql基础文档]-19-如何设置储存引擎</h1>	
+				</header><!-- /header -->
+				<section class="text-body">
+					<h2>引言</h2>
+					<p>MySQL数据库目前有两种常见储存引擎，Myisam和Innodb，如果建表时没有显示声明，默认使用Innodb，不同的数据库引擎在数据储存索引以及管理上各有优劣。</p>
+					<!-- 目录 -->
+					<h2>文章目录</h2>
+					<ul class="contents">	
+						 <li><a href="#How-to-set-the-table-storage-engine">0×1.如何设置表储存引擎</a></li>
+						 <li><a href="#Brief-storage-engine-features">0×2.储存引擎特征简析</a></li>
+					 </ul>
+					<!-- /目录 -->
+
+					<!-- 正文 -->
+					<h2 id="How-to-set-the-table-storage-engine">0×1.如何设置表储存引擎</h2>
+
+					<p>建表时指定表储存引擎设置：</p>
+					<pre class="brush: sql;">
+					--创建表t30和t31，分别使用Innodb以及Myisam引擎，指定储存引擎，只需要在建表语法最后添加engine=[引擎类型]
+					mysql&gt; create table t30(id int not null default 0) engine=Innodb;
+					mysql&gt; create table t31(id int not null default 0) engine=Myisam;
+
+					--如果不知道表使用的是哪个储存引擎，可以show table status查询指定的表，对于status的输出，暂时只需要了解下面几行即可
+					mysql&gt; show table status where name='t30' or name='t31' \G
+					************ 1. row ************
+					           Name: t30  &lt;--表名
+					         Engine: InnoDB &lt;--储存引擎
+
+					    Create_time: 2015-10-10 11:28:14 &lt;--表创建时间
+					    Update_time: 2015-10-10 11:28:31 &lt;--表更新时间
+
+					      Collation: latin1_swedish_ci  &lt;--使用的字符编码
+
+					        Comment:   &lt;--是否为视图，不是视图为空
+					************ 2. row ************
+					           Name: t31
+					         Engine: MyISAM &lt;--t31表使用的是MyISAM引擎
+
+					    Create_time: 2015-10-10 11:28:32
+					    Update_time: 2015-10-10 11:28:32
+
+					      Collation: latin1_swedish_ci
+
+					        Comment: 
+					</pre>
+
+					<h2 id="Brief-storage-engine-features">0×2.储存引擎特征简析</h2>
+					
+					<p>ubuntu中默认的数据库文件存放在"/var/lib/mysql/"（需要root权限才能进入），本系列文章创建的数据名是"qingsword_com"，所以表文件存放在此目录的"qingsword_com"文件下；</p>
+					<p>如果是windows环境，数据库文件默认目录是安装目录下的data文件中，myisam引擎的表数据存放在次级目录mysql中的数据库名称对应的文件下；</p>
+					<p>进入/var/lib/mysql/qingsword_com/文件夹后，可以看到很多表数据文件，对应了不同的储存引擎；</p>
+					<p>● Myisam储存引擎</p>
+					<p class="indent-p">
+						当创建一张Myisam储存引擎的表时，在数据库目录下会多出三个文件，后缀分别是".frm"，".MYD"，".MYI"：<br><br>
+						.frm储存表结构framework（列名称，数据类型，属性等）<br>
+						.MYD储存表数据Mysql Data（每条记录的数据都储存在这里面）<br>
+						.MYI索引文件mysql index，储存了索引信息<br><br>
+						一张完整的Myisam引擎的表一般都包含上面三个后缀的文件，比如上面创建的t31，就生成了三个文件"t31.frm","t31.MYD","t31.MYI"。
+					</p>
+					<p>● Innodb储存引擎</p>
+					<p class="indent-p">
+						Innodb是MySQL5之后默认的储存引擎，Innodb储存方式是由"innodb_file_per_table"参数决定的，可以在my.cnf中[mysqld]下设置（如果没有可以追加）；
+					</p>
+					<p class="indent-p">
+						当此innodb_file_per_table=0时，创建的新表只在对应数据库文件夹中生成一个文件，后缀为".frm"，所有表数据共享同一个文件"ibdata1"，默认位置"/var/lib/mysql/ibdata1"；<br>
+						当此innodb_file_per_table=1时，创建新表时生成两个单独文件，后缀为".ibd"和".frm"，其中frm文件同Myisam引擎，储存的是表结构信息，idb文件储存数据、索引和插入缓冲，而撤销（undo）信息，系统事务信息，二次写缓冲等还是存放在ibdata1文件中，比如上面创建的t30，就生成两个文件"t30.idb"，"t30.frm"，说明默认情况下使用了这种配置；
+					</p>
+					<p class="indent-p">
+						通过测试发现，在ubuntu中MySQL5.6.25默认使用了Innodb并且innodb_file_per_table=1（虽然my.cnf文件中并没有配置此参数）；
+					</p>
+					<p>下面实例演示如何查看当前Innodb所使用的储存方式，以及如何通过修改innodb_file_per_table参数改变Innodb储存方式：</p>
+					<pre class="brush: sql;">
+					--通过查看innodb_file_per_table变量，ON代表开启的独立文件储存（innodb_file_per_table=1）
+					mysql&gt; show variables like 'innodb_file_per_table';
+					+-----------------------+-------+
+					| Variable_name         | Value |
+					+-----------------------+-------+
+					| innodb_file_per_table | ON    |
+					+-----------------------+-------+
+
+					--修改my.cnf文件，使用共享储存，这里有几点要说明一下，一部分ubuntu系统MySQL主配置是存放在/etc/mysql/my.cnf文件中的，经过测试，一些系统默认安装的MySQL主配置实际存放位置是在/etc/mysql/mysql.conf.d/mysqld.cnf文件中，而/etc/mysql/my.cnf文件只有少量的信息，本文所使用的就是后者,使用管理员权限运行下面的命令修改配置文件的内容
+					www@qingsword.com:~# vim /etc/mysql/mysql.conf.d/mysqld.cnf 
+					--找到[mysqld]段，在其下面添加一行如下
+					[mysqld]
+					innodb_file_per_table=0
+
+					--每次修改MySQL主配置文件都需要重启MySQL服务才能使配置生效
+					www@qingsword.com:~# service mysql restart
+
+					--已经开启了共享文件储存，此时再create table创建出来的表就只会在数据库对应目录下生成后缀是".frm"的单个文件了，大家可以自己测试下，表数据全部共享储存在"/usr/lib/mysql/ibdata1"文件中
+					mysql&gt; show variables like 'innodb_file_per_table';
+					+-----------------------+-------+
+					| Variable_name         | Value |
+					+-----------------------+-------+
+					| innodb_file_per_table | OFF   |
+					+-----------------------+-------+
+					</pre>
+					<p>● 两种储存引擎性能比较</p>
+
+					<table border="2" style="margin:10px 0 10px 25px;border-collapse: collapse;width:310;text-align: center;">
+					<tr>
+					<th>特点</th>
+					<th>Myisam</th>
+					<th>InnoDB</th>
+					</tr>
+					<tr>
+					<td>批量插入速度</td>
+					<td>高</td>
+					<td>低</td>
+					</tr>
+					<tr>
+					<td>事务安全</td>
+					<td>暂不支持</td>
+					<td>支持</td>
+					</tr>
+					<tr>
+					<td>全文索引</td>
+					<td>支持</td>
+					<td>暂不支持</td>
+					</tr>
+					<tr>
+					<td>锁机制</td>
+					<td>表锁</td>
+					<td>行锁</td>
+					</tr>
+					<tr>
+					<td>储存限制</td>
+					<td>无</td>
+					<td>64TB</td>
+					</tr>
+					<tr>
+					<td>B树索引</td>
+					<td>支持</td>
+					<td>支持</td>
+					</tr>
+					<tr>
+					<td>哈希索引</td>
+					<td>暂不支持</td>
+					<td>支持</td>
+					</tr>
+					<tr>
+					<td>集群索引</td>
+					<td>暂不支持</td>
+					<td>支持</td>
+					</tr>
+					<tr>
+					<td>数据缓存</td>
+					<td>暂不支持</td>
+					<td>支持</td>
+					</tr>
+					<tr>
+					<td>索引缓存</td>
+					<td>支持</td>
+					<td>支持</td>
+					</tr>
+					<tr>
+					<td>数据压缩</td>
+					<td>支持</td>
+					<td>暂不支持</td>
+					</tr>
+					<tr>
+					<td>空间使用</td>
+					<td>低</td>
+					<td>高</td>
+					</tr>
+					<tr>
+					<td>内存使用</td>
+					<td>低</td>
+					<td>高</td>
+					</tr>
+					<tr>
+					<td>外键支持</td>
+					<td>暂不支持</td>
+					<td>支持</td>
+					</tr>
+					</table>
+					<p class="indent-p">
+						移植性：myisam储存在数据库的移动方面相对简单，只要将数据库目录拷贝，就是整个数据库的备份，Innodb相对myisam移动没有那么容易，因为所有表的数据都储存在一起（就算innodb_file_per_table=1，单独生成文件存放部分数据，仍有一部分数据是存放在共享的ibdata1文件中的）
+						<br><br>
+						安全：InnoDB更加安全，拥有完善的日志功能，能够根据日志恢复数据，Myisam则没有，InnoDB支持事务安全，但不支持全文索引，InnoDB的锁机制能够实现行锁，而Myisam只能实现表锁。
+					</p>
+						
+				<!-- /正文 -->
+
+				<footer class="text-footer">
+					<p>
+						*转载请注明来自:<a title="晴刃-自由、互助、分享、专注计算机技术。" href="http://www.qingsword.com" target="_blank">晴刃(QingSword.COM)</a>
+					</p>
+					<p>*原文连接:<a title="[mysql基础文档]-19-如何设置储存引擎" href="http://www.qingsword.com/qing/1466.html" target="_blank">http://www.qingsword.com/qing/1466.html</a></p>
+				</footer>
+			</article>
+			<!-- /文章区 -->	
+		</div>
+	</div>
+	<!-- /content -->
+	
+	<!-- footer -->
+	<footer id="footer">
+		<div class="footer-container">
+			QingSword.COM &nbsp;<img src="../logo/by-nc-sa.png" alt="Creative Commons" title="Creative Commons">
+		</div>
+	</footer>
+	<!-- /footer -->
+</body>
+</html>
