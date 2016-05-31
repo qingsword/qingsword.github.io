@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<!--Copyright©QingSword.COM︻☼1010D>-->
+<html lang="zh-ch">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
+	<meta name="description" content="晴刃,是一个致力推广实用计算机技术的个人博客;我们分享计算机知识;为计算机系统以及网络安全防范做出一份贡献。【专注技术 创造价值 共同进步】">
+	<meta name="keywords" content="晴刃,晴,qing,qingsword,ccna图文笔记,ubuntu,linux,ubuntu server,mysql,node.js,javascript,python,计算机技术博客">
+	<title>[mysql基础文档]-30-左右内联查询| QingSword.COM </title>
+	<link rel="shortcut icon" type="image/x-icon" href="../logo/favicon.ico">
+	<link rel="stylesheet" type="text/css" href="../css/basic.css">
+	<link rel="stylesheet" type="text/css" href="../css/text.css">
+	<!-- 代码块高亮js -->
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shCore.css"/>
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shThemeRDark.css"/>
+	 <script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shCore.js"></script>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shBrushSql.js"></script>
+	<script type="text/javascript">
+	SyntaxHighlighter.all();
+	</script>
+</head>
+<body>
+	<!--header -->
+	<header id="nav">
+			<div class="nav-container"> 
+				<!-- 根大纲-->
+				<a href="http://www.qingsword.com" title="晴刃">
+					<h1 class="nav-logo">晴刃</h1>
+				</a>
+				<h2 class="nav-site-description desc-hidden">
+					自由、互助、分享、专注计算机技术
+				</h2>
+				<nav class="nav-links"> 
+					<!-- nav连接大纲-->
+					<h1 style="display:none;">网站导航</h1> 
+					<ul>
+						<li  class="li-hidden">
+							<a href="../index.html" title="home">
+								<span class="link-word"><img src="../logo/home.png" alt="home" class="link-img">首页</span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../web.html" title="web">
+								<span class="link-word"><img src="../logo/web.png" alt="web" class="link-img">前端<span class="word-hidden">设计</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../system.html" title="system">
+								<span class="link-word"><img src="../logo/linux.png" alt="linux" class="link-img">系统<span class="word-hidden">应用</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../net.html" title="net">
+								<span class="link-word"><img src="../logo/net.png" alt="net" class="link-img">网络<span class="word-hidden">技术</span></span>
+							</a>
+						</li>
+						<li>
+							<a href="../sitemap.html" title="sitemap">
+								<span class="link-word"><img src="../logo/archives.png" alt="archives" class="link-img"><span class="word-hidden">文章</span>归档</span>
+							</a>
+						</li>
+					</ul>
+				</nav>
+			</div>		
+	</header>
+	<!-- /header -->
+
+	<!-- content-->
+	<div id="content">
+		<div class="content-container">
+			<!-- 文章区 -->
+			<article class="text-container">
+				<header class="text-header">
+					<h1>[mysql基础文档]-30-左右内联查询</h1>	
+				</header><!-- /header -->
+				<section class="text-body">
+					<h2>引言</h2>
+					<p>左右连接查询和内联查询的工作方式很类似，所不同的是，左右连接查询会将左值或右值作为基准值进行对比。</p>
+					<!-- 目录 -->
+					<h2>文章目录</h2>
+					<ul class="contents">	
+						 <li><a href="#How-to-use-left-join-and-right-join-select">0×1.如何使用left join和right join查询</a></li>
+						 <li><a href="#Join-Example">0×2.联合查询综合经典实例</a></li>
+					 </ul>
+					<!-- /目录 -->
+
+					<!-- 正文 -->
+					<h2 id="How-to-use-left-join-and-right-join-select">0×1.如何使用left join和right join查询</h2>
+
+					<p>使用上一篇文章inner join查询实例中所创建的表A和B来演示左右联合查询，建表语法请参考上一篇文章，这里仅给出表结构：</p>
+					<pre class="brush: sql;">
+					mysql&gt; select * from A;
+					+-----+-------+
+					| aid | aname |
+					+-----+-------+
+					|   1 | susam |
+					|   2 | jenny |
+					|   3 | mary  |
+					+-----+-------+
+
+					mysql&gt; select * from B;
+					+-----+--------+
+					| bid | bname  |
+					+-----+--------+
+					|   2 | tom    |
+					|   3 | john   |
+					|   4 | george |
+					+-----+--------+
+
+					--左联接查询，在这个实例中A表是"A left join B"这个表达式的左值，作为参照表使用A表aid列连接B表bid列，在这个过程中，将列出所有A表下面每个aid字段所对应的记录，当B表对应的bid中没有字段匹配的时候，用NULL填充，有人可能会问，为什么没有4，因为用左值作为参考，aid中没有4
+					mysql&gt; select * from A left join B on A.aid=B.bid;
+					+-----+-------+------+-------+
+					| aid | aname | bid  | bname |
+					+-----+-------+------+-------+
+					|   1 | susam | NULL | NULL  |
+					|   2 | jenny |    2 | tom   |
+					|   3 | mary  |    3 | john  |
+					+-----+-------+------+-------+
+
+					--右连接查询同理，顾名思义，B是"A right join B"这个表达式的右值，所以用B作为参考表，A中不存在的对应记录用NULL填充
+					mysql&gt; select * from A right join B on A.aid=B.bid;
+					+------+-------+-----+--------+
+					| aid  | aname | bid | bname  |
+					+------+-------+-----+--------+
+					|    2 | jenny |   2 | tom    |
+					|    3 | mary  |   3 | john   |
+					| NULL | NULL  |   4 | george |
+					+------+-------+-----+--------+
+					</pre>
+
+					<h2 id="Join-Example">0×2.联合查询综合经典实例</h2>
+					
+					<p>实例1，创建一个联合查询，将"[mysql基础文档]-24-select查询基础"第一部分所创建的cellphone表，请参考：[<a title="练习数据表" href="1500.html#Exercise-Table" target="_blank" >cellphone数据表</a>]，以及"[mysql基础文档]-28-子查询"第二部分中创建的category表，请参考：[<a title="category数据表" href="1514.html#How-to-use-exists-subqueries" target="_blank" >category数据表</a>]，cellphone表中的goods_name，category表中的cat_id，cat_name，这三列查询并显示成一个结果集</p>
+					<pre class="brush: sql;">
+					--使用内联查询，将category的cat_id列同cellphone的cat_id列连接起来，
+					mysql&gt; select category.cat_id,category.cat_name,cellphone.goods_name
+					    -&gt; from
+					    -&gt; cellphone inner join category
+					    -&gt; on
+					    -&gt; category.cat_id=cellphone.cat_id;
+					+--------+----------+--------------+
+					| cat_id | cat_name | goods_name   |
+					+--------+----------+--------------+
+					|      1 | XiaoMi   | hongMI2a     |
+					|      1 | XiaoMi   | MInote       |
+					|      1 | XiaoMi   | hongMI2      |
+					|      1 | XiaoMi   | MI4          |
+					|      2 | Samsung  | GalaxyN9200  |
+					|      3 | Apple    | iPhone6A1586 |
+					|      4 | Meizu    | MeizuNote2   |
+					|      5 | Huawei   | Huawei4X     |
+					|      2 | Samsung  | GalaxyG9250  |
+					|      5 | Huawei   | Huawei4A     |
+					|      4 | Meizu    | MX5          |
+					|      3 | Apple    | iPhone5s     |
+					|      2 | Samsung  | GalaxyN9109W |
+					|      4 | Meizu    | MX4          |
+					|      3 | Apple    | iPhone4s     |
+					|      5 | Huawei   | Huawei6      |
+					|      3 | Apple    | iPhone6s     |
+					|      4 | Meizu    | MX4Pro       |
+					|      2 | Samsung  | GalaxyS6     |
+					|      5 | Huawei   | Huawei7      |
+					+--------+----------+--------------+
+
+					--有兴趣的朋友可以试着显示这张完整的内联表
+					mysql&gt; select * from cellphone inner join category on category.cat_id=cellphone.cat_id;
+
+					--如果仅需要筛选出cat_id为3的完整记录，可以如下，这里要注意，当内联后的表中包含同名列时，使用时需要指定表前缀（category.cat_id）
+					mysql&gt; select *
+					    -&gt; from
+					    -&gt; cellphone inner join category
+					    -&gt; on
+					    -&gt; category.cat_id=cellphone.cat_id
+					    -&gt; where
+					    -&gt; category.cat_id=3;
+					</pre>
+					<p>实例2，一道真实的内联查询面试题</p>
+					<p>现有两张表如下：</p>
+					<pre class="brush: sql;">
+					mysql&gt; create table team(tid tinyint,tname char(3));
+					mysql&gt; insert into team values
+					    -&gt; (1,'T1'),
+					    -&gt; (2,'T2'),
+					    -&gt; (3,'T3');
+
+					mysql&gt; create table mat(cid tinyint unsigned,h tinyint,g tinyint,scoring char(10),sdate date);
+					mysql&gt; insert into mat values
+					    -&gt; (1,1,2,'2:0','2015-05-12'),
+					    -&gt; (2,2,3,'1:2','2015-06-01'),
+					    -&gt; (3,3,1,'2:5','2015-06-15'),
+					    -&gt; (4,2,1,'3:2','2015-07-15');
+
+					--球队id和球队名称表team
+					mysql&gt; select * from team;
+					+------+-------+
+					| tid  | tname |
+					+------+-------+
+					|    1 | T1    |
+					|    2 | T2    |
+					|    3 | T3    |
+					+------+-------+
+
+					--球队比赛日期表，cid总比赛场数列，h表示主场，g表示客场，主客场列的值分别对应了team表的tid值，scoring是单场比赛得分，sdate是比赛日期
+					mysql&gt; select * from mat;
+					+------+------+------+---------+------------+
+					| cid  | h    | g    | scoring | sdate      |
+					+------+------+------+---------+------------+
+					|    1 |    1 |    2 | 2:0     | 2015-05-12 |
+					|    2 |    2 |    3 | 1:2     | 2015-06-01 |
+					|    3 |    3 |    1 | 2:5     | 2015-06-15 |
+					|    4 |    2 |    1 | 3:2     | 2015-07-15 |
+					+------+------+------+---------+------------+
+					</pre>
+					<p>要求，查询出"2015-06-01"至"2015-07-01"之间所有比赛记录，返回结果集格式要求"T1 2:0 T2 2015-06-01"。</p>
+					<pre class="brush: sql;">
+					--还记得以前的分步思想吗？先用mat表的h列对应team表的tid列进行一次内联查询，使用as将第一个连接的team表命名为t1，t1中的tname顺序对应了主场的h值
+					mysql&gt; select *
+					    -&gt; from
+					    -&gt; mat inner join team as t1
+					    -&gt; on
+					    -&gt; mat.h=t1.tid;
+					+------+------+------+---------+------------+------+-------+
+					| cid  | h    | g    | scoring | sdate      | tid  | tname |
+					+------+------+------+---------+------------+------+-------+
+					|    1 |    1 |    2 | 2:0     | 2015-05-12 |    1 | T1    |
+					|    2 |    2 |    3 | 1:2     | 2015-06-01 |    2 | T2    |
+					|    3 |    3 |    1 | 2:5     | 2015-06-15 |    3 | T3    |
+					|    4 |    2 |    1 | 3:2     | 2015-07-15 |    2 | T2    |
+					+------+------+------+---------+------------+------+-------+
+
+					--对上面的步骤再加工，将上面这一步的结果集作为一张完整的表，再次和team表进行内联查询，使用team的tid对应mat表的g列，从而可以得到客场作战的tname顺序，将第二个连接的team表命名为t2，虽然结果中有四列相同的tid和tname，但是大家要明白前面两列是t1表的，后面两列是t2表的，select筛选的时候会用到
+					mysql&gt; select *
+					    -&gt; from
+					    -&gt; mat inner join team as t1
+					    -&gt; on
+					    -&gt; mat.h=t1.tid
+					    -&gt; inner join team as t2
+					    -&gt; on
+					    -&gt; mat.g=t2.tid;
+					+-----+---+---+---------+------------+------+-------+------+-------+
+					| cid | h | g | scoring | sdate      | tid  | tname | tid  | tname |
+					+-----+---+---+---------+------------+------+-------+------+-------+
+					|   1 | 1 | 2 | 2:0     | 2015-05-12 |    1 | T1    |    2 | T2    |
+					|   2 | 2 | 3 | 1:2     | 2015-06-01 |    2 | T2    |    3 | T3    |
+					|   3 | 3 | 1 | 2:5     | 2015-06-15 |    3 | T3    |    1 | T1    |
+					|   4 | 2 | 1 | 3:2     | 2015-07-15 |    2 | T2    |    1 | T1    |
+					+-----+-------+---------+------------+------+-------+------+-------+
+
+					--总表出来后，最后一次加工，按照题目要求的格式，写出select后面的部分代替星号，筛选出对应列和时间范围即可，cid列可写可不写
+					mysql&gt; select cid,t1.tname as hname,scoring,t2.tname as gname,sdate
+					    -&gt; from
+					    -&gt; mat inner join team as t1
+					    -&gt; on
+					    -&gt; mat.h=t1.tid
+					    -&gt; inner join team as t2
+					    -&gt; on
+					    -&gt; mat.g=t2.tid
+					    -&gt; where between '2015-06-01' and '2015-07-01';
+					+------+-------+---------+-------+------------+
+					| cid  | tname | scoring | gname | sdate      |
+					+------+-------+---------+-------+------------+
+					|    2 | T2    | 1:2     | T3    | 2015-06-01 |
+					|    3 | T3    | 2:5     | T1    | 2015-06-15 |
+					+------+-------+---------+-------+------------+
+					</pre>
+						
+				<!-- /正文 -->
+
+				<footer class="text-footer">
+					<p>
+						*转载请注明来自:<a title="晴刃-自由、互助、分享、专注计算机技术。" href="http://www.qingsword.com" target="_blank">晴刃(QingSword.COM)</a>
+					</p>
+					<p>*原文连接:<a title="[mysql基础文档]-30-左右内联查询" href="http://www.qingsword.com/qing/1520.html" target="_blank">http://www.qingsword.com/qing/1520.html</a></p>
+				</footer>
+			</article>
+			<!-- /文章区 -->	
+		</div>
+	</div>
+	<!-- /content -->
+	
+	<!-- footer -->
+	<footer id="footer">
+		<div class="footer-container">
+			QingSword.COM &nbsp;<img src="../logo/by-nc-sa.png" alt="Creative Commons" title="Creative Commons">
+		</div>
+	</footer>
+	<!-- /footer -->
+</body>
+</html>

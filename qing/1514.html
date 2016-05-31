@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<!--Copyright©QingSword.COM︻☼1010D>-->
+<html lang="zh-ch">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
+	<meta name="description" content="晴刃,是一个致力推广实用计算机技术的个人博客;我们分享计算机知识;为计算机系统以及网络安全防范做出一份贡献。【专注技术 创造价值 共同进步】">
+	<meta name="keywords" content="晴刃,晴,qing,qingsword,ccna图文笔记,ubuntu,linux,ubuntu server,mysql,node.js,javascript,python,计算机技术博客">
+	<title>[mysql基础文档]-28-子查询| QingSword.COM </title>
+	<link rel="shortcut icon" type="image/x-icon" href="../logo/favicon.ico">
+	<link rel="stylesheet" type="text/css" href="../css/basic.css">
+	<link rel="stylesheet" type="text/css" href="../css/text.css">
+	<!-- 代码块高亮js -->
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shCore.css"/>
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shThemeRDark.css"/>
+	 <script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shCore.js"></script>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shBrushSql.js"></script>
+	<script type="text/javascript">
+	SyntaxHighlighter.all();
+	</script>
+</head>
+<body>
+	<!--header -->
+	<header id="nav">
+			<div class="nav-container"> 
+				<!-- 根大纲-->
+				<a href="http://www.qingsword.com" title="晴刃">
+					<h1 class="nav-logo">晴刃</h1>
+				</a>
+				<h2 class="nav-site-description desc-hidden">
+					自由、互助、分享、专注计算机技术
+				</h2>
+				<nav class="nav-links"> 
+					<!-- nav连接大纲-->
+					<h1 style="display:none;">网站导航</h1> 
+					<ul>
+						<li  class="li-hidden">
+							<a href="../index.html" title="home">
+								<span class="link-word"><img src="../logo/home.png" alt="home" class="link-img">首页</span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../web.html" title="web">
+								<span class="link-word"><img src="../logo/web.png" alt="web" class="link-img">前端<span class="word-hidden">设计</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../system.html" title="system">
+								<span class="link-word"><img src="../logo/linux.png" alt="linux" class="link-img">系统<span class="word-hidden">应用</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../net.html" title="net">
+								<span class="link-word"><img src="../logo/net.png" alt="net" class="link-img">网络<span class="word-hidden">技术</span></span>
+							</a>
+						</li>
+						<li>
+							<a href="../sitemap.html" title="sitemap">
+								<span class="link-word"><img src="../logo/archives.png" alt="archives" class="link-img"><span class="word-hidden">文章</span>归档</span>
+							</a>
+						</li>
+					</ul>
+				</nav>
+			</div>		
+	</header>
+	<!-- /header -->
+
+	<!-- content-->
+	<div id="content">
+		<div class="content-container">
+			<!-- 文章区 -->
+			<article class="text-container">
+				<header class="text-header">
+					<h1>[mysql基础文档]-28-子查询</h1>	
+				</header><!-- /header -->
+				<section class="text-body">
+					<h2>引言</h2>
+					<p>select中的子查询类似于英语中"从句"的概念，就是在一条select语句中嵌入另一条子select语句，子select语句的查询结果作为参数返回给外层select，实现数据库中的复合查询。</p>
+					<!-- 目录 -->
+					<h2>文章目录</h2>
+					<ul class="contents">	
+						 <li><a href="#How-to-use-swhere-subqueries">0×1.如何使用where子查询</a></li>
+						 <li><a href="#How-to-use-exists-subqueries">0×2.如何使用exists子查询</a></li>
+					 </ul>
+					<!-- /目录 -->
+
+					<!-- 正文 -->
+					<h2 id="How-to-use-swhere-subqueries">0×1.如何使用where子查询</h2>
+
+					<p>本文所使用的数据表为"[mysql基础文档]-24-select查询基础"第一部分所创建的cellphone表，请参考：[<a title="练习数据表" href="1500.html#Exercise-Table" target="_blank" >练习数据表</a>]</p>
+
+					<p>在给出查询实例之前，先来了解一下select后跟随的参数先后顺序，如果一条select中携带下面的参数，从左往右书写顺序如下：</p>
+					<p class="indent-p">
+						where，group by，having，order by，limit
+					</p>
+					<p>在写语句的过程中必须严格按照顺序，不能limit order by group by这样去写，必须是group by cat_id order by goods_id desc limit 2,3; 严格按照先后顺序；</p>
+
+					<p>实例1，查询出cellphone表中goods_id最大的商品</p>
+					<pre class="brush: sql;">
+					--goods_id=(括号中就是一条子查询)，子查询首先执行，并将其结果赋予给goods_id这个变量
+					mysql&gt; select goods_id,goods_name from cellphone where goods_id=(select max(goods_id) from cellphone);
+					+----------+------------+
+					| goods_id | goods_name |
+					+----------+------------+
+					|       20 | Huawei7    |
+					+----------+------------+
+
+					--还记得以前的拆分方法吗，运行一下子查询，其实上面那条子查询的结果就是20
+					--所以上面那条语句就相当于"select goods_id,goods_name from cellphone where goods_id=20;"
+					mysql&gt; select max(goods_id) from cellphone;
+					+---------------+
+					| max(goods_id) |
+					+---------------+
+					|            20 |
+					+---------------+
+					</pre>
+					<p>实例2，查询出同类商品（cat_id）中goods_id最大的商品</p>
+					<pre class="brush: sql;">
+					--因为子查询得到的是一组数据，所以要用关键字in，相当于遍历一组数列取值，对每一个值，都返回一条记录，本例中goods_id分别取4,17,18,19,20,最后得到下面的结果
+					mysql&gt; select goods_id,goods_name,cat_id from cellphone
+					    -&gt; where
+					    -&gt; goods_id in (select max(goods_id) from cellphone group by cat_id);
+					+----------+------------+--------+
+					| goods_id | goods_name | cat_id |
+					+----------+------------+--------+
+					|        4 | MI4        |      1 |
+					|       17 | iPhone6s   |      3 |
+					|       18 | MX4Pro     |      4 |
+					|       19 | GalaxyS6   |      2 |
+					|       20 | Huawei7    |      5 |
+					+----------+------------+--------+
+
+					--子查询的结果集
+					mysql&gt; select max(goods_id) from cellphone group by cat_id;
+					+---------------+
+					| max(goods_id) |
+					+---------------+
+					|             4 |
+					|            19 |
+					|            17 |
+					|            18 |
+					|            20 |
+					+---------------+
+					</pre>
+					<p>实例3，MySQL中利用from子查询（准确的讲应该是利用子查询构建一个结果集表，再对这个结果集表进行查询），查询出同类商品（cat_id）中goods_id最大的商品</p>
+					<pre class="brush: sql;">
+					--from参数后面需要跟随表名，此例将子查询的结果集定义成tmp表返回给外层select，还记得MySQL对于不确定的多个字段的选取特性吗？本例中子查询将cellphone表使用cat_id排序，如果遇到相同的cat_id则使用goods_id降序排序，这会让tmp表，每组相同cat_id的商品中goods_id最大的排在最上面，tmp表返回给外层select后，外层对tmp使用cat_id进行了分组，当外层select来取值的时候发现，goods_id,goods_name都分别对应了每组cat_id中的4个值，MySQL此时就直接使用排列在最上面的那一条记录中对应字段的值返回显示（仅MySQL，其他数据库会报错）
+					mysql&gt; select goods_id,goods_name,cat_id
+					    -&gt; from
+					    -&gt; (select * from cellphone order by cat_id asc,goods_id desc) as tmp
+					    -&gt; group by cat_id;
+					+----------+------------+--------+
+					| goods_id | goods_name | cat_id |
+					+----------+------------+--------+
+					|        4 | MI4        |      1 |
+					|       19 | GalaxyS6   |      2 |
+					|       17 | iPhone6s   |      3 |
+					|       18 | MX4Pro     |      4 |
+					|       20 | Huawei7    |      5 |
+					+----------+------------+--------+
+
+					--大家可以试着运行一下子查询就会明白为什么
+					mysql&gt; select * from cellphone order by cat_id asc,goods_id desc;
+					</pre>
+
+					<h2 id="How-to-use-exists-subqueries">0×2.如何使用exists子查询</h2>
+					
+					<p>为了更好的演示exists查询功能，在qingsword_com数据库中新建另一张表category，存放手机的种类信息，与cellphone表对应</p>
+					<pre class="brush: sql;">
+					mysql&gt; create table category(cat_name char(50) not null default '',cat_id tinyint unsigned not null default 0);
+
+					mysql&gt; insert into category values
+					    -&gt; ('XiaoMi',1),
+					    -&gt; ('Samsung',2),
+					    -&gt; ('Apple',3),
+					    -&gt; ('Meizu',4),
+					    -&gt; ('Huawei',5);
+
+					mysql&gt; select * from category;
+					+----------+--------+
+					| cat_name | cat_id |
+					+----------+--------+
+					| XiaoMi   |      1 |
+					| Samsung  |      2 |
+					| Apple    |      3 |
+					| Meizu    |      4 |
+					| Huawei   |      5 |
+					+----------+--------+
+					</pre>
+					<p>实例1，查询出cellphone表中goods_id=20的商品，在category表中的类型名称</p>
+					<pre class="brush: sql;">
+					--使用子查询，可以将一个表的查询结果集传递给另一个表处理，实现多表之间的查询关联
+					mysql&gt; select cat_name,cat_id
+					    -&gt; from category
+					    -&gt; where
+					    -&gt; cat_id=(select cat_id from cellphone where goods_id=20);
+					+----------+--------+
+					| cat_name | cat_id |
+					+----------+--------+
+					| Huawei   |      5 |
+					+----------+--------+
+					</pre>
+					<p>实例2，利用exists子查询，判断cellphone表中是否存在某个手机类型，如果存在则返回类型名称</p>
+					<pre class="brush: sql;">
+					--exists判断括号中的子查询是否能够查到值，查到则返回子查询对应的那一条记录，如果查不到则继续下一条记录查询，比如外层select查询的时候，第一条记录category.cat_id=1，将它赋予子查询cellphone.cat_id=1，此时看子查询的select能否查找到值，如果找到，则根据外层select *（这里是*就是返回全部列信息）返回当前行记录（当前行就是被查询的这一行category.cat_id=1）
+
+					--因为对应每个cat_id，在cellphone表中都存在4条商品记录，所以这里返回的表就是category表的全部内容
+					mysql&gt; select * from category
+					    -&gt; where exists
+					    -&gt; (select * from cellphone where cellphone.cat_id=category.cat_id);
+					+----------+--------+
+					| cat_name | cat_id |
+					+----------+--------+
+					| XiaoMi   |      1 |
+					| Samsung  |      2 |
+					| Apple    |      3 |
+					| Meizu    |      4 |
+					| Huawei   |      5 |
+					+----------+--------+
+
+					--大家可能有一点疑问，这一次的子查询语句单独运行会报错，确实如此，因为category表并没有被引用，只有使用from引用后，才能使用这种"表名.列名"的形式获取值
+					mysql&gt; select * from cellphone where cellphone.cat_id=category.cat_id;
+					ERROR 1054 (42S22): Unknown column 'category.cat_id' in 'where clause'
+					</pre>
+						
+				<!-- /正文 -->
+
+				<footer class="text-footer">
+					<p>
+						*转载请注明来自:<a title="晴刃-自由、互助、分享、专注计算机技术。" href="http://www.qingsword.com" target="_blank">晴刃(QingSword.COM)</a>
+					</p>
+					<p>*原文连接:<a title="[mysql基础文档]-28-子查询" href="http://www.qingsword.com/qing/1514.html" target="_blank">http://www.qingsword.com/qing/1514.html</a></p>
+				</footer>
+			</article>
+			<!-- /文章区 -->	
+		</div>
+	</div>
+	<!-- /content -->
+	
+	<!-- footer -->
+	<footer id="footer">
+		<div class="footer-container">
+			QingSword.COM &nbsp;<img src="../logo/by-nc-sa.png" alt="Creative Commons" title="Creative Commons">
+		</div>
+	</footer>
+	<!-- /footer -->
+</body>
+</html>

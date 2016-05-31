@@ -105,7 +105,7 @@
 }
 #content .recommend li a{
 	display: block;
-	margin: 4px;
+	margin: 4px 4px 6px 4px;
 	color: #c9c9c9;
 	overflow: hidden;  /*截取多余部分，不换行*/
 	white-space: nowrap;

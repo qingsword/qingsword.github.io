@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<!--Copyright©QingSword.COM︻☼1010D>-->
+<html lang="zh-ch">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
+	<meta name="description" content="晴刃,是一个致力推广实用计算机技术的个人博客;我们分享计算机知识;为计算机系统以及网络安全防范做出一份贡献。【专注技术 创造价值 共同进步】">
+	<meta name="keywords" content="晴刃,晴,qing,qingsword,ccna图文笔记,ubuntu,linux,ubuntu server,mysql,node.js,javascript,python,计算机技术博客">
+	<title>[mysql基础文档]-26-内存查询having| QingSword.COM </title>
+	<link rel="shortcut icon" type="image/x-icon" href="../logo/favicon.ico">
+	<link rel="stylesheet" type="text/css" href="../css/basic.css">
+	<link rel="stylesheet" type="text/css" href="../css/text.css">
+	<!-- 代码块高亮js -->
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shCore.css"/>
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shThemeRDark.css"/>
+	 <script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shCore.js"></script>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shBrushSql.js"></script>
+	<script type="text/javascript">
+	SyntaxHighlighter.all();
+	</script>
+</head>
+<body>
+	<!--header -->
+	<header id="nav">
+			<div class="nav-container"> 
+				<!-- 根大纲-->
+				<a href="http://www.qingsword.com" title="晴刃">
+					<h1 class="nav-logo">晴刃</h1>
+				</a>
+				<h2 class="nav-site-description desc-hidden">
+					自由、互助、分享、专注计算机技术
+				</h2>
+				<nav class="nav-links"> 
+					<!-- nav连接大纲-->
+					<h1 style="display:none;">网站导航</h1> 
+					<ul>
+						<li  class="li-hidden">
+							<a href="../index.html" title="home">
+								<span class="link-word"><img src="../logo/home.png" alt="home" class="link-img">首页</span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../web.html" title="web">
+								<span class="link-word"><img src="../logo/web.png" alt="web" class="link-img">前端<span class="word-hidden">设计</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../system.html" title="system">
+								<span class="link-word"><img src="../logo/linux.png" alt="linux" class="link-img">系统<span class="word-hidden">应用</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../net.html" title="net">
+								<span class="link-word"><img src="../logo/net.png" alt="net" class="link-img">网络<span class="word-hidden">技术</span></span>
+							</a>
+						</li>
+						<li>
+							<a href="../sitemap.html" title="sitemap">
+								<span class="link-word"><img src="../logo/archives.png" alt="archives" class="link-img"><span class="word-hidden">文章</span>归档</span>
+							</a>
+						</li>
+					</ul>
+				</nav>
+			</div>		
+	</header>
+	<!-- /header -->
+
+	<!-- content-->
+	<div id="content">
+		<div class="content-container">
+			<!-- 文章区 -->
+			<article class="text-container">
+				<header class="text-header">
+					<h1>[mysql基础文档]-26-内存查询having</h1>	
+				</header><!-- /header -->
+				<section class="text-body">
+					<h2>引言</h2>
+					<p>在select查询中，where查询只能对MySQL保存在硬盘上的数据进行查询，而使用as定义的变量，或使用where查询返回的结果集是在内存中的，想要对内存中这一部分数据进行查询，可以使用本文介绍的having。</p>
+					<!-- 目录 -->
+					<h2>文章目录</h2>
+					<ul class="contents">	
+						 <li><a href="#How-to-use-having-for-memory-select">0×1.如何使用having进行内存查询</a></li>
+						 <li><a href="#having-memory-query-instance">0×2.having内存查询实例</a></li>
+					 </ul>
+					<!-- /目录 -->
+
+					<!-- 正文 -->
+					<h2 id="How-to-use-having-for-memory-select">0×1.如何使用having进行内存查询</h2>
+
+					<p>本文所使用的数据表为"[mysql基础文档]-24-select查询基础"第一部分所创建的cellphone表，请参考：[<a title="练习数据表" href="1500.html#Exercise-Table" target="_blank">练习数据表</a>]</p>
+					<p>having运行方式实例：</p>
+					<pre class="brush: sql;">
+					--实例1，使用as运算符将结果集保存在内存中，并使用having筛选内存中的结果集
+					--前面已经提到，数据表中每一列的列头字段，相当于一个变量，变量是能够参与运算的，下面的语句中数据库会读取每条记录selling_price列的值，并用它减去对应这条记录中sale_price的值，最后用as运算符将结果集赋值给以save命名的列
+					mysql&gt; select (selling_price-sale_price) as save from cellphone;
+					+--------+
+					| save   |
+					+--------+
+					| 150.00 |
+					| 200.00 |
+					| 170.00 |
+					| 161.00 |
+					| 600.00 |
+					| 598.00 |
+					| 300.00 |
+					| 300.00 |
+					| 200.00 |
+					| 189.00 |
+					| 300.00 |
+					| 431.00 |
+					| 300.00 |
+					| 200.00 |
+					| 290.00 |
+					| 200.00 |
+					| 600.00 |
+					| 300.00 |
+					| 200.00 |
+					| 200.00 |
+					+--------+
+
+					--使用as运算符将结果赋予一个变量，变量是储存在内存中的，而where只能对硬盘中的数据进行筛选，所以这里报错了，告诉你没有save这一列
+					mysql&gt; select (selling_price-sale_price) as save from cellphone where save&gt;300;
+					ERROR 1054 (42S22): Unknown column 'save' in 'where clause'
+
+					--对保存在内存中的结果集，可以使用having筛选，选出save列中大于300的字段显示
+					mysql&gt; select (selling_price-sale_price) as save from cellphone having save&gt;300;
+					+--------+
+					| save   |
+					+--------+
+					| 600.00 |
+					| 598.00 |
+					| 431.00 |
+					| 600.00 |
+					+--------+
+
+					--实例2，使用where子运算筛选出一个结果集，这个结果集是保存在内存中的，再用having对这个内存中的结果集进行再次筛选
+					--cellphone表中标价比打折价高出200的商品名称筛选结果
+					mysql&gt; select goods_name,sale_price,selling_price from cellphone where selling_price-sale_price&gt;200; 
+					+--------------+------------+---------------+
+					| goods_name   | sale_price | selling_price |
+					+--------------+------------+---------------+
+					| GalaxyN9200  |    5388.00 |       5988.00 |
+					| iPhone6A1586 |    4288.00 |       4886.00 |
+					| MeizuNote2   |     899.00 |       1199.00 |
+					| Huawei4X     |     999.00 |       1299.00 |
+					| MX5          |    1899.00 |       2199.00 |
+					| iPhone5s     |    3188.00 |       3619.00 |
+					| GalaxyN9109W |    2698.00 |       2998.00 |
+					| iPhone4s     |    1398.00 |       1688.00 |
+					| iPhone6s     |    5288.00 |       5888.00 |
+					| MX4Pro       |    1599.00 |       1899.00 |
+					+--------------+------------+---------------+
+
+					--在where后添加having语句，对where筛选结果再次进行筛选，选出标价比打折价高出300的商品名称，where筛选出来的结果集暂时保存在内存中，对内存中的结果集进行操作需要使用having
+					mysql&gt; select goods_name,sale_price,selling_price from cellphone where selling_price-sale_price&gt;200 having selling_price-sale_price&gt;300; 
+					+--------------+------------+---------------+
+					| goods_name   | sale_price | selling_price |
+					+--------------+------------+---------------+
+					| GalaxyN9200  |    5388.00 |       5988.00 |
+					| iPhone6A1586 |    4288.00 |       4886.00 |
+					| iPhone5s     |    3188.00 |       3619.00 |
+					| iPhone6s     |    5288.00 |       5888.00 |
+					+--------------+------------+---------------+
+					</pre>
+					<p>P.s：where和having共存，where肯定是在having前面，因为必须要将磁盘上的数据查出来放在内存之后才能用having查到这些数据。</p>
+
+					<h2 id="having-memory-query-instance">0×2.having内存查询实例</h2>
+					
+					<p>下面来看一个学生成绩查询实例，要求查询出下表中2门及2门以上不及格者（mark&lt;60）的平均成绩：</p>
+					<pre class="brush: sql;">
+					--创建成绩表score
+					mysql&gt; create table score(name char(20) not null default '',subject char(20) not null default '',mark tinyint unsigned not null default 0);
+
+					--插入6条记录
+					mysql&gt; insert into score values
+					    -&gt; ('tom','math',90),
+					    -&gt; ('tom','english',50),
+					    -&gt; ('tom','art',59),
+					    -&gt; ('john','math',55),
+					    -&gt; ('john','art',40),
+					    -&gt; ('jack','art',52);
+
+					--表完整结构
+					mysql&gt; select * from score;
+					+------+---------+------+
+					| name | subject | mark |
+					+------+---------+------+
+					| tom  | math    |   90 |
+					| tom  | english |   50 |
+					| tom  | art     |   59 |
+					| john | math    |   55 |
+					| john | art     |   40 |
+					| jack | art     |   52 |
+					+------+---------+------+
+
+					--将初始问题拆分成不同的步骤，对步骤进行再加工是解决MySQL查询问题的关键，下面的每一步都是对上面一步结果的再加工，而实际工作中只需要写出最后一步即可，这里仅仅是想告诉大家这种思维方式
+
+					--第一步，查询出score表中每条记录mark&lt;60的布尔值，0表示false，1表示true
+					mysql&gt; select name,mark&lt;60 from score;
+					+------+---------+
+					| name | mark&lt;60 |
+					+------+---------+
+					| tom  |       0 |
+					| tom  |       1 |
+					| tom  |       1 |
+					| john |       1 |
+					| john |       1 |
+					| jack |       1 |
+					+------+---------+
+
+					--第二步，使用group by对name字段进行分组，并使用sum()函数将分组后每一组的(mark&lt;60)结果加起来
+					mysql&gt; select name,sum(mark&lt;60) from score group by name;
+					+------+--------------+
+					| name | sum(mark&lt;60) |
+					+------+--------------+
+					| jack |            1 |
+					| john |            2 |
+					| tom  |            2 |
+					+------+--------------+
+
+					--第三步，将sum(mark&lt;60)的结果赋予ms变量，并使用having查询出ms大于等于2的结果，ms&gt;=2就意味着"2门及2门以上不及格"
+					mysql&gt; select name,sum(mark&lt;60) as ms from score group by name having ms&gt;=2;
+					+------+------+
+					| name | ms   |
+					+------+------+
+					| john |    2 |
+					| tom  |    2 |
+					+------+------+
+
+					--最后一步，添加一列，使用avg()函数计算这些"2门及2门以上不及格"者的平均成绩，得到最终结果
+					mysql&gt; select name,sum(mark&lt;60) as ms,avg(mark) from score group by name having ms&gt;=2;
+					+------+------+-----------+
+					| name | ms   | avg(mark) |
+					+------+------+-----------+
+					| john |    2 |   47.5000 |
+					| tom  |    2 |   66.3333 |
+					+------+------+-----------+
+					</pre>
+					<p>对于上面这个问题，还存在着一个经典标准错误答案，请看下面的实例：</p>
+					<pre class="brush: sql;">
+					--将sum()函数换成count()函数，得到的结果看上去也是对的
+					mysql&gt; select name,count(mark&lt;60) as ms,avg(mark) from score group by name having ms&gt;=2;
+					+------+----+-----------+
+					| name | ms | avg(mark) |
+					+------+----+-----------+
+					| john |  2 |   47.5000 |
+					| tom  |  3 |   66.3333 |
+					+------+----+-----------+
+
+					--现在对score表再添加两条记录
+					mysql&gt; insert into score values
+					    -&gt; ('qingsword','math',100),
+					    -&gt; ('qingsword','english',100);
+
+					--使用相同的语句发现了问题，本不该出现在结果中的qingsword，也出现了
+					mysql&gt; select name,count(mark&lt;60) as ms,avg(mark) from score group by name having ms&gt;=2;
+					+-----------+----+-----------+
+					| name      | ms | avg(mark) |
+					+-----------+----+-----------+
+					| john      |  2 |   47.5000 |
+					| qingsword |  2 |  100.0000 |
+					| tom       |  3 |   66.3333 |
+					+-----------+----+-----------+
+
+					--出现这种问题的关键就是count()函数，还记得第一步中的结果吗？tom三行，john两行，jack一行，count()函数仅仅统计的是行数，只要行数大于等于2的结果，都会出现在这里面，因为jack只有一行，所以第一次操作中，并没有出现这样的错误。
+					</pre>
+					<p>P.s：上面的实例中，错误的地方在于count()统计函数，score&lt;60会得到一个布尔返回值条件为真结果是1，条件为假结果是0，此时不管分数是否小于60，都能得到一行值，而count仅仅只统计行数，这就是为什么第一次错误的查询会看来正确的原因，因为jack只有一条记录，当有一个全部及格且大于或等于两条记录的人出现的时候，count统计出这个人的score&lt;60的结果条数是&gt;=2的，满足having gk&gt;=2，所以显示出这个人。</p>
+						
+				<!-- /正文 -->
+
+				<footer class="text-footer">
+					<p>
+						*转载请注明来自:<a title="晴刃-自由、互助、分享、专注计算机技术。" href="http://www.qingsword.com" target="_blank">晴刃(QingSword.COM)</a>
+					</p>
+					<p>*原文连接:<a title="[mysql基础文档]-26-内存查询having" href="http://www.qingsword.com/qing/1504.html" target="_blank">http://www.qingsword.com/qing/1504.html</a></p>
+				</footer>
+			</article>
+			<!-- /文章区 -->	
+		</div>
+	</div>
+	<!-- /content -->
+	
+	<!-- footer -->
+	<footer id="footer">
+		<div class="footer-container">
+			QingSword.COM &nbsp;<img src="../logo/by-nc-sa.png" alt="Creative Commons" title="Creative Commons">
+		</div>
+	</footer>
+	<!-- /footer -->
+</body>
+</html>
