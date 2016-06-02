@@ -337,6 +337,9 @@
 		float: none;
 		width: 100%
 	} 
+	#content .about .about-span {
+		letter-spacing: 0.6px;
+	}
 }
 /*在480和767像素之间，高分辨率手机端*/
 @media (min-width: 480px) and (max-width: 767px) {
