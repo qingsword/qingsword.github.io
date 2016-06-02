@@ -14,6 +14,7 @@
 	word-break:break-all;
 	overflow: hidden;
 	text-overflow: ellipsis;
+	letter-spacing: 1.2px;
 }
 #content .text-header h1{
 	font-size: 26px;
@@ -22,7 +23,6 @@
 	border-bottom: 1px solid #1ea65c;
 	padding-bottom: 10px;
 	margin-bottom: 40px;
-	letter-spacing: 0.5px;
 }
 #content .text-body h2{
 	color: #d6d6d6;
@@ -30,7 +30,6 @@
 	border-left: 4px solid #1ea65c;
 	padding: 6px;
 	margin:6px 0;
-	letter-spacing: 0.5px;
 }
 #content .text-body h3{
 	color: #d6d6d6;
@@ -38,7 +37,6 @@
 	border-left: 2px solid #1ea65c;
 	padding: 6px 0 6px 10px;
 	margin:6px 0 6px 10px;
-	letter-spacing: 0.5px;
 }
 #content .contents{
 	margin: 15px;
@@ -46,7 +44,6 @@
 #content .contents a{
 	color: #c0c0c0;
 	border-bottom: 1px solid #1ea65c;
-	letter-spacing: 0.5px;
 	line-height: 1.5;
 }
 #content .contents .subli{
@@ -54,10 +51,11 @@
 }
 #content .text-body p{
 	margin: 15px;
-	letter-spacing: 0.5px;
+	letter-spacing: 1.2px;
 	line-height: 1.5;
 }
 #content .text-body .indent-p{
+	letter-spacing: 1.2px;
 	margin-left: 30px;
 }
 #content .text-body a{
