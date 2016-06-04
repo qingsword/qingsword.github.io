@@ -85,7 +85,8 @@
 						 <li class="subli"><a href="#git-example-4">b.修改文件</a></li>
 						 <li class="subli"><a href="#git-example-5">c.提交文件到Repository</a></li>
 						 <li class="subli"><a href="#git-example-6">d.忽略列表</a></li>
-						 
+						 <li class="subli"><a href="#git-example-7">e.文件重命名</a></li>
+						 <li class="subli"><a href="#git-example-8">f.移除文件版本控制</a></li>
 					 </ul>
 					<!-- /目录 -->
 
@@ -279,6 +280,72 @@
 					qing@qingsword.com:~/myblog$ git status -s
 					qing@qingsword.com:~/myblog$ ls
 					a.js  a.py  b.py  index.html  readme.md
+					</pre>
+
+					<h3 id="git-example-7">e.文件重命名</h3>
+
+					<pre class="brush: bash;">
+					#将"index.html"重命名为"hello.html"
+					qing@qingsword.com:~/myblog$ git mv index.html hello.html
+
+					#标识位高位出现一个绿色的"R"，表示此文件被重命名了
+					qing@qingsword.com:~/myblog$ git status -s
+					R  index.html -> hello.html
+
+					#重新将文件添加并且提交到"Repository"
+					qing@qingsword.com:~/myblog$ git add hello.html 
+					qing@qingsword.com:~/myblog$ git commit -m 'rename'
+					[master 95efd8b] rename
+					 1 file changed, 0 insertions(+), 0 deletions(-)
+					 rename index.html => hello.html (100%)
+					</pre>
+
+					<h3 id="git-example-8">f.移除文件版本控制</h3>
+
+					<p>1）仅移除文件的版本控制，源文件仍然保留在"Working Directory"区域中，标识位变成两个"问号"，就像文件没有被添加前的状态</p>
+					<pre class="brush: bash;">
+					#移除"readme.md"文件的版本控制
+					qing@qingsword.com:~/myblog$ git rm -r --cache readme.md
+					rm 'readme.md'
+
+					#移除后还没有提交，git状态会出现两个同名文件，第一个文件标识位高位"D"，代表这次移除操作，第二个文件标识位全部是"问号"，代表这个文件已经被去除了版本控制
+					qing@qingsword.com:~/myblog$ git status -s
+					D  readme.md
+					?? readme.md
+
+					#提交这次移除操作
+					qing@qingsword.com:~/myblog$ git commit -m 'rm readme.md'
+					[master da8de4c] rm readme.md
+					 1 file changed, 1 deletion(-)
+					 delete mode 100644 readme.md
+
+					 #再看状态，就只剩下未被添加的文件列表了
+					qing@qingsword.com:~/myblog$ git status -s
+					?? readme.md
+					</pre>
+					<p>2）移除文件的版本控制，并且删除源文件</p>
+					<pre class="brush: bash;">
+					#移除"hello.html"文件的版本控制并删除源文件本身，不携带"--cache"参数将删除源文件
+					qing@qingsword.com:~/myblog$ git rm -r hello.html 
+					rm 'hello.html'
+
+					#这一次看不到"Working Directory"区域中的"hello.html"文件，仅看到一个标识了删除位的文件
+					qing@qingsword.com:~/myblog$ git status -s
+					D  hello.html
+					?? readme.md
+
+					#提交操作后，"hello.html"文件将被删除
+					qing@qingsword.com:~/myblog$ git commit -m 'delete hello.html'
+					[master 31c5316] delete hello.html
+					 1 file changed, 3 deletions(-)
+					 delete mode 100644 hello.html
+
+					qing@qingsword.com:~/myblog$ git status -s
+					?? readme.md
+
+					#文件夹中看不到"hello.html"文件了
+					qing@qingsword.com:~/myblog$ ls
+					a.js  a.py  b.py  readme.md
 					</pre>
 						
 				<!-- /正文 -->

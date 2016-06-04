@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<!--Copyright©QingSword.COM︻☼1010D>-->
+<html lang="zh-ch">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
+	<meta name="description" content="晴刃,是一个致力推广实用计算机技术的个人博客;我们分享计算机知识;为计算机系统以及网络安全防范做出一份贡献。【专注技术 创造价值 共同进步】">
+	<meta name="keywords" content="晴刃,晴,qing,qingsword,ccna图文笔记,ubuntu,linux,ubuntu server,mysql,node.js,javascript,python,计算机技术博客">
+	<title>[Git使用手册]-3-版本比较与撤消| QingSword.COM </title>
+	<link rel="shortcut icon" type="image/x-icon" href="../logo/favicon.ico">
+	<link rel="stylesheet" type="text/css" href="../css/basic.css">
+	<link rel="stylesheet" type="text/css" href="../css/text.css">
+	<!-- 代码块高亮js -->
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shCore.css"/>
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shThemeRDark.css"/>
+	 <script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shCore.js"></script>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shBrushBash.js"></script>
+	<script type="text/javascript">
+	SyntaxHighlighter.all();
+	</script>
+</head>
+<body>
+	<!--header -->
+	<header id="nav">
+			<div class="nav-container"> 
+				<!-- 根大纲-->
+				<a href="http://www.qingsword.com" title="晴刃">
+					<h1 class="nav-logo">晴刃</h1>
+				</a>
+				<h2 class="nav-site-description desc-hidden">
+					自由、互助、分享、专注计算机技术
+				</h2>
+				<nav class="nav-links"> 
+					<!-- nav连接大纲-->
+					<h1 style="display:none;">网站导航</h1> 
+					<ul>
+						<li  class="li-hidden">
+							<a href="../index.html" title="home">
+								<span class="link-word"><img src="../logo/home.png" alt="home" class="link-img">首页</span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../web.html" title="web">
+								<span class="link-word"><img src="../logo/web.png" alt="web" class="link-img">前端<span class="word-hidden">设计</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../system.html" title="system">
+								<span class="link-word"><img src="../logo/linux.png" alt="linux" class="link-img">系统<span class="word-hidden">应用</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../net.html" title="net">
+								<span class="link-word"><img src="../logo/net.png" alt="net" class="link-img">网络<span class="word-hidden">技术</span></span>
+							</a>
+						</li>
+						<li>
+							<a href="../sitemap.html" title="sitemap">
+								<span class="link-word"><img src="../logo/archives.png" alt="archives" class="link-img"><span class="word-hidden">文章</span>归档</span>
+							</a>
+						</li>
+					</ul>
+				</nav>
+			</div>		
+	</header>
+	<!-- /header -->
+
+	<!-- content-->
+	<div id="content">
+		<div class="content-container">
+			<!-- 文章区 -->
+			<article class="text-container">
+				<header class="text-header">
+					<h1>[Git使用手册]-3-版本比较与撤消</h1>	
+				</header><!-- /header -->
+				<section class="text-body">
+					<h2>引言</h2>
+					<p>在上一篇文章中已经介绍了如何将文件从"Working Directory"区域提交到"Repository"区域，但真实环境中我们通常对一段代码会进行反复的修改，如果修改之后出现bug，我们就会尝试着用前一个稳定版覆盖当前版本，本文将介绍如何查看"Git模型图"三个区域文件不同版本之间的区别，实例演示不同版本之间的"回滚"操作。</p>
+					<!-- 目录 -->
+					<h2>文章目录</h2>
+					<ul class="contents">	
+						 <li><a href="#xxx1">0×1.git版本撤消</a></li>
+						 <li><a href="#xxx2">0×2.git版本比较</a></li>
+					 </ul>
+					<!-- /目录 -->
+
+					<!-- 正文 -->
+					<h2 id="xxx1">0×1.git版本撤消</h2>
+
+					<p>git版本撤销功能实例：</p>
+
+					<p>1）取出"Staying Area"中的版本覆盖"Working Directory"中的版本；</p>
+					<pre class="brush: bash;">
+					#接着上一篇文章的实例，myblog目录已经被初始化为git目录，并且在这个目录中存在一个文件"readme.md"，文件还没有被add
+					qing@qingsword.com:~/myblog$ git status -s
+					?? readme.md
+
+					#首先向"readme.md"文件中写入一行文本"www.qingsword.com"
+					qing@qingsword.com:~/myblog$ echo www.qingsword.com > readme.md
+
+					#查看文件内容
+					qing@qingsword.com:~/myblog$ more readme.md 
+					www.qingsword.com
+
+					#将文件add到"Staying Area"
+					qing@qingsword.com:~/myblog$ git add readme.md 
+
+					#对文件做出修改，追加文本"qingsword.com"
+					qing@qingsword.com:~/myblog$ echo qingsword.com >> readme.md
+
+					#修改后的文件内容如下
+					qing@qingsword.com:~/myblog$ more readme.md 
+					www.qingsword.com
+					qingsword.com
+
+					#此时"readme.md"文件的git标记为"AM"，也就意味着，文件在"Staying Area"区域保留了一个版本，是刚才add上去的，现在文件追加了一行，所以"Staying Area"区域中的版本与最新修改的版本不一致，上一篇文章已经分析过这些标记的含义，这里不再赘述
+					qing@qingsword.com:~/myblog$ git status -s
+					AM readme.md
+
+					#现在我不想要做出这个修改，想"回滚"到保存在"Staying Area"区域中的那个版本
+					qing@qingsword.com:~/myblog$ git checkout readme.md
+
+					#再次查看文件内容，我们添加的那一行"qingsword.com"不见了
+					qing@qingsword.com:~/myblog$ more readme.md 
+					www.qingsword.com
+
+					#查看文件git状态，低位"M"标记也不见了
+					qing@qingsword.com:~/myblog$ git status -s
+					A  readme.md
+					</pre>
+
+					<p>2）取出"Repository"中最新的历史版本覆盖"Staying Area"中的版本；</p>
+					<pre class="brush: bash;">
+					#接着上面的实验，现在"readme.md"文件只有一行文本，并且已经被add到了"Staying Area"中
+					qing@qingsword.com:~/myblog$ more readme.md 
+					www.qingsword.com
+
+					qing@qingsword.com:~/myblog$ git status -s
+					A  readme.md
+
+					#将文件提交到"Repository"，此时git模型中三个区域这个文件的版本应该是一致的
+					qing@qingsword.com:~/myblog$ git commit -m 'readme.md update'
+
+					#修改文件内容，追加一行（低位M）
+					qing@qingsword.com:~/myblog$ echo qingsword.com >> readme.md 
+					qing@qingsword.com:~/myblog$ git status -s
+					 M readme.md
+
+					#将追加后的版本add到"Staying Area"（高位M）
+					qing@qingsword.com:~/myblog$ git add readme.md 
+					qing@qingsword.com:~/myblog$ git status -s
+					M  readme.md
+
+					#现在"Working Directory"与"Staying Area"中的文件版本保持一致，文件内容如下
+					qing@qingsword.com:~/myblog$ more readme.md 
+					www.qingsword.com
+					qingsword.com
+
+					#如果此时将文件从"Staying Area"取出，覆盖到"Working Directory"，内容不会有变化
+					qing@qingsword.com:~/myblog$ git checkout readme.md
+					qing@qingsword.com:~/myblog$ more readme.md 
+					www.qingsword.com
+					qingsword.com
+
+					#但是"Repository"中还是上次提交的那个版本，其内容只有一行文本，现在将其取出覆盖到"Staying Area"
+					qing@qingsword.com:~/myblog$ git reset readme.md
+					重置后撤出暂存区的变更：
+					M	readme.md
+
+					#此时，"Working Directory"中仍然是两行数据
+					qing@qingsword.com:~/myblog$ more readme.md 
+					www.qingsword.com
+					qingsword.com
+
+					#再将"Staying Area"中的版本取出，覆盖到"Working Directory"中
+					qing@qingsword.com:~/myblog$ git checkout readme.md
+
+					#文件被还原了
+					qing@qingsword.com:~/myblog$ more readme.md 
+					www.qingsword.com
+					</pre>
+
+					<p>3）取出"Repository"中最新的历史版本直接覆盖到"Working Directory"；</p>
+					<pre class="brush: bash;">
+					#接着上面的实验，首先向"readme.md"，追加一行
+					qing@qingsword.com:~/myblog$ echo qingsword.com >> readme.md
+
+					qing@qingsword.com:~/myblog$ more readme.md 
+					www.qingsword.com
+					qingsword.com
+
+					#将修改add到"Staying Area"
+					qing@qingsword.com:~/myblog$ git add readme.md 
+
+					#之后再向文件中追加一行
+					qing@qingsword.com:~/myblog$ echo qingsword >> readme.md
+
+					#现在"Working Directory"中文件的内容如下
+					qing@qingsword.com:~/myblog$ more readme.md 
+					www.qingsword.com
+					qingsword.com
+					qingsword
+
+					#大家可以想象到，"Staying Area"中这个文件应该是两行数据，而"Repository"中还是上次提交的那个版本，所以只有一行数据
+
+					#使用下面这条命令，取出"Repository"中最新的历史版本覆盖到"Staying Area"以及"Working Directory"
+					qing@qingsword.com:~/myblog$ git checkout HEAD readme.md
+
+					#文件内容恢复到了一行数据
+					qing@qingsword.com:~/myblog$ more readme.md 
+					www.qingsword.com
+
+					#为了验证"Staying Area"中的文件也被覆盖了，使用下面的命令，从"Staying Area"覆盖到"Working Directory"
+					qing@qingsword.com:~/myblog$ git checkout readme.md
+
+					#文件内容并没有变成两行，这说明"git checkout HEAD readme.md"这条命令可以一次性覆盖下面两个区域中的文件版本
+					qing@qingsword.com:~/myblog$ more readme.md 
+					www.qingsword.com
+					</pre>
+
+					<h2 id="xxx2">0×2.git版本比较</h2>
+
+					<p>三个版本比较命令能够分别比较"Git模型图"中三个不同区域，同一个文件，不同版本之间，内容的不同之处，接着上面的实验：</p>
+					<pre class="brush: bash;">
+					#"readme.md"文件已经被提交，现在"Git模型图"中三个区域这个文件的版本和内容都一致，只有一行数据，内容如下
+					qing@qingsword.com:~/myblog$ more readme.md 
+					www.qingsword.com
+
+					#现在给文件追加一行数据
+					qing@qingsword.com:~/myblog$ echo qingsword.com >> readme.md
+					qing@qingsword.com:~/myblog$ more readme.md 
+					www.qingsword.com
+					qingsword.com
+
+					#将追加后的版本add到"Staying Area"
+					qing@qingsword.com:~/myblog$ git add readme.md 
+
+					#再给文件追加一行数据
+					qing@qingsword.com:~/myblog$ echo qingsword >> readme.md
+					qing@qingsword.com:~/myblog$ more readme.md 
+					www.qingsword.com
+					qingsword.com
+					qingsword
+
+					#现在"Git模型图"中三个区域中"readme.md"文件的内容各不相同
+
+					#"Repository"中的版本只有一行数据
+					#www.qingsword.com
+
+					#"Staying Area"中的版本有两行数据
+					#www.qingsword.com
+					#qingsword.com
+
+					#"Working Directory"中的版本有三行数据
+					#www.qingsword.com
+					#qingsword.com
+					#qingsword
+					</pre>
+
+					<p>1）比较"Staying Area"与"Working Directory"的不同；</p>
+					<pre class="brush: bash;">
+					#语法：git diff 文件名
+					#从输出中可以看到，"Working Directory"中的版本比"Staying Area"中的版本多一行数据，即"qingsword"，git会将多出的数据前面添加"加号"显示
+					qing@qingsword.com:~/myblog$ git diff readme.md
+					diff --git a/readme.md b/readme.md
+					index b964a0b..3fe17a7 100644
+					--- a/readme.md
+					+++ b/readme.md
+					@@ -1,2 +1,3 @@
+					 www.qingsword.com
+					 qingsword.com
+					+qingsword
+					</pre>
+
+					<p>2）比较"Repository"中最新的历史版本与"Staying Area"的不同；</p>
+					<pre class="brush: bash;">
+					#语法：git diff --staged 文件名
+					#同样多出一行数据，这和前面我们的分析一致
+					qing@qingsword.com:~/myblog$ git diff --staged readme.md
+					diff --git a/readme.md b/readme.md
+					index a4f24f8..b964a0b 100644
+					--- a/readme.md
+					+++ b/readme.md
+					@@ -1 +1,2 @@
+					 www.qingsword.com
+					+qingsword.com
+					</pre>
+
+					<p>3）比较"Repository"中最新的历史版本与"Working Directory"的不同；</p>
+					<pre class="brush: bash;">
+					#语法：git diff HEAD 文件名
+					#不出所料，多了两行数据
+					qing@qingsword.com:~/myblog$ git diff HEAD readme.md
+					diff --git a/readme.md b/readme.md
+					index a4f24f8..3fe17a7 100644
+					--- a/readme.md
+					+++ b/readme.md
+					@@ -1 +1,3 @@
+					 www.qingsword.com
+					+qingsword.com
+					+qingsword
+					</pre>
+					
+						
+				<!-- /正文 -->
+
+				<footer class="text-footer">
+					<p>
+						*转载请注明来自:<a title="晴刃-自由、互助、分享、专注计算机技术。" href="http://www.qingsword.com" target="_blank">晴刃(QingSword.COM)</a>
+					</p>
+					<p>*原文连接:<a title="[Git使用手册]-3-版本比较与撤消" href="http://www.qingsword.com/qing/git-guide-3.html" target="_blank">http://www.qingsword.com/qing/git-guide-3.html</a></p>
+				</footer>
+			</article>
+			<!-- /文章区 -->	
+		</div>
+	</div>
+	<!-- /content -->
+	
+	<!-- footer -->
+	<footer id="footer">
+		<div class="footer-container">
+			QingSword.COM &nbsp;<img src="../logo/by-nc-sa.png" alt="Creative Commons" title="Creative Commons">
+		</div>
+	</footer>
+	<!-- /footer -->
+</body>
+</html>
