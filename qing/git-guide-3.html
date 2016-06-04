@@ -75,17 +75,17 @@
 				</header><!-- /header -->
 				<section class="text-body">
 					<h2>引言</h2>
-					<p>在上一篇文章中已经介绍了如何将文件从"Working Directory"区域提交到"Repository"区域，但真实环境中我们通常对一段代码会进行反复的修改，如果修改之后出现bug，我们就会尝试着用前一个稳定版覆盖当前版本，本文将介绍如何查看"Git模型图"三个区域文件不同版本之间的区别，实例演示不同版本之间的"回滚"操作。</p>
+					<p>在上一篇文章中已经介绍了如何将文件从"Working Directory"区域提交到"Repository"区域，但真实环境中通常会对一段代码进行反复的修改，如果修改之后出现bug，就需要用前一个稳定版覆盖当前版本，本文介绍如何查看"Git模型图"三个区域不同版本之间的区别，实例演示不同版本之间的"回滚"操作。</p>
 					<!-- 目录 -->
 					<h2>文章目录</h2>
 					<ul class="contents">	
-						 <li><a href="#xxx1">0×1.git版本撤消</a></li>
-						 <li><a href="#xxx2">0×2.git版本比较</a></li>
+						 <li><a href="#git-reset">0×1.git版本撤消</a></li>
+						 <li><a href="#git-diff">0×2.git版本比较</a></li>
 					 </ul>
 					<!-- /目录 -->
 
 					<!-- 正文 -->
-					<h2 id="xxx1">0×1.git版本撤消</h2>
+					<h2 id="git-reset">0×1.git版本撤消</h2>
 
 					<p>git版本撤销功能实例：</p>
 
@@ -218,7 +218,7 @@
 					www.qingsword.com
 					</pre>
 
-					<h2 id="xxx2">0×2.git版本比较</h2>
+					<h2 id="git-diff">0×2.git版本比较</h2>
 
 					<p>三个版本比较命令能够分别比较"Git模型图"中三个不同区域，同一个文件，不同版本之间，内容的不同之处，接着上面的实验：</p>
 					<pre class="brush: bash;">
@@ -260,7 +260,7 @@
 					<p>1）比较"Staying Area"与"Working Directory"的不同；</p>
 					<pre class="brush: bash;">
 					#语法：git diff 文件名
-					#从输出中可以看到，"Working Directory"中的版本比"Staying Area"中的版本多一行数据，即"qingsword"，git会将多出的数据前面添加"加号"显示
+					#从输出中可以看到，"Working Directory"中的版本比"Staying Area"中的版本多一行数据，即"qingsword"，git会将多出的数据前面添加"加号"显示，而实际环境中，不仅仅会多出数据，还会存在删除数据的情况，删除的数据前会添加"减号"表示
 					qing@qingsword.com:~/myblog$ git diff readme.md
 					diff --git a/readme.md b/readme.md
 					index b964a0b..3fe17a7 100644
