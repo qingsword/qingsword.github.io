@@ -118,7 +118,7 @@
 					AM readme.md
 
 					#现在我不想要做出这个修改，想"回滚"到保存在"Staying Area"区域中的那个版本
-					qing@qingsword.com:~/myblog$ git checkout readme.md
+					qing@qingsword.com:~/myblog$ git checkout -- readme.md
 
 					#再次查看文件内容，我们添加的那一行"qingsword.com"不见了
 					qing@qingsword.com:~/myblog$ more readme.md 
@@ -157,7 +157,7 @@
 					qingsword.com
 
 					#如果此时将文件从"Staying Area"取出，覆盖到"Working Directory"，内容不会有变化
-					qing@qingsword.com:~/myblog$ git checkout readme.md
+					qing@qingsword.com:~/myblog$ git checkout -- readme.md
 					qing@qingsword.com:~/myblog$ more readme.md 
 					www.qingsword.com
 					qingsword.com
@@ -173,7 +173,7 @@
 					qingsword.com
 
 					#再将"Staying Area"中的版本取出，覆盖到"Working Directory"中
-					qing@qingsword.com:~/myblog$ git checkout readme.md
+					qing@qingsword.com:~/myblog$ git checkout -- readme.md
 
 					#文件被还原了
 					qing@qingsword.com:~/myblog$ more readme.md 
@@ -211,7 +211,7 @@
 					www.qingsword.com
 
 					#为了验证"Staying Area"中的文件也被覆盖了，使用下面的命令，从"Staying Area"覆盖到"Working Directory"
-					qing@qingsword.com:~/myblog$ git checkout readme.md
+					qing@qingsword.com:~/myblog$ git checkout -- readme.md
 
 					#文件内容并没有变成两行，这说明"git checkout HEAD readme.md"这条命令可以一次性覆盖下面两个区域中的文件版本
 					qing@qingsword.com:~/myblog$ more readme.md 
