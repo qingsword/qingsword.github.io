@@ -147,6 +147,44 @@
 					</pre>
 					<p>除了在head标签中的内容外，body标签中的内容并不是固定的，这就意味着上面body中的所有标签都可以使用几个div标签来代替，这也是HTML5之前的那些版本的做法，而HTML5在这基础上做了部分优化，让文档的基本结构看上去更加有"语义"。</p>
 
+					<p>下面是一个完整HTML5框架的全部内容：</p>
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-cn"&gt;
+					&lt;head&gt;
+						&lt;meta charset="utf-8"&gt;
+						&lt;title&gt;页面标题&lt;/title&gt;
+						&lt;!-- 可包含js等内容 --&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;header&gt; &lt;!-- 网站的头部html5独有标签，比起div有更加明显的语义 --&gt;
+							&lt;hgroup&gt; &lt;!-- 组合标签，将某些需要组合的放在一组，便于css控制 --&gt;
+								&lt;h1&gt;网站标题&lt;/h1&gt;
+								&lt;h4&gt;小标题&lt;/h4&gt;
+							&lt;/hgroup&gt;
+							&lt;nav&gt;网站导航&lt;/nav&gt;
+						&lt;/header&gt;
+						&lt;section&gt; &lt;!-- 包含页面主体部分 --&gt;
+							&lt;p&gt;页面内容&lt;/p&gt;
+						&lt;/section&gt;
+						&lt;article&gt; &lt;!-- 自包含一个完整的文档，比如本站首页每一篇文章的标题摘要就是使用的这个分组 --&gt;
+							&lt;header&gt;文章标题&lt;/header&gt;
+							&lt;section&gt;文章摘要&lt;/section&gt;
+							&lt;footer&gt;文章信息摘要&lt;/footer&gt;
+						&lt;/article&gt;
+						&lt;aside&gt;侧边栏，也可以放在尾部&lt;/aside&gt;
+						&lt;footer&gt; &lt;!-- 网站底部标签，html5新标签 --&gt;
+							&lt;h4&gt;网站尾部&lt;/h4&gt;
+							&lt;address&gt;联系方式&lt;/address&gt;
+						&lt;/footer&gt;
+					&lt;/body&gt; 	
+					&lt;/html&gt;
+					</pre>
+					<p>上面这段代码在浏览器中的显示是下面这样的，可能有些朋友会觉得和想象中差太远，这是因为没有使用css控制的原因；</p>
+					<img src="images/HTML5-base-1.jpg" alt="HTML5-base-1">
+					<p>在加入css控制后，上面这段代码可以形成下面这种布局，css会在后面的文章中详细介绍：</p>
+					<img src="images/HTML5-base-2.png" alt="HTML5-base-2">
+
 					<h2 id="HTML5-base-2">0×2.HTML5新特性演示</h2>
 
 					<p>现在我们自己来新建一个文本，在里面输入下面的内容，并且保存为".html"后缀，尝试着用浏览器打开它：</p>
