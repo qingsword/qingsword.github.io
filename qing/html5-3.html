@@ -79,27 +79,27 @@
 					<!-- 目录 -->
 					<h2>文章目录</h2>
 					<ul class="contents">	
-						 <li><a href="#HTML-Grouping-elements-1">0×1.内容分组元素实例</a></li>
-						 <li class="subli"><a href="#HTML-Grouping-elements-2">a.p标签</a></li>
-						 <li class="subli"><a href="#HTML-Grouping-elements-3">b.hr标签</a></li>
-						 <li class="subli"><a href="#HTML-Grouping-elements-4">c.pre标签</a></li>
-						 <li class="subli"><a href="#HTML-Grouping-elements-5">d.blockquote标签</a></li>
-						 <li class="subli"><a href="#HTML-Grouping-elements-6">e.ul标签</a></li>
-						 <li class="subli"><a href="#HTML-Grouping-elements-7">f.ol标签</a></li>
-						 <li class="subli"><a href="#HTML-Grouping-elements-8">g.dl标签</a></li>
-						 <li class="subli"><a href="#HTML-Grouping-elements-9">h.figure标签</a></li>
-						 <li class="subli"><a href="#HTML-Grouping-elements-10">i.div标签</a></li>
+						 <li><a href="#HTML-block-elements-1">0×1.内容分组元素实例</a></li>
+						 <li class="subli"><a href="#HTML-block-elements-2">a.p标签</a></li>
+						 <li class="subli"><a href="#HTML-block-elements-3">b.hr标签</a></li>
+						 <li class="subli"><a href="#HTML-block-elements-4">c.pre标签</a></li>
+						 <li class="subli"><a href="#HTML-block-elements-5">d.blockquote标签</a></li>
+						 <li class="subli"><a href="#HTML-block-elements-6">e.ul标签</a></li>
+						 <li class="subli"><a href="#HTML-block-elements-7">f.ol标签</a></li>
+						 <li class="subli"><a href="#HTML-block-elements-8">g.dl标签</a></li>
+						 <li class="subli"><a href="#HTML-block-elements-9">h.figure标签</a></li>
+						 <li class="subli"><a href="#HTML-block-elements-10">i.div标签</a></li>
 					 </ul>
 					<!-- /目录 -->
 
 					<!-- 正文 -->
-					<h2 id="HTML-Grouping-elements-1">0×1.内容分组元素实例</h2>
+					<h2 id="HTML-block-elements-1">0×1.内容分组元素实例</h2>
 
 					<p>常见的内容分组标签有：p、hr、pre、 blockquote、ul、ol、li、dl、dt、dd、figure、figcaption、div，除此之外还有一少部分不是很常用的分组标签，本文没有给出实例，等以后使用到的时候再介绍；</p>
 
 					<p>分组元素有时也被称作块状元素，这种标签只要出现在文档中，就会独占一行。</p>
 
-					<h3 id="HTML-Grouping-elements-2">a.p标签</h3>
+					<h3 id="HTML-block-elements-2">a.p标签</h3>
 
 					<p>这是我们最常见的分组标签，常用于定义段落（paragraph），你所看到的这段文字，就是包含在一对p标签对中的，将每一段文字放在一对p标签对中：</p>
 					<pre class="brush: html;">
@@ -125,7 +125,7 @@
 					<p>段落N</p>
 					</div>
 
-					<h3 id="HTML-Grouping-elements-3">b.hr标签</h3>
+					<h3 id="HTML-block-elements-3">b.hr标签</h3>
 
 					<p>hr标签可以单独出现，无需使用标签对的形式，它告诉浏览器解释器，在hr出现的位置插入一条水平线，用于分隔文档的不同部分：</p>
 					<pre class="brush: html;">
@@ -157,7 +157,7 @@
 					<p>段落N</p>	
 					</div>
 
-					<h3 id="HTML-Grouping-elements-4">c.pre标签</h3>
+					<h3 id="HTML-block-elements-4">c.pre标签</h3>
 
 					<p>pre标签能够保留其中文本的格式，空格和回车都被完整的保留并显示出来，请看下面的实例：</p>
 					<pre class="brush: html;">
@@ -202,7 +202,7 @@
 					<p>请注意，pre中的文本显示底部多空出了一行，这是因为6666后面的回车符也被完整的记录下来，如果不想多空出这一行，结束标签应该紧随6666其后，另外，pre中的文本前面大概有两个缩进的距离，pre会将其中所有格式都记录下来，为了代码的美观本例确实在这些文本之前添加了两个缩进。</p>
 					</div>
 
-					<h3 id="HTML-Grouping-elements-5">d.blockquote标签</h3>
+					<h3 id="HTML-block-elements-5">d.blockquote标签</h3>
 
 					<p>blockquote标签用于引用一段内容，默认情况下（没有使用css控制的情况下）引用的内容将缩进显示，blockquote标签中包含一个cite属性，用于标明引用的内容的来源url：</p>
 					<pre class="brush: html;">
@@ -234,7 +234,7 @@
 					<p>内容4</p>
 					</div>
 
-					<h3 id="HTML-Grouping-elements-6">e.ul标签</h3>
+					<h3 id="HTML-block-elements-6">e.ul标签</h3>
 
 					<p>ul（unorder list）标签用于定义无序列表，在ul标签中包含li（list item）标签，可以定义这个无需列表的每一项：</p>
 					<pre class="brush: html;">
@@ -263,7 +263,7 @@
 					</ul>
 					</div>
 
-					<h3 id="HTML-Grouping-elements-7">f.ol标签</h3>
+					<h3 id="HTML-block-elements-7">f.ol标签</h3>
 					
 					<p>相对于无序列表ul，ol（order list）是有序列表，默认情况下会在li内容前添加数字，数字从1开始递增：</p>
 					<pre class="brush: html;">
@@ -314,7 +314,7 @@
 					</ol>	
 					</div>
 
-					<h3 id="HTML-Grouping-elements-8">g.dl标签</h3>
+					<h3 id="HTML-block-elements-8">g.dl标签</h3>
 					
 					<p>dl（definition list）中可以包含两个标签：dt（definition title）定义列表中的标题，dd（definition description）对定义列表中的标题的描述，请看下面的实例；</p>
 					<pre class="brush: html;">
@@ -348,7 +348,7 @@
 					</dl>	
 					</div>
 
-					<h3 id="HTML-Grouping-elements-9">h.figure标签</h3>
+					<h3 id="HTML-block-elements-9">h.figure标签</h3>
 
 					<p>figure标签是HTML5中定义的新标签，一般用于将一张图片以及与这张图片相关的信息整合在文档中，请看下面的实例：</p>
 					<pre class="brush: html;">
@@ -376,7 +376,7 @@
 					</figure>
 					</div>
 
-					<h3 id="HTML-Grouping-elements-10">i.div标签</h3>
+					<h3 id="HTML-block-elements-10">i.div标签</h3>
 					<p>div（division）一般用于区域分块，将相同的内容划分到一个div下，便于css控制：</p>
 					<pre class="brush: html;">
 					&lt;!DOCTYPE html&gt;
