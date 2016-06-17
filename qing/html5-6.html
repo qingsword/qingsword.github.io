@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<!--Copyright©QingSword.COM︻☼1010D>-->
+<html lang="zh-ch">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
+	<meta name="description" content="晴刃,是一个致力推广实用计算机技术的个人博客;我们分享计算机知识;为计算机系统以及网络安全防范做出一份贡献。【专注技术 创造价值 共同进步】">
+	<meta name="keywords" content="晴刃,晴,qing,qingsword,ccna图文笔记,ubuntu,linux,ubuntu server,mysql,node.js,javascript,python,计算机技术博客">
+	<title>[HTML5]-6-视频与音频 - QingSword.COM</title>
+	<link rel="shortcut icon" type="image/x-icon" href="../logo/favicon.ico">
+	<link rel="stylesheet" type="text/css" href="../css/basic.css">
+	<link rel="stylesheet" type="text/css" href="../css/text.css">
+	<!-- 代码块高亮js -->
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shCore.css"/>
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shThemeRDark.css"/>
+	 <script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shCore.js"></script>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shBrushXml.js"></script>
+	<script type="text/javascript">
+	SyntaxHighlighter.all();
+	</script>
+</head>
+<body>
+	<!--header -->
+	<header id="nav">
+			<div class="nav-container"> 
+				<!-- 根大纲-->
+				<a href="http://www.qingsword.com" title="晴刃">
+					<h1 class="nav-logo">晴刃</h1>
+				</a>
+				<h2 class="nav-site-description desc-hidden">
+					自由、互助、分享、专注计算机技术
+				</h2>
+				<nav class="nav-links"> 
+					<!-- nav连接大纲-->
+					<h1 style="display:none;">网站导航</h1> 
+					<ul>
+						<li  class="li-hidden">
+							<a href="../index.html" title="home">
+								<span class="link-word"><img src="../logo/home.png" alt="home" class="link-img">首页</span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../web.html" title="web">
+								<span class="link-word"><img src="../logo/web.png" alt="web" class="link-img">前端<span class="word-hidden">设计</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../system.html" title="system">
+								<span class="link-word"><img src="../logo/linux.png" alt="linux" class="link-img">系统<span class="word-hidden">应用</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../net.html" title="net">
+								<span class="link-word"><img src="../logo/net.png" alt="net" class="link-img">网络<span class="word-hidden">技术</span></span>
+							</a>
+						</li>
+						<li>
+							<a href="../sitemap.html" title="sitemap">
+								<span class="link-word"><img src="../logo/archives.png" alt="archives" class="link-img"><span class="word-hidden">文章</span>归档</span>
+							</a>
+						</li>
+					</ul>
+				</nav>
+			</div>		
+	</header>
+	<!-- /header -->
+
+	<!-- content-->
+	<div id="content">
+		<div class="content-container">
+			<!-- 文章区 -->
+			<article class="text-container">
+				<header class="text-header">
+					<h1>[HTML5]-6-视频与音频</h1>	
+				</header><!-- /header -->
+				<section class="text-body">
+					<h2>引言</h2>
+					<p>这篇文章介绍HTML5中的video标签以及audio标签。</p>
+					<!-- 目录 -->
+					<h2>文章目录</h2>
+					<ul class="contents">	
+						 <li><a href="#HTML-video">0×1.使用video标签嵌入视频</a></li>
+						 <li><a href="#HTML-audio">0×2.使用audio标签播放音频</a></li>
+					 </ul>
+					<!-- /目录 -->
+
+					<!-- 正文 -->
+					<h2 id="HTML-video">0×1.使用video标签嵌入视频</h2>
+					
+					<p>video标签是HTML5中定义的新标签，在HTML4以前的版本中并没有这个标签，请看下面的实例，在HTML文档中插入视频播放窗口：</p>
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-ch"&gt;
+					&lt;head&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;title&gt;video标签实例&lt;/title&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;!--src属性中指定要播放的视频文件的相对路径或绝对路径，也可以是url；width是视频播放窗口的宽度，height是视频播放窗户的高度，poster属性指定视频第一帧显示的图片，即未播放前，我们看到的视频窗口中显示的图片；controls属性告诉浏览器，显示播放窗口的控制面板，即我们看到的播放按钮，静音按钮以及"进度条"--&gt;
+						&lt;video src="test.mp4" width="352" height="238" poster="images/HTML5-video.jpg" controls&gt;&lt;/video&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+					</pre>
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+					<video src="test.mp4" width="352" height="238" poster="images/HTML5-video.jpg" controls></video>	
+					</div>
+					<p>本例中因为test.mp4这个文件并不存在，所以播放按钮不可点，大家可以找个视频在本地用相对路径测试一下，除了上面介绍的常用属性外，还有下面这几个常用属性，这些属性的使用方法同controls属性，直接写在video标签括号中即可，与其他属性用空格隔开：</p>
+					<p class="indent-p">
+						autoplay：页面加载后自动播放，默认video需要我们手动点击播放按钮来播放视频，设置了此属性后，页面加载完成将会自动播放视频；<br>
+						preload：页面加载后是否自动缓存视频，这个属性和其他属性设置有所不同，它有三个值，默认为perload="none"，即不自动缓存视频，如果设置成perload="auto"，当页面加载时将会自动缓存视频，如果设置成perload="metadata"，则只自动加载第一帧以及视频宽高等元数据；<br>
+						loop：视频播放完成后，自动循环播放，默认为不循环；<br>
+						muted：设置视频默认为静音状态，设置后需要手动点击喇叭按钮开启声音，默认为不静音；
+					</p>
+					<p>并不是所有浏览器都支持所有格式的视频，为了兼容不同的浏览器，最好的方法是将同一个视频保存未不同的视频后缀，然后使用下面的方法兼容不同浏览器：</p>
+					<pre class="brush: html;">
+					&lt;!--在video标签对中，添加source标签，并在其src属性中添加同一个文件的不同后缀的版本，这样如果浏览器不支持mp4格式，则会尝试播放flv格式的文件，并逐个往下尝试--&gt;
+					&lt;video  width="640" height="480"  controls&gt;
+						&lt;source src="test.mp4"&gt;
+						&lt;source src="test.flv"&gt;
+						&lt;source src="test.webm"&gt;
+					&lt;/video&gt;
+					</pre>
+
+					<h2 id="HTML-audio">0×2.使用audio标签播放音频</h2>
+
+					<p>audio标签的属性和video的效果差不多，除了全局属性和事件属性外，audio只有下面这四个属性：</p>
+					<p class="indent-p">
+						src：指定音频文件位置，可以是相对或绝对路径，也可以是url；<br>
+						autoplay：自动播放，同video；<br>
+						preload：是否自动缓存，同video；<br>
+						controls：是否显示控制面板，同video；
+					</p>
+					<p>请看下面的实例：</p>
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-ch"&gt;
+					&lt;head&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;title&gt;audio标签实例&lt;/title&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;!--因为test.mp3文件并不存在，所以下面显示的audio播放按钮不可点--&gt;
+						&lt;audio src="test.mp3" controls&gt;&lt;/audio&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+					</pre>
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+					<audio src="test.mp3" controls></audio>	
+					</div>
+					<p>与video相同，audio也支持兼容不同浏览器的冗余，将同一个音频文件转换成不同的格式，确保不同浏览器都能播放这个音频文件：</p>
+					<pre class="brush: html;">
+					&lt;!--浏览器首先会尝试播放mp3文件，如果不支持，则会尝试播放m4a文件，直到找到一个自己支持的播放格式，虽然有三条source，浏览器只会播放这个音频文件一次--&gt;
+					&lt;audio controls&gt;
+						&lt;source src="test.mp3"&gt;
+						&lt;source src="test.m4a"&gt;
+						&lt;source src="test.wav"&gt;
+					&lt;/audio&gt;
+					</pre>
+						
+				<!-- /正文 -->
+
+				<footer class="text-footer">
+					<p>
+						*转载请注明来自:<a title="晴刃-自由、互助、分享、专注计算机技术。" href="http://www.qingsword.com" target="_blank">晴刃(QingSword.COM)</a>
+					</p>
+					<p>*原文连接:<a title="[HTML5]-6-视频与音频" href="http://www.qingsword.com/qing/html5-6.html" target="_blank">http://www.qingsword.com/qing/html5-6.html</a></p>
+				</footer>
+			</article>
+			<!-- /文章区 -->	
+		</div>
+	</div>
+	<!-- /content -->
+	
+	<!-- footer -->
+	<footer id="footer">
+		<div class="footer-container">
+			QingSword.COM &nbsp;<img src="../logo/by-nc-sa.png" alt="Creative Commons" title="Creative Commons">
+		</div>
+	</footer>
+	<!-- /footer -->
+</body>
+</html>
