@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<!--Copyright©QingSword.COM︻☼1010D>-->
+<html lang="zh-ch">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
+	<meta name="description" content="晴刃,是一个致力推广实用计算机技术的个人博客;我们分享计算机知识;为计算机系统以及网络安全防范做出一份贡献。【专注技术 创造价值 共同进步】">
+	<meta name="keywords" content="晴刃,晴,qing,qingsword,ccna图文笔记,ubuntu,linux,ubuntu server,mysql,node.js,javascript,python,计算机技术博客">
+	<title>[HTML5]-7-表单 - QingSword.COM</title>
+	<link rel="shortcut icon" type="image/x-icon" href="../logo/favicon.ico">
+	<link rel="stylesheet" type="text/css" href="../css/basic.css">
+	<link rel="stylesheet" type="text/css" href="../css/text.css">
+	<!-- 代码块高亮js -->
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shCore.css"/>
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shThemeRDark.css"/>
+	 <script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shCore.js"></script>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shBrushXml.js"></script>
+	<script type="text/javascript">
+	SyntaxHighlighter.all();
+	</script>
+</head>
+<body>
+	<!--header -->
+	<header id="nav">
+			<div class="nav-container"> 
+				<!-- 根大纲-->
+				<a href="http://www.qingsword.com" title="晴刃">
+					<h1 class="nav-logo">晴刃</h1>
+				</a>
+				<h2 class="nav-site-description desc-hidden">
+					自由、互助、分享、专注计算机技术
+				</h2>
+				<nav class="nav-links"> 
+					<!-- nav连接大纲-->
+					<h1 style="display:none;">网站导航</h1> 
+					<ul>
+						<li  class="li-hidden">
+							<a href="../index.html" title="home">
+								<span class="link-word"><img src="../logo/home.png" alt="home" class="link-img">首页</span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../web.html" title="web">
+								<span class="link-word"><img src="../logo/web.png" alt="web" class="link-img">前端<span class="word-hidden">设计</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../system.html" title="system">
+								<span class="link-word"><img src="../logo/linux.png" alt="linux" class="link-img">系统<span class="word-hidden">应用</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../net.html" title="net">
+								<span class="link-word"><img src="../logo/net.png" alt="net" class="link-img">网络<span class="word-hidden">技术</span></span>
+							</a>
+						</li>
+						<li>
+							<a href="../sitemap.html" title="sitemap">
+								<span class="link-word"><img src="../logo/archives.png" alt="archives" class="link-img"><span class="word-hidden">文章</span>归档</span>
+							</a>
+						</li>
+					</ul>
+				</nav>
+			</div>		
+	</header>
+	<!-- /header -->
+
+	<!-- content-->
+	<div id="content">
+		<div class="content-container">
+			<!-- 文章区 -->
+			<article class="text-container">
+				<header class="text-header">
+					<h1>[HTML5]-7-表单</h1>	
+				</header><!-- /header -->
+				<section class="text-body">
+					<h2>引言</h2>
+					<p>HTML5中提供了丰富的表单控件，这篇文章将介绍这些表单控件的使用方法。</p>
+					<!-- 目录 -->
+					<h2>文章目录</h2>
+					<ul class="contents">	
+						 <li><a href="#HTML-form-1">0×1.form基本框架</a></li>
+						 <li><a href="#HTML-form-2">0×2.input类型</a></li>
+						 <li class="subli"><a href="#HTML-form-3">a.text类型</a></li>
+						 <li class="subli"><a href="#HTML-form-4">b.password类型</a></li>
+						 <li class="subli"><a href="#HTML-form-5">c.search类型</a></li>
+						 <li class="subli"><a href="#HTML-form-6">d.number类型</a></li>
+						 <li class="subli"><a href="#HTML-form-7">e.日期类型</a></li>
+						 <li class="subli"><a href="#HTML-form-8">f.color类型</a></li>
+						 <li class="subli"><a href="#HTML-form-9">g.button类型</a></li>
+						 <li class="subli"><a href="#HTML-form-10">h.email、tel、url类型</a></li>
+						 <li class="subli"><a href="#HTML-form-11">i.hidden类型</a></li>
+						 <li class="subli"><a href="#HTML-form-12">j.file类型</a></li>
+						 <li class="subli"><a href="#HTML-form-13">k.image类型</a></li>
+						 <li class="subli"><a href="#HTML-form-14">l.单选与复选类型</a></li>
+						 <li><a href="#HTML-form-15">0×3.fieldset标签</a></li>
+						 <li><a href="#HTML-form-16">0×4.button标签</a></li>
+						 <li><a href="#HTML-form-17">0×5.select标签</a></li>
+						 <li><a href="#HTML-form-18">0×6.textarea标签</a></li>
+						 <li><a href="#HTML-form-19">0×7.利用正则表达式验证</a></li>
+					 </ul>
+					<!-- /目录 -->
+
+					<!-- 正文 -->
+					<h2 id="HTML-form-1">0×1.form基本框架</h2>
+
+					<p>表单标签form，常用与注册页面，包含要提交的用户名，密码，电子邮件等信息，请看下面的实例：</p>
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-ch"&gt;
+					&lt;head&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;title&gt;form标签实例&lt;/title&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+
+						&lt;!--要提交的表单被包含在form标签对中，在form标签中，name属性用于标识这个表单的名称，名称可以自定义；action属性指定由哪个文件来处理这个表单的提交，本例这个属性填写的是本站网址，则使用本站的"首页"文件来处理这个表单提交的数据；method属性指定提交的方式，提交方式分为"get"与"post"两种，"get"会在浏览器url中明文显示被提交的内容，"post"提交方式则会隐藏这些内容（post只是表面上的隐藏，如果表单数据通过网络传输，而传输前未经过加密，则可以通过捕获数据包查看到明文提交的数据，而传输前的加密都是由第三方加密模块实现的，和这里的get与post无关），本文将全部使用get方式提交，这是为了更好的让大家看到提交的内容，在实际应用中，推荐使用post方式提交；target属性和a标签中的一致，本例当点击提交按钮后，会新建一个浏览器标签页；autocomplete属性值默认为on，即记录每次提交的数据，当双击文本输入框的时候，会在下拉框中显示这些历史输入的数据，本例中设置为off，即关闭历史输入记录--&gt;
+						&lt;form name="form_name" action="http://www.qingsword.com" method="get" target="_blank" autocomplete="off"&gt;
+
+							&lt;!--label标签用于包含具有说明性的文字，label标签中的for属性指向表单中的一个id值，当点击label标签中的文字时，会将光标焦点自动定位到for属性指定的那个id标签上，本例定位到了后面的input标签中，这仅仅是为了提升客户体验--&gt;
+							&lt;label for="submit_name"&gt;用户名：&lt;/label&gt;
+
+							&lt;!--input标签默认的类型为text，即显示一个单行文本框，input的类型稍后会详细介绍--&gt;
+							&lt;input id="submit_name" name="UserName"&gt;
+
+							&lt;!--button标签用于显示一个按钮--&gt;
+							&lt;button&gt;提交&lt;/button&gt;
+						&lt;/form&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+					</pre>
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+					<form name="form_name" action="http://www.qingsword.com" method="get" target="_blank" autocomplete="off">
+						<label for="submit_name">用户名：</label>
+						<input id="submit_name" name="UserName">
+						<button>提交</button>
+					</form>
+					<p>点击文本框前面的"用户名"三个字，就会自动激活后面的input文本框，在文本框中输入内容点击提交后，会弹出一个新页面，请注意浏览器的url地址栏，在本站网址后面会多出一个"?UserName=刚才输入的内容"，其中的UserName，就是我们在input的name属性中定义的值；而如果上面的代码form标签中使用post方式提交，则不会在浏览器url中看见任何被提交的内容，大家可以自己尝试修改一下。</p>
+					</div>
+
+					<h2 id="HTML-form-2">0×2.input类型</h2>
+
+					<h3 id="HTML-form-3">a.text类型</h3>
+
+					<p>默认情况下input标签显示一个单行文本框，它可以包含下面这些属性：</p>
+					<p class="indent-p">
+						autofocus：当页面刷新后，自动将光标聚焦在这个input标签上，单独将这个属性写在input标签中，与其他属性用空格隔开即可；注意，当页面内容较多时候，如果某个input标签设置了autofocus属性，那么刷新页面后将自动定位到这个input的位置，这就意味着如果是一篇很长的文章，在文章被打开后，如果设置了这个属性的input在文章中间，那么页面打开后的样子将会非常奇怪，因为打开后就直接定位到了文章的中间部分；<br>
+						disabled：设置这个input标签不可输入，禁用；<br>
+						autocomplete：单独设置这个input标签是否具有历史输入记忆功能；<br>
+						form：让表单外的元素和指定的表单挂钩提交；<br>
+						type：指定input类型，如果不配置这个属性，input默认为单行文本框；<br>
+						name：定义当前input标签的名称，用于接收input标签中输入的值；<br>
+						list：指定为文本框提供建议值的datalist标签，其值为datalist标签的id值；<br>
+						maxlength：设置文本框最大字符长度；<br>
+						pattern：用于输入验证的正则表达式；<br>
+						readonly：文本框只读显示；<br>
+						size：设置文本框长度；<br>
+						value：设置文本框初始值；<br>
+						required：用户必须输入一个值，否则无法提交；
+					</p>
+					<p>实例一：单独配置input标签具有历史输入记忆功能</p>
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-ch"&gt;
+					&lt;head&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;title&gt;input标签实例&lt;/title&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;!--form标签中禁用了其中所有标签的历史提交记录功能--&gt;
+						&lt;form name="form_name" action="http://www.qingsword.com" method="get" target="_blank" autocomplete="off"&gt;
+							&lt;label for="submit_name_1"&gt;用户名：&lt;/label&gt;
+							&lt;!--在input中单独设置autocomplete，这个input标签将具有历史提交记录功能--&gt;
+							&lt;input id="submit_name_1" name="UserName" autocomplete="on"&gt;
+							&lt;button&gt;提交&lt;/button&gt;
+						&lt;/form&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+					</pre>
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+					<form name="form_name" action="http://www.qingsword.com" method="get" target="_blank" autocomplete="off">
+						<label for="submit_name_1">用户名：</label>
+						<input id="submit_name_1" name="UserName" autocomplete="on">
+						<button>提交</button>
+					</form>
+					<p>请先在文本框中输入一些内容提交，然后删除输入的内容，现在双击文本框，就会弹出下拉框，里面记录了所有被提交过的历史版本，这就是autocomplete属性的作用。</p>	
+					</div>
+					<p>实例二：使用form属性与某个表单挂钩提交</p>
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-ch"&gt;
+					&lt;head&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;title&gt;input标签实例&lt;/title&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;!--下面配置了两个表单框架，id分别为"form_1"与"form_2"，在"form_2"中配置了一个input标签，用于输入用户的email地址，并且使用form属性将这个标签与"form_1"挂钩，当点击"form_1"中的提交按钮时，会将"form_2"表单中配置了form属性的input中的内容与其一并提交--&gt;
+						&lt;form id="form_1" action="http://www.qingsword.com" method="get" target="_blank"&gt;
+							&lt;label for="submit_name_2"&gt;用户名：&lt;/label&gt;
+							&lt;input id="submit_name_2" name="UserName" autocomplete="on"&gt;
+							&lt;button&gt;提交&lt;/button&gt;
+						&lt;/form&gt;
+						&lt;form id="form_2"&gt;
+							&lt;label for="submit_email"&gt;邮箱：&lt;/label&gt;
+							&lt;input id="submit_email" name="Email" form="form_1" autocomplete="on"&gt;
+						&lt;/form&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+					</pre>
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+					<form id="form_1" action="http://www.qingsword.com" method="get" target="_blank">
+						<label for="submit_name_2">用户名：</label>
+						<input id="submit_name_2" name="UserName" autocomplete="on">
+						<button>提交</button>
+					</form>
+					<form id="form_2">
+						<label for="submit_email">邮箱：</label>
+						<input id="submit_email" name="Email" form="form_1" autocomplete="on">
+					</form>
+					<p>如果用户名输入"qingsword"，邮箱输入"admin@qingsword.com"，此时点击提交按钮，会在浏览器url中网站的域名后面看到这样的结构"?UserName=qingsword&amp;Email=admin%40qingsword.com"，这说明上面的代码中挂钩是成功的，第二个表单中的input内容确实一并提交了。</p>	
+					</div>
+					<p>Ps：因为本站主页并不具备处理提交的功能，所以数据虽然被提交，但是并没有被接受和处理，处理表单的提交大多数是使用js来完成的。</p>
+					<p>实例三：配置一个具有初始值的只读文本框，并设定其长度为40px；</p>
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-ch"&gt;
+					&lt;head&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;title&gt;input标签实例&lt;/title&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;form&gt;
+							&lt;input value="www.qingsword.com" size="40px" readonly&gt;
+						&lt;/form&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+					</pre>
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+					<form>
+						<input value="www.qingsword.com" size="40px" readonly>
+					</form>
+					</div>
+					<p>实例四：给input标签设置一个下拉菜单，包含可选的推荐值</p>
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-ch"&gt;
+					&lt;head&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;title&gt;input标签实例&lt;/title&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;form action="http://www.qingsword.com" target="_blank" method="get" autocomplete="off"&gt;
+							&lt;!--input标签中list属性的值必须与datalist标签的id值对应；type属性指定这个input标签的类型，默认为text类型，所以本例不写这个type属性也是可以的--&gt;
+							&lt;input type="text" list="listname" name="fruit"&gt;
+							&lt;button&gt;提交&lt;/button&gt;
+						&lt;/form&gt;
+						&lt;datalist id="listname"&gt;
+							&lt;option value="orange"&gt;橘子&lt;/option&gt;
+							&lt;option value="apple"&gt;苹果&lt;/option&gt;
+							&lt;option value="banana"&gt;香蕉&lt;/option&gt;
+							&lt;option value="watermelon"&gt;西瓜&lt;/option&gt;
+						&lt;/datalist&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+					</pre>
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+					<form action="http://www.qingsword.com" target="_blank" method="get" autocomplete="off">
+						<input type="text" list="listname" name="fruit">
+						<button>提交</button>
+					</form>
+					<datalist id="listname">
+						<option value="orange">橘子</option>
+						<option value="apple">苹果</option>
+						<option value="banana">香蕉</option>
+						<option value="watermelon">西瓜</option>
+					</datalist>
+					<p>当鼠标在本框双击时，会显示下拉列表内容，但这并不意味着我们必须选择其中的值，这只是一个推荐列表，我们随意输入内容也是可以提交的。</p>	
+					</div>
+					<p>实例五：设置input允许输入的最大字符长度为6，配置文本框内容提示，配置input必须输入内容，否则无法提交</p>
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-ch"&gt;
+					&lt;head&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;title&gt;input标签实例&lt;/title&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;form action="http://www.qingsword.com" target="_blank" method="get" autocomplete="off"&gt;
+							&lt;input name="UserName" maxlength="6" placeholder="请输入用户名" required&gt;
+							&lt;button&gt;提交&lt;/button&gt;
+						&lt;/form&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+					</pre>
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+					<form action="http://www.qingsword.com" target="_blank" method="get">
+						<input name="UserName" maxlength="6" placeholder="请输入用户名" required>
+						<button>提交</button>
+					</form>
+					<p>在没有输入内容的时候，文本框中出现的"请输入用户名"，就是placeholder属性的值；如果不输入内容直接点击提交，则会弹出提示，必须输入内容；不论是数字还是中文或字符，长度达到6时将不能继续输入。</p>
+					</div>
+
+					<h3 id="HTML-form-4">b.password类型</h3>
+
+					<p>将input的类型设置成password，在其中输入的文本将以小圆点代替，请看下面的实例：</p>
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-ch"&gt;
+					&lt;head&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;title&gt;input标签实例&lt;/title&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;form action="http://www.qingsword.com" target="_blank" method="get" autocomplete="off"&gt;
+							&lt;input type="text" name="UserName" placeholder="用户名" required&gt;
+							&lt;br&gt;
+							&lt;input type="password" name="Passwd" placeholder="密码" required&gt;
+							&lt;br&gt;
+							&lt;button&gt;提交&lt;/button&gt;
+						&lt;/form&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+					</pre>
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+					<form action="http://www.qingsword.com" target="_blank" method="get" autocomplete="off">
+						<input type="text" name="UserName" placeholder="用户名" required>
+						<br>
+						<input type="password" name="Passwd" placeholder="密码" required>
+						<br>
+						<button>提交</button>
+					</form>
+					<p>在密码框中输入的所有文本，将被小圆点代替。</p>
+					</div>
+
+					<h3 id="HTML-form-5">c.search类型</h3>
+
+					<p>目前（2016年6月），firefox并不支持这个类型，只有google浏览器支持它，search类型会在输入框末尾显示一个取消符号（x），当输入错误时可以使用这个取消符号来删除全部输入，请看下面的实例：</p>
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-ch"&gt;
+					&lt;head&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;title&gt;input标签实例&lt;/title&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;form action="http://www.qingsword.com" target="_blank" method="get"&gt;
+							&lt;input type="search" name="UserName" placeholder="用户名" required&gt;
+							&lt;button&gt;提交&lt;/button&gt;
+						&lt;/form&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+					</pre>
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+					<form action="http://www.qingsword.com" target="_blank" method="get">
+						<input type="search" name="UserName" placeholder="用户名" required>
+						<button>提交</button>
+					</form>
+					</div>
+
+					<h3 id="HTML-form-6">d.number类型</h3>
+
+					<p>number类型能够配置只能输入数字的input文本框，目前（2016年6月）IE还不能支持这个类型，请看下面的实例：</p>
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-ch"&gt;
+					&lt;head&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;title&gt;input标签实例&lt;/title&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;form action="http://www.qingsword.com" target="_blank" method="get"&gt;
+							&lt;!--这个文本框能够输入0到100之内10的倍数--&gt;
+							&lt;input type="number" name="intNum" min="0" max="100"  step="10" required&gt;
+							&lt;button&gt;提交&lt;/button&gt;
+						&lt;/form&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+					</pre>
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+					<form action="http://www.qingsword.com" target="_blank" method="get">
+						<input type="number" name="intNum" min="0" max="100"  step="10" required>
+						<button>提交</button>
+					</form>
+					<p>尝试着点击文本框后面的上下箭头，因为step设置了10，所以每次点击增加或减少10，最小0，最大递增到100，超过范围的数字以及不是10的倍数的数字将不能提交。</p>
+					</div>
+
+					<h3 id="HTML-form-7">e.日期类型</h3>
+
+					<p>这是一个还在开发中的类型，目前（2016年6月）只有谷歌浏览器支持了其部分功能，火狐和IE都不支持这个类型，请看下面的实例：</p>
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-ch"&gt;
+					&lt;head&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;title&gt;input标签实例&lt;/title&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;form&gt;
+							&lt;input type="date"&gt;&lt;br&gt;
+							&lt;input type="month"&gt;&lt;br&gt;
+							&lt;input type="time"&gt;&lt;br&gt;
+							&lt;input type="week"&gt;&lt;br&gt;
+							&lt;input type="datetime"&gt;&lt;br&gt;
+							&lt;input type="datetime-local"&gt;
+						&lt;/form&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+					</pre>
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+					<form>
+						<input type="date"><br>
+						<input type="month"><br>
+						<input type="time"><br>
+						<input type="week"><br>
+						<input type="datetime"><br>
+						<input type="datetime-local">
+					</form>
+					<p>每个类型都提供了一个不同样式的时间选择器，在谷歌浏览器中，datetime类型目前还不支持，仅显示一个单行文本框。</p>
+					</div>
+
+					<h3 id="HTML-form-8">f.color类型</h3>
+
+					<p>color类型提供了一个颜色选择器，IE目前暂不支持，请看下面的实例：</p>
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-ch"&gt;
+					&lt;head&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;title&gt;input标签实例&lt;/title&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;form action="http://www.qingsword.com" target="_blank" method="get"&gt;
+							&lt;input type="color" name="ColorNum"&gt;
+							&lt;button&gt;提交&lt;/button&gt;
+						&lt;/form&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+					</pre>
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+					<form action="http://www.qingsword.com" target="_blank" method="get">
+						<input type="color" name="ColorNum">
+						<button>提交</button>
+					</form>	
+					</div>
+
+					<h3 id="HTML-form-9">g.button类型</h3>
+
+					<p>input标签除了能实现文本框外，还能转换成button类型，其功能和button标签一样，请看下面的实例：</p>
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-ch"&gt;
+					&lt;head&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;title&gt;input标签实例&lt;/title&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;form action="http://www.qingsword.com" target="_blank" method="get"&gt;
+							&lt;input type="color" name="ColorNum"&gt;
+							&lt;!--转换成提交按钮--&gt;
+							&lt;input type="submit" value="提交"&gt;
+							&lt;!--转换成重置按钮，将表单中所有元素还原为初始值--&gt;
+							&lt;input type="reset" value="重置"&gt;
+							&lt;!--一个没有任何功能的普通按钮--&gt;
+							&lt;input type="button" value="普通的按钮"&gt;
+						&lt;/form&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+					</pre>
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+					<form action="http://www.qingsword.com" target="_blank" method="get">
+						<input type="color" name="ColorNum">
+						<input type="submit" value="提交">
+						<input type="reset" value="重置">
+						<input type="button" value="普通的按钮">
+					</form>	
+					</div>
+
+					<h3 id="HTML-form-10">h.email、tel、url类型</h3>
+
+					<p>这三种类型的input文本框，会强制要求输入的内容保持其规定的格式，但目前只有email对输入的判断还算可以，其他的两个类型在判断上不是很完善，请看下面的实例：</p>
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-ch"&gt;
+					&lt;head&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;title&gt;input标签实例&lt;/title&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;form action="http://www.qingsword.com" target="_blank" method="get"&gt;
+							&lt;input type="email" name="email" placeholder="请输入email地址" required&gt;&lt;br&gt;
+							&lt;input type="url" name="weburl" placeholder="请输入网址" required&gt;&lt;br&gt;
+							&lt;input type="tel" name="tel" placeholder="请输入电话号码" required&gt;&lt;br&gt;
+							&lt;button type="submit"&gt;提交&lt;/button&gt;
+						&lt;/form&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+					</pre>
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+					<form action="http://www.qingsword.com" target="_blank" method="get">
+						<input type="email" name="email" placeholder="请输入email地址" required><br>
+						<input type="url" name="weburl" placeholder="请输入网址" required><br>
+						<input type="tel" name="tel" placeholder="请输入电话号码" required><br>
+						<button type="submit">提交</button>
+					</form>
+					<p>在上面这个表单中，email地址只需要在@符号前后包含字符即可通过验证，url只需要包含http://前缀加上任意一个字符即可通过，而tel只需要包含一个数字即可通过验证，这说明这三种类型默认的验证机制还不完善。</p>
+					</div>
+
+					<h3 id="HTML-form-11">i.hidden类型</h3>
+
+					<p>隐藏类型一般用于将对应表单关联到数据库的主键上，这些关联信息并不需要用户填写，下面的代码显示仅包含一个按钮，但单击这个按钮时，却提交了一个id=23的隐藏数据：</p>
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-ch"&gt;
+					&lt;head&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;title&gt;input标签实例&lt;/title&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;form action="http://www.qingsword.com" target="_blank" method="get"&gt;
+							&lt;input type="hidden" name="id" value="23"&gt;
+							&lt;button type="submit"&gt;提交&lt;/button&gt;
+						&lt;/form&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+					</pre>
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+					<form action="http://www.qingsword.com" target="_blank" method="get">
+						<input type="hidden" name="id" value="23">
+						<button type="submit">提交</button>
+					</form>	
+					</div>
+
+					<h3 id="HTML-form-12">j.file类型</h3>
+
+					<p>文件类型能够提供一个本地文件选择窗口，用于将本地文件上传到服务器，请看下面的实例：</p>
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-ch"&gt;
+					&lt;head&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;title&gt;input标签实例&lt;/title&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;form action="http://www.qingsword.com" target="_blank" method="get"&gt;
+							&lt;!--accept属性指定了能够上传的文件类型，本例为三种图片类型，但这只是表面上的指定，实际上用户仍然能够上传其他类型的文件--&gt;
+							&lt;input type="file" name="filename" accept="image/gif,image/jpeg,image/png" required&gt;
+							&lt;button type="submit"&gt;提交&lt;/button&gt;
+						&lt;/form&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+					</pre>
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+					<form action="http://www.qingsword.com" target="_blank" method="get">
+						<input type="file" name="filename" accept="image/gif,image/jpeg,image/png" required>
+						<button type="submit">提交</button>
+					</form>
+					<p>因为本站主页并没有接受文件的功能，所以选择文件提交后仅在浏览器url中能够看到被选择的文件的文件名，在实际应用中，应该严格审核每一个可上传通道可以添加的文件类型。</p>
+					</div>
+
+					<h3 id="HTML-form-13">k.image类型</h3>
+
+					<p>图片类型可以指定显示一张可点击的图片，当用户点击图片的某个区域时，会将相对与图片左上角坐标(0,0)的相对位提交给表单接收对象，请看下面的实例：</p>
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-ch"&gt;
+					&lt;head&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;title&gt;input标签实例&lt;/title&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;form action="http://www.qingsword.com" target="_blank" method="get"&gt;
+							&lt;!--src属性指定图片的相对或绝对路径，本例使用了本站的logo--&gt;
+							&lt;input type="image" src="../logo/logoa.png" alt="晴刃logo"&gt;
+						&lt;/form&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+					</pre>
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+					<form action="http://www.qingsword.com" target="_blank" method="get">
+						<input type="image" src="../logo/logoa.png" alt="晴刃logo">
+					</form>
+					<p>随便点击上图中的某个区域，将会以"x=12&amp;y=11"这种格式将鼠标点击位置（相对于图片左上角的位移）发送给表单接收对象。</p>	
+					</div>
+
+					<h3 id="HTML-form-14">l.单选与复选类型</h3>
+
+					<p>类型为raido的input标签为单选标签，类型为checkbox的input标签为复选标签，请看下面的实例：</p>
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-ch"&gt;
+					&lt;head&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;title&gt;input标签实例&lt;/title&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;form action="http://www.qingsword.com" target="_blank" method="get"&gt;
+							&lt;label&gt;性别：&lt;/label&gt;&lt;br&gt;
+							&lt;!--单选标签--&gt;
+							&lt;input type="radio" name="sex" value="male" checked&gt;&lt;label&gt;男&lt;/label&gt;&lt;br&gt;
+							&lt;input type="radio" name="sex" value="female"&gt;&lt;label&gt;女&lt;/label&gt;&lt;br&gt;
+							&lt;label&gt;爱好：&lt;/label&gt;&lt;br&gt;
+							&lt;!--多选标签--&gt;
+							&lt;input type="checkbox" name="fav1" value="play"&gt;&lt;label&gt;玩&lt;/label&gt;&lt;br&gt;
+							&lt;!--如果给多选或单选添加checked属性，则刷新页面时，这个标签为选中状态，如果添加required的属性，那么这些标签为必选标签，否则无法提交，请给不同的复选标签设置不同的name属性值，便于区分--&gt;
+							&lt;input type="checkbox" name="fav2" value="eat" checked required&gt;&lt;label&gt;吃&lt;/label&gt;&lt;br&gt;
+							&lt;input type="checkbox" name="fav3" value="sleep" checked required&gt;&lt;label&gt;睡&lt;/label&gt;&lt;br&gt;
+							&lt;button type="submit"&gt;提交&lt;/button&gt;
+						&lt;/form&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+					</pre>
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+					<form action="http://www.qingsword.com" target="_blank" method="get">
+						<label>性别：</label><br>
+						<input type="radio" name="sex" value="male" checked><label>男</label><br>
+						<input type="radio" name="sex" value="female"><label>女</label><br>
+						<label>爱好：</label><br>
+						<input type="checkbox" name="fav1" value="play"><label>玩</label><br>
+						<input type="checkbox" name="fav2" value="eat" checked required><label>吃</label><br>
+						<input type="checkbox" name="fav3" value="sleep" checked required><label>睡</label><br>
+						<button type="submit">提交</button>
+					</form>
+					</div>
+
+					<h2 id="HTML-form-15">0×3.fieldset标签</h2>
+
+					<p>fieldset标签能够给任意标签进行分组，便于区分不同区域的功能，请看下面的实例：</p>
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-ch"&gt;
+					&lt;head&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;title&gt;input标签实例&lt;/title&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;form&gt;
+							&lt;!--如果不添加style，fieldset标签长度将自适应浏览器的宽度，本例仅仅为了美观，将其宽度设置成0，这样就能自适应其内部元素的宽度--&gt;
+							&lt;fieldset style="width:0px;"&gt;
+								&lt;!--legend标签包含分组的标题信息--&gt;
+								&lt;legend&gt;用户信息：&lt;/legend&gt;
+								&lt;input type="text" name="username" placeholder="用户名" required&gt;&lt;br&gt;
+								&lt;input type="password" name="passwd" placeholder="密码" required&gt;
+							&lt;/fieldset&gt;
+							&lt;br&gt;
+							&lt;fieldset style="width:0px;"&gt;
+								&lt;legend&gt;选择一张照片上传：&lt;/legend&gt;
+								&lt;input type="file" name="userphoto" accept="image/jpeg" required &gt;
+							&lt;/fieldset&gt;
+						&lt;/form&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+					</pre>
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+					<form>
+						<fieldset style="width: 0px">
+							<legend>用户信息：</legend>
+							<input type="text" name="username" placeholder="用户名" required><br>
+							<input type="password" name="passwd" placeholder="密码" required>
+						</fieldset>
+						<br>
+						<fieldset style="width: 0px;">
+							<legend>选择一张照片上传：</legend>
+							<input type="file" name="userphoto" accept="image/jpeg" required >
+						</fieldset>
+					</form>	
+					</div>
+
+					<h2 id="HTML-form-16">0×4.button标签</h2>
+
+					<p>button标签同input标签一样，也提供了三种不同功能的按钮，除此之外，button标签内部能够重写提交属性，比如使用什么方式提交，提交给谁，请看下面的实例：</p>
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-ch"&gt;
+					&lt;head&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;title&gt;input标签实例&lt;/title&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;form id="form_x" action="http://www.qingsword.com" target="_blank" method="get"&gt;
+							&lt;!--一个包含初始值的文本框--&gt;
+							&lt;input value="23" name="id"&gt;&lt;br&gt;
+							&lt;!--普通的提交按钮--&gt;
+							&lt;button type="submit"&gt;提交&lt;/button&gt;
+							&lt;!--重置按钮将表单内部标签全部重置为初始值--&gt;
+							&lt;button type="reset"&gt;重置&lt;/button&gt;
+							&lt;!--一个普通按钮，需配合js代码实现不同按钮功能--&gt;
+							&lt;button type="button"&gt;普通按钮&lt;/button&gt;
+						&lt;/form&gt;
+						&lt;form&gt;
+							&lt;!--使用form属性将按钮关联到id值为form_x的表单，点击这个按钮即提交表单form_x--&gt;
+							&lt;button type="submit" form="form_x"&gt;提交form_x&lt;/button&gt;
+							&lt;!--在按钮中重写提交属性，formaction属性将覆盖form标签中的action属性，formtarget属性将覆盖target属性，formmethod将覆盖method属性，单击这个按钮将提交id为form_x的表单，提交方式为post，提交对象为本站主站目录下的sitmap.html文件--&gt;
+							&lt;button type="submit" formaction="http://www.qingsword.com/sitemap.html" form="form_x" formtarget="_blank" formmethod="post"&gt;重写提交属性&lt;/button&gt;
+						&lt;/form&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+					</pre>
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+					<form id="form_x" action="http://www.qingsword.com" target="_blank" method="get">
+						<input value="23" name="id"><br>
+						<button type="submit">提交</button>
+						<button type="reset">重置</button>
+						<button type="button">普通按钮</button>
+					</form>
+					<form>
+						<button type="submit" form="form_x">提交form_x</button>
+						<button type="submit" formaction="http://www.qingsword.com/sitemap.html" form="form_x" formtarget="_blank" formmethod="post">重写提交属性</button>
+					</form>	
+					</div>
+
+					<h2 id="HTML-form-17">0×5.select标签</h2>
+
+					<p>select标签能实现单行下拉列表、多行下拉列表、带标题分类的多行下拉列表，请看下面的实例：</p>
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-ch"&gt;
+					&lt;head&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;title&gt;select标签实例&lt;/title&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;form action="http://www.qingsword.com" target="_blank" method="get"&gt;
+							&lt;!--单选下拉列表，每个option是下拉列表的一项，点击提交后将会提交value属性的值--&gt;
+							&lt;select name="fruit"&gt;
+								&lt;option value="orange"&gt;橘子&lt;/option&gt;
+								&lt;option value="banana"&gt;香蕉&lt;/option&gt;
+								&lt;option value="apple"&gt;苹果&lt;/option&gt;
+							&lt;/select&gt;&lt;br&gt;
+							&lt;!--多选下拉列表，可以按住键盘ctrl键进行多选--&gt;
+							&lt;select name="sports" multiple&gt;
+								&lt;option value="basketball" selected&gt;篮球&lt;/option&gt;
+								&lt;option value="football"&gt;足球&lt;/option&gt;
+								&lt;option value="baseball"&gt;棒球&lt;/option&gt;
+							&lt;/select&gt;&lt;br&gt;
+							&lt;!--带标题的多选下拉列表，每组分类存放在optgroup标签中，每组的标题由optgroup标签的label属性设置--&gt;
+							&lt;select name="goods" multiple&gt;
+								&lt;optgroup label="Vegetables"&gt;
+									&lt;option value="potato"&gt;土豆&lt;/option&gt;
+									&lt;option value="tomato"&gt;西红柿&lt;/option&gt;
+									&lt;option value="cucumber"&gt;黄瓜&lt;/option&gt;
+								&lt;/optgroup&gt;
+								&lt;optgroup label="MobilePhone"&gt;
+									&lt;option value="iphone"&gt;苹果&lt;/option&gt;
+									&lt;option value="samsung"&gt;三星&lt;/option&gt;
+									&lt;option value="meizu"&gt;魅族&lt;/option&gt;
+								&lt;/optgroup&gt;
+							&lt;/select&gt;&lt;br&gt;
+							&lt;button type="submit"&gt;提交&lt;/button&gt;
+						&lt;/form&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+					</pre>
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+					<form action="http://www.qingsword.com" target="_blank" method="get">
+						<select name="fruit">
+							<option value="orange">橘子</option>
+							<option value="banana">香蕉</option>
+							<option value="apple">苹果</option>
+						</select><br>
+						<select name="sports" multiple>
+							<option value="basketball" selected>篮球</option>
+							<option value="football">足球</option>
+							<option value="baseball">棒球</option>
+						</select><br>
+						<select name="goods" multiple>
+							<optgroup label="Vegetables">
+								<option value="potato">土豆</option>
+								<option value="tomato">西红柿</option>
+								<option value="cucumber">黄瓜</option>
+							</optgroup>
+							<optgroup label="MobilePhone">
+								<option value="iphone">苹果</option>
+								<option value="samsung">三星</option>
+								<option value="meizu">魅族</option>
+							</optgroup>
+						</select><br>
+						<button type="submit">提交</button>
+					</form>
+					<p>在上面的表单中，"篮球"默认是被选中的状态，可以对每个option标签设置checked属性，在刷新后这个标签的内容将默认被选中。</p>	
+					</div>
+
+					<h2 id="HTML-form-18">0×6.textarea标签</h2>
+
+					<p>textarea标签将在浏览器中插入一个多行文本框，请看下面的实例：</p>
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-ch"&gt;
+					&lt;head&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;title&gt;textarea标签实例&lt;/title&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;form action="http://www.qingsword.com" target="_blank" method="get"&gt;
+							&lt;!--rows是文本框最小行数（高度），cols是设置最小宽度，maxlength设置最多可以输入的字符数，warp有两个参数，第一个soft是默认值，设置提交时不发送换行符，设置成hard发送换行符（换行符会在浏览器url中转义表示出来）-&gt;
+							&lt;textarea name="content" cols="10" rows="5" placeholder="请留下您的建议!" maxlength="6" wrap="hard"&gt;&lt;/textarea&gt;&lt;br&gt;
+							&lt;button type="submit"&gt;提交&lt;/button&gt;
+						&lt;/form&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+					</pre>
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+					<form action="http://www.qingsword.com" target="_blank" method="get">
+						<textarea name="content" cols="10" rows="5" placeholder="请留下您的建议!" maxlength="6" wrap="hard"></textarea><br>
+						<button type="submit">提交</button>
+					</form>
+					<p>注意，maxlength指定只能输入6个字符，每个回车符算做2个字符。</p>	
+					</div>
+
+					<h2 id="HTML-form-19">0×7.利用正则表达式验证</h2>
+					<p></p>
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-ch"&gt;
+					&lt;head&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;title&gt;pattern正则表达式实例&lt;/title&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;form action="http://www.qingsword.com" target="_blank" method="get"&gt;
+							&lt;!--pattern属性中填写正则表达式验证方式，本例，区号是2到4位，中间包含横杠，末尾号码是6到8位，符合这个规则就能通过验证提交，正则表达式并不是本文讨论的重点，大家只要知道，input标签可以包含pattern属性，这个属性可以配置不同的正则表达式完成不同规则的输入验证即可--&gt;
+							&lt;input type="text" name="tel" pattern="^[\d]{2,4}\-[\d]{6,8}$" placeholder="区号-号码" required&gt;
+							&lt;button type="submit"&gt;提交&lt;/button&gt;
+						&lt;/form&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+					</pre>
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+					<form action="http://www.qingsword.com" target="_blank" method="get">
+						<input type="text" name="tel" pattern="^[\d]{2,4}\-[\d]{6,8}$" placeholder="区号-号码" required>
+						<button type="submit">提交</button>
+					</form>	
+					</div>
+						
+				<!-- /正文 -->
+
+				<footer class="text-footer">
+					<p>
+						*转载请注明来自:<a title="晴刃-自由、互助、分享、专注计算机技术。" href="http://www.qingsword.com" target="_blank">晴刃(QingSword.COM)</a>
+					</p>
+					<p>*原文连接:<a title="[HTML5]-7-表单" href="http://www.qingsword.com/qing/html5-7.html" target="_blank">http://www.qingsword.com/qing/html5-7.html</a></p>
+				</footer>
+			</article>
+			<!-- /文章区 -->	
+		</div>
+	</div>
+	<!-- /content -->
+	
+	<!-- footer -->
+	<footer id="footer">
+		<div class="footer-container">
+			QingSword.COM &nbsp;<img src="../logo/by-nc-sa.png" alt="Creative Commons" title="Creative Commons">
+		</div>
+	</footer>
+	<!-- /footer -->
+</body>
+</html>
