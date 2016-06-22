@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<!--Copyright©QingSword.COM︻☼1010D>-->
+<html lang="zh-ch">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
+	<meta name="description" content="晴刃,是一个致力推广实用计算机技术的个人博客;我们分享计算机知识;为计算机系统以及网络安全防范做出一份贡献。【专注技术 创造价值 共同进步】">
+	<meta name="keywords" content="晴刃,晴,qing,qingsword,ccna图文笔记,ubuntu,linux,ubuntu server,mysql,node.js,javascript,python,计算机技术博客">
+	<title>[HTML5]-8-元数据与字符实体 - QingSword.COM</title>
+	<link rel="shortcut icon" type="image/x-icon" href="../logo/favicon.ico">
+	<link rel="stylesheet" type="text/css" href="../css/basic.css">
+	<link rel="stylesheet" type="text/css" href="../css/text.css">
+	<!-- 代码块高亮js -->
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shCore.css"/>
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shThemeRDark.css"/>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shCore.js"></script>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shBrushXml.js"></script>
+	<script type="text/javascript">
+	SyntaxHighlighter.all();
+	</script>
+</head>
+<body>
+	<!--header -->
+	<header id="nav">
+			<div class="nav-container"> 
+				<!-- 根大纲-->
+				<a href="http://www.qingsword.com" title="晴刃">
+					<h1 class="nav-logo">晴刃</h1>
+				</a>
+				<h2 class="nav-site-description desc-hidden">
+					自由、互助、分享、专注计算机技术
+				</h2>
+				<nav class="nav-links"> 
+					<!-- nav连接大纲-->
+					<h1 style="display:none;">网站导航</h1> 
+					<ul>
+						<li  class="li-hidden">
+							<a href="../index.html" title="home">
+								<span class="link-word"><img src="../logo/home.png" alt="home" class="link-img">首页</span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../web.html" title="web">
+								<span class="link-word"><img src="../logo/web.png" alt="web" class="link-img">前端<span class="word-hidden">设计</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../system.html" title="system">
+								<span class="link-word"><img src="../logo/linux.png" alt="linux" class="link-img">系统<span class="word-hidden">应用</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../net.html" title="net">
+								<span class="link-word"><img src="../logo/net.png" alt="net" class="link-img">网络<span class="word-hidden">技术</span></span>
+							</a>
+						</li>
+						<li>
+							<a href="../sitemap.html" title="sitemap">
+								<span class="link-word"><img src="../logo/archives.png" alt="archives" class="link-img"><span class="word-hidden">文章</span>归档</span>
+							</a>
+						</li>
+					</ul>
+				</nav>
+			</div>		
+	</header>
+	<!-- /header -->
+
+	<!-- content-->
+	<div id="content">
+		<div class="content-container">
+			<!-- 文章区 -->
+			<article class="text-container">
+				<header class="text-header">
+					<h1>[HTML5]-8-元数据与字符实体</h1>	
+				</header><!-- /header -->
+				<section class="text-body">
+					<h2>引言</h2>
+					<p>这篇文章介绍HTML元数据和字符实体，在文章后半段将会补充一些HTML的实用小技巧。</p>
+					<!-- 目录 -->
+					<h2>文章目录</h2>
+					<ul class="contents">	
+						 <li><a href="#HTML-meta-1">0×1.HTML元数据</a></li>
+						 <li><a href="#HTML-meta-2">0×2.HTML字符实体</a></li>
+						 <li><a href="#HTML-meta-3">0×2.实用技巧</a></li>
+						 <li class="subli"><a href="#HTML-meta-4">a.自定义页面热键</a></li>
+						 <li class="subli"><a href="#HTML-meta-5">b.可修改的页面文本</a></li>
+						 <li class="subli"><a href="#HTML-meta-6">c.隐藏的标签</a></li>
+						 <li class="subli"><a href="#HTML-meta-7">d.配置光标定位顺序</a></li>
+					 </ul>
+					<!-- /目录 -->
+
+					<!-- 正文 -->
+					<h2 id="HTML-meta-1">0×1.HTML元数据</h2>
+
+					<p>在本系列第二篇文章中已经介绍过meta标签，meta标签用于定义文档中的各种元数据，一个 HTML 页面可以包含多个meta标签，它一般被放置在HTML文档的head标签对中，请看下面的实例：</p>
+					<pre class="brush: html;">
+					&lt;head&gt;
+						&lt;!--包含页面的编码方式，可以使用下面两句中任意一句进行声明，效果都是相同的--&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;meta http-equiv="content-type" content="text/html charset=UTF-8"&gt;
+						&lt;!--本文档的作者--&gt;
+						&lt;meta name="author" content="qingsword"&gt;
+						&lt;!--文档的描述信息--&gt;
+						&lt;meta name="description" content="HTML5入门手册"&gt;
+						&lt;!--使用什么编辑器编辑的文档--&gt;
+						&lt;meta name="generator" content="Sublime Text"&gt;
+						&lt;!--提供给搜索引擎的关键字--&gt;
+						&lt;meta name="keywords" content="HTML5,CSS3,Javascript"&gt;
+						&lt;title&gt;meta实例&lt;/title&gt;
+					&lt;/head&gt;
+					</pre>
+					<p>元数据一般包含上面这些内容，这些内容并不会被显示在页面中，其中的大部分内容是提供给第三方，比如搜索引擎看的，方便他们对文档进行归类，在遇到搜索请求的时候将提取这些信息，判断与搜索是否有关联，然后呈现给搜索者；比如你搜索了一个关键词"HTML5"，如果这篇文章被搜索引擎收录，那么很有可能就会出现在搜索的结果列表中。</p>
+
+					<p>在元数据中实现页面的定时刷新和跳转，请看下面的实例：</p>
+					<pre class="brush: html;">
+					&lt;!--大家可以尝试将下面的内容保存在一个.html结尾的文件中，用浏览器打开这个文件，3秒后，就会跳转到本站主页，如果将3改成0，打开页面后就将立刻跳转--&gt;
+					&lt;head&gt;
+						&lt;!--页面刷新三秒后，跳转到本站主页，如果不添加分号和分号后面的页面地址就是每隔三秒刷新当前页面--&gt;
+						&lt;meta http-equiv="refresh" content="3;http://www.qingsword.com"&gt;
+						&lt;title&gt;自动跳转&lt;/title&gt;
+					&lt;/head&gt;
+					</pre>
+
+					<h2 id="HTML-meta-2">0×2.HTML字符实体</h2>
+
+					<p>我们知道，浏览器的解释器会将HTML文档中一些特殊字符解释为有意义的代码，例如尖括号就是用来包含标签的特殊字符，如果我们要将这些特殊字符打印出来，而不是将他们解释成某个标签或命令的组成部分，这个时候就需要使用"字符实体"，将有特殊意义的字符通过实体代码显示出来，最常用的字符实体如下表所示：</p>
+					
+					<table border="2" style="margin:10px 0 10px 10px;border-collapse: collapse;text-align: center;">
+						<tr>
+							<th>特殊符号</th>
+							<th>字符编码</th>
+							<th>数字编码</th>
+							<th>描述信息</th>
+						</tr>
+						<tr>
+							<td>&nbsp;</td>
+							<td>&amp;nbsp;</td>
+							<td>&amp;#160;</td>
+							<td>空格</td>
+						</tr>
+						<tr>
+							<td>&lt;</td>
+							<td>&amp;lt;</td>
+							<td>&amp;#60;</td>
+							<td>小于号</td>
+						</tr>
+						<tr>
+							<td>&gt;</td>
+							<td>&amp;gt;</td>
+							<td>&amp;#62;</td>
+							<td>大于号</td>
+						</tr>
+						<tr>
+							<td>&amp;</td>
+							<td>&amp;amp;</td>
+							<td>&amp;#38;</td>
+							<td>and符号</td>
+						</tr>
+						<tr>
+							<td>&quot;</td>
+							<td>&amp;quot;</td>
+							<td>&amp;#34;</td>
+							<td>双引号</td>
+						</tr>
+						<tr>
+							<td>&apos;</td>
+							<td>&amp;apos;</td>
+							<td>&amp;#39;</td>
+							<td>单引号</td>
+						</tr>
+						<tr>
+							<td>&yen;</td>
+							<td>&amp;yen;</td>
+							<td>&amp;#165;</td>
+							<td>元</td>
+						</tr>
+						<tr>
+							<td>&copy;</td>
+							<td>&amp;copy;</td>
+							<td>&amp;#169;</td>
+							<td>版权</td>
+						</tr>
+						<tr>
+							<td>&reg;</td>
+							<td>&amp;reg;</td>
+							<td>&amp;#174;</td>
+							<td>商标</td>
+						</tr>
+						<tr>
+							<td>&times;</td>
+							<td>&amp;times;</td>
+							<td>&amp;#215;</td>
+							<td>乘号</td>
+						</tr>
+						<tr>
+							<td>&divide;</td>
+							<td>&amp;divide;</td>
+							<td>&amp;#247;</td>
+							<td>除号</td>
+						</tr>
+					</table>
+					<p>如果我们需要在HTML文档中插入一个"and符号"，但又不希望浏览器解释器将其解释成一个"字符实体的编码开端"，就可以插入"and符号"的字符或数字编码"&amp;amp;"或"&amp;#38;"，浏览器遇到这种编码，知道这是一个字符实体编码，就会根据字符实体编码表，在当前位置将这个符号"&amp;"打印出来。</p>
+
+					<h2 id="HTML-meta-3">0×3.实用技巧</h2>
+					<h3 id="HTML-meta-4">a.自定义页面热键</h3>
+
+					<p>在上一篇文章介绍的表单标签input中，可以定义accesskey属性，实现热键功能，在页面中输入定义的热键，就可以快速定位到这个标签中，请看下面的实例：</p>
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-ch"&gt;
+					&lt;head&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;title&gt;accesskey实例&lt;/title&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;form&gt;
+							&lt;!--配置热键k--&gt;
+							&lt;input type="text" accesskey="k"&gt;
+						&lt;/form&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+					</pre>
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+					<form>
+						<input type="text" accesskey="k">
+					</form>
+					<p>在当前页面任意位置，按下键盘"[alt]+[k]"组合键，就将定位到上面的文本框中。</p>
+					</div>
+
+					<h3 id="HTML-meta-5">b.可修改的页面文本</h3>
+					
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-ch"&gt;
+					&lt;head&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;title&gt;contenteditable实例&lt;/title&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;!--contenteditable属性设置成true，可以让这个段落标签能够被任意编辑--&gt;
+						&lt;p contenteditable="true"&gt;这一整段文字都是可以随意编辑的，其高度是自适应的，可以回车来输入多行内容。&lt;/p&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+					</pre>
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+					<p contenteditable="true">这一整段文字都是可以随意编辑的，其高度是自适应的，可以回车来输入多行内容。</p></div>
+
+					<h3 id="HTML-meta-6">c.隐藏的标签</h3>
+
+					<p>很多标签都具有隐藏属性，只需要给要隐藏的标签添加hidden属性即可：</p>
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-ch"&gt;
+					&lt;head&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;title&gt;hidden实例&lt;/title&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;p&gt;段落一&lt;/p&gt;
+						&lt;p hidden&gt;这段文字在页面中不可见。&lt;/p&gt;
+						&lt;p&gt;段落二&lt;/p&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+					</pre>
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+					<p>段落一</p>
+					<p hidden>这段文字在页面中不可见。</p>
+					<p>段落二</p>	
+					</div>
+
+					<h3 id="HTML-meta-7">d.配置光标定位顺序</h3>
+
+					<p>在表单中，我们可以通过键盘[tab]键来移动光标，在不同文本框之间切换来输入内容，input标签中有一个tabindex属性，能够控制按下[tab]键后，光标的移动顺序：</p>
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-ch"&gt;
+					&lt;head&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;title&gt;tabindex实例&lt;/title&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;form&gt;
+							&lt;!--当按下[tab]键的时候，光标首先会移动到tabindex属性值是1的标签中，之后是2，以此类推，而属性值是-1的标签将永远不会被[tab]键访问到--&gt;
+							&lt;input tabindex="-1" placeholder="index -1"&gt;&lt;br&gt;
+							&lt;input tabindex="2" placeholder="index 2"&gt;&lt;br&gt;
+							&lt;input tabindex="1" placeholder="index 1"&gt;&lt;br&gt;
+						&lt;/form&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+					</pre>
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+					<form>
+						<input tabindex="-1" placeholder="index -1"><br>
+						<input tabindex="2" placeholder="index 2"><br>
+						<input tabindex="1" placeholder="index 1"><br>
+					</form>
+					<p>因为本文包含其他能够被[tab]键访问到的对象，所以结果可能不会如预料那样，你可以点击一下上面的"index 1"所在的文本框，然后按一下[tab]键，光标会自动移动到"index 2"所在的文本框，证明tabindex是有作用的。</p>
+					</div>
+					
+				<!-- /正文 -->
+
+				<footer class="text-footer">
+					<p>
+						*转载请注明来自:<a title="晴刃-自由、互助、分享、专注计算机技术。" href="http://www.qingsword.com" target="_blank">晴刃(QingSword.COM)</a>
+					</p>
+					<p>*原文连接:<a title="[HTML5]-8-元数据与字符实体" href="http://www.qingsword.com/qing/html5-8.html" target="_blank">http://www.qingsword.com/qing/html5-8.html</a></p>
+				</footer>
+			</article>
+			<!-- /文章区 -->	
+		</div>
+	</div>
+	<!-- /content -->
+	
+	<!-- footer -->
+	<footer id="footer">
+		<div class="footer-container">
+			QingSword.COM &nbsp;<img src="../logo/by-nc-sa.png" alt="Creative Commons" title="Creative Commons">
+		</div>
+	</footer>
+	<!-- /footer -->
+</body>
+</html>
