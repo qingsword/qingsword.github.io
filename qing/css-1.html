@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<!--Copyright©QingSword.COM︻☼1010D>-->
+<html lang="zh-ch">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
+	<meta name="description" content="晴刃,是一个致力推广实用计算机技术的个人博客;我们分享计算机知识;为计算机系统以及网络安全防范做出一份贡献。【专注技术 创造价值 共同进步】">
+	<meta name="keywords" content="晴刃,晴,qing,qingsword,ccna图文笔记,ubuntu,linux,ubuntu server,mysql,node.js,javascript,python,计算机技术博客">
+	<meta name="author" content="www.qingsword.com">
+	<title>[CSS]-1-css样式的四种导入方式 - QingSword.COM</title>
+	<link rel="shortcut icon" type="image/x-icon" href="../logo/favicon.ico">
+	<link rel="stylesheet" type="text/css" href="../css/basic.css">
+	<link rel="stylesheet" type="text/css" href="../css/text.css">
+	<!-- 代码块高亮js -->
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shCore.css"/>
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shThemeRDark.css"/>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shCore.js"></script>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shBrushXml.js"></script>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shBrushCss.js"></script>
+	<script type="text/javascript">
+	SyntaxHighlighter.all();
+	</script>
+</head>
+<body>
+	<!--header -->
+	<header id="nav">
+			<div class="nav-container"> 
+				<!-- 根大纲-->
+				<a href="http://www.qingsword.com" title="晴刃">
+					<h1 class="nav-logo">晴刃</h1>
+				</a>
+				<h2 class="nav-site-description desc-hidden">
+					自由、互助、分享、专注计算机技术
+				</h2>
+				<nav class="nav-links"> 
+					<!-- nav连接大纲-->
+					<h1 style="display:none;">网站导航</h1> 
+					<ul>
+						<li  class="li-hidden">
+							<a href="../index.html" title="home">
+								<span class="link-word"><img src="../logo/home.png" alt="home" class="link-img">首页</span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../web.html" title="web">
+								<span class="link-word"><img src="../logo/web.png" alt="web" class="link-img">前端<span class="word-hidden">设计</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../system.html" title="system">
+								<span class="link-word"><img src="../logo/linux.png" alt="linux" class="link-img">系统<span class="word-hidden">应用</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../net.html" title="net">
+								<span class="link-word"><img src="../logo/net.png" alt="net" class="link-img">网络<span class="word-hidden">技术</span></span>
+							</a>
+						</li>
+						<li>
+							<a href="../sitemap.html" title="sitemap">
+								<span class="link-word"><img src="../logo/archives.png" alt="archives" class="link-img"><span class="word-hidden">文章</span>归档</span>
+							</a>
+						</li>
+					</ul>
+				</nav>
+			</div>		
+	</header>
+	<!-- /header -->
+
+	<!-- content-->
+	<div id="content">
+		<div class="content-container">
+			<!-- 文章区 -->
+			<article class="text-container">
+				<header class="text-header">
+					<h1>[CSS]-1-css样式的四种导入方式</h1>	
+				</header><!-- /header -->
+				<section class="text-body">
+					<h2>引言</h2>
+					<p>CSS是"Cascading Style Sheets"的缩写，中文译为"层叠样式表"；我们可以通过CSS来控制HTML文档标签的显示样式，从而起到美化页面外观的效果；这篇文件介绍CSS样式在HTML文档中的四种导入方式。</p>
+					<!-- 目录 -->
+					<h2>文章目录</h2>
+					<ul class="contents">	
+						 <li><a href="#CSS-style-import-1">0×1.CSS样式的四种导入方式</a></li>
+						 <li><a href="#CSS-style-import-2">0×2.浏览器默认属性与替换</a></li>
+						 <li><a href="#CSS-style-import-3">0×3.样式优先级</a></li>
+						 <li><a href="#CSS-style-import-4">0×4.样式继承</a></li>
+					 </ul>
+					<!-- /目录 -->
+
+					<!-- 正文 -->
+					<h2 id="CSS-style-import-1">0×1.CSS样式的四种导入方式</h2>
+
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-ch"&gt;
+					&lt;head&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;title&gt;css四种导入方式实例&lt;/title&gt;
+
+						&lt;!--第1种，直接写在head标签中，将css语句包含在style标签对中，本例控制p标签内容的样式，设置其文字颜色为红色，字体大小为15像素--&gt;
+						&lt;style type="text/css"&gt;
+							p{
+								color: red;
+								font-size: 15px;
+							}
+						&lt;/style&gt;
+
+						&lt;!--第2种，调用外部css文件，href属性值指定要包含的css文件的相对或绝对路径，本例使用相对路径，即style.css文件和当前html文档文件在同一个目录中--&gt;
+						&lt;link rel="stylesheet" type="text/css" href="style.css"&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;p&gt;HTML5 Red&lt;/p&gt;
+
+						&lt;!--第3种，直接写在标签内部，使用style属性来配置css样式，每条css语句用分号隔开--&gt;
+						&lt;span style="color:blue; font-size:20px;"&gt;HTML5 Blue&lt;/span&gt;
+						&lt;br&gt;
+						&lt;div&gt;
+							Hello&nbsp;&lt;b&gt;HTML5 Yellow&lt;/b&gt;	
+						&lt;/div&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+					</pre>
+
+					<p>style.css文件内容：</p>
+					<pre class="brush: css;">
+					@charset "utf-8";
+					/*第4种，在css文件中调用其他的css文件，import后面写要调用的其他css文件路径，本例中test.css文件与style.css在同一个目录下*/
+					@import "test.css";
+					div{
+						font-size: 25px;
+						color: green;
+					}
+					</pre>
+					<p>test.css文件内容：</p>
+					<pre class="brush: css;">
+					@charset "utf-8";
+					b{
+						/*font-style属性能够配置文字样式，italic为斜体*/
+						font-style: italic;
+						color: yellow;
+						font-size: 40px;
+					}
+					</pre>
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+					<p style="color: red;font-size: 15px; margin: 5px 0px 0px 0px;">HTML5 Red</p>
+					<span style="color:blue; font-size: 20px;">HTML5 Blue</span>
+					<br>
+					<div style="font-size: 25px;color:green;">
+						Hello&nbsp;<b style="font-style: italic;color:yellow;font-size: 40px;">HTML5 Yellow</b>	
+					</div>
+					</div>
+
+					<h2 id="CSS-style-import-2">0×2.浏览器默认属性与替换</h2>
+
+					<p>HTML文档的标签都存在其默认的样式，而我们给标签配置css样式的时候，实际上是替换了这些标签原本的默认样式：</p>
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-ch"&gt;
+					&lt;head&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;title&gt;HTML标签默认样式与覆盖实例&lt;/title&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;!--b标签中的文字默认是加粗显示的--&gt;
+						&lt;b&gt;b标签默认样式&lt;/b&gt;
+						&lt;br&gt;
+						&lt;!--配置b标签的css样式，让其文字不加粗；font-weight属性能够配置文字是否加粗显示，normal为不加粗，bold为加粗显示--&gt;
+						&lt;b style="font-weight:normal;"&gt;配置css后b标签的样式&lt;/b&gt;
+						&lt;br&gt;
+						&lt;!--默认span标签文字是不加粗的--&gt;
+						&lt;span&gt;默认的span标签的样式&lt;/span&gt;
+						&lt;br&gt;
+						&lt;!--配置css，让span中的文字加粗显示--&gt;
+						&lt;span style="font-weight:bold;"&gt;配置css后span标签的样式&lt;/span&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+					</pre>
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+					<b>b标签默认样式</b>
+					<br>
+					<b style="font-weight:normal;">配置css后b标签的样式</b>
+					<br>
+					<span>默认的span标签的样式</span>
+					<br>
+					<span style="font-weight:bold;">配置css后span标签的样式</span>
+					</div>
+
+					<h2 id="CSS-style-import-3">0×3.样式优先级</h2>
+
+					<p>在我们写css样式的时候，难免会有同一个标签配置了相同属性，但这些属性却具有不同值的情况出现，请看下面的实例：</p>
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-ch"&gt;
+					&lt;head&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;title&gt;CSS样式优先级实例&lt;/title&gt;
+
+						&lt;!--当link和style同时出现在头部时，如果发生css冲突，浏览器解释器选择写在最下面的css作为最终样式，本例，style.css文件中对p标签设置的css颜色属性是green，和style中的deeppink冲突，解释器选择deeppink作为最终样式，但如果link标签写在style下面，则会选择green作为最终样式--&gt;
+						&lt;link rel="stylesheet" type="text/css" href="style.css"&gt;
+
+						&lt;style type="text/css"&gt;
+							p{
+								color:deeppink;
+							}
+						&lt;/style&gt;
+
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;p&gt;www.qingsword.com&lt;/p&gt;
+
+						&lt;!--写在标签中的style属性具有最高优先级，这种样式也叫"内联样式"，虽然head里面配置了所有p标签的文字颜色为粉红色，但可以单独对某一个p标签使用内联样式，它将覆盖head中p标签的color属性的值--&gt;
+						&lt;p style="color:lime;"&gt;www.qingsword.com&lt;/p&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+					</pre>
+					<p>style.css文件内容：</p>
+					<pre class="brush: css;">
+					@charset "utf-8";
+					p{
+						color: green;
+					}
+					</pre>
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+					<p style="color:deeppink;">www.qingsword.com</p>
+					<p style="color:lime;">www.qingsword.com</p>	
+					</div>
+					<p>如果head中对p标签配置了文字大小的属性，在单独设置某个p标签内联样式的时候没有配置文字大小属性，那么这个p将使用head中对p标签文字大小的定义，而不会清除这些属性，只有出现冲突时，才会根据优先级替换这些冲突的属性值。</p>
+
+					<p>如果某个属性存在冲突，想让低优先级的样式覆盖高优先级，可以使用"!important"属性，请看下面的实例：</p>
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-ch"&gt;
+					&lt;head&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;title&gt;CSS样式优先级实例&lt;/title&gt;
+						&lt;!--对p标签的color属性配置了最高优先级命令"!important"--&gt;
+						&lt;style type="text/css"&gt;
+							p{
+								color:deeppink !important;
+							}
+						&lt;/style&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;!--对单独的p标签配置内联样式，也设置了color属性，和head中的color属性冲突了，但由于head中的color配置了最高优先级命令"!important"，所以最终显示时，文字将显示成deeppink深粉红色，而不是lime绿黄色--&gt;
+						&lt;p style="color:lime;"&gt;www.qingsword.com&lt;/p&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+					</pre>
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+					<p style="color:deeppink;">www.qingsword.com</p>
+					</div>
+					<p>Ps：如果在上面的CSS四种导入方式中，都对某个标签配置了不同的样式，出现冲突的属性将根据优先级选择优先级最高的样式，没有冲突的部分将会合并，最后显示的样式就是这四个位置所有样式的并集。</p>
+
+					<h2 id="CSS-style-import-4">0×4.样式继承</h2>
+
+					<p>当对一个元素的某个属性使用inherit值时，它将继承父级（包含它的元素）的对应属性，请看下面的实例：</p>
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-ch"&gt;
+					&lt;head&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;title&gt;样式继承实例&lt;/title&gt;
+						&lt;style type="text/css"&gt;
+							p{
+								font-weight: normal;
+							}
+							b{
+								&lt;!--b标签本来应该是加粗显示的，但因为包含它的元素p配置了文字不加粗的属性，所以b标签中的文字并没有加粗显示，b标签中的font-weight属性继承了其父级p标签的font-weight属性值normal--&gt;
+								font-weight: inherit;
+							}
+						&lt;/style&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;p&gt;&lt;b&gt;晴刃：&lt;/b&gt;www.qingsword.com&lt;/p&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+					</pre>
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+					<p style="font-weight: normal;"><b style="font-weight: inherit;">晴刃：</b>www.qingsword.com</p>	
+					</div>
+						
+				<!-- /正文 -->
+
+				<footer class="text-footer">
+					<p>
+						*转载请注明来自:<a title="晴刃-自由、互助、分享、专注计算机技术。" href="http://www.qingsword.com" target="_blank">晴刃(QingSword.COM)</a>
+					</p>
+					<p>*原文连接:<a title="[CSS]-1-css样式的四种导入方式" href="http://www.qingsword.com/qing/css-1.html" target="_blank">http://www.qingsword.com/qing/css-1.html</a></p>
+				</footer>
+			</article>
+			<!-- /文章区 -->	
+		</div>
+	</div>
+	<!-- /content -->
+	
+	<!-- footer -->
+	<footer id="footer">
+		<div class="footer-container">
+			QingSword.COM &nbsp;<img src="../logo/by-nc-sa.png" alt="Creative Commons" title="Creative Commons">
+		</div>
+	</footer>
+	<!-- /footer -->
+</body>
+</html>
