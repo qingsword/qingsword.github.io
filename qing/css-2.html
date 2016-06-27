@@ -1,0 +1,1296 @@
+<!DOCTYPE html>
+<!--Copyright©QingSword.COM︻☼1010D>-->
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
+	<meta name="description" content="晴刃,是一个致力推广实用计算机技术的个人博客;我们分享计算机知识;为计算机系统以及网络安全防范做出一份贡献。【专注技术 创造价值 共同进步】">
+	<meta name="keywords" content="晴刃,晴,qing,qingsword,ccna图文笔记,ubuntu,linux,ubuntu server,mysql,node.js,javascript,python,计算机技术博客">
+	<meta name="author" content="www.qingsword.com">
+	<title>[CSS]-2-css选择器 - QingSword.COM</title>
+	<link rel="shortcut icon" type="image/x-icon" href="../logo/favicon.ico">
+	<link rel="stylesheet" type="text/css" href="../css/basic.css">
+	<link rel="stylesheet" type="text/css" href="../css/text.css">
+	<!-- 代码块高亮js -->
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shCore.css"/>
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shThemeRDark.css"/>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shCore.js"></script>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shBrushXml.js"></script>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shBrushCss.js"></script>
+	<script type="text/javascript">
+	SyntaxHighlighter.all();
+	</script>
+	<style type="text/css">
+		#in2:valid,#in1:valid{
+			border: 1px dashed green;
+		}
+		#in2:invalid,#in1:invalid{
+			border: 1px dotted red;
+		}
+		#in3:checked{
+			display: none;
+		}
+		#in4:focus{
+			border: 2px dashed green;
+		}
+		#qingweb:link{
+			border: 2px dotted green;
+		}
+		#qingweb:hover{
+			border: 2px dashed orange;
+		}
+		#qingweb:active{
+			border: 2px solid red;
+		}
+		#qingweb:visited{
+			border: 2px dotted pink;
+		}
+		#t1:target{
+			color: yellow;
+		}
+		#t2::selection{
+			color: yellow;
+		}
+	</style>
+</head>
+<body>
+	<!--header -->
+	<header id="nav">
+			<div class="nav-container"> 
+				<!-- 根大纲-->
+				<a href="http://www.qingsword.com" title="晴刃">
+					<h1 class="nav-logo">晴刃</h1>
+				</a>
+				<h2 class="nav-site-description desc-hidden">
+					自由、互助、分享、专注计算机技术
+				</h2>
+				<nav class="nav-links"> 
+					<!-- nav连接大纲-->
+					<h1 style="display:none;">网站导航</h1> 
+					<ul>
+						<li  class="li-hidden">
+							<a href="../index.html" title="home">
+								<span class="link-word"><img src="../logo/home.png" alt="home" class="link-img">首页</span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../web.html" title="web">
+								<span class="link-word"><img src="../logo/web.png" alt="web" class="link-img">前端<span class="word-hidden">设计</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../system.html" title="system">
+								<span class="link-word"><img src="../logo/linux.png" alt="linux" class="link-img">系统<span class="word-hidden">应用</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../net.html" title="net">
+								<span class="link-word"><img src="../logo/net.png" alt="net" class="link-img">网络<span class="word-hidden">技术</span></span>
+							</a>
+						</li>
+						<li>
+							<a href="../sitemap.html" title="sitemap">
+								<span class="link-word"><img src="../logo/archives.png" alt="archives" class="link-img"><span class="word-hidden">文章</span>归档</span>
+							</a>
+						</li>
+					</ul>
+				</nav>
+			</div>		
+	</header>
+	<!-- /header -->
+
+	<!-- content-->
+	<div id="content">
+		<div class="content-container">
+			<!-- 文章区 -->
+			<article class="text-container">
+				<header class="text-header">
+					<h1>[CSS]-2-css选择器</h1>	
+				</header><!-- /header -->
+				<section class="text-body">
+					<h2>引言</h2>
+					<p>在前面的文章中，我们已经使用了CSS样式，但并没有解释为什么这些CSS语句可以控制某个特定的标签，这篇文章将介绍CSS中的一个重要概念——"选择器"。</p>
+					<!-- 目录 -->
+					<h2>文章目录</h2>
+					<ul class="contents">	
+						 <li><a href="#CSS-selector-1">0×1.什么是css选择器</a></li>
+						 <li><a href="#CSS-selector-2">0×2.全局选择器</a></li>
+						 <li><a href="#CSS-selector-3">0×3.标签选择器</a></li>
+						 <li><a href="#CSS-selector-4">0×4.ID选择器</a></li>
+						 <li><a href="#CSS-selector-5">0×5.类选择器</a></li>
+						 <li><a href="#CSS-selector-6">0×6.同类标签选择器</a></li>
+						 <li><a href="#CSS-selector-7">0×7.附加类选择器</a></li>
+						 <li><a href="#CSS-selector-8">0×8.属性选择器</a></li>
+						 <li><a href="#CSS-selector-9">0×9.属性分片匹配选择器</a></li>
+						 <li><a href="#CSS-selector-10">0×10.复合分组选择器</a></li>
+						 <li><a href="#CSS-selector-11">0×11.派生选择器</a></li>
+						 <li><a href="#CSS-selector-12">0×12.子选择器</a></li>
+						 <li><a href="#CSS-selector-13">0×13.相邻选择器</a></li>
+						 <li><a href="#CSS-selector-14">0×14.伪元素选择器</a></li>
+						 <li class="subli"><a href="#CSS-selector-15">a.块级首行选择器</a></li>
+						 <li class="subli"><a href="#CSS-selector-16">b.块级首字母选择器</a></li>
+						 <li class="subli"><a href="#CSS-selector-17">c.前缀插入和后缀插入</a></li>
+						 <li><a href="#CSS-selector-18">0×15.结构性伪类选择器</a></li>
+						 <li class="subli"><a href="#CSS-selector-19">a.子元素选择器</a></li>
+						 <li class="subli"><a href="#CSS-selector-20">b.子元素nth-child(n)系列选择器</a></li>
+						 <li><a href="#CSS-selector-21">0×16.根元素选择器</a></li>
+						 <li><a href="#CSS-selector-22">0×17.UI伪类选择器</a></li>
+						 <li><a href="#CSS-selector-23">0×18.超链接伪选择器的四种状态</a></li>
+						 <li><a href="#CSS-selector-24">0×19.否定选择器</a></li>
+						 <li><a href="#CSS-selector-25">0×20.空元素选择器</a></li>
+						 <li><a href="#CSS-selector-26">0×21.匹配语言选择器</a></li>
+						 <li><a href="#CSS-selector-27">0×22.锚点定位选择器</a></li>
+						 <li><a href="#CSS-selector-28">0×23.伪类选定选择器</a></li>
+					 </ul>
+					<!-- /目录 -->
+
+					<!-- 正文 -->
+					<h2 id="CSS-selector-1">0×1.什么是css选择器</h2>
+
+					<p>"css选择器"是一种模式，我们可以通过这种模式来选择HTML文档中的单个标签、一组或一类标签等。</p>
+					<p>"css选择器"的格式如下：</p>
+					<p class="indent-p">
+						1）如果是"内联样式"，那么写在style属性后面的css语句仅控制当前标签，例如：
+						<pre class="brush: html;">
+						&lt;!--直接将CSS样式写在p标签的style属性中，每个css控制属性都使用分号分割，本例只有一个控制属性，就是将这段p的文字颜色更改为绿色--&gt;
+						&lt;p style="color:green;"&gt;www.qingsword.com&lt;/p&gt;
+						</pre>
+					</p>
+					<p class="indent-p">
+						2）如果写在head头部的style标签，或使用link标签导入的其他css文件，其中每个css选择器的格式为：
+						<pre class="brush: css;">
+						[标签名称|标签ID|类名称|属性名称|...] {
+						CSS控制属性1;
+						CSS控制属性2;
+						....
+						}
+						/*css控制属性被包含在一对大括号中，每个属性用分号分隔，在大括号前"标签名称"或"标签ID"都属于某类型的"CSS选择器"，用于控制某些标签的样式，稍后会详细介绍*/
+						</pre>
+					</p>
+
+					<h2 id="CSS-selector-2">0×2.全局选择器</h2>
+
+					<p>全局选择器能够控制HTML文档中所有标签的CSS样式，请看下面的实例：</p>
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-cn"&gt;
+					&lt;head&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;title&gt;全局选择器实例&lt;/title&gt;
+						&lt;!--导入外部文件style.css--&gt;
+						&lt;link rel="stylesheet" type="text/css" href="style.css"&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;!--body中包含三个可见标签p，b，span--&gt;
+						&lt;p&gt;www.qingsword.com&lt;/p&gt;
+						&lt;b&gt;晴刃&lt;/b&gt;
+						&lt;br&gt;&lt;br&gt;
+						&lt;span&gt;qingsword.com&lt;/span&gt;
+						&lt;br&gt;&lt;br&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+					</pre>
+					<p>style.css文件内容：</p>
+					<pre class="brush: css;">
+					@charset "utf-8";
+					/*全局选择器使用"星号"标识，border属性将对每个被控制的标签添加一个边框，边框厚度1像素，solid为实线，green指定边框颜色为绿色*/		
+					*{
+						border: 1px solid green;
+					}
+					</pre>
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+						<div style="border: 1px solid green; padding: 4px;margin: 4px;">
+							<div style="border: 1px solid green; padding: 4px;margin: 4px;">
+								<p style="border: 1px solid green;margin: 0px;">www.qingsword.com</p>
+								<b style="border: 1px solid green;">晴刃</b>
+								<span style="border: 1px solid green;">qingsword.com</span>
+							</div>
+						</div>
+						<p>在上面的显示中，我们看到了一个比较奇怪的结果，body只有3个可见标签，为什么会出现5个绿色边框？实际上，全局属性会从HTML文档的第一个标签开始匹配，第一个标签是html，所以给html整个文档添加了一个边框，也就是最外层那个边框，因为head在浏览器中不可见，所以我们看不到head的边框，之后选择器匹配到body标签，给整个body也添加了一个绿色边框，这就是出现第二层边框的原因，然后对body中3个可见标签分别添加边框，读者可能发现，p标签的边框是占一整行的，而b和span标签仅包含了其文字，这是块状元素与行内元素的区别。</p>
+					</div>
+
+					<h2 id="CSS-selector-3">0×3.标签选择器</h2>
+
+					<p>标签选择器仅匹配同类标签，请看下面的实例：</p>
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-cn"&gt;
+					&lt;head&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;title&gt;标签选择器实例&lt;/title&gt;
+						&lt;link rel="stylesheet" type="text/css" href="style.css"&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;p&gt;www.qingsword.com&lt;/p&gt;
+						&lt;span&gt;www.qingsword.com&lt;/span&gt;
+						&lt;p&gt;晴刃&lt;/p&gt;
+						&lt;b&gt;晴刃&lt;/b&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+					</pre>
+					<p>style.css文件内容：</p>
+					<pre class="brush: css;">
+					@charset "utf-8";
+					/*选择html文档中所有p标签，将其文字样式更改成斜体显示，文字演示改成绿色*/
+					p{
+						font-style: italic;
+						color: green;
+					}
+					</pre>
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+					<p style="font-style: italic;margin: 0px;color: green;">www.qingsword.com</p>
+					<span>www.qingsword.com</span>
+					<p style="font-style: italic;margin: 0px;color: green;">晴刃</p>
+					<b>晴刃</b>	
+					</div>
+
+					<h2 id="CSS-selector-4">0×4.ID选择器</h2>
+
+					<p>每个标签都可以设定一个单独的ID值，利用这个值CSS能够匹配到单个标签，在HTML文档中，最好不要出现重复的ID值，请看下面的实例：</p>
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-cn"&gt;
+					&lt;head&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;title&gt;ID选择器实例&lt;/title&gt;
+						&lt;link rel="stylesheet" type="text/css" href="style.css"&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;!--单独设置了其中一个p标签和span标签的id值--&gt;
+						&lt;p id="one"&gt;www.qingsword.com&lt;/p&gt;
+						&lt;span&gt;晴刃&lt;/span&gt;
+						&lt;p&gt;晴刃&lt;/p&gt;
+						&lt;span id="two"&gt;www.qingsword.com&lt;/span&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+					</pre>
+					<p>style.css文件内容：</p>
+					<pre class="brush: css;">
+					@charset "utf-8";
+					/*使用ID选择器时，需要在每个ID值前面添加#号，这是标准规定的格式，下面将html文档中id值为one的标签的文字设置成绿色，将文档中id值为two的标签的文字颜色设置为黄色，其他标签不受影响*/
+					#one{
+						color: green;
+					}
+					#two{
+						color: yellow;
+					}
+					</pre>
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+					<p style="color: green;margin: 0px;">www.qingsword.com</p>
+					<span>晴刃</span>
+					<p style="margin: 0px;">晴刃</p>
+					<span style="color: yellow;">www.qingsword.com</span>
+					</div>
+
+					<h2 id="CSS-selector-5">0×5.类选择器</h2>
+
+					<p>类选择器可以对一组元素进行样式定义，在HTML文档中，能够通过给标签添加class属性值，来给标签分类，请看下面的实例：</p>
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-cn"&gt;
+					&lt;head&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;title&gt;类选择器实例&lt;/title&gt;
+						&lt;link rel="stylesheet" type="text/css" href="style.css"&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;!--给两个网址所对应的标签配置了相同的类值"abc"，给包含中文的两个标签配置了相同的类值"def"--&gt;
+						&lt;p class="abc"&gt;www.qingsword.com&lt;/p&gt;
+						&lt;span class="def"&gt;晴刃&lt;/span&gt;
+						&lt;p class="def"&gt;晴刃&lt;/p&gt;
+						&lt;span class="abc"&gt;www.qingsword.com&lt;/span&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+					</pre>
+					<p>style.css文件内容：</p>
+					<pre class="brush: css;">
+					@charset "utf-8";
+					/*类选择器需要在每个类名称前添加一个英文的句号来使用它，这是标准规定的格式，下面的两个选择器分别选择了HTML文档中所有class值是abc的标签，将其文字颜色设置为绿色，并且选择了HTML文档中所有class值是def的标签，将其文字颜色设置为黄色*/
+					.abc{
+						color: green;
+					}
+					.def{
+						color: yellow;
+					}
+					</pre>
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+					<p style="color: green;margin:0px;">www.qingsword.com</p>
+					<span style="color: yellow;">晴刃</span>
+					<p style="color: yellow;margin:0px;">晴刃</p>
+					<span style="color: green;">www.qingsword.com</span>
+					</div>
+
+					<h2 id="CSS-selector-6">0×6.同类标签选择器</h2>
+
+					<p>如果有多个标签都配置了相同的class值，但现在我只想选择其中某个标签使用CSS渲染，而不影响同类下其它标签，那么就可以用到"同类标签选择器"，请看下面的实例：</p>
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-cn"&gt;
+					&lt;head&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;title&gt;同类标签选择器实例&lt;/title&gt;
+						&lt;link rel="stylesheet" type="text/css" href="style.css"&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;!--下面三个标签，同属于"abc"类--&gt;
+						&lt;b class="abc"&gt;www.qingsword.com&lt;/b&gt;
+						&lt;p class="abc"&gt;www.qingsword.com&lt;/p&gt;
+						&lt;span class="abc"&gt;晴刃&lt;/span&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+					</pre>
+					<p>style.css文件内容：</p>
+					<pre class="brush: css;">
+					@charset "utf-8";
+					/*仅匹配类名称为"abc"的所有p标签，虽然span和b标签也属于"abc"这个类，但是并不会被这个选择器匹配到*/
+					p.abc{
+						color: yellow;
+					}
+					</pre>
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+					<b>www.qingsword.com</b>
+					<p style="color: yellow;margin: 0px;">www.qingsword.com</p>
+					<span>晴刃</span>	
+					</div>
+
+					<h2 id="CSS-selector-7">0×7.附加类选择器</h2>
+
+					<p>当我们希望一个标签同时拥有多个类选择器的样式时，可以在class中定义多个类名称，用空格分隔，请看下面的实例：</p>
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-cn"&gt;
+					&lt;head&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;title&gt;附加类选择器实例&lt;/title&gt;
+						&lt;link rel="stylesheet" type="text/css" href="style.css"&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;!--p标签属于"abc"类，同时也属于"def"类--&gt;
+						&lt;p class="abc def"&gt;www.qingsword.com&lt;/p&gt;
+						&lt;span class="abc"&gt;晴刃&lt;/span&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+					</pre>
+					<p>style.css文件内容：</p>
+					<pre class="brush: css;">
+					@charset "utf-8";
+					.abc{ /*设置abc类标签中的文字为黄色*/
+						color: yellow;
+					}
+					.def{ /*设置def类标签中的文字为斜体*/
+						font-style: italic;
+					}
+					</pre>
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+					<p style="color: yellow;margin: 0px;font-style: italic;">www.qingsword.com</p>
+					<span  style="color: yellow;">晴刃</span>
+					</div>
+
+					<h2 id="CSS-selector-8">0×8.属性选择器</h2>
+
+					<p>这个选择器并不是很常用，但当某个标签拥有其它标签所没有的属性时，可以尝试使用这个选择器，请看下面的实例：</p>
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-cn"&gt;
+					&lt;head&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;title&gt;属性选择器实例&lt;/title&gt;
+						&lt;link rel="stylesheet" type="text/css" href="style.css"&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;!--a标签中包含一个href属性--&gt;
+						&lt;a href="http://www.qingsword.com" title="晴刃" target="_blank"&gt;晴刃主页&lt;/a&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+					</pre>
+					<p>style.css文件内容：</p>
+					<pre class="brush: css;">
+					@charset "utf-8";
+					/*将某个标签的属性包含在一对中括号中，这将匹配到所有拥有href这个属性的标签*/
+					[href]{
+						color: pink;
+					}
+					</pre>
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+					<a href="http://www.qingsword.com" title="晴刃" target="_blank" style="color: pink;text-decoration:underline;">晴刃主页</a>	
+					</div>
+					<p>属性选择器不仅只针对属性名称，还能携带属性值一起匹配，只有当属性值和属性名称都匹配成功时，CSS才会发挥作用：</p>
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-cn"&gt;
+					&lt;head&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;title&gt;属性选择器实例&lt;/title&gt;
+						&lt;link rel="stylesheet" type="text/css" href="style.css"&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;!--配置一个表单，包含一个普通文本框和一个密码文本框--&gt;
+						&lt;form&gt;
+							&lt;input type="text" placeholder="text"&gt;
+							&lt;br&gt;
+							&lt;input type="password" placeholder="password"&gt;
+						&lt;/form&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+					</pre>
+					<p>style.css文件内容：</p>
+					<pre class="brush: css;">
+					@charset "utf-8";
+					/*只匹配具有type属性，且属性值为text的标签，给它添加一个2像素的边框，边框使用dotted虚线，边框颜色为green*/
+					[type="text"]{
+						border: 2px dotted green;
+					}
+					</pre>
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+					<form>
+						<input type="text" placeholder="text" style="border: 2px dotted green;">
+						<br>
+						<input type="password" placeholder="password">
+					</form>	
+					</div>
+
+					<h2 id="CSS-selector-9">0×9.属性分片匹配选择器</h2>
+
+					<p>这个选择器是CSS3规范新添加的，需要浏览器对CSS3的支持才能使用，当我们只需要匹配某个元素某个属性值的一部分时，就可以可以使用"分片匹配选择器"，请看下面的实例：</p>
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-cn"&gt;
+					&lt;head&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;title&gt;属性分片选择器实例&lt;/title&gt;
+						&lt;link rel="stylesheet" type="text/css" href="style.css"&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;!--下面的p标签分别配置了不同的类值--&gt;
+						&lt;p class="aabb"&gt;www.qingsword.com&lt;/p&gt;
+						&lt;p class="aacc"&gt;www.qingsword.com&lt;/p&gt;
+						&lt;p class="yygg"&gt;晴刃&lt;/p&gt;
+						&lt;p class="bbgg"&gt;晴刃&lt;/p&gt;
+						&lt;p class="abcdefg"&gt;qingsword&lt;/p&gt;
+						&lt;p class="abc def ghi"&gt;qingsword&lt;/p&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+					</pre>
+					<p>style.css文件内容：</p>
+					<pre class="brush: css;">
+					@charset "utf-8";
+					/*当标签拥有class属性，并且属性值的开始部分为"aa"时匹配*/
+					[class^="aa"]{
+						color: green;
+					}
+					/*当标签拥有class属性，并且属性值的末尾部分为"gg"时匹配*/
+					[class$="gg"]{
+						color: yellow;
+					}
+					/*当标签拥有class属性，并且属性值中包含"bcd"这几个字符时匹配*/
+					[class*="bcd"]{
+						color: red;
+					}
+					/*当标签拥有class属性，并且属性值中包含"def"类时匹配（CSS2支持）*/
+					[class~="def"]{
+						color: pink;
+					}
+					</pre>
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+					<p style="color: green;margin: 0px;">www.qingsword.com</p>
+					<p style="color: green;margin: 0px;">www.qingsword.com</p>
+					<p style="color: yellow;margin: 0px;">晴刃</p>
+					<p style="color: yellow;margin: 0px;">晴刃</p>
+					<p style="color: red;margin: 0px;">qingsword</p>
+					<p style="color: pink;margin: 0px;">qingsword</p>
+					</div>
+					<p>Ps：最好不要经常使用这种选择器，查找字符串的效率非常低，大量使用这种选择器会影响页面加载速度。</p>
+
+					<h2 id="CSS-selector-10">0×10.复合分组选择器</h2>
+
+					<p>分组选择器可以用逗号罗列所有单一的选择器（标签，ID，类，属性等等），然后一起设置他们的CSS样式，请看下面的实例：</p>
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-cn"&gt;
+					&lt;head&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;title&gt;复合分组选择器实例&lt;/title&gt;
+						&lt;link rel="stylesheet" type="text/css" href="style.css"&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;b&gt;晴刃：&lt;/b&gt;&lt;span class="website"&gt;www.qingsword.com&lt;/span&gt;
+						&lt;br&gt;
+						&lt;p id="ppp"&gt;段落内容&lt;/p&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+					</pre>
+					<p>style.css文件内容：</p>
+					<pre class="brush: css;">
+					@charset "utf-8";
+					/*使用逗号分隔所有选择器，将统一设置这些选择器，使其文字颜色变成绿色*/
+					b,.website,#ppp{
+						color: green;
+					}
+					</pre>
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+					<b style="color: green;">晴刃：</b><span style="color: green;">www.qingsword.com</span>
+					<br>
+					<p style="color: green;margin: 0px;">段落内容</p>
+					</div>
+
+					<h2 id="CSS-selector-11">0×11.派生选择器</h2>
+
+					<p>"派生选择器"也叫"后代选择器"，不在乎元素嵌套多少层，只要在某指定元素下，多深的嵌套都能匹配到，请看下面的实例：</p>
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-cn"&gt;
+					&lt;head&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;title&gt;派生选择器实例&lt;/title&gt;
+						&lt;link rel="stylesheet" type="text/css" href="style.css"&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;!--在p标签下嵌套了多层标签--&gt;
+						&lt;p&gt;
+							&lt;a href="#" target="_blank"&gt;
+								&lt;b&gt;
+									www.&lt;span&gt;qingsword&lt;/span&gt;.com
+								&lt;/b&gt;
+							&lt;/a&gt;
+						&lt;/p&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+					</pre>
+					<p>style.css文件内容：</p>
+					<pre class="brush: css;">
+					@charset "utf-8";
+					/*后代选择器的书写方式：前面写父标签的选择器名称（可以是标签名称，ID，类等等），后面空一格再写被嵌套的元素的选择器名称（可以是标签名称，ID，类等等），本例中，只要是在p标签中的span标签都将被匹配到*/
+					p span{
+						color: green;
+					}
+					</pre>
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+					<a href="#" target="_blank" style="color:#c0c0c0;">
+						<b>
+							www.<span style="color:green;">qingsword</span>.com
+						</b>
+					</a>
+					</div>
+
+
+					<h2 id="CSS-selector-12">0×12.子选择器</h2>
+
+					<p>子选择器仅选择某个标签所包含的直属子标签，多层嵌套的元素不会被匹配到，请看下面的实例：</p>
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-cn"&gt;
+					&lt;head&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;title&gt;子选择器实例&lt;/title&gt;
+						&lt;link rel="stylesheet" type="text/css" href="style.css"&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;!--p标签中包含三个span标签，但第二个span被包含在b标签中，并不是p的直属子标签--&gt;
+						&lt;p&gt;
+							&lt;span&gt;www.qingsword.com&lt;/span&gt;
+							&lt;br&gt;
+							&lt;b&gt;&lt;span&gt;qingsword&lt;/span&gt;&lt;/b&gt;
+							&lt;br&gt;
+							&lt;span&gt;晴刃&lt;/span&gt;
+						&lt;/p&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+					</pre>
+					<p>style.css文件内容：</p>
+					<pre class="brush: css;">
+					@charset "utf-8";
+					/*只有p的直属span子标签，才会被匹配到*/
+					p>span{
+						color: green;
+					}
+					</pre>
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+					<p>
+						<span style="color:green">www.qingsword.com</span>
+						<br>
+						<b><span>qingsword</span></b>
+						<br>
+						<span style="color:green">晴刃</span>
+					</p>	
+					</div>
+
+					<h2 id="CSS-selector-13">0×13.相邻选择器</h2>
+
+					<p>相邻选择器能够选择某个标签紧随其后的单个标签，也能选择某个标签后面的一类标签，请看下面的实例：</p>
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-cn"&gt;
+					&lt;head&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;title&gt;相邻选择器实例&lt;/title&gt;
+						&lt;link rel="stylesheet" type="text/css" href="style.css"&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;!--因为都是内联元素，所以显示成一行--&gt;
+						&lt;b&gt;aaa&lt;/b&gt;
+						&lt;i&gt;bbb&lt;/i&gt;
+						&lt;i&gt;ccc&lt;/i&gt;
+						&lt;span&gt;ddd&lt;/span&gt;
+						&lt;span&gt;eee&lt;/span&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+					</pre>
+					<p>style.css文件内容：</p>
+					<pre class="brush: css;">
+					@charset "utf-8";
+					/*匹配在b后与b相邻的第一个i标签，注意br标签也占用一个标签位，如果b标签后使用了br标签，在本例中，这个选择器将选择br标签，而br只是换行符，所以颜色设置并没有意义*/
+					b+i{
+						color: green;
+					}
+					/*选择b标签后的所有span标签，不需要相邻*/
+					b~span{
+						color: yellow;
+					}
+					</pre>
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+					<b>aaa</b>
+					<i style="color:green">bbb</i>
+					<i>ccc</i>
+					<span style="color:yellow">ddd</span>
+					<span style="color:yellow">eee</span>
+					</div>
+
+					<h2 id="CSS-selector-14">0×14.伪元素选择器</h2>
+					<h3 id="CSS-selector-15">a.块级首行选择器</h3>
+
+					<p>"块级首行选择器"能够帮助我们选择"块状元素"的首行进行CSS样式控制，请看下面的实例：</p>
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-cn"&gt;
+					&lt;head&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;title&gt;块级首行选择器实例&lt;/title&gt;
+						&lt;style type="text/css"&gt;
+							&lt;!--将所有p元素的第一行文字颜色改为yellow--&gt;
+							p::first-line{
+								color: yellow;
+							}	
+						&lt;/style&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;p&gt;
+							first line&lt;br&gt;
+							second line&lt;br&gt;
+							third line
+						&lt;/p&gt;
+						&lt;p&gt;
+							第一行&lt;br&gt;
+							第二行&lt;br&gt;
+							第三行
+						&lt;/p&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+					</pre>
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+					<p style="margin: 0px;color:yellow;">first line</p>
+					<p style="margin: 0px;">second line</p>
+					<p style="margin: 0px;">third line</p>
+					
+					<p style="margin: 0px;color:yellow;">第一行</p>
+					<p style="margin: 0px;">第二行</p>
+					<p style="margin: 0px;">第三行</p>
+					</div>
+
+					<h3 id="CSS-selector-16">b.块级首字母选择器</h3>
+
+					<p>仅选择块状元素中所包含的第一个字符进行CSS控制：</p>
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-cn"&gt;
+					&lt;head&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;title&gt;块级首字母选择器实例&lt;/title&gt;
+						&lt;style type="text/css"&gt;
+							&lt;!--仅选择p标签中包含的第一个字符，将其颜色更改成yellow--&gt;
+							p::first-letter{
+								color: yellow;
+							}	
+						&lt;/style&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;p&gt;www.qingsword.com&lt;/p&gt;
+						&lt;p&gt;晴刃&lt;/p&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+					</pre>
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+					<p><span style="color:yellow;">w</span>ww.qingsword.com</p>
+					<p><span style="color:yellow;">晴</span>刃</p>
+					</div>
+
+					<h3 id="CSS-selector-17">c.前缀插入和后缀插入</h3>
+
+					<p>"前缀插入和后缀插入"选择器，可以在指定的元素前面或后面插入设定字符：</p>
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-cn"&gt;
+					&lt;head&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;title&gt;块级首字母选择器实例&lt;/title&gt;
+						&lt;style type="text/css"&gt;
+							&lt;!--在id为"website"的标签的前面，插入字符"www."--&gt;
+							#website::before{
+								content: "www.";
+							}
+							&lt;!--在id为"name"的标签后面插入字符"刃"--&gt;
+							#name::after{
+								content: "刃";
+							}	
+						&lt;/style&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;span id="website"&gt;qingsword.com&lt;/span&gt;
+						&lt;br&gt;
+						&lt;span id="name"&gt;晴&lt;/span&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+					</pre>
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+					<span>www.qingsword.com</span>
+					<br>
+					<span>晴刃</span>
+					</div>
+
+					<h2 id="CSS-selector-18">0×15.结构性伪类选择器</h2>
+					<h3 id="CSS-selector-19">a.子元素选择器</h3>
+
+					<p>"子元素选择器"能够帮助我们选择某个标签下指定的子标签，请看下面的实例：</p>
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-cn"&gt;
+					&lt;head&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;title&gt;子元素选择器实例&lt;/title&gt;
+						&lt;style type="text/css"&gt;
+							&lt;!--选择id为"t1"的标签下的第一个p标签--&gt;
+							#t1&gt;p:first-child{
+								color: yellow;
+							}
+							&lt;!--选择id为"t2"的标签下的最后一个p标签--&gt;
+							#t2&gt;p:last-child{
+								color: red;
+							}
+							&lt;!--如果div中只有一个子p元素，则匹配--&gt;
+							div&gt;p:only-child{
+								color: pink;
+							}
+							&lt;!--在div标签中仅包含了一个span类型的标签，则匹配--&gt;
+							div&gt;span:only-of-type{
+								color: purple;
+							}
+						&lt;/style&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;div id="t1"&gt;
+							&lt;p&gt;第一段&lt;/p&gt;
+							&lt;p&gt;第二段&lt;/p&gt;
+							&lt;p&gt;第三段&lt;/p&gt;
+						&lt;/div&gt;
+						&lt;hr&gt;
+						&lt;div id="t2"&gt;
+							&lt;p&gt;第一段&lt;/p&gt;
+							&lt;p&gt;第二段&lt;/p&gt;
+							&lt;p&gt;第三段&lt;/p&gt;
+						&lt;/div&gt;
+						&lt;hr&gt;
+						&lt;!--下面这两个div中，第二个div中有两个span，所以不会被匹配，第一个div中仅有一个span，会被only-of-type匹配到--&gt;
+						&lt;div&gt;
+							&lt;p&gt;第一段&lt;/p&gt;
+							&lt;p&gt;第二段&lt;/p&gt;
+							&lt;span&gt;第三段&lt;/span&gt;
+						&lt;/div&gt;
+						&lt;div&gt;
+							&lt;p&gt;第一段&lt;/p&gt;
+							&lt;span&gt;第二段&lt;/span&gt;
+							&lt;br&gt;
+							&lt;span&gt;第三段&lt;/span&gt;
+						&lt;/div&gt;
+						&lt;hr&gt;
+						&lt;!--下面这个div中仅有一个p标签，会被only-child匹配到--&gt;
+						&lt;div&gt;
+							&lt;p&gt;第一段&lt;/p&gt;
+						&lt;/div&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+					</pre>
+				
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+					<div>
+						<p style="margin: 0px;color:yellow;">第一段</p>
+						<p style="margin: 0px;">第二段</p>
+						<p style="margin: 0px;">第三段</p>
+					</div>
+					<hr>
+					<div>
+						<p style="margin: 0px;">第一段</p>
+						<p style="margin: 0px;">第二段</p>
+						<p style="margin: 0px;color:red;">第三段</p>
+					</div>
+					<hr>
+					<div>
+						<p style="margin: 0px;">第一段</p>
+						<p style="margin: 0px;">第二段</p>
+						<span style="color:pink;">第三段</span>
+					</div>
+					<div>
+						<p style="margin: 0px;">第一段</p>
+						<span>第二段</span>
+						<br>
+						<span>第三段</span>
+					</div>
+					<hr>
+					<div>
+						<p style="margin: 0px;color:purple;">第一段</p>
+					</div>	
+					</div>
+
+					<h3 id="CSS-selector-20">b.子元素nth-child(n)系列选择器</h3>
+
+					<p>上面的子元素选择器只能选择特定的子元素，我们可以通过nth-child(n)选择器来选择任意的子元素进行CSS控制，请看下面的实例：</p>
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-cn"&gt;
+					&lt;head&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;title&gt;子元素选择器实例&lt;/title&gt;
+						&lt;style type="text/css"&gt;
+							&lt;!--选择id为"t1"的标签下的第2个子p标签--&gt;
+							#t1&gt;p:nth-child(2){
+								color: yellow;
+							}
+							&lt;!--选择id为"t2"的标签下的倒数第3个子p标签--&gt;
+							#t2&gt;p:nth-last-child(3){
+								color: red;
+							}
+							&lt;!--选择div标签下第2个标签类型为p的子标签--&gt;
+							div&gt;p:nth-of-type(2){
+								color: pink;
+							}
+							&lt;!--选择div标签下倒数第2个标签类型为span的子标签--&gt;
+							div&gt;span:nth-last-of-type(2){
+								color: purple;
+							}
+						&lt;/style&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;div id="t1"&gt;
+							&lt;p&gt;111&lt;/p&gt;
+							&lt;p&gt;222&lt;/p&gt;
+							&lt;p&gt;333&lt;/p&gt;
+						&lt;/div&gt;
+						&lt;hr&gt;
+						&lt;div id="t2"&gt;
+							&lt;p&gt;111&lt;/p&gt;
+							&lt;p&gt;222&lt;/p&gt;
+							&lt;p&gt;333&lt;/p&gt;
+						&lt;/div&gt;
+						&lt;hr&gt;
+						&lt;div&gt;
+							&lt;p&gt;111&lt;/p&gt;
+							&lt;p&gt;222&lt;/p&gt;
+							&lt;span&gt;333&lt;/span&gt;
+						&lt;/div&gt;
+						&lt;hr&gt;
+						&lt;div&gt;
+							&lt;p&gt;111&lt;/p&gt;
+							&lt;span&gt;222&lt;/span&gt;
+							&lt;br&gt;
+							&lt;span&gt;333&lt;/span&gt;
+						&lt;/div&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+					</pre>
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+					<div >
+						<p style="margin: 0px;">111</p>
+						<p style="margin: 0px;color:yellow;">222</p>
+						<p style="margin: 0px;">333</p>
+					</div>
+					<hr>
+					<div>
+						<p style="margin: 0px;color:red;">111</p>
+						<p style="margin: 0px;color:pink;">222</p>
+						<p style="margin: 0px;">333</p>
+					</div>
+					<hr>
+					<div>
+						<p style="margin: 0px;">111</p>
+						<p style="margin: 0px;color:pink;">222</p>
+						<span>333</span>
+					</div>
+					<hr>
+					<div>
+						<p style="margin: 0px;">111</p>
+						<span style="color:purple;">222</span>
+						<br>
+						<span>333</span>
+					</div>	
+					</div>
+
+					<h2 id="CSS-selector-21">0×16.根元素选择器</h2>
+					
+					<p>在所有的css选择其中，除了全局选择器，还存在着一种特殊的选择器"根元素选择器"，这种选择器总是选择html标签，其样式影响整个html文档，请看下面的实例：</p>
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-cn"&gt;
+					&lt;head&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;title&gt;根选择器实例&lt;/title&gt;
+						&lt;style type="text/css"&gt;
+							&lt;!--根元素选择器，本例将给html文档添加一个2像素的虚线绿色边框--&gt;
+							:root{
+								border: 2px dashed green;
+							}
+						&lt;/style&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;p&gt;www.qingsword.com&lt;/p&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+					</pre>
+				
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+					<p style="border: 2px dashed green;margin: 0px;">www.qingsword.com</p>
+					</div>
+
+					<h2 id="CSS-selector-22">0×17.UI伪类选择器</h2>
+
+					<p>本例将介绍几种UI伪类选择器，请看下面的实例：</p>
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-cn"&gt;
+					&lt;head&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;title&gt;UI伪类选择器实例&lt;/title&gt;
+						&lt;style type="text/css"&gt;
+							&lt;!--当input标签是激活状态，匹配这个选择器--&gt;
+							input:enabled{
+								border: 1px dashed green;
+							}
+							&lt;!--可以使用ID选择器代替标签选择器，这样就只有这个ID所指定的标签会被匹配，本例，当id为"in2"的标签拥有"disabled"属性时匹配--&gt;
+							#in2:disabled{
+								border: 1px dotted red;
+							}
+							&lt;!--当id为"in3"的标签被选中时，隐藏这个标签--&gt;
+							#in3:checked{
+								display: none;
+							}
+						&lt;/style&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;form&gt;
+							&lt;input type="text" enabled id="in1"&gt;
+							&lt;br&gt;
+							&lt;input type="text" disabled id="in2"&gt;
+							&lt;br&gt;
+							&lt;input type="checkbox" id="in3"&gt;
+						&lt;/form&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+					</pre>
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+					<form>
+						<input type="text" enabled style="border: 1px dashed green;">
+						<br>
+						<input type="text" disabled style="border: 1px dotted red;">
+						<br>
+						<input type="checkbox" id="in3">
+					</form>
+					<p>尝试着勾选上面的复选框，看看会不会自动隐藏？</p>	
+					</div>
+					<p>如果现在有一个表单，我想让文本框没有输入数据时和输入数据完成验证后呈现两种不同的样子，就可以使用验证伪类选择器：</p>
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-cn"&gt;
+					&lt;head&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;title&gt;UI伪类选择器实例&lt;/title&gt;
+						&lt;style type="text/css"&gt;
+							&lt;!--文本框通过验证后的样子--&gt;
+							#in1:valid,#in2:valid{
+								border: 1px dashed green;
+							}
+							&lt;!--文本框没有输入数据前的样子--&gt;
+							#in1:invalid,#in2:invalid{
+								border: 1px dotted red;
+							}
+						&lt;/style&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;form&gt;
+							&lt;input type="text" id="in1" placeholder="用户名" required&gt;
+							&lt;br&gt;
+							&lt;input type="email" id="in2" placeholder="邮箱" required&gt;
+						&lt;/form&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+					</pre>
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+					<input type="text" id="in1" placeholder="用户名" required>
+					<br>
+					<input type="email" id="in2" placeholder="邮箱" required>
+					<p>当没有输入数据时，两个文本框都是圆点虚线红色边框，邮箱框输入的内容必须复合邮箱的格式，当格式复合要求后，文本框边框将变成绿色虚线。</p>
+					</div>
+					<p>下面介绍一个比较实用的UI伪类选择器，当文本框获取到光标焦点时匹配：</p>
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-cn"&gt;
+					&lt;head&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;title&gt;UI伪类选择器实例&lt;/title&gt;
+						&lt;style type="text/css"&gt;
+							&lt;!--当id为in4的标签获取到光标焦点时，为其添加一个边框--&gt;
+							#in4:focus{
+								border: 2px dashed green;
+							}
+						&lt;/style&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;form&gt;
+							&lt;input id="in4"&gt;
+						&lt;/form&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+					</pre>
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+					<input id="in4">
+					<p>鼠标点击上面的文本框，这个文本框将获取"焦点"，这将触发CSS选择器，为其添加一个绿色虚线边框。</p>
+					</div>
+
+
+					<h2 id="CSS-selector-23">0×18.超链接伪选择器的四种状态</h2>
+
+					<p>超链接最常用的伪类选择器有四种，分别是：":link"未点击前、":visited"点击后、":hover"鼠标悬停时、":active"鼠标按下时；请看下面的实例：</p>
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-cn"&gt;
+					&lt;head&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;title&gt;超链接伪选择器实例&lt;/title&gt;
+						&lt;style type="text/css"&gt;
+							&lt;!--未点击前，绿色点线边框--&gt;
+							#qingweb:link{
+								border: 2px dotted green;
+							}
+							&lt;!--鼠标悬停时，橙色虚线边框--&gt;
+							#qingweb:hover{
+								border: 2px dashed orange;
+							}
+							&lt;!--鼠标按下不放时，红色实线边框--&gt;
+							#qingweb:active{
+								border: 2px solid red;
+							}
+							&lt;!--被点击后，粉色点线边框--&gt;
+							#qingweb:visited{
+								border: 2px dotted pink;
+							}
+						&lt;/style&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;a id="qingweb" href="http://www.qingsword.com" title="晴刃" target="_blank"&gt;www.qingsword.com&lt;/a&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+					</pre>
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+					<a id="qingweb" href="http://www.qingsword.com#" title="晴刃" target="_blank">www.qingsword.com</a>
+					</div>
+
+					<h2 id="CSS-selector-24">0×19.否定选择器</h2>
+					
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-cn"&gt;
+					&lt;head&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;title&gt;否定选择器实例&lt;/title&gt;
+						&lt;style type="text/css"&gt;
+							&lt;!--选择p标签中class属性值不等于"p1"的所有标签，设置其文字颜色为橙色--&gt;
+							p:not([class="p1"]){
+								color: orange;
+							}
+						&lt;/style&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;p class="p1"&gt;111&lt;/p&gt;
+						&lt;p class="p2"&gt;222&lt;/p&gt;
+						&lt;p class="p1"&gt;333&lt;/p&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+					</pre>
+
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+					<p style="margin: 0px;">111</p>
+					<p style="margin: 0px;color:orange;">222</p>
+					<p style="margin: 0px;">333</p>
+					</div>
+
+					<h2 id="CSS-selector-25">0×20.空元素选择器</h2>
+
+					<p>空元素选择器，将选择指定类别中不包含任何内容的那些标签：</p>
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-cn"&gt;
+					&lt;head&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;title&gt;空元素选择器实例&lt;/title&gt;
+						&lt;style type="text/css"&gt;
+							&lt;!--如果p标签中不包含任何内容，则将其隐藏--&gt;
+							p:empty{
+								display: none;
+							}
+						&lt;/style&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;!--默认情况下，两个b之间有一个p空标签，那么这两个b标签不会显示在一行，他们被块状元素分隔了，块状元素会独占一行，相当于强制换行，但由于上面的空元素选择器隐藏了p标签，所以下面的内容将会在一行显示--&gt;
+						&lt;b&gt;111&lt;/b&gt;
+						&lt;p&gt;&lt;/p&gt;
+						&lt;b&gt;222&lt;/b&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+					</pre>
+					
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+					<b>111</b>
+					<b>222</b>
+					</div>
+
+					<h2 id="CSS-selector-26">0×21.匹配语言选择器</h2>
+					
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-cn"&gt;
+					&lt;head&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;title&gt;语言选择器实例&lt;/title&gt;
+						&lt;style type="text/css"&gt;
+							&lt;!--匹配p元素中lang属性值开头为en的那些标签--&gt;
+							p:lang(en){
+								color: green;
+							}
+							&lt;!--匹配p元素中lang属性值开头为zh的那些标签--&gt;
+							p:lang(zh){
+								color: orange;
+							}
+						&lt;/style&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;p lang="en-us"&gt;www.qingsword.com&lt;/p&gt;
+						&lt;p lang="zh-cn"&gt;晴刃&lt;/p&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+					</pre>
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+					<p style="margin: 0px;color: green;">www.qingsword.com</p>
+					<p style="margin: 0px;color: orange;">晴刃</p>
+					</div>
+
+					<h2 id="CSS-selector-27">0×22.锚点定位选择器</h2>
+
+					<p></p>
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-cn"&gt;
+					&lt;head&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;title&gt;锚点定位选择器实例&lt;/title&gt;
+						&lt;style type="text/css"&gt;
+							&lt;!--当通过"锚点"定位到id值为t1的标签时触发这个选择器--&gt;
+							#t1:target{
+								color: yellow;
+							}
+						&lt;/style&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;p id="t1"&gt;www.qingsword.com&lt;/p&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+					</pre>
+
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+					<p id="t1">www.qingsword.com</p>
+					<p>在浏览器地址栏"css-2.html"后面添加一个锚点"css-2.html#t1"，回车后将定位到此处，触发锚点定位选择器，将上面的网址的颜色更改成yellow。</p>
+					</div>
+
+					<h2 id="CSS-selector-28">0×23.伪类选定选择器</h2>
+
+					<p>火狐目前（2016.06）不支持这种选择器，当鼠标选定（复制文本的那种选定）某段文本后，将触发伪类选定选择器：</p>
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-cn"&gt;
+					&lt;head&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;title&gt;伪类选定选择器实例&lt;/title&gt;
+						&lt;style type="text/css"&gt;
+							&lt;!--当鼠标选定id值为t2的标签中的内容时，将被选定的文字颜色更改成yellow--&gt;
+							#t2::selection{
+								color: yellow;
+							}
+						&lt;/style&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;p id="t2"&gt;www.qingsword.com&lt;/p&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+					</pre>
+
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+					<p id="t2">www.qingsword.com</p>
+					<p>尝试用鼠标选择上面网址的内容（复制），被选中的部分文字颜色将会变成yellow。</p>
+					</div>
+						
+				<!-- /正文 -->
+
+				<footer class="text-footer">
+					<p>
+						*转载请注明来自:<a title="晴刃-自由、互助、分享、专注计算机技术。" href="http://www.qingsword.com" target="_blank">晴刃(QingSword.COM)</a>
+					</p>
+					<p>*原文连接:<a title="[CSS]-2-css选择器" href="http://www.qingsword.com/qing/css-2.html" target="_blank">http://www.qingsword.com/qing/css-2.html</a></p>
+				</footer>
+			</article>
+			<!-- /文章区 -->	
+		</div>
+	</div>
+	<!-- /content -->
+	
+	<!-- footer -->
+	<footer id="footer">
+		<div class="footer-container">
+			QingSword.COM &nbsp;<img src="../logo/by-nc-sa.png" alt="Creative Commons" title="Creative Commons">
+		</div>
+	</footer>
+	<!-- /footer -->
+</body>
+</html>
