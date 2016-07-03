@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<!--Copyright©QingSword.COM︻☼1010D>-->
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
+	<meta name="description" content="晴刃,是一个致力推广实用计算机技术的个人博客;我们分享计算机知识;为计算机系统以及网络安全防范做出一份贡献。【专注技术 创造价值 共同进步】">
+	<meta name="keywords" content="晴刃,晴,qing,qingsword,ccna图文笔记,ubuntu,linux,ubuntu server,mysql,node.js,javascript,python,计算机技术博客">
+	<meta name="author" content="www.qingsword.com">
+	<title>[CSS]-3-颜色与度量单位 - QingSword.COM</title>
+	<link rel="shortcut icon" type="image/x-icon" href="../logo/favicon.ico">
+	<link rel="stylesheet" type="text/css" href="../css/basic.css">
+	<link rel="stylesheet" type="text/css" href="../css/text.css">
+	<!-- 代码块高亮js -->
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shCore.css"/>
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shThemeRDark.css"/>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shCore.js"></script>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shBrushXml.js"></script>
+	<script type="text/javascript">
+	SyntaxHighlighter.all();
+	</script>
+</head>
+<body>
+	<!--header -->
+	<header id="nav">
+			<div class="nav-container"> 
+				<!-- 根大纲-->
+				<a href="http://www.qingsword.com" title="晴刃">
+					<h1 class="nav-logo">晴刃</h1>
+				</a>
+				<h2 class="nav-site-description desc-hidden">
+					自由、互助、分享、专注计算机技术
+				</h2>
+				<nav class="nav-links"> 
+					<!-- nav连接大纲-->
+					<h1 style="display:none;">网站导航</h1> 
+					<ul>
+						<li  class="li-hidden">
+							<a href="../index.html" title="home">
+								<span class="link-word"><img src="../logo/home.png" alt="home" class="link-img">首页</span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../web.html" title="web">
+								<span class="link-word"><img src="../logo/web.png" alt="web" class="link-img">前端<span class="word-hidden">设计</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../system.html" title="system">
+								<span class="link-word"><img src="../logo/linux.png" alt="linux" class="link-img">系统<span class="word-hidden">应用</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../net.html" title="net">
+								<span class="link-word"><img src="../logo/net.png" alt="net" class="link-img">网络<span class="word-hidden">技术</span></span>
+							</a>
+						</li>
+						<li>
+							<a href="../sitemap.html" title="sitemap">
+								<span class="link-word"><img src="../logo/archives.png" alt="archives" class="link-img"><span class="word-hidden">文章</span>归档</span>
+							</a>
+						</li>
+					</ul>
+				</nav>
+			</div>		
+	</header>
+	<!-- /header -->
+
+	<!-- content-->
+	<div id="content">
+		<div class="content-container">
+			<!-- 文章区 -->
+			<article class="text-container">
+				<header class="text-header">
+					<h1>[CSS]-3-颜色与度量单位</h1>	
+				</header><!-- /header -->
+				<section class="text-body">
+					<h2>引言</h2>
+					<p>这篇文章介绍CSS中常用的几种颜色配置方法以及常见的几种页面度量单位。</p>
+					<!-- 目录 -->
+					<h2>文章目录</h2>
+					<ul class="contents">	
+						 <li><a href="#CSS-color-and-measurement-1">0×1.颜色选择器</a></li>
+						 <li class="subli"><a href="#CSS-color-and-measurement-2">a.单词颜色选择器</a></li>
+						 <li class="subli"><a href="#CSS-color-and-measurement-3">b.十六进制颜色选择器</a></li>
+						 <li class="subli"><a href="#CSS-color-and-measurement-4">c.rgb十进制颜色选择器</a></li>
+						 <li class="subli"><a href="#CSS-color-and-measurement-5">d.HSL模型颜色选择器</a></li>
+						 <li><a href="#CSS-color-and-measurement-6">0×2.度量单位</a></li>
+						 <li class="subli"><a href="#CSS-color-and-measurement-7">a.px</a></li>
+						 <li class="subli"><a href="#CSS-color-and-measurement-8">b.em</a></li>
+						 <li class="subli"><a href="#CSS-color-and-measurement-9">c.百分比</a></li>
+					 </ul>
+					<!-- /目录 -->
+
+					<!-- 正文 -->
+					<h2 id="CSS-color-and-measurement-1">0×1.颜色选择器</h2>
+
+					<p>颜色选择器能够帮助我们实现不同区块的颜色配置，让页面更加美观，在CSS中，有下面四种可以使用的颜色选择器，任意一种选择器都可以满足颜色配置的需求，使用哪种取决于个人编码习惯和实际需求。</p>
+
+					<p>下面对每种颜色选择器给出一个使用实例，颜色代码可以上网搜索"颜色代码表"来获取。</p>
+
+					<h3 id="CSS-color-and-measurement-2">a.单词颜色选择器</h3>
+
+					<p>支持大部分英文中与颜色相关的单词，请看下面的实例：</p>
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-cn"&gt;
+					&lt;head&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;title&gt;单词颜色选择器实例&lt;/title&gt;
+						&lt;style type="text/css"&gt;
+							&lt;!--将id为p1的标签的背景颜色配置成pink，文字颜色配置成green--&gt;
+							#p1{
+								color: green;
+								background-color: pink;
+							}
+						&lt;/style&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;p id="p1"&gt;www.qingsword.com&lt;/p&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+					</pre>
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+					<p style="color: green;background-color: pink;">www.qingsword.com</p>	
+					</div>
+
+					<h3 id="CSS-color-and-measurement-3">b.十六进制颜色选择器</h3>
+
+					<p>使用带井号前缀的6位十六进制表示颜色，请看下面的实例：</p>
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-cn"&gt;
+					&lt;head&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;title&gt;十六进制颜色选择器实例&lt;/title&gt;
+						&lt;style type="text/css"&gt;
+							&lt;!--使用蓝紫罗兰色作为文字颜色，使用淡紫色作为区块背景色--&gt;
+							#p1{
+								color: #8A2BE2;
+								background-color: #E6E6FA;
+							}
+						&lt;/style&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;p id="p1"&gt;www.qingsword.com&lt;/p&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+					</pre>
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+					<p style="color: #8A2BE2;background-color: #E6E6FA;">www.qingsword.com</p>
+					</div>
+					<p>Ps：在十六进制代码中，两位一组，分成三组，如果每两位数字或字母相同，都可以简写成一位的形式，例如#FF0000，两位一组#FF|00|00，可以简写成#F00。</p>
+
+					<h3 id="CSS-color-and-measurement-4">c.rgb十进制颜色选择器</h3>
+
+					<p>相对于十六进制的形式，rgb十进制采用3位十进制数来表示颜色，请看下面的实例：</p>
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-cn"&gt;
+					&lt;head&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;title&gt;rgb颜色选择器实例&lt;/title&gt;
+						&lt;style type="text/css"&gt;
+							&lt;!--设置文字颜色为红色，背景色为淡蓝色，rgb颜色被包含在一对中括号中用3个十进制数表示--&gt;
+							#p1{
+								color: rgb(255, 0, 0);
+								background-color: rgb(187, 255, 204);
+							}
+							&lt;!--rgba能够配置颜色的透明度，除了前面三个十进制数外，最后一个十进制数的范围是0~1，0表示完全透明，本例将文字的颜色设置成半透明--&gt;
+							#p2{
+								color: rgba(255, 0, 0, 0.5);
+								background-color: rgb(187, 255, 204);
+							}
+						&lt;/style&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;p id="p1"&gt;www.qingsword.com&lt;/p&gt;
+						&lt;p id="p2"&gt;晴刃&lt;/p&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+					</pre>
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+					<p style="color: rgb(255, 0, 0);background-color: rgb(187, 255, 204);">www.qingsword.com</p>
+					<p style="color: rgba(255, 0, 0, 0.5);background-color: rgb(187, 255, 204);">www.qingsword.com</p>
+					</div>
+
+					<h3 id="CSS-color-and-measurement-5">d.HSL模型颜色选择器</h3>
+
+					<p>HSL色彩模式是工业界的一种颜色标准，是通过对色相(H)、饱和度(S)、亮度(L)三个颜色通道的变化以及它们相互之间的叠加来得到各式各样的颜色的，CSS中并不是很常用，请看下面的实例：</p>
+					
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-cn"&gt;
+					&lt;head&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;title&gt;hsl颜色选择器实例&lt;/title&gt;
+						&lt;style type="text/css"&gt;
+							#p1{
+								&lt;!--hsl括号中第一个数字的范围是0~255表示相对色相，后面两个用百分数表示，分别表示饱和度和亮度--&gt;
+								color: hsl(5,80%,30%);
+								background-color: rgb(187, 255, 204);
+							}
+							#p2{
+								&lt;!--在hsla中，前三个数字同hsl，最后一个参数与rgba的最后一个参数相同，表示颜色透明度，范围0~1,0表示完全透明--&gt;
+								color: hsla(5,80%,30%,0.3);
+								background-color: rgb(187, 255, 204);
+							}
+						&lt;/style&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;p id="p1"&gt;www.qingsword.com&lt;/p&gt;
+						&lt;p id="p2"&gt;晴刃&lt;/p&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+					</pre>
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+					<p style="color: hsl(5,80%,30%);background-color: rgb(187, 255, 204);">www.qingsword.com</p>
+					<p style="color: hsla(5,80%,30%,0.3);background-color: rgb(187, 255, 204);">www.qingsword.com</p>	
+					</div>
+
+					<h2 id="CSS-color-and-measurement-6">0×2.度量单位</h2>
+
+					<p>在现实生活中我们要表示一个物体的宽度高度可以使用诸如"米，分米"这样的度量单位，而在网页设计中，一般使用"像素，百分比"作为度量单位。</p>
+
+					<h3 id="CSS-color-and-measurement-7">a.px</h3>
+
+					<p>px像素（Pixel），相对长度单位，px是相对于显示器屏幕分辨率而言的，请看下面的实例：</p>
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-cn"&gt;
+					&lt;head&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;title&gt;px实例&lt;/title&gt;
+						&lt;style type="text/css"&gt;
+							&lt;!--p1的文字大小5px--&gt;
+							#p1{
+								font-size: 5px;
+							}
+							&lt;!--p2的文字大小15px--&gt;
+							#p2{
+								font-size: 15px;
+							}
+							&lt;!--p3的文字大小25px--&gt;
+							#p3{
+								font-size: 25px;
+							}
+						&lt;/style&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;p id="p1"&gt;www.qingsword.com&lt;/p&gt;
+						&lt;p id="p2"&gt;www.qingsword.com&lt;/p&gt;
+						&lt;p id="p3"&gt;www.qingsword.com&lt;/p&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+					</pre>
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+					<p style="font-size: 5px;">www.qingsword.com</p>
+					<p style="font-size: 15px;">www.qingsword.com</p>
+					<p style="font-size: 25px;">www.qingsword.com</p>
+					</div>
+
+					<h3 id="CSS-color-and-measurement-8">b.em</h3>
+
+					<p>em是相对长度单位，相对于当前对象内文本的字体尺寸，如当前对行内文本的字体尺寸未被人为设置，则相对于其父系标签css配置的字体尺寸，如果其父系没有配置字体尺寸，则相对于浏览器默认的字体尺寸，请看下面的实例：</p>
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-cn"&gt;
+					&lt;head&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;title&gt;em实例&lt;/title&gt;
+						&lt;style type="text/css"&gt;
+							&lt;!--配置整个文档body中文字的大小为10像素--&gt;
+							body{
+								font-size: 10px;
+							}
+							&lt;!--因为body配置了默认的字体大小，p1使用em将相对于body中设置的大小，本例p1的文字大小是10*1.5=15px--&gt;
+							#p1{
+								font-size: 1.5em;
+							}
+							&lt;!--将p2设置成15px，看看与p1的文字大小是不是相同？--&gt;
+							#p2{
+								font-size: 15px;
+							}
+							&lt;!--如果区块中配置了font-size，将覆盖默认的文字大小（10px），区块中所有的em将相对于这个大小（25px），line-height可以设置行高，本例行高为2*25=50px--&gt;
+							#p3{
+								font-size: 25px;
+								line-height: 2em;
+								background-color: pink;
+								color:green;
+							}
+							&lt;!--将div的宽高设置成相对于其父系默认font-size值的5倍，即body的font-size的5倍50px，这个div的高度和上面p3的行高一致--&gt;
+							div{
+								width: 5em;
+								height: 5em;
+								background-color: pink;
+								color:green;
+							}
+						&lt;/style&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;p id="p1"&gt;www.qingsword.com&lt;/p&gt;
+						&lt;p id="p2"&gt;www.qingsword.com&lt;/p&gt;
+						&lt;p id="p3"&gt;www.qingsword.com&lt;/p&gt;
+						&lt;div&gt;div&lt;/div&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+					</pre>
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+					<p style="font-size: 15px;">www.qingsword.com</p>
+					<p style="font-size: 15px;">www.qingsword.com</p>
+					<p style="font-size: 25px;line-height: 50px;background-color: pink;color: green;">www.qingsword.com</p>
+					<div style="background-color: pink;width: 50px;height: 50px;margin-left: 14px;color: green;">div</div>
+					</div>
+
+					<h3 id="CSS-color-and-measurement-9">c.百分比</h3>
+
+					<p>百分比与em不同，em配置的宽度或高度取决于其父系标签的font-size值，而百分比取决于其父系的宽度与高度值，而不是font-size值，请看下面的实例：</p>
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-cn"&gt;
+					&lt;head&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;title&gt;百分比实例&lt;/title&gt;
+						&lt;style type="text/css"&gt;
+							&lt;!--父div的宽高为100px--&gt;
+							#d1{
+								width: 100px;
+								height: 100px;
+								background-color: pink;
+							}
+							&lt;!--子div的宽高设置成其父的一半--&gt;
+							#d2{
+								
+								width: 50%;
+								height: 50%;
+								background-color: red;
+							}
+							&lt;!--p1的父级是相对于浏览器宽度的50%，我们可以尝试着调整浏览器的宽度，p1会自适应浏览器的宽度调整，并且永远只占浏览器宽度的一半--&gt;
+							#p1{
+								background-color: green;
+								width: 50%;
+							}
+						&lt;/style&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;div id="d1"&gt;
+							&lt;div  id="d2"&gt;
+								
+							&lt;/div&gt;
+						&lt;/div&gt;
+						&lt;p id="p1"&gt;www.qingsword.com&lt;/p&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+					</pre>
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+					<div style="background-color: pink;width: 100px;height: 100px;">
+						<div style="background-color: red;width: 50px;height: 50px;">
+							
+						</div>
+					</div>
+					<p style="width: 50%;background-color: green;margin: 10px 0px;">www.qingsword.com</p>	
+					</div>
+						
+				<!-- /正文 -->
+
+				<footer class="text-footer">
+					<p>
+						*转载请注明来自:<a title="晴刃-自由、互助、分享、专注计算机技术。" href="http://www.qingsword.com" target="_blank">晴刃(QingSword.COM)</a>
+					</p>
+					<p>*原文连接:<a title="[CSS]-3-颜色与度量单位" href="http://www.qingsword.com/qing/css-3.html" target="_blank">http://www.qingsword.com/qing/css-3.html</a></p>
+				</footer>
+			</article>
+			<!-- /文章区 -->	
+		</div>
+	</div>
+	<!-- /content -->
+	
+	<!-- footer -->
+	<footer id="footer">
+		<div class="footer-container">
+			QingSword.COM &nbsp;<img src="../logo/by-nc-sa.png" alt="Creative Commons" title="Creative Commons">
+		</div>
+	</footer>
+	<!-- /footer -->
+</body>
+</html>
