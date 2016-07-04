@@ -107,9 +107,9 @@
 	display: block;
 	margin: 4px 4px 6px 4px;
 	color: #c9c9c9;
-	overflow: hidden;  /*截取多余部分，不换行*/
-	white-space: nowrap;
-	text-overflow:ellipsis;
+	overflow: hidden;  /*截取多余部分*/
+	white-space: nowrap; /*仅显示成一行*/
+	text-overflow:ellipsis; /*超出的部分用...代替*/
 	border-radius: 4px;
 	letter-spacing: 1.2px;
 }
