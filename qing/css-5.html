@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<!--Copyright©QingSword.COM︻☼1010D>-->
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
+	<meta name="description" content="晴刃,是一个致力推广实用计算机技术的个人博客;我们分享计算机知识;为计算机系统以及网络安全防范做出一份贡献。【专注技术 创造价值 共同进步】">
+	<meta name="keywords" content="晴刃,晴,qing,qingsword,ccna图文笔记,ubuntu,linux,ubuntu server,mysql,node.js,javascript,python,计算机技术博客">
+	<meta name="author" content="www.qingsword.com">
+	<title>[CSS]-5-块状元素盒模型 - QingSword.COM</title>
+	<link rel="shortcut icon" type="image/x-icon" href="../logo/favicon.ico">
+	<link rel="stylesheet" type="text/css" href="../css/basic.css">
+	<link rel="stylesheet" type="text/css" href="../css/text.css">
+	<!-- 代码块高亮js -->
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shCore.css"/>
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shThemeRDark.css"/>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shCore.js"></script>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shBrushXml.js"></script>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shBrushCss.js"></script>
+	<script type="text/javascript">
+	SyntaxHighlighter.all();
+	</script>
+	<style type="text/css">
+		#t1 tr:nth-child(2){
+			visibility: hidden;
+		}					
+		#t2 tr:nth-child(2){
+			visibility: collapse;
+		}
+	</style>
+</head>
+<body>
+	<!--header -->
+	<header id="nav">
+			<div class="nav-container"> 
+				<!-- 根大纲-->
+				<a href="http://www.qingsword.com" title="晴刃">
+					<h1 class="nav-logo">晴刃</h1>
+				</a>
+				<h2 class="nav-site-description desc-hidden">
+					自由、互助、分享、专注计算机技术
+				</h2>
+				<nav class="nav-links"> 
+					<!-- nav连接大纲-->
+					<h1 style="display:none;">网站导航</h1> 
+					<ul>
+						<li  class="li-hidden">
+							<a href="../index.html" title="home">
+								<span class="link-word"><img src="../logo/home.png" alt="home" class="link-img">首页</span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../web.html" title="web">
+								<span class="link-word"><img src="../logo/web.png" alt="web" class="link-img">前端<span class="word-hidden">设计</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../system.html" title="system">
+								<span class="link-word"><img src="../logo/linux.png" alt="linux" class="link-img">系统<span class="word-hidden">应用</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../net.html" title="net">
+								<span class="link-word"><img src="../logo/net.png" alt="net" class="link-img">网络<span class="word-hidden">技术</span></span>
+							</a>
+						</li>
+						<li>
+							<a href="../sitemap.html" title="sitemap">
+								<span class="link-word"><img src="../logo/archives.png" alt="archives" class="link-img"><span class="word-hidden">文章</span>归档</span>
+							</a>
+						</li>
+					</ul>
+				</nav>
+			</div>		
+	</header>
+	<!-- /header -->
+
+	<!-- content-->
+	<div id="content">
+		<div class="content-container">
+			<!-- 文章区 -->
+			<article class="text-container">
+				<header class="text-header">
+					<h1>[CSS]-5-块状元素盒模型</h1>	
+				</header><!-- /header -->
+				<section class="text-body">
+					<h2>引言</h2>
+					<p>这篇文章介绍块状元素盒模型的基本概念，很多文章将这一部分称之为"div盒模型"，准确的讲，块状元素包含div，但不仅仅只有div，所有能够调整宽高的块状元素，都能够使用盒模型。</p>
+					<!-- 目录 -->
+					<h2>文章目录</h2>
+					<ul class="contents">	
+						 <li><a href="#CSS-block-element-box-model-1">0×1.块状元素盒模型示意图</a></li>
+						 <li><a href="#CSS-block-element-box-model-2">0×2.块状元素盒模型实例</a></li>
+						 <li class="subli"><a href="#CSS-block-element-box-model-3">a.padding填充</a></li>
+						 <li class="subli"><a href="#CSS-block-element-box-model-4">b.border边框</a></li>
+						 <li class="subli"><a href="#CSS-block-element-box-model-5">c.margin边界</a></li>
+						 <li><a href="#CSS-block-element-box-model-6">0×3.行内元素与块状元素之间的转换</a></li>
+						 <li><a href="#CSS-block-element-box-model-7">0×4.块状元素的特性与浮动</a></li>
+						 <li><a href="#CSS-block-element-box-model-8">0×5.元素可见性</a></li>
+						 <li><a href="#CSS-block-element-box-model-9">0×6.处理溢出</a></li>
+					 </ul>
+					<!-- /目录 -->
+
+					<!-- 正文 -->
+					<h2 id="CSS-block-element-box-model-1">0×1.块状元素盒模型示意图</h2>
+
+					<p>每个块状元素（标签）都具有下面这张图中的属性，标签中的文字等内容就是图中"content填充"部分；在内容与块状元素边框之间，可以配置"padding填充"，"padding填充"能让标签中的内容与边框产生一段距离，让布局更加美观；在边框之外，可以配置"margin边界"，margin属性能够让当前标签与相邻标签产生一段距离。</p>
+					<img src="images/CSS-box-model.jpg" alt="CSS-box-model" title="块状元素盒模型">
+	
+					<h2 id="CSS-block-element-box-model-2">0×2.块状元素盒模型实例</h2>
+
+					<p>为了让大家更好的理解盒模型的概念，下面准备了三个实例，分别演示盒模型图中包裹"content填充"的三种属性。</p>
+					<h3 id="CSS-block-element-box-model-3">a.padding填充</h3>
+					
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-cn"&gt;
+					&lt;head&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;title&gt;padding属性实例&lt;/title&gt;
+						&lt;!--分别配置body中4个div的css样式--&gt;
+						&lt;style type="text/css"&gt;
+							&lt;!--第一个div，没有配置padding属性，文字内容是紧贴边框的--&gt;
+							#d1{
+								width: 200px;
+								height: 200px;
+								background-color: pink;
+								color: black;
+							}
+							&lt;!--第二个div中，padding后面仅写了一个长度参数，意味着同时配置上下左右的间隔宽度，本例中，d1中的文字与边框之间上下左右都会预留出20px的宽度--&gt;
+							#d2{
+								width: 200px;
+								height: 200px;
+								background-color: pink;
+								color: black;
+								padding: 20px;
+							}
+							&lt;!--除了一次性配置外，还能分别单独配置，第三个div，配置其中的内容与上边框之间20px间距，与右边框20px间距，除了这两个属性外还有padding-left与padding-bottom，分别代表左边与下面的间距--&gt;
+							#d3{
+								width: 200px;
+								height: 200px;
+								background-color: pink;
+								color: black;
+								padding-top: 20px;
+								padding-right: 20px;
+							}
+							&lt;!--配置了padding属性的块状元素，默认情况下会扩充自身的宽度或高度，在上面第2个div中，配置了上下左右都为20px的padding，就意味着div的宽度和高度都增加了40px变成了240px（上下左右都增加20px，就意味着上下增加了40px，左右同理），如果不想让padding自动扩充标签宽高（自动扩充有时会破坏页面样式），可以添加box-sizing属性，如下，当属性值为border-box时padding是向内扩充的，即占用当前标签的长宽，本例中，content区域的长宽被压缩成了200-40=160px，但整个div的长宽确没有发生变化，仍然是200px，box-sizing另一个属性值为content-box，这是这个属性的默认值，即padding向外扩充--&gt;
+							#d4{
+								width: 200px;
+								height: 200px;
+								background-color: pink;
+								color: black;
+								padding: 20px;
+								box-sizing: border-box;
+							}
+							&lt;!--如果我们想将上下左右四面的padding都配置成不不同的值，但又不想使用d3中那样麻烦的四条语句，就可以按照下面的方法，将其放置在一条语句中，其格式为"padding: 上 左 下 右"，本例，配置上面padding为10px，左边20px，下面30px，右边40px--&gt;
+							#d5{
+								width: 200px;
+								height: 200px;
+								background-color: pink;
+								color: black;
+								padding: 10px 20px 30px 40px;
+								box-sizing: border-box;
+							}
+						&lt;/style&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;div id="d1"&gt;
+							If something is important enough, even if the odds are against you, you should still do it.
+						&lt;/div&gt;
+						&lt;hr&gt;
+						&lt;div id="d2"&gt;
+							If something is important enough, even if the odds are against you, you should still do it.
+						&lt;/div&gt;
+						&lt;hr&gt;
+						&lt;div id="d3"&gt;
+							If something is important enough, even if the odds are against you, you should still do it.
+						&lt;/div&gt;
+						&lt;hr&gt;
+						&lt;div id="d4"&gt;
+							If something is important enough, even if the odds are against you, you should still do it.
+						&lt;/div&gt;
+						&lt;hr&gt;
+						&lt;div id="d5"&gt;
+							If something is important enough, even if the odds are against you, you should still do it.
+						&lt;/div&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+					</pre>
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+						<div style="width: 200px;height: 200px;color: black;background-color: pink;">
+							If something is important enough, even if the odds are against you, you should still do it.
+						</div>
+						<hr>
+						<div style="width: 200px;height: 200px;color: black;background-color: pink;padding: 20px;box-sizing: content-box;">
+							If something is important enough, even if the odds are against you, you should still do it.
+						</div>
+						<hr>
+						<div style="width: 200px;height: 200px;color: black;background-color: pink;padding-top: 20px;padding-right: 20px;box-sizing: content-box;">
+							If something is important enough, even if the odds are against you, you should still do it.
+						</div>
+						<hr>
+						<div style="width: 200px;height: 200px;color: black;background-color: pink;padding: 20px;box-sizing: border-box;">
+							If something is important enough, even if the odds are against you, you should still do it.
+						</div>
+						<hr>
+						<div style="width: 200px;height: 200px;color: black;background-color: pink;padding: 10px 20px 30px 40px;box-sizing: border-box;">
+							If something is important enough, even if the odds are against you, you should still do it.
+						</div>
+					</div>
+
+
+					<h3 id="CSS-block-element-box-model-4">b.border边框</h3>
+					
+					<p>关于块状元素的边框样式会在下一篇文章中详细讲解，这里仅需要了解它是盒模型的一部分即可：</p>
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-cn"&gt;
+					&lt;head&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;title&gt;border属性实例&lt;/title&gt;
+						&lt;style type="text/css"&gt;
+							&lt;!--给d1添加一个10px的实线绿色边框，border与padding一样，默认是向外扩充宽高的，因为没有配置box-sizing属性，所以原本边长为200px的正方形被扩充成边长为260px的正方形--&gt;
+							#d1{
+								width: 200px;
+								height: 200px;
+								background-color: pink;
+								color: black;
+								padding: 20px;
+								border: 10px solid green;
+							}
+							&lt;!--使padding和border向内扩充，占用d2本身的长宽，那么文字区就缩小成了边长为140px的正方形--&gt;
+							#d2{
+								width: 200px;
+								height: 200px;
+								background-color: pink;
+								color: black;
+								padding: 20px;
+								border: 10px solid green;
+								box-sizing: border-box;
+							}
+							&lt;!--同padding一样，border也能单独配置每条边的样式，本例将d3的上边框配置成10px厚度的红色实线，下边框配置成厚度10px的黄虚线，左边框配置成厚度10px的蓝点线，右边框配置成厚度10px的绿双线--&gt;
+							#d3{
+								width: 200px;
+								height: 200px;
+								background-color: pink;
+								color: black;
+								padding: 20px;
+								border-top: 10px solid red;
+								border-bottom: 10px dashed yellow;
+								border-left: 10px dotted blue;
+								border-right: 10px  double green;
+								box-sizing: border-box;
+							}
+						&lt;/style&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;div id="d1"&gt;
+							If something is important enough, even if the odds are against you, you should still do it.
+						&lt;/div&gt;
+						&lt;hr&gt;
+						&lt;div id="d2"&gt;
+							If something is important enough, even if the odds are against you, you should still do it.
+						&lt;/div&gt;
+						&lt;hr&gt;
+						&lt;div id="d3"&gt;
+							If something is important enough, even if the odds are against you, you should still do it.
+						&lt;/div&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+					</pre>
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+						<div style="width: 200px;height: 200px;color: black;background-color: pink;padding: 20px;border:10px solid green;box-sizing: content-box;">
+							If something is important enough, even if the odds are against you, you should still do it.
+						</div>
+						<hr>
+						<div style="width: 200px;height: 200px;color: black;background-color: pink;padding: 20px;box-sizing: border-box;border: 10px solid green;">
+							If something is important enough, even if the odds are against you, you should still do it.
+						</div>
+						<hr>
+						<div style="width: 200px;height: 200px;color: black;background-color: pink;padding: 20px;box-sizing: border-box;border-top: 10px solid red;border-bottom: 10px dashed yellow;border-left: 10px dotted blue;border-right: 10px  double green;">
+							If something is important enough, even if the odds are against you, you should still do it.
+						</div>
+					</div>
+					<p>Ps：在上面的实例中，最后两个div在pc上面显示时，其底部是挨着文字的，我们不是配置了padding么？为什么还会挨着文字呢？这是因为，当div容器的高度容纳不下其中的内容时，内容会从其底部溢出。</p>
+
+					<h3 id="CSS-block-element-box-model-5">c.margin边界</h3>
+
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-cn"&gt;
+					&lt;head&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;title&gt;margin属性实例&lt;/title&gt;
+						&lt;style type="text/css"&gt;
+							&lt;!--并未配置margin，div紧贴着浏览器的上和左边框显示--&gt;
+							#d1{
+								width: 200px;
+								height: 200px;
+								background-color: pink;
+								color: black;
+							}
+							&lt;!--配置上左下右都为20px的距离--&gt;
+							#d2{
+								width: 200px;
+								height: 200px;
+								background-color: pink;
+								color: black;
+								margin: 20px;
+							}
+							&lt;!--配置上左下右分别为10px，20px，30px，40px的间距--&gt;
+							#d3{
+								width: 200px;
+								height: 200px;
+								background-color: pink;
+								color: black;
+								margin: 10px 20px 30px 40px;
+							}
+						&lt;/style&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;div id="d1"&gt;
+							If something is important enough, even if the odds are against you, you should still do it.
+						&lt;/div&gt;
+						&lt;hr&gt;
+						&lt;div id="d2"&gt;
+							If something is important enough, even if the odds are against you, you should still do it.
+						&lt;/div&gt;
+						&lt;hr&gt;
+						&lt;div id="d3"&gt;
+							If something is important enough, even if the odds are against you, you should still do it.
+						&lt;/div&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+					</pre>
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+						<div style="width: 200px;height: 200px;color: black;background-color: pink;">
+							If something is important enough, even if the odds are against you, you should still do it.
+						</div>
+						<hr>
+						<div style="width: 200px;height: 200px;color: black;background-color: pink;margin: 20px;">
+							If something is important enough, even if the odds are against you, you should still do it.
+						</div>
+						<hr>
+						<div style="width: 200px;height: 200px;color: black;background-color: pink;margin: 10px 20px 30px 40px;">
+							If something is important enough, even if the odds are against you, you should still do it.
+						</div>
+					</div>
+					<p>margin并不会像border和padding一样扩充元素的大小，借助它，我们可以控制单个元素与元素之间的距离，除了上面两种配置方法外，同padding一样，margin也有单独配置一边的属性，分别是（margin-top，margin-left，margin-bottom，margin-right），大家可以自己去实验。</p>
+
+					<h2 id="CSS-block-element-box-model-6">0×3.行内元素与块状元素之间的转换</h2>
+
+					<p>HTML文档大部分标签可以归为三类：块状元素，行内元素，行内-块元素。</p>
+
+					<p class="indent-p">
+						块状元素：能够设置元素宽高，并具有隔离其他元素功能的元素，出现时独占一行。比如：div、p等。
+					</p>
+					<p class="indent-p">
+						行内元素：不能够设置元素宽高，它只能自适应内容，无法隔离其他元素，其它元素会紧跟其后。比如：span、b等。
+					</p>
+					<p class="indent-p">
+						行内-块元素：可以设置元素宽高，但无法隔离其他元素的元素，其它元素会紧跟其后。比如：img。
+					</p>
+
+					<p>这三种类型的元素是可以通过css属性相互转换的，请看下面的实例：</p>
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-cn"&gt;
+					&lt;head&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;title&gt;行内元素与块状元素之间的转换实例&lt;/title&gt;
+						&lt;style type="text/css"&gt;
+							&lt;!--"display: inline;"属性，将d1转换成行内元素，这意味着d1现在不能配置宽度和高度，其宽高是自适应其内容的--&gt;
+							#d1{
+								background-color: pink;
+								color: black;
+								display: inline;
+							}
+							&lt;!--通过"display: block;"属性将行内元素转换成块状元素，转换后id为s1的span标签能够设置长宽，并且独占一行--&gt;
+							#s1{
+								background-color: pink;
+								color: black;
+								display: block;
+								width: 250px;
+								height: 100px;
+							}
+							&lt;!--行内元素和块状元素都能通过"display: inline-block;"属性转换成行内块元素，本例将一个div块状元素转换成了行内块元素，转换后仍然能够配置其宽高，但其并不会独占一行，后面的span紧随其后显示，唯一需要注意的是，紧随"行内块元素"的标签中的内容会和前面的"行内块元素"的最后一行对齐，而不是和前面的"行内块元素"的第一行对齐，本例中我们故意使用了两个br标签来演示这个特性--&gt;
+							#d2{
+								background-color: pink;
+								color: black;
+								display: inline-block;
+								width: 250px;
+								height: 100px;
+							}
+						&lt;/style&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;div id="d1"&gt;
+							Don't be afraid of new arenas .
+						&lt;/div&gt;
+						&lt;span&gt;——Elon Musk&lt;/span&gt;
+						&lt;hr&gt;
+						&lt;span id="s1"&gt;Don't be afraid of new arenas .&lt;/span&gt;
+						&lt;span&gt;——Elon Musk&lt;/span&gt;
+						&lt;hr&gt;
+						&lt;div id="d2"&gt;
+							Don't be &lt;br&gt;afraid of &lt;br&gt;new arenas .
+						&lt;/div&gt;
+						&lt;span&gt;——Elon Musk&lt;/span&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+					</pre>
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+						<div style="background-color: pink;color: black;display: inline;">
+							Don't be afraid of new arenas .
+						</div>
+						<span>——Elon Musk</span>
+						<hr>
+						<span style="background-color: pink;color: black;display: block;width: 250px;height: 100px;">Don't be afraid of new arenas .</span>
+						<span>——Elon Musk</span>
+						<hr>
+						<div style="background-color: pink;color: black;display: inline-block;width: 250px;height: 100px;">
+							Don't be <br>afraid of <br>new arenas .
+						</div>
+						<span>——Elon Musk</span>
+					</div>
+
+					<h2 id="CSS-block-element-box-model-7">0×4.块状元素的特性与浮动</h2>
+
+					<p>所有的块状元素都会独占一行，那么如何让两个块状元素在同一行显示呢？css为此提供了一个浮动属性，所谓浮动，就是分层设计的思想，我们浏览的网页是有层次结构的，这就好像我们乘飞机在一栋楼的正上方垂直往下看，这栋楼虽然有十几层，但我们仅仅能看到这栋楼的屋顶，就好像屋顶是贴着地面那样，而利用css将某个块状元素浮动起来后，这个块状元素实际上被浮动到了第二层，第一层是那些贴着地面的元素，因为元素被浮动到了第二层，所以下面是空的，这就意味着第二层的元素是可以遮挡第一层的元素的；除此之外，所有被浮动到第二层的块状元素都会失去"独占一行"这种特性，这就意味着，被浮动到第二层的块状元素是能够紧随其他被浮动到第二层的元素之后显示的，下面用一个实例来演示这些内容：</p>
+
+					<p>1）四个div在没有配置浮动之前，他们都独占一行显示</p>
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-cn"&gt;
+					&lt;head&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;title&gt;块状元素浮动实例&lt;/title&gt;
+						&lt;style type="text/css"&gt;
+							&lt;!--注意，这里有个让文字在块状元素中水平和垂直居中的小技巧，"text-align: center;"属性能让其中的文字水平居中，如果块状元素指定了高度（本例是35px），那么使用"line-height"属性后面跟随这个块状元素的高度值，就能够实现内容的垂直居中，本例这两个属性让ABCD这四个字母显示在四个div的中心位置--&gt;
+							#d1{
+								background-color: red;
+								color: black;
+								width: 100px;
+								height: 35px;
+								text-align: center;
+								line-height: 35px;
+							}
+							#d2{
+								background-color: yellow;
+								color: black;
+								width: 100px;
+								height: 35px;
+								text-align: center;
+								line-height: 35px;
+							}
+							#d3{
+								background-color: blue;
+								color: black;
+								width: 100px;
+								height: 35px;
+								text-align: center;
+								line-height: 35px;
+							}
+							#d4{
+								background-color: green;
+								color: black;
+								width: 100px;
+								height: 35px;
+								text-align: center;
+								line-height: 35px;
+							}
+						&lt;/style&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;div id="d1"&gt;A&lt;/div&gt;
+						&lt;div id="d2"&gt;B&lt;/div&gt;
+						&lt;div id="d3"&gt;C&lt;/div&gt;
+						&lt;div id="d4"&gt;D&lt;/div&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+					</pre>
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+						<div style="background-color: red;color: black;width: 100px;height: 35px;text-align: center;line-height: 35px;">A</div>
+						<div style="background-color: yellow;color: black;width: 100px;height: 35px;text-align: center;line-height: 35px;">B</div>
+						<div style="background-color: blue;color: black;width: 100px;height: 35px;text-align: center;line-height: 35px;">C</div>
+						<div style="background-color: green;color: black;width: 100px;height: 35px;text-align: center;line-height: 35px;">D</div>
+					</div>
+
+					<p>2）现在让ABC浮动起来，查看效果，其余部分的代码都和上面一样，下面仅给出ABC三块的css代码部分：</p>
+					<pre class="brush: css;">
+					/*三块都添加了相同的属性"float: left;"，意思是，让这三块区域靠左浮动起来*/
+					#d1{
+						background-color: red;
+						color: black;
+						width: 100px;
+						height: 35px;
+						text-align: center;
+						line-height: 35px;
+						float: left;
+					}
+					#d2{
+						background-color: yellow;
+						color: black;
+						width: 100px;
+						height: 35px;
+						text-align: center;
+						line-height: 35px;
+						float: left;
+					}
+					#d3{
+						background-color: blue;
+						color: black;
+						width: 100px;
+						height: 35px;
+						text-align: center;
+						line-height: 35px;
+						float: left;
+					}
+					</pre>
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+						<div style="background-color: red;color: black;width: 100px;height: 35px;text-align: center;line-height: 35px;float: left;">A</div>
+						<div style="background-color: yellow;color: black;width: 100px;height: 35px;text-align: center;line-height: 35px;float: left;">B</div>
+						<div style="background-color: blue;color: black;width: 100px;height: 35px;text-align: center;line-height: 35px;float: left;">C</div>
+						<div style="background-color: green;color: black;width: 100px;height: 35px;text-align: center;line-height: 35px;">D</div>
+					</div>
+					<p class="indent-p">从上面的显示可以发现，ABC现在失去了"独占一行"的特性，他们并排显示了，但也发现了一个问题，D哪去了？实际上大家都知道，HTML文档中所有元素都是从浏览器窗口的左上角那个原点开始排列显示的，当ABC浮动到第二层后，在本例中，相当于原本处在左上角那个原点的A现在浮起来了，而下面是空的，D就自动移动到了A原本的位置，D和A的长宽都相同，所以D现在处在A的正下方，被A遮挡了。</p>
+					<p>3）上面仅仅演示了一个左浮动，可能大家也猜到了，还会存在一个右浮动，现在我让ABC都靠右浮动起来，就能够看到D了，因为浮动起来的ABC移动到了浏览器最右边，并没有什么遮挡D：</p>
+					<pre class="brush: css;">
+					/*修改ABC的css样式，将"float: left;"更改为"float: right;"，意思是，让这三块区域靠右浮动起来*/
+					#d1{
+						background-color: red;
+						color: black;
+						width: 100px;
+						height: 35px;
+						text-align: center;
+						line-height: 35px;
+						float: right;
+					}
+					#d2{
+						background-color: yellow;
+						color: black;
+						width: 100px;
+						height: 35px;
+						text-align: center;
+						line-height: 35px;
+						float: right;
+					}
+					#d3{
+						background-color: blue;
+						color: black;
+						width: 100px;
+						height: 35px;
+						text-align: center;
+						line-height: 35px;
+						float: right;
+					}
+					</pre>
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+						<div style="background-color: red;color: black;width: 100px;height: 35px;text-align: center;line-height: 35px;float: right;">A</div>
+						<div style="background-color: yellow;color: black;width: 100px;height: 35px;text-align: center;line-height: 35px;float: right;">B</div>
+						<div style="background-color: blue;color: black;width: 100px;height: 35px;text-align: center;line-height: 35px;float: right;">C</div>
+						<div style="background-color: green;color: black;width: 100px;height: 35px;text-align: center;line-height: 35px;">D</div>
+					</div>
+					<p class="indent-p">从上面的显示不难看出，ABC靠右浮动，因为A是一个元素，靠右浮动后，就会出现在最右边，因为浮动的执行是有先后顺序的，现在我们看到了最左边的D，虽然看上去和ABC是在同一层，通过上面的讲解大家也应该知道，他们并不是在同一层。</p>
+					<p>4）将ABC重新改为左浮动（这一步大家自己完成吧）</p>
+					<p>5）现在有一个问题，当上面的元素浮动起来后，下面的元素如果不浮动就会永远被遮挡，css提供了一种清除浮动的方法，能够让下面的元素不被遮挡，修改D的css配置如下：</p>
+					<pre class="brush: css;">
+					/*给D添加一个"clear:left;"属性，能够清除覆盖在他上面的所有左浮动，除此之外"clear:right;"能够清除所有的右浮动，而如果是同时清除左右浮动，则可以使用"clear:both;"*/
+					#d4{
+						background-color: blue;
+						color: black;
+						width: 100px;
+						height: 35px;
+						text-align: center;
+						line-height: 35px;
+						clear: left;
+					}
+					</pre>
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+						<div style="background-color: red;color: black;width: 100px;height: 35px;text-align: center;line-height: 35px;float: left;">A</div>
+						<div style="background-color: yellow;color: black;width: 100px;height: 35px;text-align: center;line-height: 35px;float: left;">B</div>
+						<div style="background-color: blue;color: black;width: 100px;height: 35px;text-align: center;line-height: 35px;float: left;">C</div>
+						<div style="background-color: green;color: black;width: 100px;height: 35px;text-align: center;line-height: 35px;clear: left;">D</div>
+					</div>
+					<p>6）如果现在我们想让ABCD四块组成一个田字格，应该怎么做？修改ABCD的css配置如下：</p>
+					<pre class="brush: css;">
+					/*让AB左浮动，并排显示*/
+					#d1{
+						background-color: red;
+						color: black;
+						width: 100px;
+						height: 35px;
+						text-align: center;
+						line-height: 35px;
+						float: left;
+					}
+					#d2{
+						background-color: yellow;
+						color: black;
+						width: 100px;
+						height: 35px;
+						text-align: center;
+						line-height: 35px;
+						float: left;
+					}
+					/*在C上面清除左浮动，然后再让C左浮动*/
+					#d3{
+						background-color: blue;
+						color: black;
+						width: 100px;
+						height: 35px;
+						text-align: center;
+						line-height: 35px;
+						clear: left;
+						float: left;
+					}
+					/*D只需要左浮动，就直接并排在C后面了*/
+					#d4{
+						background-color: blue;
+						color: black;
+						width: 100px;
+						height: 35px;
+						text-align: center;
+						line-height: 35px;
+						float: left;
+					}
+					</pre>
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;float: left;width: 98%">
+						<div style="background-color: red;color: black;width: 100px;height: 35px;text-align: center;line-height: 35px;float: left;">A</div>
+						<div style="background-color: yellow;color: black;width: 100px;height: 35px;text-align: center;line-height: 35px;float: left;">B</div>
+						<div style="background-color: blue;color: black;width: 100px;height: 35px;text-align: center;line-height: 35px;clear:left;float: left;">C</div>
+						<div style="background-color: green;color: black;width: 100px;height: 35px;text-align: center;line-height: 35px;float: left;">D</div>
+					</div>
+					<div class="clearfix"></div>
+					<p>这一小节的内容十分重要，也是现如今大多数页面导航条的基础，本站的导航条就是使用左右浮动实现的。</p>
+
+					<h2 id="CSS-block-element-box-model-8">0×5.元素可见性</h2>
+
+					<p>使用css中的visibility属性能让元素内的数据隐藏掉（但元素所处位置还占用着，这就意味着，元素所在的位置可能会出现空白），下面用一个div和一个表格举例：</p>
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-cn"&gt;
+					&lt;head&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;title&gt;元素可见性实例&lt;/title&gt;
+						&lt;style type="text/css"&gt;
+							&lt;!--隐藏d1中的数据，保留其位置信息--&gt;
+							#d1{
+								background-color: red;
+								color: black;
+								width: 100px;
+								height: 35px;
+								text-align: center;
+								line-height: 35px;
+								visibility: hidden;
+							}
+							&lt;!--隐藏t1中第二行数据，保留其位置信息，注意table默认有一个thead和tbody属性（就算没写，也隐式存在），所以不能用子选择器（用子选择器选中的就会是那个隐藏的tbody标签），必须用派生选择器--&gt;
+							#t1 tr:nth-child(2){
+								visibility: hidden;
+							}
+							&lt;!--隐藏t2中第二行的数据，清除位置信息--&gt;
+							#t2 tr:nth-child(2){
+								visibility: collapse;
+							}
+						&lt;/style&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;div id="d1"&gt;A&lt;/div&gt;
+						&lt;p&gt;虽然我们看不到上面的div，但是它所处的位置上留出了空白，高度是35px。&lt;/p&gt;
+						&lt;table border="1" id="t1"&gt;
+							&lt;tr&gt;
+								&lt;td&gt;data1&lt;/td&gt;
+								&lt;td&gt;data2&lt;/td&gt;
+							&lt;/tr&gt;
+							&lt;tr&gt;
+								&lt;td&gt;data3&lt;/td&gt;
+								&lt;td&gt;data4&lt;/td&gt;
+							&lt;/tr&gt;
+							&lt;tr&gt;
+								&lt;td&gt;data5&lt;/td&gt;
+								&lt;td&gt;data6&lt;/td&gt;
+							&lt;/tr&gt;
+						&lt;/table&gt;
+						&lt;p&gt;上面的t1中，第二个tr会被css的派生选择器选中，然后隐藏，但高度还保留着，如果想隐藏t1中的数据同时清除高度，可以使用t2的方法。&lt;/p&gt;
+						&lt;table border="1" id="t2"&gt;
+							&lt;tr&gt;
+								&lt;td&gt;data1&lt;/td&gt;
+								&lt;td&gt;data2&lt;/td&gt;
+							&lt;/tr&gt;
+							&lt;tr&gt;
+								&lt;td&gt;data3&lt;/td&gt;
+								&lt;td&gt;data4&lt;/td&gt;
+							&lt;/tr&gt;
+							&lt;tr&gt;
+								&lt;td&gt;data5&lt;/td&gt;
+								&lt;td&gt;data6&lt;/td&gt;
+							&lt;/tr&gt;
+						&lt;/table&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+					</pre>
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+						<div style="background-color: red;color: black;width: 100px;height: 35px;text-align: center;line-height: 35px;visibility: hidden;">A</div>
+						<p>虽然我们看不到上面的div，但是它所处的位置上留出了空白，高度是35px。</p>
+						<table border="1" id="t1">
+							<tr>
+								<td>data1</td>
+								<td>data2</td>
+							</tr>
+							<tr>
+								<td>data3</td>
+								<td>data4</td>
+							</tr>
+							<tr>
+								<td>data5</td>
+								<td>data6</td>
+							</tr>
+						</table>
+						<p>上面的t1中，第二个tr会被css的派生选择器选中，然后隐藏，但高度还保留着，如果想隐藏t1中的数据同时清除高度，可以使用t2的方法。</p>
+						<table border="1" id="t2">
+							<tr>
+								<td>data1</td>
+								<td>data2</td>
+							</tr>
+							<tr>
+								<td>data3</td>
+								<td>data4</td>
+							</tr>
+							<tr>
+								<td>data5</td>
+								<td>data6</td>
+							</tr>
+						</table>
+					</div>
+					<p>在css的属性中，还有一个属性和"visibility:hidden;"很像，前面我们使用过一个"display:none;"属性，他们之间的不同点如下：</p>
+
+					<p class="indent-p">
+						visibility: hidden;——将元素隐藏，但是在网页中该占的位置还是占着。<br> 
+ 						display: none;——将元素的显示设为无，即在网页中不占任何的位置。
+					</p>
+					<p>Ps：在谷歌浏览器里，使用collapse值和使用hidden 值没有什么区别。在火狐浏览器、Opera和IE11里，使用collapse值的效果就如它的字面意思：table的行会消失，它的下面一行会补充它的位置。所以并不是很推荐使用"visibility:collapse;"这个属性，因为不同浏览器对它的理解并不相同。</p>
+					
+					<p>除了隐藏元素之外，"visibility:hidden;"属性还可以配合div来清理浮动，很多著名的前端框架中都可以看到下面这样的div，专门用来清理浮动：</p>
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-cn"&gt;
+					&lt;head&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;title&gt;清理浮动专用类实例&lt;/title&gt;
+						&lt;style type="text/css"&gt;
+							#d1{
+								background-color: red;
+								color: black;
+								width: 100px;
+								height: 35px;
+								text-align: center;
+								line-height: 35px;
+								float: left;
+							}
+							#d2{
+								background-color: yellow;
+								color: black;
+								width: 100px;
+								height: 35px;
+								text-align: center;
+								line-height: 35px;
+							}
+							/*清理浮动专用类*/
+							.clearfix::after{
+								content: "www.qingsword.com";
+								display: block;
+								height: 0;
+								visibility: hidden;
+								clear: both;
+							}
+						&lt;/style&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;!--d1是浮动的，正常请看下d2应该在d1的下方，被d1遮挡，但我们在d1和d2之间插入了一个空的div，这个div属于clearfix类，这个类使用了一个伪类选择器，在这个div的内容后面添加了一段文本（www.qingsword.com），并且不论这个标签是行内标签还是其他的，都强制转换成块状元素（display: block;），最后将插入的这段文本的高度设置成0，然后隐藏掉（visibility: hidden;），最后清除双向浮动（clear: both;），这样设置就相当于在d1和d2之间插入了一个看不见的清除浮动属性，这个属性并不会占用任何页面空间，仅仅完成清除d1浮动的目的，我们可以在任何需要的位置插入这个空的div（将div的类配置成clearfix即可），这样配置有很多好处，其一，页面源代码的阅读更加的直观，我们不需要去查看css就知道哪里使用了清除浮动的属性，其次代码的复用性更好--&gt;
+						&lt;div id="d1"&gt;A&lt;/div&gt;
+						&lt;div class="clearfix"&gt;&lt;/div&gt;
+						&lt;div id="d2"&gt;B&lt;/div&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+					</pre>
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+						<div style="background-color: red;color: black;width: 100px;height: 35px;text-align: center;ine-height: 35px;float: left;">A</div>
+						<div class="clearfix"></div>
+						<div style="background-color: yellow;color: black;width: 100px;height: 35px;text-align: center;ine-height: 35px;">B</div>
+					</div>
+
+					<h2 id="CSS-block-element-box-model-9">0×6.处理溢出</h2>
+					<p>当设置了元素固定尺寸且内容过多时，就可能出现溢出的问题。溢出主要朝两个方向：右侧和底部。我们可以通过css样式中的overflow属性来处理这些溢出，请看下面的实例：</p>
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-cn"&gt;
+					&lt;head&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;title&gt;溢出处理实例&lt;/title&gt;
+						&lt;style type="text/css"&gt;
+							&lt;!--为了比较，我们将两个div做左浮动处理，让他们并排显示，第一个div并没有处理溢出，所以文字直接从下方溢出--&gt;
+							#d1{
+								background-color: red;
+								color: black;
+								width: 100px;
+								height: 100px;
+								float: left;
+							}
+							&lt;!--"overflow: auto;"属性告诉浏览器，当这个区块的内容超出容器范围时，显示一个滚动条，文字不会从div的下方溢出--&gt;
+							#d2{
+								background-color: yellow;
+								color: black;
+								width: 100px;
+								height: 100px;
+								float: left;
+								overflow: auto;
+							}
+						&lt;/style&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;div id="d1"&gt;I think it is possible for ordinary people to choose to be extraordinary.&lt;/div&gt;
+						&lt;div id="d2"&gt;I think it is possible for ordinary people to choose to be extraordinary.&lt;/div&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+					</pre>
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;float: left;width: 98%;height: 250px;">
+						<div style="background-color: pink;color: red;width: 100px;height: 100px;float: left;">
+							I think it is possible for ordinary people to choose to be extraordinary.
+						</div>
+						<div style="background-color: yellow;color: black;width: 100px;height: 100px;float: left;overflow:auto;">
+							I think it is possible for ordinary people to choose to be extraordinary.
+						</div>
+					</div>
+					<div class="clearfix"></div>
+
+					<p>如果我们不想让多出的内容溢出，同时也不想显示滚动条，可以使用"overflow:hidden;"属性将多余的部分截取掉：</p>
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-cn"&gt;
+					&lt;head&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;title&gt;溢出处理实例&lt;/title&gt;
+						&lt;style type="text/css"&gt;
+							&lt;!--直接截取掉溢出的部分--&gt;
+							#d1{
+								background-color: red;
+								color: black;
+								width: 100px;
+								height: 100px;
+								overflow: hidden;
+							}
+						&lt;/style&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;div id="d1"&gt;I think it is possible for ordinary people to choose to be extraordinary.&lt;/div&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+					</pre>
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+						<div style="background-color: pink;color: red;width: 100px;height: 100px;overflow:hidden;">
+							I think it is possible for ordinary people to choose to be extraordinary.
+						</div>
+					</div>
+
+					<p class="indent-p">
+						
+					</p>
+					
+						
+				<!-- /正文 -->
+
+				<footer class="text-footer">
+					<p>
+						*转载请注明来自:<a title="晴刃-自由、互助、分享、专注计算机技术。" href="http://www.qingsword.com" target="_blank">晴刃(QingSword.COM)</a>
+					</p>
+					<p>*原文连接:<a title="[CSS]-5-块状元素盒模型" href="http://www.qingsword.com/qing/css-5.html" target="_blank">http://www.qingsword.com/qing/css-5.html</a></p>
+				</footer>
+			</article>
+			<!-- /文章区 -->	
+		</div>
+	</div>
+	<!-- /content -->
+	
+	<!-- footer -->
+	<footer id="footer">
+		<div class="footer-container">
+			QingSword.COM &nbsp;<img src="../logo/by-nc-sa.png" alt="Creative Commons" title="Creative Commons">
+		</div>
+	</footer>
+	<!-- /footer -->
+</body>
+</html>

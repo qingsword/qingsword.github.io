@@ -11,9 +11,9 @@
 	padding: 30px 30px 0 30px;
 	color: #c0c0c0;
 	font-size: 20px;
-	word-break:break-all;
-	overflow: hidden;
-	text-overflow: ellipsis;
+	word-break:break-word; /*长单词遇到边界自动移动到下一行显示*/
+	/*overflow: hidden;
+	text-overflow: ellipsis;*/
 	letter-spacing: 1.2px;
 }
 #content .text-header h1{

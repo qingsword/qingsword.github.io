@@ -22,7 +22,7 @@ img { /*图片流体布局*/
 div,li{  /*border，padding不扩充宽高*/
 	box-sizing:border-box;
 }
-.clearfix:after{  /*清理浮动div*/
+.clearfix::after{  /*清理浮动div*/
 	content: "qingsword.com";
 	display: block;
 	height: 0;
