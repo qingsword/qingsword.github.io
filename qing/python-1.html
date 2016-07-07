@@ -422,40 +422,40 @@
 					</p>
 					<pre class="brush: python;">
 					#任何非0的值，都相当于True
-					>>> x=1
-					>>> y=0
+					&gt;&gt;&gt; x=1
+					&gt;&gt;&gt; y=0
 
 					#因为x为True，所以返回y的值
-					>>> x and y
+					&gt;&gt;&gt; x and y
 					0
 					#因为y为False，所以返回y的值
-					>>> y and x
+					&gt;&gt;&gt; y and x
 					0
 
 					#因为x是True，所以返回x的值
-					>>> x or y
+					&gt;&gt;&gt; x or y
 					1
 					#因为y是False，所以返回x的值
-					>>> y or x
+					&gt;&gt;&gt; y or x
 					1
 
 					#任何非空的字符串都代表True
-					>>> x='abc'
-					>>> y='123'
-					>>> x and y
+					&gt;&gt;&gt; x='abc'
+					&gt;&gt;&gt; y='123'
+					&gt;&gt;&gt; x and y
 					'123'
-					>>> x or y
+					&gt;&gt;&gt; x or y
 					'abc'
 					
 					#两个特殊情况，x为空字符串，相当于False
-					>>> x=''
-					>>> y='abc'
-					>>> x and y
+					&gt;&gt;&gt; x=''
+					&gt;&gt;&gt; y='abc'
+					&gt;&gt;&gt; x and y
 					''
 					#x为空对象，相当于False，返回空对象屏幕不会显示任何值
-					>>> x=None
-					>>> y=1
-					>>> x and y
+					&gt;&gt;&gt; x=None
+					&gt;&gt;&gt; y=1
+					&gt;&gt;&gt; x and y
 					</pre>
 
 					<h3 id="Python-guide-7">e.控制流语句</h3>
@@ -524,23 +524,228 @@
 					    print(total)
 					</pre>
 
-					<h3 id="Python-guide-8">f.算数操作符</h3>
-					<h3 id="Python-guide-9">g.输入输出</h3>
-					<h3 id="Python-guide-10">h.函数的创建与调用</h3>
-					<p></p>
+					<p>3）for...in语句</p>
+
+					<p>下面是一个判断元音/辅音字母的小程序：</p>
 					<pre class="brush: python;">
 					#!/usr/bin/env python3
 					#coding=utf-8
-					#注释
-					"""
-					注释
-					"""
-					代码块
+					
+					#abc对象引用指向了一个包含26字母的字符串
+					abc="ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
+					#使用for循环逐个读取abc字符串中的单个字符
+					for x in abc:
+					    if x in "AEIOU": #如果读取出来的字符是"AEIOU"中的一个，说明这个字母是元音字母
+					        print(x,"是元音字母")
+					    else:
+					        print(x,"是辅音字母")
+					</pre>
+					<p>大家可以尝试着运行这个程序，会的到26条返回结果，每条结果都会包含一条语句诸如："A 是元音字母"。</p>
+
+					<p>4）try基本异常处理语句</p>
+					<p>基本异常处理也是流程控制的一部分，当程序中遇到异常时，会被try语句捕获，并跳转到对应的异常处理分支：</p>
+					<pre class="brush: python;">
+					#!/usr/bin/env python3
+					#coding=utf-8
+					
+					#input()函数允许读取用户键盘数据流，本例读取这些数据保存在内存中，并用s对象指向
+					s=input("请输入一个整数：")
+					
+					#将可能发生异常的语句包含在try语句结构中，将s对象对应的值转换成整型，如果输入的是一个不可转换的字符串，就会抛出ValueError异常，并跳转到下面的except分支，except分支下面只有一条指令，打印出异常的内容（ValueError as erro语句将这个被捕获的ValueError异常的输出信息赋值给erro这个对象，erro对象包含了这次异常所有的输出信息）
+					try:
+					    i=int(s)
+					    print("您输入的整数为：",i)
+					except ValueError as erro:
+					    print(erro)
+					</pre>
+					
+					<p>运行这个程序，如果输入的是字符串，例如：</p>
+					<pre class="brush: python;">
+					请输入一个整数：xxx
+
+					#将返回下面这样的异常信息
+					invalid literal for int() with base 10: 'xxx'
 					</pre>
 
-					<p class="indent-p">
-						
-					</p>
+					<h3 id="Python-guide-8">f.算数操作符</h3>
+
+					<p>python提供了完整的运算符，包括四则运算操作符（+，-，*，/）以及增强的四则运算操作符（+=，-=，*=，/=）；</p>
+
+					<p>与其他编程语言唯一的区别是对除法的处理，python的除法操作符会产生一个浮点数，而不是整数（就算整除，也会产生一个浮点数），如果需要产生一个整数，需要使用int()函数转换，或使用双斜杠（//剥离操作符）；</p>
+
+					<p>下面是IDLE中这些算数操作符的几个实例：</p>
+					<pre class="brush: python;">
+					&gt;&gt;&gt; 1+1
+					2
+
+					#使用增强四则运算符
+					&gt;&gt;&gt; a=1
+					&gt;&gt;&gt; a+=1
+					&gt;&gt;&gt; print(a)
+					2
+					&gt;&gt;&gt; a*=6
+					&gt;&gt;&gt; print(a)
+					12
+					
+					#所有的除法都会返回一个浮点数
+					&gt;&gt;&gt; 4/2
+					2.0
+					&gt;&gt;&gt; 2*2
+					4
+					&gt;&gt;&gt; 13/6
+					2.1666666666666665
+
+					#使用剥离操作符或者使用整型转换函数将舍去小数点后面的部分
+					&gt;&gt;&gt; 13//6
+					2
+					&gt;&gt;&gt; int(13/6)
+					2
+					</pre>
+					<p>前面已经介绍过，整数和字符串对象引用的数据都是固定的，这就意味着对一个"对象引用"使用四则运算后，实际上是在内存中重新划分了一块区域来储存计算结果，然后将"对象引用"重新指向这个结果的内存地址。</p>
+
+					<p>在字符串和列表的操作中，python重载了运算符+和+=，请看下面的实例：</p>
+					<pre class="brush: python;">
+					>>> x="abc"
+
+					#仅仅使用加号，将x指向的值与"def"连接起来输出，x值不变
+					>>> x+"def"
+					'abcdef'
+					>>> print(x)
+					abc
+
+					#如果使用+=，则是将def追加到abc后，x值改变
+					>>> x+="def"
+					>>> print(x)
+					abcdef
+
+					#对列表使用+=操作符，可以直接追加列表元素（可以一次性追加多个，用逗号隔开）
+					>>> y=["a","b","c"]
+					>>> y+=["d"]
+					>>> print(y)
+					['a', 'b', 'c', 'd']
+
+					#如果对列表追加元素时没有添加中括号，python会将追加的内容每个字符拆开，作为单个元素，逐个添加到列表中
+					>>> y+="qing"
+					>>> print(y)
+					['a', 'b', 'c', 'd', 'q', 'i', 'n', 'g']
+					</pre>
+
+					<h3 id="Python-guide-9">g.输入输出</h3>
+
+					<p>Python提供了内置的input()函数，用来接收用户键盘输入的数据，这个函数需要一个可选的字符串参数，用来打印在屏幕上，提示用户要输入的数据，之后等待用户输入完成并按回车键结束输入（或使用return键来终止输入），如果用户不输入任何文本直接敲击回车键，input()函数会返回一个空字符串，下面用一个实例来演示input()函数：</p>
+
+					<pre class="brush: python;">
+					#!/usr/bin/env python3
+					#coding=utf-8
+
+					print("请输入整数，或直接输入回车结束输入；")
+
+					total=0
+					count=0
+					
+					#进入while循环，只有当用户直接回车时才会执行if语句中的else分支，跳出循环
+					while True:
+					    #input将用户输入保存在内存中，并用s对象指向
+					    s=input("请输入一个整数：") 
+					    if s: #如果用户直接回车input会返回一个空字符串，if的判断会是False
+					        try: #为了防止用户输入一个非数字，导致int()转换出现异常
+					            i=int(s)
+					        except ValueError as erro: #捕获异常
+					            print(erro)
+					        total+=i #将用户输入累加到total中
+					        count+=1 #计数器递增1
+					    else:
+					        break
+
+					#如果用户没有输入任何数字直接回车，count值为0，print不会被执行，否则输出count数，total总数，最后输出这些数的平均值
+					if count:
+					    print("count=",count,"total=",total,"mean=",total/count)
+					</pre>
+					<p>将上面的程序保存为py文件，并且执行，下面是执行结果：</p>
+					<pre class="brush: python;">
+					请输入整数，或直接输入回车结束输入；
+					请输入一个整数：1
+					请输入一个整数：2
+					请输入一个整数：3
+					请输入一个整数：4
+					请输入一个整数：3
+					请输入一个整数：2
+					请输入一个整数：1
+					请输入一个整数：#回车退出循环
+					count= 7 total= 16 mean= 2.2857142857142856
+					</pre>
+
+					<p>对于上面这个小程序，有第二种实现方法，这一次不是按回车让循环退出，而是使用try捕获EOFError异常，这意味着（linux或unix）用户按下了ctrl+d组合键（在windows中需要按下ctrl+z并按enter键），当用户按下组合键时跳出循环，请看下面的实例：</p>
+					<pre class="brush: python;">
+					#!/usr/bin/env python3
+					#coding=utf-8
+
+					print("请输入整数，或按ctrl+d（linux）/ctrl+z（windows）结束输入；")
+
+					total=0
+					count=0
+					
+					#程序的流程和上面那个相同，唯一的不同是，这个循环中，try新增了一个异常捕获分支，当用户按下ctrl+d组合键后，将会触发EOFError异常，执行break跳出循环
+					while True:
+					    try:
+					        s=input("请输入一个整数：")
+					        if s:
+					            i=int(s)
+					            count+=1
+					            total+=i
+					    except ValueError as erro:
+					        print(erro)
+					    except EOFError:
+					        break
+
+					if count:
+					    print("count=",count,"total=",total,"mean=",total/count)
+					</pre>
+
+
+					<h3 id="Python-guide-10">h.函数的创建与调用</h3>
+					
+					<p>python中允许使用def语句来封装函数，def是一条与赋值操作符工作方式类似的语句，执行def时，会创建一个函数对象，同时创建一个带有指定名的对象引用，请看下面的实例：</p>
+					<pre class="brush: python;">
+					#!/usr/bin/env python3
+					#coding=utf-8
+
+					#--------
+					#用来获取用户输入的年龄
+					def get_age(msg):
+					    #当用户输入了一个错误的值，会重新循环，当用户输入了一个正确的int值，会调用return，将输入的值返回给函数的调用者，并终止函数的执行
+					    while True:
+					        try:
+					            i=int(input(msg))
+					            return i
+					        except ValueError as err:
+					            print(err)
+					#--------
+					
+					#调用函数，括号中的字符串会传递给函数的msg
+					age=get_age("请输入您的年龄：")
+					#打印出用户输入的值
+					print(age)
+					</pre>
+					<p>除了函数外，我们还会经常见到在程序的开始处用import语句导入某些模块，这些模块文件包含了许多自定义的函数，提供了一些常见的功能，下面用python自带的random模块（该模块在python标准库中，全名是random.py）举例：</p>
+
+					<pre class="brush: python;">
+					#!/usr/bin/env python3
+					#coding=utf-8
+					
+					#导入random模块，虽然标准库中random模块是有后缀py的，但是在使用import导入时不需要携带后缀，这个模块提供了一些随机数选择器
+					import random
+					
+					#从1到100中随机选择一个整数，用x指向这个随机数
+					x=random.randint(1,100)
+
+					#从后面的列表中随机选择一个元素，用y指向这个元素
+					y=random.choice(["a","b","c","d","e","f"])
+
+					#打印出这两个随机选择的值
+					print(x,y)
+					</pre>
 						
 				<!-- /正文 -->
 
