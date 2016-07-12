@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<!--Copyright©QingSword.COM︻☼1010D>-->
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
+	<meta name="description" content="晴刃,是一个致力推广实用计算机技术的个人博客;我们分享计算机知识;为计算机系统以及网络安全防范做出一份贡献。【专注技术 创造价值 共同进步】">
+	<meta name="keywords" content="晴刃,晴,qing,qingsword,ccna图文笔记,ubuntu,linux,ubuntu server,mysql,node.js,javascript,python,计算机技术博客">
+	<meta name="author" content="www.qingsword.com">
+	<title>[CSS]-7-表格与列表 - QingSword.COM</title>
+	<link rel="shortcut icon" type="image/x-icon" href="../logo/favicon.ico">
+	<link rel="stylesheet" type="text/css" href="../css/basic.css">
+	<link rel="stylesheet" type="text/css" href="../css/text.css">
+	<!-- 代码块高亮js -->
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shCore.css"/>
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shThemeRDark.css"/>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shCore.js"></script>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shBrushXml.js"></script>
+	<script type="text/javascript">
+	SyntaxHighlighter.all();
+	</script>
+	<style type="text/css">
+		#t1 th:nth-child(1) {
+			border: 3px dotted green;
+		}
+		#t1 th:nth-child(2){
+			border:3px double yellow;
+		}
+		#t1 th:nth-child(3){
+			border:3px dashed red;
+		}
+		#t1 td{
+			border:3px ridge pink;
+		}
+		#t2>tbody tr:nth-child(1){
+			vertical-align: bottom;
+		}
+		#t2>tbody tr:nth-child(2){
+			vertical-align: top;
+		}
+		#u1{
+			padding-left: 35px;
+			list-style: none outside url("../logo/web.png");
+		}
+	</style>
+</head>
+<body>
+	<!--header -->
+	<header id="nav">
+			<div class="nav-container"> 
+				<!-- 根大纲-->
+				<a href="http://www.qingsword.com" title="晴刃">
+					<h1 class="nav-logo">晴刃</h1>
+				</a>
+				<h2 class="nav-site-description desc-hidden">
+					自由、互助、分享、专注计算机技术
+				</h2>
+				<nav class="nav-links"> 
+					<!-- nav连接大纲-->
+					<h1 style="display:none;">网站导航</h1> 
+					<ul>
+						<li  class="li-hidden">
+							<a href="../index.html" title="home">
+								<span class="link-word"><img src="../logo/home.png" alt="home" class="link-img">首页</span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../web.html" title="web">
+								<span class="link-word"><img src="../logo/web.png" alt="web" class="link-img">前端<span class="word-hidden">设计</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../system.html" title="system">
+								<span class="link-word"><img src="../logo/linux.png" alt="linux" class="link-img">系统<span class="word-hidden">应用</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../net.html" title="net">
+								<span class="link-word"><img src="../logo/net.png" alt="net" class="link-img">网络<span class="word-hidden">技术</span></span>
+							</a>
+						</li>
+						<li>
+							<a href="../sitemap.html" title="sitemap">
+								<span class="link-word"><img src="../logo/archives.png" alt="archives" class="link-img"><span class="word-hidden">文章</span>归档</span>
+							</a>
+						</li>
+					</ul>
+				</nav>
+			</div>		
+	</header>
+	<!-- /header -->
+
+	<!-- content-->
+	<div id="content">
+		<div class="content-container">
+			<!-- 文章区 -->
+			<article class="text-container">
+				<header class="text-header">
+					<h1>[CSS]-7-表格与列表</h1>	
+				</header><!-- /header -->
+				<section class="text-body">
+					<h2>引言</h2>
+					<p>这篇文章介绍表格与列表的CSS样式设置。</p>
+					<!-- 目录 -->
+					<h2>文章目录</h2>
+					<ul class="contents">	
+						 <li><a href="#CSS-table-and-list-1">0×1.表格css样式</a></li>
+						 <li class="subli"><a href="#CSS-table-and-list-2">a.表格宽高与文字居中</a></li>
+						 <li class="subli"><a href="#CSS-table-and-list-3">b.表格边框间距</a></li>
+						 <li class="subli"><a href="#CSS-table-and-list-4">c.表格边框样式</a></li>
+						 <li class="subli"><a href="#CSS-table-and-list-5">d.表格标题位置</a></li>
+						 <li class="subli"><a href="#CSS-table-and-list-6">e.隐藏无数据单元格</a></li>
+						 <li class="subli"><a href="#CSS-table-and-list-7">f.表格垂直拉升</a></li>
+						 <li class="subli"><a href="#CSS-table-and-list-8">g.表格内容垂直对齐方式</a></li>
+						 <li><a href="#CSS-table-and-list-9">0×2.列表css样式</a></li>
+						 <li class="subli"><a href="#CSS-table-and-list-10">a.列表前标样式</a></li>
+						 <li class="subli"><a href="#CSS-table-and-list-11">b.前标相对文本位置</a></li>
+						 <li class="subli"><a href="#CSS-table-and-list-12">c.使用图像替换前标</a></li>
+						 <li class="subli"><a href="#CSS-table-and-list-13">d.三种属性的简写方式</a></li>
+					 </ul>
+					<!-- /目录 -->
+
+					<!-- 正文 -->
+					<h2 id="CSS-table-and-list-1">0×1.表格css样式</h2>
+
+					<h3 id="CSS-table-and-list-2">a.表格宽高与文字居中</h3>
+
+					<p>下面新建一个三行三列的表格，使用css来控制它的宽度高度与文字对其方式：</p>
+
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-cn"&gt;
+					&lt;head&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;title&gt;表格css配置实例&lt;/title&gt;
+
+						&lt;style type="text/css"&gt;
+							&lt;!--配置表格总宽高，文字未居中显示--&gt;
+							#t1{
+								width: 200px;
+								height: 120px;
+							}
+							&lt;!--设置每个单元格中的文字居中显示--&gt;
+							#t2{
+								width: 200px;
+								height: 120px;
+								text-align: center;
+							}
+						&lt;/style&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;table id="t1" border="1"&gt;
+							&lt;thead&gt;
+								&lt;tr&gt;
+									&lt;th&gt;姓名&lt;/th&gt;
+									&lt;th&gt;年龄&lt;/th&gt;
+									&lt;th&gt;性别&lt;/th&gt;
+								&lt;/tr&gt;
+							&lt;/thead&gt;
+							&lt;tbody&gt;
+								&lt;tr&gt;
+									&lt;td&gt;弓长&lt;/td&gt;
+									&lt;td&gt;16&lt;/td&gt;
+									&lt;td&gt;男&lt;/td&gt;
+								&lt;/tr&gt;
+								&lt;tr&gt;
+									&lt;td&gt;木子&lt;/td&gt;
+									&lt;td&gt;15&lt;/td&gt;
+									&lt;td&gt;女&lt;/td&gt;
+								&lt;/tr&gt;
+							&lt;/tbody&gt;
+						&lt;/table&gt;
+						&lt;br&gt;
+						&lt;table id="t2" border="1"&gt;
+							&lt;thead&gt;
+								&lt;tr&gt;
+									&lt;th&gt;姓名&lt;/th&gt;
+									&lt;th&gt;年龄&lt;/th&gt;
+									&lt;th&gt;性别&lt;/th&gt;
+								&lt;/tr&gt;
+							&lt;/thead&gt;
+							&lt;tbody&gt;
+								&lt;tr&gt;
+									&lt;td&gt;弓长&lt;/td&gt;
+									&lt;td&gt;16&lt;/td&gt;
+									&lt;td&gt;男&lt;/td&gt;
+								&lt;/tr&gt;
+								&lt;tr&gt;
+									&lt;td&gt;木子&lt;/td&gt;
+									&lt;td&gt;12&lt;/td&gt;
+									&lt;td&gt;女&lt;/td&gt;
+								&lt;/tr&gt;
+							&lt;/tbody&gt;
+						&lt;/table&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+					</pre>
+
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+						<table border="1" style="width: 200px;height: 120px;">
+							<thead>
+								<tr>
+									<th>姓名</th>
+									<th>年龄</th>
+									<th>性别</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>弓长</td>
+									<td>16</td>
+									<td>男</td>
+								</tr>
+								<tr>
+									<td>木子</td>
+									<td>15</td>
+									<td>女</td>
+								</tr>
+							</tbody>
+						</table>
+						<br>
+						<table border="1" style="width: 200px;height: 120px;text-align: center;">
+							<thead>
+								<tr>
+									<th>姓名</th>
+									<th>年龄</th>
+									<th>性别</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>弓长</td>
+									<td>16</td>
+									<td>男</td>
+								</tr>
+								<tr>
+									<td>木子</td>
+									<td>12</td>
+									<td>女</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+
+					<h3 id="CSS-table-and-list-3">b.表格边框间距</h3>
+
+					<p>在上面的实例中，如果不在table中配置border="1"，默认表格是没有边框的，css中允许使用border-spacing属性来调整边框的间距（厚度），请看下面的实例：</p>
+
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-cn"&gt;
+					&lt;head&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;title&gt;表格css配置实例&lt;/title&gt;
+						&lt;!--配置表格边框间距为15px--&gt;
+						&lt;style type="text/css"&gt;
+							#t1{
+								width: 250px;
+								height: 120px;
+								text-align: center;
+								border-spacing: 15px;
+							}
+						&lt;/style&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;table id="t1" border="1"&gt;
+							&lt;thead&gt;
+								&lt;tr&gt;
+									&lt;th&gt;姓名&lt;/th&gt;
+									&lt;th&gt;年龄&lt;/th&gt;
+									&lt;th&gt;性别&lt;/th&gt;
+								&lt;/tr&gt;
+							&lt;/thead&gt;
+							&lt;tbody&gt;
+								&lt;tr&gt;
+									&lt;td&gt;弓长&lt;/td&gt;
+									&lt;td&gt;16&lt;/td&gt;
+									&lt;td&gt;男&lt;/td&gt;
+								&lt;/tr&gt;
+								&lt;tr&gt;
+									&lt;td&gt;木子&lt;/td&gt;
+									&lt;td&gt;15&lt;/td&gt;
+									&lt;td&gt;女&lt;/td&gt;
+								&lt;/tr&gt;
+							&lt;/tbody&gt;
+						&lt;/table&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+					</pre>
+
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+						<table border="1" style="width: 250px;height: 120px;text-align: center;border-spacing: 15px;">
+							<thead>
+								<tr>
+									<th>姓名</th>
+									<th>年龄</th>
+									<th>性别</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>弓长</td>
+									<td>16</td>
+									<td>男</td>
+								</tr>
+								<tr>
+									<td>木子</td>
+									<td>15</td>
+									<td>女</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+
+					<h3 id="CSS-table-and-list-4">c.表格边框样式</h3>
+
+					<p>在现实环境中，大多数的表格边框都是实线，css允许使用border-collapse属性来将border的边框调整成实线显示，除此之外，配合border属性还能够调整成边框允许的所有样式（实线，虚线，点线等），请看下面的实例：</p>
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-cn"&gt;
+					&lt;head&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;title&gt;表格css配置实例&lt;/title&gt;
+
+						&lt;style type="text/css"&gt;
+							&lt;!--实线边框表格--&gt;
+							#t1{
+								width: 200px;
+								height: 100px;
+								text-align: center;
+								border-collapse: collapse;
+							}
+							#t2{
+								width: 250px;
+								height: 150px;
+								text-align: center;
+								border-spacing: 10px;
+							}
+							&lt;!--使用nth-child选择器，分别选择表格th中的三个子标签，设置成不同的边框样式--&gt;
+							#t2 th:nth-child(1) {
+								border: 3px dotted green;
+							}
+							#t2 th:nth-child(2){
+								border:3px double yellow;
+							}
+							#t2 th:nth-child(3){
+								border:3px dashed red;
+							}
+							&lt;!--将所有td设置成脊线边框--&gt;
+							#t2 td{
+								border:3px ridge pink;
+							}
+						&lt;/style&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;table id="t1" border="1"&gt;
+							&lt;thead&gt;
+								&lt;tr&gt;
+									&lt;th&gt;姓名&lt;/th&gt;
+									&lt;th&gt;年龄&lt;/th&gt;
+									&lt;th&gt;性别&lt;/th&gt;
+								&lt;/tr&gt;
+							&lt;/thead&gt;
+							&lt;tbody&gt;
+								&lt;tr&gt;
+									&lt;td&gt;弓长&lt;/td&gt;
+									&lt;td&gt;16&lt;/td&gt;
+									&lt;td&gt;男&lt;/td&gt;
+								&lt;/tr&gt;
+								&lt;tr&gt;
+									&lt;td&gt;木子&lt;/td&gt;
+									&lt;td&gt;15&lt;/td&gt;
+									&lt;td&gt;女&lt;/td&gt;
+								&lt;/tr&gt;
+							&lt;/tbody&gt;
+						&lt;/table&gt;
+						&lt;br&gt;
+						&lt;table id="t2" border="1"&gt;
+							&lt;thead&gt;
+								&lt;tr&gt;
+									&lt;th&gt;姓名&lt;/th&gt;
+									&lt;th&gt;年龄&lt;/th&gt;
+									&lt;th&gt;性别&lt;/th&gt;
+								&lt;/tr&gt;
+							&lt;/thead&gt;
+							&lt;tbody&gt;
+								&lt;tr&gt;
+									&lt;td&gt;弓长&lt;/td&gt;
+									&lt;td&gt;16&lt;/td&gt;
+									&lt;td&gt;男&lt;/td&gt;
+								&lt;/tr&gt;
+								&lt;tr&gt;
+									&lt;td&gt;木子&lt;/td&gt;
+									&lt;td&gt;15&lt;/td&gt;
+									&lt;td&gt;女&lt;/td&gt;
+								&lt;/tr&gt;
+							&lt;/tbody&gt;
+						&lt;/table&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+					</pre>
+
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+						<table border="1" style="width: 200px;height: 100px;text-align: center;border-collapse: collapse;">
+							<thead>
+								<tr>
+									<th>姓名</th>
+									<th>年龄</th>
+									<th>性别</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>弓长</td>
+									<td>16</td>
+									<td>男</td>
+								</tr>
+								<tr>
+									<td>木子</td>
+									<td>15</td>
+									<td>女</td>
+								</tr>
+							</tbody>
+						</table>
+						<br>
+						<table id="t1" border="1" style="width: 250px;height: 150px;text-align: center;border-spacing: 10px;">
+							<thead>
+								<tr>
+									<th>姓名</th>
+									<th>年龄</th>
+									<th>性别</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>弓长</td>
+									<td>16</td>
+									<td>男</td>
+								</tr>
+								<tr>
+									<td>木子</td>
+									<td>15</td>
+									<td>女</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+
+					<h3 id="CSS-table-and-list-5">d.表格标题位置</h3>
+
+					<p>默认情况下，如果设置了表格标题，它将出现在表格顶部，css允许使用caption-side属性调整表格标题的位置，请看下面的实例：</p>
+
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-cn"&gt;
+					&lt;head&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;title&gt;表格css配置实例&lt;/title&gt;
+
+						&lt;style type="text/css"&gt;
+							#t1{
+								width: 200px;
+								height: 100px;
+								text-align: center;
+								border-collapse: collapse;
+							}
+							&lt;!--"caption-side: bottom;"属性让表格标题显示在表格下方--&gt;
+							#t2{
+								width: 200px;
+								height: 100px;
+								text-align: center;
+								border-collapse: collapse;
+								caption-side: bottom;
+							}
+						&lt;/style&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;table id="t1" border="1"&gt;
+							&lt;caption&gt;人员名单&lt;/caption&gt;
+							&lt;thead&gt;
+								&lt;tr&gt;
+									&lt;th&gt;姓名&lt;/th&gt;
+									&lt;th&gt;年龄&lt;/th&gt;
+									&lt;th&gt;性别&lt;/th&gt;
+								&lt;/tr&gt;
+							&lt;/thead&gt;
+							&lt;tbody&gt;
+								&lt;tr&gt;
+									&lt;td&gt;弓长&lt;/td&gt;
+									&lt;td&gt;16&lt;/td&gt;
+									&lt;td&gt;男&lt;/td&gt;
+								&lt;/tr&gt;
+								&lt;tr&gt;
+									&lt;td&gt;木子&lt;/td&gt;
+									&lt;td&gt;15&lt;/td&gt;
+									&lt;td&gt;女&lt;/td&gt;
+								&lt;/tr&gt;
+							&lt;/tbody&gt;
+						&lt;/table&gt;
+						&lt;br&gt;
+						&lt;table id="t2" border="1"&gt;
+							&lt;caption&gt;人员名单&lt;/caption&gt;
+							&lt;thead&gt;
+								&lt;tr&gt;
+									&lt;th&gt;姓名&lt;/th&gt;
+									&lt;th&gt;年龄&lt;/th&gt;
+									&lt;th&gt;性别&lt;/th&gt;
+								&lt;/tr&gt;
+							&lt;/thead&gt;
+							&lt;tbody&gt;
+								&lt;tr&gt;
+									&lt;td&gt;弓长&lt;/td&gt;
+									&lt;td&gt;16&lt;/td&gt;
+									&lt;td&gt;男&lt;/td&gt;
+								&lt;/tr&gt;
+								&lt;tr&gt;
+									&lt;td&gt;木子&lt;/td&gt;
+									&lt;td&gt;15&lt;/td&gt;
+									&lt;td&gt;女&lt;/td&gt;
+								&lt;/tr&gt;
+							&lt;/tbody&gt;
+						&lt;/table&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+					</pre>
+
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+						<table border="1" style="width: 200px;height: 100px;text-align: center;border-collapse: collapse;">
+							<caption>人员名单</caption>
+							<thead>
+								<tr>
+									<th>姓名</th>
+									<th>年龄</th>
+									<th>性别</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>弓长</td>
+									<td>16</td>
+									<td>男</td>
+								</tr>
+								<tr>
+									<td>木子</td>
+									<td>15</td>
+									<td>女</td>
+								</tr>
+							</tbody>
+						</table>
+						<br>
+						<table border="1" style="width: 200px;height: 100px;text-align: center;border-collapse: collapse;caption-side: bottom;">
+							<caption>人员名单</caption>
+							<thead>
+								<tr>
+									<th>姓名</th>
+									<th>年龄</th>
+									<th>性别</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>弓长</td>
+									<td>16</td>
+									<td>男</td>
+								</tr>
+								<tr>
+									<td>木子</td>
+									<td>15</td>
+									<td>女</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+
+					<h3 id="CSS-table-and-list-6">e.隐藏无数据单元格</h3>
+
+					<p>使用empty-cells属性，能够将没有数据的单元格隐藏，请看下面的实例：</p>
+
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-cn"&gt;
+					&lt;head&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;title&gt;表格css配置实例&lt;/title&gt;
+
+						&lt;style type="text/css"&gt;
+							&lt;!--将没有数据的单元格隐藏，在实线边框的表格中没有区别，但如果给边框设置了间距（border-spacing），就可以看出区别，没有使用empty-cells属性的表格会显示一个内边框，而使用了这一属性的表格会隐藏掉表格的内边框--&gt;
+							#t1{
+								width: 200px;
+								height: 150px;
+								text-align: center;
+								border-spacing: 10px;
+								empty-cells: hide;
+							}
+						&lt;/style&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;table id="t1" border="1"&gt;
+							&lt;thead&gt;
+								&lt;tr&gt;
+									&lt;th&gt;姓名&lt;/th&gt;
+									&lt;th&gt;年龄&lt;/th&gt;
+									&lt;th&gt;性别&lt;/th&gt;
+								&lt;/tr&gt;
+							&lt;/thead&gt;
+							&lt;tbody&gt;
+								&lt;tr&gt;
+									&lt;td&gt;弓长&lt;/td&gt;
+									&lt;td&gt;16&lt;/td&gt;
+									&lt;td&gt;男&lt;/td&gt;
+								&lt;/tr&gt;
+								&lt;tr&gt;
+									&lt;td&gt;木子&lt;/td&gt;
+									&lt;td&gt;&lt;/td&gt;
+									&lt;td&gt;女&lt;/td&gt;
+								&lt;/tr&gt;
+							&lt;/tbody&gt;
+						&lt;/table&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+					</pre>
+
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+						<table border="1" style="width: 200px;height: 150px;text-align: center;border-spacing: 10px;empty-cells: hide;">
+							<thead>
+								<tr>
+									<th>姓名</th>
+									<th>年龄</th>
+									<th>性别</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>弓长</td>
+									<td>16</td>
+									<td>男</td>
+								</tr>
+								<tr>
+									<td>木子</td>
+									<td></td>
+									<td>女</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+
+					<h3 id="CSS-table-and-list-7">f.表格垂直拉升</h3>
+
+					<p>默认情况下，当我们设置了表格的总宽高，每个单元格会自动平均分配总宽高，但如果我们在单元格中的内容超出了这个平均宽高，这个单元格将会被水平拉升来容纳这些超出的数据，从而将后面的单元格的宽度挤压，直到挤压成只能容纳一个字符为止，再垂直扩充高度，这是默认采取的方式，如果我们希望table中的单元格不被水平拉升，永远保持平均宽度，可以使用css提供的table-layout属性，让表格垂直拉升，请看下面的实例：</p>
+
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-cn"&gt;
+					&lt;head&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;title&gt;表格css配置实例&lt;/title&gt;
+
+						&lt;style type="text/css"&gt;
+							#t1{
+								width: 200px;
+								height: 100px;
+								text-align: center;
+								border-collapse: collapse;
+							}
+							&lt;!--配置表格垂直拉升，每个单元格宽度保持不变--&gt;
+							#t2{
+								width: 200px;
+								height: 100px;
+								text-align: center;
+								border-collapse: collapse;
+								table-layout: fixed;
+							}
+						&lt;/style&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;table id="t1" border="1"&gt;
+							&lt;thead&gt;
+								&lt;tr&gt;
+									&lt;th&gt;姓名&lt;/th&gt;
+									&lt;th&gt;年龄&lt;/th&gt;
+									&lt;th&gt;性别&lt;/th&gt;
+								&lt;/tr&gt;
+							&lt;/thead&gt;
+							&lt;tbody&gt;
+								&lt;tr&gt;
+									&lt;td&gt;弓长是一个上进的好青年&lt;/td&gt;
+									&lt;td&gt;16&lt;/td&gt;
+									&lt;td&gt;男&lt;/td&gt;
+								&lt;/tr&gt;
+								&lt;tr&gt;
+									&lt;td&gt;木子&lt;/td&gt;
+									&lt;td&gt;12&lt;/td&gt;
+									&lt;td&gt;女&lt;/td&gt;
+								&lt;/tr&gt;
+							&lt;/tbody&gt;
+						&lt;/table&gt;
+						&lt;br&gt;
+						&lt;table id="t2" border="1"&gt;
+							&lt;thead&gt;
+								&lt;tr&gt;
+									&lt;th&gt;姓名&lt;/th&gt;
+									&lt;th&gt;年龄&lt;/th&gt;
+									&lt;th&gt;性别&lt;/th&gt;
+								&lt;/tr&gt;
+							&lt;/thead&gt;
+							&lt;tbody&gt;
+								&lt;tr&gt;
+									&lt;td&gt;弓长是一个上进的好青年&lt;/td&gt;
+									&lt;td&gt;16&lt;/td&gt;
+									&lt;td&gt;男&lt;/td&gt;
+								&lt;/tr&gt;
+								&lt;tr&gt;
+									&lt;td&gt;木子&lt;/td&gt;
+									&lt;td&gt;12&lt;/td&gt;
+									&lt;td&gt;女&lt;/td&gt;
+								&lt;/tr&gt;
+							&lt;/tbody&gt;
+						&lt;/table&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+					</pre>
+
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+						<table border="1" style="width: 200px;height: 100px;text-align: center;border-collapse: collapse;">
+							<thead>
+								<tr>
+									<th>姓名</th>
+									<th>年龄</th>
+									<th>性别</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>弓长是一个上进的好青年</td>
+									<td>16</td>
+									<td>男</td>
+								</tr>
+								<tr>
+									<td>木子</td>
+									<td>12</td>
+									<td>女</td>
+								</tr>
+							</tbody>
+						</table>
+						<br>
+						<table border="1" style="width: 200px;height: 100px;text-align: center;border-collapse: collapse;table-layout: fixed;">
+							<thead>
+								<tr>
+									<th>姓名</th>
+									<th>年龄</th>
+									<th>性别</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>弓长是一个上进的好青年</td>
+									<td>16</td>
+									<td>男</td>
+								</tr>
+								<tr>
+									<td>木子</td>
+									<td>12</td>
+									<td>女</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<h3 id="CSS-table-and-list-8">g.表格内容垂直对齐方式</h3>
+
+					<p>默认情况下，表格中的内容是垂直居中显示的（但水平不居中），可以使用vertical-align属性来调整内容垂直显示位置，请看下面的实例：</p>
+
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-cn"&gt;
+					&lt;head&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;title&gt;表格css配置实例&lt;/title&gt;
+
+						&lt;style type="text/css"&gt;
+							#t1{
+								width: 200px;
+								height: 150px;
+								text-align: center;
+								border-collapse: collapse;
+							}
+							&lt;!--设置tbody中表格第一行文字在底部显示--&gt;
+							#t1&gt;tbody tr:nth-child(1){
+								vertical-align: bottom;
+							}
+							&lt;!--设置tbody中表格第二行文字在顶部显示--&gt;
+							#t1&gt;tbody tr:nth-child(2){
+								vertical-align: top;
+							}
+						&lt;/style&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;table id="t1" border="1"&gt;
+							&lt;thead&gt;
+								&lt;tr&gt;
+									&lt;th&gt;姓名&lt;/th&gt;
+									&lt;th&gt;年龄&lt;/th&gt;
+									&lt;th&gt;性别&lt;/th&gt;
+								&lt;/tr&gt;
+							&lt;/thead&gt;
+							&lt;tbody&gt;
+								&lt;tr&gt;
+									&lt;td&gt;弓长&lt;/td&gt;
+									&lt;td&gt;16&lt;/td&gt;
+									&lt;td&gt;男&lt;/td&gt;
+								&lt;/tr&gt;
+								&lt;tr&gt;
+									&lt;td&gt;木子&lt;/td&gt;
+									&lt;td&gt;12&lt;/td&gt;
+									&lt;td&gt;女&lt;/td&gt;
+								&lt;/tr&gt;
+							&lt;/tbody&gt;
+						&lt;/table&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+					</pre>
+
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+						<table id="t2" border="1" style="width: 200px;height: 150px;text-align: center;border-collapse: collapse;">
+							<thead>
+								<tr>
+									<th>姓名</th>
+									<th>年龄</th>
+									<th>性别</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>弓长</td>
+									<td>16</td>
+									<td>男</td>
+								</tr>
+								<tr>
+									<td>木子</td>
+									<td>12</td>
+									<td>女</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+
+					<h2 id="CSS-table-and-list-9">0×2.列表css样式</h2>
+
+					<p>css使用list-style属性控制列表的显示样式，这个属性有三个比较常用的子属性，分别是：</p>
+					
+					<p class="indent-p">
+						list-style-type 类型值，列表中的标记类型；
+						<br>
+						list-style-image 使用图片作为列表标记；
+						<br>
+						list-style-position 位置值，排列的相对位置；
+					</p>
+					<p>list-style-type属性有如下类型值：</p>
+					<p class="indent-p">
+						none 没有标记，用于取消前置的标记（常用）；
+						<br>
+						disc 实心圆；
+						<br>
+						circle 空心圆；
+						<br>
+						square 实心方块；
+						<br>
+						decimal 阿拉伯数字；
+						<br>
+						lower-roman 小写罗马数字；
+						<br>
+						upper-roman 大写罗马数字；
+						<br>
+						lower-alpha 小写英文字母；
+						<br>
+						upper-roman 大写英文字母；
+					</p>
+
+					<h3 id="CSS-table-and-list-10">a.列表前标样式</h3>
+
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-cn"&gt;
+					&lt;head&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;title&gt;列表css配置实例&lt;/title&gt;
+						&lt;!--将列表前标配置成空心圆--&gt;
+						&lt;style type="text/css"&gt;
+							ul{
+								list-style-type: circle;
+							}
+						&lt;/style&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;ul&gt;
+							&lt;li&gt;苹果&lt;/li&gt;
+							&lt;li&gt;菠萝&lt;/li&gt;
+							&lt;li&gt;榴莲&lt;/li&gt;
+						&lt;/ul&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+					</pre>
+
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+						<ul style="list-style-type: circle;padding-left: 20px;">
+							<li>苹果</li>
+							<li>菠萝</li>
+							<li>榴莲</li>
+						</ul>
+					</div>
+					<p>读者可以将本文提供的那些类型值代入，看看都是什么样的显示效果。</p>
+
+					<h3 id="CSS-table-and-list-11">b.前标相对文本位置</h3>
+
+					<p>ul是块状元素，可以设置宽度，默认情况下，如果设置了宽度并且其中的文字超出了宽度，文字会自动换行，换行后的文字和第一行文字对齐，使用list-style-position属性，我们可以让换行后的文字和前标对齐：</p>
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-cn"&gt;
+					&lt;head&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;title&gt;列表css配置实例&lt;/title&gt;
+
+						&lt;style type="text/css"&gt;
+							&lt;!--默认的list-style-position属性值outside--&gt;
+							#u1{
+								width: 100px;
+								list-style-type: square;
+							}
+							&lt;!--属性"list-style-position: inside;"让换行后的文字与前标对齐，配置了这个属性后，列表会缩进显示，列表前标部分对齐了第一个列表的文字部分，就好像前标也是文字的一部分--&gt;
+							#u2{
+								width: 100px;
+								list-style-type: disc;
+								list-style-position: inside;
+							}
+						&lt;/style&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;ul id="u1"&gt;
+							&lt;li&gt;苹果是非常有营养的水果&lt;/li&gt;
+							&lt;li&gt;菠萝&lt;/li&gt;
+							&lt;li&gt;榴莲&lt;/li&gt;
+						&lt;/ul&gt;
+						&lt;br&gt;
+						&lt;ul id="u2"&gt;
+							&lt;li&gt;苹果是非常有营养的水果&lt;/li&gt;
+							&lt;li&gt;菠萝&lt;/li&gt;
+							&lt;li&gt;榴莲&lt;/li&gt;
+						&lt;/ul&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+					</pre>
+
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+						<ul style="width: 100px;list-style-type: square;padding-left: 20px;">
+							<li>苹果是非常有营养的水果</li>
+							<li>菠萝</li>
+							<li>榴莲</li>
+						</ul>
+						<br>
+						<ul style="width: 100px;list-style-type: disc;padding-left: 20px;list-style-position: inside;">
+							<li>苹果是非常有营养的水果</li>
+							<li>菠萝</li>
+							<li>榴莲</li>
+						</ul>
+					</div>
+
+					<h3 id="CSS-table-and-list-12">c.使用图像替换前标</h3>
+
+					<p>css允许使用一张图片来代替列表的前标显示，请看下面的实例：</p>
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-cn"&gt;
+					&lt;head&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;title&gt;列表css配置实例&lt;/title&gt;
+						&lt;!--url中可以是相对或绝对地址，本例使用了本站logo中的一个24px的小图标--&gt;
+						&lt;style type="text/css"&gt;
+							#u1{
+								list-style-image: url("../logo/web.png");
+							}
+						&lt;/style&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;ul id="u1"&gt;
+							&lt;li&gt;苹果&lt;/li&gt;
+							&lt;li&gt;菠萝&lt;/li&gt;
+							&lt;li&gt;榴莲&lt;/li&gt;
+						&lt;/ul&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+					</pre>
+
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+						<ul id="u1">
+							<li>苹果</li>
+							<li>菠萝</li>
+							<li>榴莲</li>
+						</ul>
+					</div>
+
+					<h3 id="CSS-table-and-list-13">d.三种属性的简写方式</h3>
+					
+					<p>上面介绍的三种属性可以一次性配置在list-style属性中，请看下面的实例：</p>
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-cn"&gt;
+					&lt;head&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;title&gt;列表css配置实例&lt;/title&gt;
+
+						&lt;style type="text/css"&gt;
+							&lt;!--语法："list-sytle:list-style-type list-style-position list-style-image;"--&gt;
+							#u1{
+								list-style:none inside url("../logo/web.png");
+							}
+						&lt;/style&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;ul id="u1"&gt;
+							&lt;li&gt;苹果&lt;/li&gt;
+							&lt;li&gt;菠萝&lt;/li&gt;
+							&lt;li&gt;榴莲&lt;/li&gt;
+						&lt;/ul&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+					</pre>
+						
+				<!-- /正文 -->
+
+				<footer class="text-footer">
+					<p>
+						*转载请注明来自:<a title="晴刃-自由、互助、分享、专注计算机技术。" href="http://www.qingsword.com" target="_blank">晴刃(QingSword.COM)</a>
+					</p>
+					<p>*原文连接:<a title="[CSS]-7-表格与列表" href="http://www.qingsword.com/qing/css-7.html" target="_blank">http://www.qingsword.com/qing/css-7.html</a></p>
+				</footer>
+			</article>
+			<!-- /文章区 -->	
+		</div>
+	</div>
+	<!-- /content -->
+	
+	<!-- footer -->
+	<footer id="footer">
+		<div class="footer-container">
+			QingSword.COM &nbsp;<img src="../logo/by-nc-sa.png" alt="Creative Commons" title="Creative Commons">
+		</div>
+	</footer>
+	<!-- /footer -->
+</body>
+</html>
