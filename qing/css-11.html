@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<!--Copyright©QingSword.COM︻☼1010D>-->
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
+	<meta name="description" content="晴刃,是一个致力推广实用计算机技术的个人博客;我们分享计算机知识;为计算机系统以及网络安全防范做出一份贡献。【专注技术 创造价值 共同进步】">
+	<meta name="keywords" content="晴刃,晴,qing,qingsword,ccna图文笔记,ubuntu,linux,ubuntu server,mysql,node.js,javascript,python,计算机技术博客">
+	<meta name="author" content="www.qingsword.com">
+	<title>[CSS]-11-动画效果 - QingSword.COM</title>
+	<link rel="shortcut icon" type="image/x-icon" href="../logo/favicon.ico">
+	<link rel="stylesheet" type="text/css" href="../css/basic.css">
+	<link rel="stylesheet" type="text/css" href="../css/text.css">
+	<!-- 代码块高亮js -->
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shCore.css"/>
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shThemeRDark.css"/>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shCore.js"></script>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shBrushXml.js"></script>
+	<script type="text/javascript">
+	SyntaxHighlighter.all();
+	</script>
+	<style type="text/css">
+		#d1{
+			width: 250px;
+			height: 50px;
+			text-align: center;
+			line-height: 40px;
+			animation-name: div1animation;
+			animation-duration: 10s;
+			animation-iteration-count:infinite;
+		}
+
+		@keyframes div1animation{
+			0%{
+				margin-left: 5px;
+				border:5px dotted yellow;
+				background-color: purple;
+			}
+			30%{
+				margin-left: 15px;
+				border:5px dashed pink;
+				background-color: blue;
+			}
+			50%{
+				margin-left: 25px;
+				border:5px double red;
+				background-color: white;
+				color: black;
+			}
+			70%{
+				margin-left: 35px;
+				border:5px solid orange;
+				background-color: gray;
+				color: gold;
+			}
+			100%{
+				margin-left: 40px;
+				border:5px solid white;
+				background-color: green;
+				color: white;
+			}
+		}
+		#d2{
+			width: 250px;
+			height: 50px;
+			text-align: center;
+			line-height: 40px;
+			animation-name: div2animation;
+			animation-duration: 5s;
+			animation-iteration-count:infinite;
+		}
+
+		@keyframes div2animation{
+			from{
+				margin-left: 5px;
+				border:5px dotted yellow;
+				background-color: purple;
+			}
+			to{
+				margin-left: 40px;
+				border:5px double white;
+				background-color: green;
+				color: white;
+			}
+		}
+		#d3{
+			width: 250px;
+			height: 50px;
+			text-align: center;
+			line-height: 40px;
+			border:2px solid gold;
+			animation-name: div2animation;
+			animation-duration: 5s;
+			animation-iteration-count:infinite;
+			animation-timing-function: ease-in;
+			animation-delay: 10s;
+		}
+		#d4{
+			width: 250px;
+			height: 50px;
+			text-align: center;
+			line-height: 40px;
+			animation-name: div1animation;
+			animation-duration: 5s;
+			animation-iteration-count:infinite;
+			animation-direction: alternate;
+		}
+		#d5{
+			width: 250px;
+			height: 50px;
+			text-align: center;
+			line-height: 40px;
+			border:2px solid gold;
+			animation-name: div2animation;
+			animation-duration: 5s;
+			animation-delay: 10s;
+			animation-fill-mode:forwards;
+		}
+		#d6{
+			width: 250px;
+			height: 50px;
+			text-align: center;
+			line-height: 40px;
+			animation: div2animation 5s ease infinite normal 0s both;
+		}
+	</style>
+</head>
+<body>
+	<!--header -->
+	<header id="nav">
+			<div class="nav-container"> 
+				<!-- 根大纲-->
+				<a href="http://www.qingsword.com" title="晴刃">
+					<h1 class="nav-logo">晴刃</h1>
+				</a>
+				<h2 class="nav-site-description desc-hidden">
+					自由、互助、分享、专注计算机技术
+				</h2>
+				<nav class="nav-links"> 
+					<!-- nav连接大纲-->
+					<h1 style="display:none;">网站导航</h1> 
+					<ul>
+						<li  class="li-hidden">
+							<a href="../index.html" title="home">
+								<span class="link-word"><img src="../logo/home.png" alt="home" class="link-img">首页</span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../web.html" title="web">
+								<span class="link-word"><img src="../logo/web.png" alt="web" class="link-img">前端<span class="word-hidden">设计</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../system.html" title="system">
+								<span class="link-word"><img src="../logo/linux.png" alt="linux" class="link-img">系统<span class="word-hidden">应用</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../net.html" title="net">
+								<span class="link-word"><img src="../logo/net.png" alt="net" class="link-img">网络<span class="word-hidden">技术</span></span>
+							</a>
+						</li>
+						<li>
+							<a href="../sitemap.html" title="sitemap">
+								<span class="link-word"><img src="../logo/archives.png" alt="archives" class="link-img"><span class="word-hidden">文章</span>归档</span>
+							</a>
+						</li>
+					</ul>
+				</nav>
+			</div>		
+	</header>
+	<!-- /header -->
+
+	<!-- content-->
+	<div id="content">
+		<div class="content-container">
+			<!-- 文章区 -->
+			<article class="text-container">
+				<header class="text-header">
+					<h1>[CSS]-11-动画效果</h1>	
+				</header><!-- /header -->
+				<section class="text-body">
+					<h2>引言</h2>
+					<p>"动画效果"是css3新增加的功能，利用它能够完成很多令人惊艳的动态效果。</p>
+					<!-- 目录 -->
+					<h2>文章目录</h2>
+					<ul class="contents">	
+						 <li><a href="#CSS-animation-1">0×1.百分比动画</a></li>
+						 <li><a href="#CSS-animation-2">0×2.起点与终点动画</a></li>
+						 <li><a href="#CSS-animation-3">0×3.缓动速度与延迟</a></li>
+						 <li><a href="#CSS-animation-4">0×4.重复播放与交替</a></li>
+						 <li><a href="#CSS-animation-5">0×5.停止播放</a></li>
+						 <li><a href="#CSS-animation-6">0×6.animation简写模式</a></li>
+					 </ul>
+					<!-- /目录 -->
+
+					<!-- 正文 -->
+					<h2 id="CSS-animation-1">0×1.百分比动画</h2>
+
+					<p>请看下面的实例：</p>
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-cn"&gt;
+					&lt;head&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;title&gt;百分比动画实例&lt;/title&gt;
+
+						&lt;style type="text/css"&gt;
+							#d1{
+								width: 250px;
+								height: 50px;
+								text-align: center;
+								line-height: 50px;
+								&lt;!--导入这个动画，divanimation是自定义的动画名称--&gt;
+								animation-name: divanimation;
+								&lt;!--整个动画加载时间--&gt;
+								animation-duration: 10s;
+								&lt;!--为了让大家在加载完成本页面后能够看到后面的动画效果，下面这条语句的意思是，重复播放，如果只想播放几次后停止，可以使用具体数字替换infinite值--&gt;
+								animation-iteration-count:infinite;
+							}
+
+							&lt;!--整个动画流程，可以使用百分比细分每一个动作，这些动作将在调用它的标签所设定的时间内执行完成--&gt;
+							@keyframes divanimation{
+								0%{
+									margin-left: 5px;
+									border:5px dotted yellow;
+									background-color: purple;
+								}
+								30%{
+									margin-left: 15px;
+									border:5px dashed pink;
+									background-color: blue;
+								}
+								50%{
+									margin-left: 25px;
+									border:5px double red;
+									background-color: white;
+									color: black;
+								}
+								70%{
+									margin-left: 35px;
+									border:5px solid orange;
+									background-color: gray;
+									color: gold;
+								}
+								100%{
+									border:5px solid white;
+									background-color: green;
+									color: white;
+								}
+							}
+						&lt;/style&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;div id="d1"&gt;
+							www.qingsword.com
+						&lt;/div&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+					</pre>
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+						<div id="d1">
+							www.qingsword.com
+						</div>
+					</div>
+
+					<h2 id="CSS-animation-2">0×2.起点与终点动画</h2>
+
+					<p>百分比动画能够细分每个片段的效果，而"起点与终点动画"相当于，仅存在一个0%与100%的百分比动画，请看下面的实例：</p>
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-cn"&gt;
+					&lt;head&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;title&gt;起点终点动画实例&lt;/title&gt;
+
+						&lt;style type="text/css"&gt;
+							#d1{
+								width: 250px;
+								height: 50px;
+								text-align: center;
+								line-height: 50px;
+								animation-name: divanimation;
+								animation-duration: 5s;
+								animation-iteration-count:infinite;
+							}
+
+							@keyframes divanimation{
+								from{ &lt;!--起点--&gt;
+									margin-left: 5px;
+									border:5px dotted yellow;
+									background-color: purple;
+								}
+								to{ &lt;!--终点--&gt;
+									margin-left: 40px;
+									border:5px double white;
+									background-color: green;
+									color: white;
+								}
+							}
+						&lt;/style&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;div id="d1"&gt;
+							www.qingsword.com
+						&lt;/div&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+					</pre>
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+						<div id="d2">
+							www.qingsword.com
+						</div>
+					</div>
+
+					<h2 id="CSS-animation-3">0×3.缓动速度与延迟</h2>
+
+					<p>"缓动速度"与前面一篇文章中的"过度速率"的概念是一样的，并且他们也具有相同的速度值，请看下面的实例：</p>
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-cn"&gt;
+					&lt;head&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;title&gt;缓动速度与延迟动画实例&lt;/title&gt;
+
+						&lt;style type="text/css"&gt;
+							#d1{
+								width: 250px;
+								height: 50px;
+								text-align: center;
+								line-height: 50px;
+								border:2px solid gold;
+								animation-name: divanimation;
+								animation-duration: 5s;
+								animation-iteration-count:infinite;
+								&lt;!--设置div的移动速度由慢到快--&gt;
+								animation-timing-function: ease-in;
+								&lt;!--设置延迟十秒后再开始执行动画效果，因为上面设置了重复播放，而延迟只是在页面刚加载时执行一次，所以大家看到这里的时候，动画已经开始执行并且循环了很多次了，如果想看到这个延迟效果，请刷新后在10秒内定位到下面的显示区--&gt;
+								animation-delay: 10s;
+							}
+
+							@keyframes divanimation{
+								from{
+									margin-left: 5px;
+									border:5px dotted yellow;
+									background-color: purple;
+								}
+								to{
+									margin-left: 40px;
+									border:5px double white;
+									background-color: green;
+									color: white;
+								}
+							}
+						&lt;/style&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;div id="d1"&gt;
+							www.qingsword.com
+						&lt;/div&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+					</pre>
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+						<div id="d3">
+							www.qingsword.com
+						</div>
+					</div>
+
+					<h2 id="CSS-animation-4">0×4.重复播放与交替</h2>
+
+					<p>重复播放上面已经演示过了，下面来演示一下交替播放设置，我们看到上面的播放模式都是动画到达100%后直接返回0%，但如果设置了交替属性，那么到达100%后将从100%处往回播放直至0%，就像倒带功能一样，请看下面的实例：</p>
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-cn"&gt;
+					&lt;head&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;title&gt;交替动画实例&lt;/title&gt;
+
+						&lt;style type="text/css"&gt;
+							#d1{
+								width: 250px;
+								height: 50px;
+								text-align: center;
+								line-height: 50px;
+								animation-name: divanimation;
+								animation-duration: 5s;
+								animation-iteration-count:infinite;
+								&lt;!--设置交替播放属性--&gt;
+								animation-direction: alternate;
+							}
+
+							@keyframes divanimation{
+								0%{
+									margin-left: 5px;
+									border:5px dotted yellow;
+									background-color: purple;
+								}
+								30%{
+									margin-left: 15px;
+									border:5px dashed pink;
+									background-color: blue;
+								}
+								50%{
+									margin-left: 25px;
+									border:5px double red;
+									background-color: white;
+									color: black;
+								}
+								70%{
+									margin-left: 35px;
+									border:5px solid orange;
+									background-color: gray;
+									color: gold;
+								}
+								100%{
+									margin-left: 40px;
+									border:5px solid white;
+									background-color: green;
+									color: white;
+								}
+							}
+						&lt;/style&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;div id="d1"&gt;
+							www.qingsword.com
+						&lt;/div&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+					</pre>
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+						<div id="d4">
+							www.qingsword.com
+						</div>
+					</div>
+
+					<h2 id="CSS-animation-5">0×5.停止播放</h2>
+
+					<p>如果我们想停止某个动画的播放，除了注释动画调用属性外，还可以在调用标签中插入"animation-play-state: paused;"，这样刷新页面后，这个标签将不会加载任何动画，默认情况下，动画停止在起始位置（animation-fill-mode:backforwards;），但如果我们想让动画停止在结束位置，可以将animation-fill-mode属性值设置成forwards，请看下面的实例：</p>
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-cn"&gt;
+					&lt;head&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;title&gt;动画停止实例&lt;/title&gt;
+
+						&lt;style type="text/css"&gt;
+							#d1{
+								width: 250px;
+								height: 50px;
+								text-align: center;
+								line-height: 50px;
+								border:2px solid gold;
+								animation-name: divanimation;
+								animation-duration: 5s;
+								animation-delay: 10s;
+								&lt;!--动画播放完成后，将停止在结束位置，大家可以刷新后定位到下面的显示区查看这个属性的效果--&gt;
+								animation-fill-mode:forwards;
+							}
+
+							@keyframes divanimation{
+								from{
+									margin-left: 5px;
+									border:5px dotted yellow;
+									background-color: purple;
+								}
+								to{
+									margin-left: 40px;
+									border:5px double white;
+									background-color: green;
+									color: white;
+								}
+							}
+						&lt;/style&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;div id="d1"&gt;
+							www.qingsword.com
+						&lt;/div&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+					</pre>
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+						<div id="d5">
+							www.qingsword.com
+						</div>
+					</div>
+
+					<h2 id="CSS-animation-6">0×6.animation简写模式</h2>
+
+					<p>上面所有的animation子属性，都能一次性卸载animation属性中，下面是完整格式：</p>
+					<p class="indent-p">
+						animation: 动画名称 动画执行秒数  缓动速度 执行次数 是否交替缓动 延迟秒数 停留位置;
+					</p>
+					<p>下面用一个实例来演示一下简写模式：</p>
+					<pre class="brush: html;">
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang="zh-cn"&gt;
+					&lt;head&gt;
+						&lt;meta charset="UTF-8"&gt;
+						&lt;title&gt;动画综合实例&lt;/title&gt;
+
+						&lt;style type="text/css"&gt;
+							#d1{
+								width: 250px;
+								height: 50px;
+								text-align: center;
+								line-height: 50px;
+								border:2px solid gold;
+								&lt;!--如果设置了重复播放，可以将最后的"停留位置"这一参数设置成both，或者直接省略不写，另外如果不需要交替，可以使用normal代替--&gt;
+								animation: divanimation 5s ease infinite normal 0s both;
+								&lt;!--如果使用下面这句配置替换上面这句，那么就是循环3次，并且交替缓动，因为是交替缓动并且配置了动画停止后不返回起始点，最后div会停留在结束点--&gt;
+								&lt;!--animation: divanimation 5s ease 3 alternate 0s forwards;--&gt;
+							}
+
+							@keyframes divanimation{
+								from{
+									margin-left: 5px;
+									border:5px dotted yellow;
+									background-color: purple;
+								}
+								to{
+									margin-left: 40px;
+									border:5px double white;
+									background-color: green;
+									color: white;
+								}
+							}
+						&lt;/style&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;div id="d1"&gt;
+							www.qingsword.com
+						&lt;/div&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+					</pre>
+					<p>显示效果：</p>
+					<div style="border: 1px dotted gray; border-radius: 4px;padding: 4px;margin: 10px;">
+						<div id="d6">
+							www.qingsword.com
+						</div>
+					</div>
+						
+				<!-- /正文 -->
+
+				<footer class="text-footer">
+					<p>
+						*转载请注明来自:<a title="晴刃-自由、互助、分享、专注计算机技术。" href="http://www.qingsword.com" target="_blank">晴刃(QingSword.COM)</a>
+					</p>
+					<p>*原文连接:<a title="[CSS]-11-动画效果" href="http://www.qingsword.com/qing/css-11.html" target="_blank">http://www.qingsword.com/qing/css-11.html</a></p>
+				</footer>
+			</article>
+			<!-- /文章区 -->	
+		</div>
+	</div>
+	<!-- /content -->
+	
+	<!-- footer -->
+	<footer id="footer">
+		<div class="footer-container">
+			QingSword.COM &nbsp;<img src="../logo/by-nc-sa.png" alt="Creative Commons" title="Creative Commons">
+		</div>
+	</footer>
+	<!-- /footer -->
+</body>
+</html>
