@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<!--Copyright©QingSword.COM︻☼1010D>-->
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
+	<meta name="description" content="晴刃,是一个致力推广实用计算机技术的个人博客;我们分享计算机知识;为计算机系统以及网络安全防范做出一份贡献。【专注技术 创造价值 共同进步】">
+	<meta name="keywords" content="晴刃,晴,qing,qingsword,ccna图文笔记,ubuntu,linux,ubuntu server,mysql,node.js,javascript,python,计算机技术博客">
+	<meta name="author" content="www.qingsword.com">
+	<title>[Python]-6-比较运算 - QingSword.COM</title>
+	<link rel="shortcut icon" type="image/x-icon" href="../logo/favicon.ico">
+	<link rel="stylesheet" type="text/css" href="../css/basic.css">
+	<link rel="stylesheet" type="text/css" href="../css/text.css">
+	<!-- 代码块高亮js -->
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shCore.css"/>
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shThemeRDark.css"/>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shCore.js"></script>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shBrushPython.js"></script>
+	<script type="text/javascript">
+	SyntaxHighlighter.all();
+	</script>
+</head>
+<body>
+	<!--header -->
+	<header id="nav">
+			<div class="nav-container"> 
+				<!-- 根大纲-->
+				<a href="http://www.qingsword.com" title="晴刃">
+					<h1 class="nav-logo">晴刃</h1>
+				</a>
+				<h2 class="nav-site-description desc-hidden">
+					自由、互助、分享、专注计算机技术
+				</h2>
+				<nav class="nav-links"> 
+					<!-- nav连接大纲-->
+					<h1 style="display:none;">网站导航</h1> 
+					<ul>
+						<li  class="li-hidden">
+							<a href="../index.html" title="home">
+								<span class="link-word"><img src="../logo/home.png" alt="home" class="link-img">首页</span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../web.html" title="web">
+								<span class="link-word"><img src="../logo/web.png" alt="web" class="link-img">前端<span class="word-hidden">设计</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../system.html" title="system">
+								<span class="link-word"><img src="../logo/linux.png" alt="linux" class="link-img">系统<span class="word-hidden">应用</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../net.html" title="net">
+								<span class="link-word"><img src="../logo/net.png" alt="net" class="link-img">网络<span class="word-hidden">技术</span></span>
+							</a>
+						</li>
+						<li>
+							<a href="../sitemap.html" title="sitemap">
+								<span class="link-word"><img src="../logo/archives.png" alt="archives" class="link-img"><span class="word-hidden">文章</span>归档</span>
+							</a>
+						</li>
+					</ul>
+				</nav>
+			</div>		
+	</header>
+	<!-- /header -->
+
+	<!-- content-->
+	<div id="content">
+		<div class="content-container">
+			<!-- 文章区 -->
+			<article class="text-container">
+				<header class="text-header">
+					<h1>[Python]-6-比较运算</h1>	
+				</header><!-- /header -->
+				<section class="text-body">
+					<h2>引言</h2>
+					<p>这篇文章介绍python中的比较运算，比较运算不仅可以用来比较两个数值数据的大小，还能比较字符串或列表的大小。</p>
+					<!-- 目录 -->
+					<h2>文章目录</h2>
+					<ul class="contents">	
+						 <li><a href="#python-comparison-operation-1">0×1.比较数值数据</a></li>
+						 <li><a href="#python-comparison-operation-2">0×2.比较列表</a></li>
+						 <li><a href="#python-comparison-operation-3">0×3.比较字符串</a></li>
+					 </ul>
+					<!-- /目录 -->
+
+					<!-- 正文 -->
+					<h2 id="python-comparison-operation-1">0×1.比较数值数据</h2>
+
+					<p>数值数据的比较十分简单，如果表达式为真，就返回True，为假就返回False，请看下面的实例：</p>
+
+					<pre class="brush: python;">
+					&gt;&gt;&gt; 1&gt;2
+					False
+					&gt;&gt;&gt; 1&lt;2
+					True
+					#比较两个数值数据是否相等的时候，需要使用双等号
+					&gt;&gt;&gt; 1==1
+					True
+					&gt;&gt;&gt; 2&gt;=1
+					True
+					&gt;&gt;&gt; 2&gt;=2
+					True
+					#1不等于2
+					&gt;&gt;&gt; 1!=2
+					True
+					</pre>
+
+					<h2 id="python-comparison-operation-2">0×2.比较列表</h2>
+
+					<p>列表的大小比较会逐个比较列表中的元素（相同索引位置的元素进行比较），如果完全相同则返回True，请看下面的实例：</p>
+					<pre class="brush: python;">
+					#创建两个列表，第一个元素并不相同
+					&gt;&gt;&gt; a=["www.qingsword.com","晴刃"]
+					&gt;&gt;&gt; b=["qingsword.com","晴刃"]
+
+					#因为第一个元素不同，所以返回False
+					&gt;&gt;&gt; print(a==b)
+					False
+
+					#比较运算会逐个比较列表中的元素值，本例中因为b中第一个元素的第一个字符w的ASCII码值要大于a中第一个元素的第一个字符w的ASCII码值，所以答案是False，这在后面的字符串比较中会详细介绍
+					&gt;&gt;&gt; print(a&lt;b)
+					False
+					
+					#下面这个表达式看起来有点复杂，首先a[-1]和b[-1]能够定位到两个列表的最后一个元素（晴刃），[-len(a[-1]):-1]中的len()函数计算这个元素的长度（2），负号会让计数从后往前计算，最后一位是-1，-2则定位到"晴"，说明号分片将从-2的位置，取到-1的位置，但不包含-1的位置，所以最后截取出来的就是字符"晴"，两个"晴"比较肯定返回True
+					&gt;&gt;&gt; print(a[-1][-len(a[-1]):-1]==b[-1][-len(a[-1]):-1])
+					True
+
+					&gt;&gt;&gt; b=["www.qingsword.com","晴刃"]
+					&gt;&gt;&gt; print(a==b)
+					True
+					</pre>
+
+					<p>对列表的比较方法同样适用于元组和字典，字典稍微有所不同，在字典中，只要键和值都能匹配，则两个字典相同，不需要键值的索引位置也相同，请看下面的实例：</p>
+					<pre class="brush: python;">
+					#虽然a和b字典中键值对的索引位置不同，但每个键和值都在另一个字典中能够匹配到相同的数据，python认为这两个字典是相同的，而列表和元组则需要匹配索引和索引位对应的值
+					&gt;&gt;&gt; a={1:"a",2:"b",3:"c"}
+					&gt;&gt;&gt; b={2:"b",3:"c",1:"a"}
+					&gt;&gt;&gt; print(a==b)
+					True
+
+					&gt;&gt;&gt; c={1:"x",2:"2",3:"three"}
+					&gt;&gt;&gt; print(a==c)
+					False
+					</pre>
+
+					<h2 id="python-comparison-operation-3">0×3.比较字符串</h2>
+					<p>字符串的比较实际上是ASCII码的比较，在ASCII码中，每个字符都有一个对应的十进制数，请看下面的实例：</p>
+					<pre class="brush: python;">
+					#比较单个字符，在ASCII码中，大写字母排列在小写字母之前，大写的A对应的十进制数是65，而小写的a对应的十进制为97，所以表达式为真
+					&gt;&gt;&gt; print("a"&gt;"A")
+					True
+					&gt;&gt;&gt; print("a"&gt;"b")
+					False
+
+					#多个字符组成的字符串比较大小时，会从索引0的位置开始逐个进行比较，只要碰到一个字符不相等则返回结果，不会再去比较后面的字符（请注意，是逐个比较，而不是将所有字符转换成十进制相加后的比较，大家可以尝试比较bdef和azzz的大小，明显azzz所有字符的十进制相加比bdef大，但是逐个比较时第一个字符a就比b小，所以python会认为bdef比azzz大）
+					&gt;&gt;&gt; a="abcd"
+					&gt;&gt;&gt; b="abcd"
+					&gt;&gt;&gt; c="c"
+					&gt;&gt;&gt; d="abcdmdzz"
+					&gt;&gt;&gt; print(a==b)
+					True
+					#c和a比较，明显c在ASCII码中对应的十进制数要比a大
+					&gt;&gt;&gt; print(a&lt;c)
+					True
+					
+					#虽然b和d的前4个字符相等，但是d后面还有四个字符，比较到第五个字符的时候，a并没有字符可以比较了，所以python认为d比a大
+					&gt;&gt;&gt; print(a&lt;d)
+					True
+					</pre>
+
+					<p>在字符串比较时，有两个方法比较实用，分别为upper()和lower()，这两个方法能将字符串转换成大写或小写形式，请看下面的实例：</p>
+					<pre class="brush: python;">
+					#upper()能将字符串转换成大写，而lower()刚好相反
+					&gt;&gt;&gt; a="abcd"
+					&gt;&gt;&gt; b=a.upper()
+					&gt;&gt;&gt; print(b)
+					ABCD
+					&gt;&gt;&gt; c=b.lower()
+					&gt;&gt;&gt; print(c)
+					abcd
+
+					#有时候字符串中包含大小写形式，而我们只想比较每个字符是否相同，可以将他们都转换成大写或小写形式然后比较他们是否相同
+					&gt;&gt;&gt; x="www.qingsword.com"
+					&gt;&gt;&gt; y="WWW.QINGSWORD.COM"
+					&gt;&gt;&gt; print(x.upper()==y.upper())
+					True
+
+					#最后补充一个not运算符，对结果取反
+					&gt;&gt;&gt; 1==1
+					True
+					&gt;&gt;&gt; not 1==1
+					False
+					</pre>
+						
+				<!-- /正文 -->
+
+				<footer class="text-footer">
+					<p>
+						*转载请注明来自:<a title="晴刃-自由、互助、分享、专注计算机技术。" href="http://www.qingsword.com" target="_blank">晴刃(QingSword.COM)</a>
+					</p>
+					<p>*原文连接:<a title="[Python]-6-比较运算" href="http://www.qingsword.com/qing/python-6.html" target="_blank">http://www.qingsword.com/qing/python-6.html</a></p>
+				</footer>
+			</article>
+			<!-- /文章区 -->	
+		</div>
+	</div>
+	<!-- /content -->
+	
+	<!-- footer -->
+	<footer id="footer">
+		<div class="footer-container">
+			QingSword.COM &nbsp;<img src="../logo/by-nc-sa.png" alt="Creative Commons" title="Creative Commons">
+		</div>
+	</footer>
+	<!-- /footer -->
+</body>
+</html>

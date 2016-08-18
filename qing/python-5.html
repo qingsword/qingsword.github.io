@@ -93,34 +93,34 @@
 					<p>在python中，元组使用中括号来创建，如果括号中仅包含一个元素，需要在元素末尾添加一个逗号（不添加逗号数据会被创建成字符串或数值数据类型），元组在创建后，不能添加删除其中的元素，其值是固定不变的，请看下面的实例：</p>
 					<pre class="brush: python;">
 					#创建三个元组，b元组仅包含一个字符串元素，所以末尾需要添加一个逗号，否则b将被创建为字符串对象，c元组是一个多维元组，包含了a和b元组
-					>>> a=(1,2,3,4,5)
-					>>> b=("www.qingsword.com",)
-					>>> c=(a,b)
+					&gt;&gt;&gt; a=(1,2,3,4,5)
+					&gt;&gt;&gt; b=("www.qingsword.com",)
+					&gt;&gt;&gt; c=(a,b)
 
 					#分别打印出三个元组中的元素
-					>>> print(a)
+					&gt;&gt;&gt; print(a)
 					(1, 2, 3, 4, 5)
-					>>> print(b)
+					&gt;&gt;&gt; print(b)
 					('www.qingsword.com',)
-					>>> print(c)
+					&gt;&gt;&gt; print(c)
 					((1, 2, 3, 4, 5), ('www.qingsword.com',))
 
 					#打印出a元组第一个元素，python的索引起始是从0开始的
-					>>> print(a[0])
+					&gt;&gt;&gt; print(a[0])
 					1
 
 					#打印出a元组中最后一个元素，len()函数将得到a元组元素的个数，因为索引是从0开始的，所以元素个数减一，就是最后一个元素的索引号
-					>>> print(a[len(a)-1])
+					&gt;&gt;&gt; print(a[len(a)-1])
 					5
 
 					#另一种简便的获取元组中最后一个元素的方法，直接使用-1，以此类推，获取倒数第二个元素就使用-2作为索引值
-					>>> print(a[-1])
+					&gt;&gt;&gt; print(a[-1])
 					5
-					>>> print(a[-2])
+					&gt;&gt;&gt; print(a[-2])
 					4
 
 					#获取多维元组中，第0个元素（a元组）中索引位置为2的值，也就是a子元组中的3了
-					>>> print(c[0][2])
+					&gt;&gt;&gt; print(c[0][2])
 					3
 					</pre>
 
@@ -129,57 +129,57 @@
 					<p>python中，可以使用中括号创建列表，在上面的元组实例中的大部分操作都适用于列表，只需要将圆括号替换成中括号即可，不同点是，列表中仅包含一个元素时，不需要在末尾添加逗号，另外，列表可以添加或删除元素，请看下面的实例：</p>
 					<pre class="brush: python;">
 					#创建三个列表，其中c为多维列表，包含a和b
-					>>> a=[1,2,3,4,5]
-					>>> b=["www.qingsword.com"]
-					>>> c=[a,b]
+					&gt;&gt;&gt; a=[1,2,3,4,5]
+					&gt;&gt;&gt; b=["www.qingsword.com"]
+					&gt;&gt;&gt; c=[a,b]
 
 					#打印出三个列表中的元素
-					>>> print(a)
+					&gt;&gt;&gt; print(a)
 					[1, 2, 3, 4, 5]
-					>>> print(b)
+					&gt;&gt;&gt; print(b)
 					['www.qingsword.com']
-					>>> print(c)
+					&gt;&gt;&gt; print(c)
 					[[1, 2, 3, 4, 5], ['www.qingsword.com']]
 
 					#使用list.append()方法，给a列表添加一个元素6
-					>>> a.append(6)
-					>>> print(a)
+					&gt;&gt;&gt; a.append(6)
+					&gt;&gt;&gt; print(a)
 					[1, 2, 3, 4, 5, 6]
 
 					#append()方法一次只能添加单个元素，而list.extend()方法一次可以添加多个元素
-					>>> a.extend([7,8,9])
-					>>> print(a)
+					&gt;&gt;&gt; a.extend([7,8,9])
+					&gt;&gt;&gt; print(a)
 					[1, 2, 3, 4, 5, 6, 7, 8, 9]
 
 					#利用extend()方法的特性，可以将一个列表中的元素完全复制给另外一个列表，下面创建了一个空列表d，然后将c列表中的元素复制给d
-					>>> d=[]
-					>>> d.extend(c)
-					>>> print(d)
+					&gt;&gt;&gt; d=[]
+					&gt;&gt;&gt; d.extend(c)
+					&gt;&gt;&gt; print(d)
 					[[1, 2, 3, 4, 5, 6, 7, 8, 9], ['www.qingsword.com']]
 
 					#使用list.remove()方法可以删除列表中的元素，这个方法接收的不是索引值，而是元素值（本例直接删除了a列表中的元素1和2）
-					>>> a.remove(1)
-					>>> a.remove(2)
-					>>> print(a)
+					&gt;&gt;&gt; a.remove(1)
+					&gt;&gt;&gt; a.remove(2)
+					&gt;&gt;&gt; print(a)
 					[3, 4, 5, 6, 7, 8, 9]
 
 					#list.pop()方法接收一个索引值，如果不指定索引值则默认为最后一位元素的索引值，这个方法将取出对应元素，然后从列表中删除这个元素
-					>>> print(a.pop())
+					&gt;&gt;&gt; print(a.pop())
 					9
-					>>> print(a)
+					&gt;&gt;&gt; print(a)
 					[3, 4, 5, 6, 7, 8]
-					>>> print(a.pop(0))
+					&gt;&gt;&gt; print(a.pop(0))
 					3
-					>>> print(a)
+					&gt;&gt;&gt; print(a)
 					[4, 5, 6, 7, 8]
 
 					#使用set()能够删除列表中的重复值
-					>>> e=["a","a","b","c","b"]
-					>>> print(e)
+					&gt;&gt;&gt; e=["a","a","b","c","b"]
+					&gt;&gt;&gt; print(e)
 					['a', 'a', 'b', 'c', 'b']
 
-					>>> e=set(e)
-					>>> print(e)
+					&gt;&gt;&gt; e=set(e)
+					&gt;&gt;&gt; print(e)
 					{'a', 'b', 'c'}
 					</pre>
 
@@ -188,29 +188,29 @@
 					<p>python中，使用大括号能够创建字典，字典中每个元素都是以"键值对"的形式储存的，请看下面的实例：</p>
 					<pre class="brush: python;">
 					#有两种方法可以创建字典，第一种直接创建一个空的字典，然后逐个添加键值
-					>>> a={}
-					>>> a["早餐"]="牛奶鸡蛋"
-					>>> a["午餐"]="可乐牛排"
-					>>> a["晚餐"]="水果沙拉"
-					>>> print(a)
+					&gt;&gt;&gt; a={}
+					&gt;&gt;&gt; a["早餐"]="牛奶鸡蛋"
+					&gt;&gt;&gt; a["午餐"]="可乐牛排"
+					&gt;&gt;&gt; a["晚餐"]="水果沙拉"
+					&gt;&gt;&gt; print(a)
 					{'早餐': '牛奶鸡蛋', '晚餐': '水果沙拉', '午餐': '可乐牛排'}
 
 					#第二种方法创建字典，一次性添加所有的键值，用冒号分隔每一组元素，冒号前为"键"，冒号后为"值""
-					>>> a={'早餐': '牛奶鸡蛋', '晚餐': '水果沙拉', '午餐': '可乐牛排'}
+					&gt;&gt;&gt; a={'早餐': '牛奶鸡蛋', '晚餐': '水果沙拉', '午餐': '可乐牛排'}
 
 					#python允许不同的键拥有相同的值，所以下面的语法是正确的
 					b={"one":"qing","two":"qing"} 
 
 					#有两种方法可以读取字典中的值，直接使用"字典[键]"来读取值，或使用"字典.get(键)"来读取值
-					>>> print(a["早餐"])
+					&gt;&gt;&gt; print(a["早餐"])
 					牛奶鸡蛋
-					>>> print(a.get("午餐"))
+					&gt;&gt;&gt; print(a.get("午餐"))
 					可乐牛排
 
 					#读取字典keys和values列表
-					>>> print(a.keys())
+					&gt;&gt;&gt; print(a.keys())
 					dict_keys(['早餐', '晚餐', '午餐'])
-					>>> print(a.values())
+					&gt;&gt;&gt; print(a.values())
 					dict_values(['牛奶鸡蛋', '水果沙拉', '可乐牛排'])
 					</pre>
 
@@ -218,17 +218,17 @@
 					<p>在python中能够通过数据分片，实现读取某段字符串中单个字符的目的，这种思想同样适用于元组和列表，如果列表中储存的为字符串，就可以通过分片技术取出某个元素的第几个字符，这种方法在某些环境中会非常实用，请看下面的实例：</p>
 					<pre class="brush: python;">
 					#首先来看python对字符串数据的分片提取方法，本例取出a指向的字符串数据中，索引位置为2的单个字符
-					>>> a="abcdefg"
-					>>> print(a[2])
+					&gt;&gt;&gt; a="abcdefg"
+					&gt;&gt;&gt; print(a[2])
 					c
 
 					#在列表数据中，可以将每个字符串元素看做一个子列表，使用多维列表的思想，提取子列表中对应索引位置的值
-					>>> b=["www.qingsword.com","abcdefg","12345678"]
-					>>> print(b[0][4])
+					&gt;&gt;&gt; b=["www.qingsword.com","abcdefg","12345678"]
+					&gt;&gt;&gt; print(b[0][4])
 					q
 
 					#提取b中索引位置为2的元素的最后一位字符
-					>>> print(b[2][-1])
+					&gt;&gt;&gt; print(b[2][-1])
 					8
 					</pre>
 
@@ -255,13 +255,13 @@
 					#分号切片同样适用于字符串或元组列表，语法为"[起始索引:结束索引(不包含)]"
 
 					#从字符串a索引为2（3）的位置开始切片，直到索引6（7）的位置，截取这其中的数据输出（包含起始索引值，不包含结束索引值）
-					>>> a="123456789"
-					>>> print(a[2:6])
+					&gt;&gt;&gt; a="123456789"
+					&gt;&gt;&gt; print(a[2:6])
 					3456
 
 					#从b中索引为3（d）的位置开始，直到索引为5（f）的位置
-					>>> b=["a","b","c","d","e","f","g"]
-					>>> print(b[3:5])
+					&gt;&gt;&gt; b=["a","b","c","d","e","f","g"]
+					&gt;&gt;&gt; print(b[3:5])
 					['d', 'e']
 					</pre>
 						

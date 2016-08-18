@@ -93,28 +93,28 @@
 					<p>python中可以使用type()函数来判断变量是什么数据类型，type()函数会返回一个type值，请看下面的实例：</p>
 					<pre class="brush: python;">
 					#创建四个变量引用，分别赋值为整数，字符串，浮点数与虚数
-					>>> a=1
-					>>> b="www.qingsword.com"
-					>>> c=1.2
-					>>> d=1+1.2j
+					&gt;&gt;&gt; a=1
+					&gt;&gt;&gt; b="www.qingsword.com"
+					&gt;&gt;&gt; c=1.2
+					&gt;&gt;&gt; d=1+1.2j
 
 					#使用type()函数返回这些变量的数据类型
-					>>> type(a)
+					&gt;&gt;&gt; type(a)
 					&lt;class 'int'&gt;
-					>>> type(b)
+					&gt;&gt;&gt; type(b)
 					&lt;class 'str'&gt;
-					>>> type(c)
+					&gt;&gt;&gt; type(c)
 					&lt;class 'float'&gt;
-					>>> type(d)
+					&gt;&gt;&gt; type(d)
 					&lt;class 'complex'&gt;
 
 					#如果想要让不同的数据类型进行连接或运算，可以使用强制转换函数，下面的第一个实例，将a这个字符串类型转换成整数类型，和b相加，第二个实例将b转换成字符串类型，并和a连接
-					>>> a="11"
-					>>> b=2
-					>>> int(a)+b
+					&gt;&gt;&gt; a="11"
+					&gt;&gt;&gt; b=2
+					&gt;&gt;&gt; int(a)+b
 					13
-					>>> a+b
-					>>> a+str(b)
+					&gt;&gt;&gt; a+b
+					&gt;&gt;&gt; a+str(b)
 					'112'
 					</pre>
 
@@ -125,12 +125,12 @@
 					<p>整数与浮点数不过多介绍，这里简单介绍下复数，使用虚数和普通数字计算可以创建一个复数，python通过在数字末尾添加工程符号j来定义一个虚数：</p>
 					<pre class="brush: python;">
 					#创建复数
-					>>> x=12+22j
-					>>> type(x)
+					&gt;&gt;&gt; x=12+22j
+					&gt;&gt;&gt; type(x)
 					&lt;class 'complex'&gt;
 					
 					#通过real方法能够提取复数的实数部分，通过imag方法能够提取处复数的虚数部分
-					>>> print(x.real,x.imag)
+					&gt;&gt;&gt; print(x.real,x.imag)
 					12.0 22.0
 					</pre>
 
@@ -138,32 +138,32 @@
 
 					<pre class="brush: python;">
 					#加减乘除
-					>>> 1+1
+					&gt;&gt;&gt; 1+1
 					2
-					>>> 1-1
+					&gt;&gt;&gt; 1-1
 					0
-					>>> 2*2
+					&gt;&gt;&gt; 2*2
 					4
 					#python中除法运算总是返回一个浮点数，就算能够除尽也是如此
-					>>> 4/2
+					&gt;&gt;&gt; 4/2
 					2.0
 
 					#取余
-					>>> 4%3
+					&gt;&gt;&gt; 4%3
 					1
-					>>> 5%3
+					&gt;&gt;&gt; 5%3
 					2
 
 					#幂运算的两种写法，计算2的3次方
-					>>> 2**3
+					&gt;&gt;&gt; 2**3
 					8
-					>>> pow(2,3)
+					&gt;&gt;&gt; pow(2,3)
 					8
 
 					#大数计算，如果数值超出python可计算范围，就会返回inf，代表无穷大
-					>>> 11e12*12e13
+					&gt;&gt;&gt; 11e12*12e13
 					1.32e+27
-					>>> 9999E9999*2
+					&gt;&gt;&gt; 9999E9999*2
 					inf
 					</pre>
 
@@ -171,17 +171,17 @@
 
 					<pre class="brush: python;">
 					#1.使用整数占位符，字符串占位符的长度单位同样适用于下面每一种占位符，例如%10d代表占用10个字符的长度打印，不足在左边补上空格，负数相反
-					>>> a=1
-					>>> print("Number:%d" % a)
+					&gt;&gt;&gt; a=1
+					&gt;&gt;&gt; print("Number:%d" % a)
 					Number:1
 
 					#2.使用浮点数占位符，格式%x.yf，其中x为浮点数占用字符长度，y为小数点后精确位数，本例小数点后精确2位，整个浮点数占用10位，因为10为正数所以在左端补上6个空格（长度包含0.33这四个字符一共10个，如果为%-10.2f则在结果的右端补上空格）
-					>>> b=1/3
-					>>> print("Float:%10.2f"%b)
+					&gt;&gt;&gt; b=1/3
+					&gt;&gt;&gt; print("Float:%10.2f"%b)
 					Float:      0.33
 
 					#3.八进制与十六进制占位符
-					>>> print("""十进制：%d
+					&gt;&gt;&gt; print("""十进制：%d
 					八进制：%o
 					十六进制：%x
 					大写十六进制:%X""" % (26,26,26,26))
@@ -193,7 +193,7 @@
 
 					<p>最后补充一个长代码换行的小技巧，有时我们需要输入一长串的代码，这可能会超出屏幕的长度，可以在需要换行的地方输入\来换行，他们被当做同一行执行：</p>
 					<pre class="brush: python;">
-					>>> print\
+					&gt;&gt;&gt; print\
 					       ("www.qingsword.com")
 					www.qingsword.com
 					</pre>

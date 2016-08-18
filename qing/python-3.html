@@ -95,15 +95,15 @@
 					#以下代码在idle3中执行
 
 					#1.使用单引号包含字符串
-					>>> print('www.qingsword.com')
+					&gt;&gt;&gt; print('www.qingsword.com')
 					www.qingsword.com
 
 					#2.使用双引号包含字符串
-					>>> print("www.qingsword.com")
+					&gt;&gt;&gt; print("www.qingsword.com")
 					www.qingsword.com
 
 					#3.使用三引号包含字符串，需要注意的是，与上面两种方法不同，上面的两种方法都只能将字符串写在一行，而三引号包含的字符串能够换行输入，显示的时候也是按照换行的格式显示的
-					>>> print("""welcome
+					&gt;&gt;&gt; print("""welcome
 					to my website
 					www.qingsword.com""")
 					welcome
@@ -111,9 +111,9 @@
 					www.qingsword.com
 
 					#4.多引号复合使用时，只要前后引号保持一致，中间不同的引号将被直接打印出来，在下面两个实例中，两端分别使用了双引号和单引号，其中不同的引号不需要转义直接被打印出来，值得注意的是，第二个实例中因为两端是单引号，所以其中包含的单引号要使用转义符号\来打印，这和c语言的标准一致
-					>>> print("I said,Don't do it!")
+					&gt;&gt;&gt; print("I said,Don't do it!")
 					I said,Don't do it!
-					>>> print('I said,"Don\'t do it!"')
+					&gt;&gt;&gt; print('I said,"Don\'t do it!"')
 					I said,"Don't do it!"
 					</pre>
 
@@ -121,7 +121,7 @@
 
 					<p>python中的转义字符以\开头，与c语言一样\n表示换行符，\r表示回车符，\t表示制表符，除此之外还有一些并不常用的转义字符，等以后使用的时候再做介绍，下面是转义字符的几个实例：</p>
 					<pre class="brush: python;">
-					>>> print("""打印出双引号：\"
+					&gt;&gt;&gt; print("""打印出双引号：\"
 					打印出单引号:\'
 					打印出反斜杠：\\
 					制表符：qing\tsword
@@ -142,15 +142,15 @@
 					<p>python中连接字符串的方式有好几种，最常用的是使用运算符"加号"，请看下面的实例：</p>
 					<pre class="brush: python;">
 					#1.使用加号连接前后字符串
-					>>> print("www."+"qingsword"+".com")
+					&gt;&gt;&gt; print("www."+"qingsword"+".com")
 					www.qingsword.com
 
 					#2.使用空格连接前后字符串
-					>>> print("我的博客" " " "www." "qingsword" ".com")
+					&gt;&gt;&gt; print("我的博客" " " "www." "qingsword" ".com")
 					我的博客 www.qingsword.com
 
 					#3.使用逗号连接前后字符串，输出时逗号会被替换成空格
-					>>> print("我的博客","www.qingsword.com")
+					&gt;&gt;&gt; print("我的博客","www.qingsword.com")
 					我的博客 www.qingsword.com
 					</pre>
 
@@ -158,23 +158,23 @@
 					<p>当字符串中包含变量时，可以使用占位符%s将变量代入字符串中输出，请看下面的实例：</p>
 					<pre class="brush: python;">
 					#1.使用百分号连接字符串与变量，百分号后面的变量值会代入到前面字符串的%s中
-					>>> name="qingsword"
-					>>> print("My name is %s" % name)
+					&gt;&gt;&gt; name="qingsword"
+					&gt;&gt;&gt; print("My name is %s" % name)
 					My name is qingsword
 
 					#2.如果想要代入多个变量，可以使用中括号，在其中用逗号隔开每个变量，百分号前面的字符串中有多少个%s就需要有多少个变量一一对应
-					>>> website="www.qingsword.com"
-					>>> print("My name is %s,Website %s" % (name,website))
+					&gt;&gt;&gt; website="www.qingsword.com"
+					&gt;&gt;&gt; print("My name is %s,Website %s" % (name,website))
 					My name is qingsword,Website www.qingsword.com
 					</pre>
 					<p>占位符除了能够代入变量，还能设置其左右空格距离，请看下面的实例：</p>
 					<pre class="brush: python;">
 					#1.name变量中的值占用15个字符的长度，如果长度不够，在字符串左边添加空格，直到满足15个字符长度，本例中qingsword为9个字符长度，那么就在其左边填充6个空格
-					>>> print("---%15s---" % name)
+					&gt;&gt;&gt; print("---%15s---" % name)
 					---      qingsword---
 
 					#2.如果为负值，那么就扩充字符串右边，直到满足15个字符的长度
-					>>> print("---%-15s---" % name)
+					&gt;&gt;&gt; print("---%-15s---" % name)
 					---qingsword      ---	
 					</pre>
 						
