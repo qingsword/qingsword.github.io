@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<!--Copyright©QingSword.COM︻☼1010D>-->
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
+	<meta name="description" content="晴刃,是一个致力推广实用计算机技术的个人博客;我们分享计算机知识;为计算机系统以及网络安全防范做出一份贡献。【专注技术 创造价值 共同进步】">
+	<meta name="keywords" content="晴刃,晴,qing,qingsword,ccna图文笔记,ubuntu,linux,ubuntu server,mysql,node.js,javascript,python,计算机技术博客">
+	<meta name="author" content="www.qingsword.com">
+	<title>[Python]-8-函数 - QingSword.COM</title>
+	<link rel="shortcut icon" type="image/x-icon" href="../logo/favicon.ico">
+	<link rel="stylesheet" type="text/css" href="../css/basic.css">
+	<link rel="stylesheet" type="text/css" href="../css/text.css">
+	<!-- 代码块高亮js -->
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shCore.css"/>
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shThemeRDark.css"/>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shCore.js"></script>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shBrushPython.js"></script>
+	<script type="text/javascript">
+	SyntaxHighlighter.all();
+	</script>
+</head>
+<body>
+	<!--header -->
+	<header id="nav">
+			<div class="nav-container"> 
+				<!-- 根大纲-->
+				<a href="http://www.qingsword.com" title="晴刃">
+					<h1 class="nav-logo">晴刃</h1>
+				</a>
+				<h2 class="nav-site-description desc-hidden">
+					自由、互助、分享、专注计算机技术
+				</h2>
+				<nav class="nav-links"> 
+					<!-- nav连接大纲-->
+					<h1 style="display:none;">网站导航</h1> 
+					<ul>
+						<li  class="li-hidden">
+							<a href="../index.html" title="home">
+								<span class="link-word"><img src="../logo/home.png" alt="home" class="link-img">首页</span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../web.html" title="web">
+								<span class="link-word"><img src="../logo/web.png" alt="web" class="link-img">前端<span class="word-hidden">设计</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../system.html" title="system">
+								<span class="link-word"><img src="../logo/linux.png" alt="linux" class="link-img">系统<span class="word-hidden">应用</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../net.html" title="net">
+								<span class="link-word"><img src="../logo/net.png" alt="net" class="link-img">网络<span class="word-hidden">技术</span></span>
+							</a>
+						</li>
+						<li>
+							<a href="../sitemap.html" title="sitemap">
+								<span class="link-word"><img src="../logo/archives.png" alt="archives" class="link-img"><span class="word-hidden">文章</span>归档</span>
+							</a>
+						</li>
+					</ul>
+				</nav>
+			</div>		
+	</header>
+	<!-- /header -->
+
+	<!-- content-->
+	<div id="content">
+		<div class="content-container">
+			<!-- 文章区 -->
+			<article class="text-container">
+				<header class="text-header">
+					<h1>[Python]-8-函数</h1>	
+				</header><!-- /header -->
+				<section class="text-body">
+					<h2>引言</h2>
+					<p>这篇文章介绍python中函数的基本知识。</p>
+					<!-- 目录 -->
+					<h2>文章目录</h2>
+					<ul class="contents">	
+						 <li><a href="#python-def-1">0×1.自定义函数</a></li>
+						 <li><a href="#python-def-2">0×2.给函数添加文档说明</a></li>
+						 <li><a href="#python-def-3">0×3.函数的作用域</a></li>
+						 <li><a href="#python-def-4">0×4.带参数的函数</a></li>
+					 </ul>
+					<!-- /目录 -->
+
+					<!-- 正文 -->
+					<h2 id="python-def-1">0×1.自定义函数</h2>
+
+					<p>在任何编程语言中，函数的作用都是相同的，它可以将一些需要重复执行的语句组合起来，方便在需要的时候调用他们，python中使用def关键字来创建一个函数，请看下面的实例：</p>
+					<pre class="brush: python;">
+					#!/usr/bin/env python3
+					#coding=utf-8
+					dect={"one":1,"two":2,"three":3}
+					
+					#创建函数，函数名为in_dect，中括号中为空代表不接收传入参数，函数执行过程中遇到return会结束执行，将return后的值返回给调用者
+					#------
+					def in_dect():
+					    """根据字典传入键返回值"""
+					    try:
+					        count=dect[num]
+					    except KeyError as err:
+					        count=0
+					    return count
+					#------
+
+					#将num设置成dect字典中不同的键，在print中调用刚才创建的函数，in_dect()函数会根据num键返回对应的值，如果传入的键不存在，则触发KeyError异常，返回0
+					num="one"
+					print(in_dect())
+					num="two"
+					print(in_dect())
+					num="xxx"
+					print(in_dect())
+
+					#程序输出
+					1
+					2
+					0
+					</pre>
+
+					<h2 id="python-def-2">0×2.给函数添加文档说明</h2>
+
+					<p>我们可以使用"三引号"给每个函数添加一段功能说明，在python中，通过"函数名.__doc__"能够打印出这段说明文字，请看下面的实例：</p>
+					<pre class="brush: python;">
+					#!/usr/bin/env python3
+					#coding=utf-8
+
+					#------
+					def sayhello():
+					    """打印出hello world"""
+					    """www.qingsword.com"""
+					    print("hello world!")
+					#------
+					
+					sayhello()  #直接调用函数
+					print(sayhello.__doc__) #打印出函数中的说明信息
+
+					#程序输出
+					hello world!
+					打印出hello world
+
+					#注意上面的输出，__doc__只能够打印出函数中第一个"三引号"所包含的说明信息
+					</pre>
+
+					<h2 id="python-def-3">0×3.函数的作用域</h2>
+
+					<p>函数中的变量名称和全局中的变量名称可以相同，函数的变量名称只作用与函数内部，请看下面的实例：</p>
+					<pre class="brush: python;">
+					#!/usr/bin/env python3
+					#coding=utf-8
+
+					#------
+					def re_list():
+					    lst=[1,2,3]
+					    return lst
+					#------
+
+					lst=["a","b","c"]
+					print(lst,re_list())
+
+					#在上面的程序中，re_list()函数中包含了一个变量名称lst，全局中也有一个相同名称的变量，但两者互不干扰，函数中的变量的作用域仅限函数本身，当函数被调用时创建，函数执行完成后被回收，下面是程序输出
+					['a', 'b', 'c'] [1, 2, 3]
+					</pre>
+
+					<h2 id="python-def-4">0×4.带参数的函数</h2>
+					
+					<p>可以在自定义的函数括号中定义变量来接收传入数据，请看下面的实例：</p>
+					<pre class="brush: python;">
+					#!/usr/bin/env python3
+					#coding=utf-8
+
+					#------
+					def re_dect_value(dect,k):
+					    return dect[k]
+					#------
+
+					d={"a":1,"b":2,"c":3}
+					k="a"
+					
+					#调用函数时，将d和k传递给函数，函数定义时，括号中包含了两个参数，这相当于将函数参数中的dect指向了d所引用的内存区域的数据（列表数据），k同理，所以这个函数的return语句返回的值，实际上就等价与d[k]
+					print(re_dect_value(d,k))
+
+					#程序输出：
+					1
+					</pre>
+
+					<p>可以使用判断语句来判断传递给函数的参数的数据类型，通过数据类型判断调用不同的函数区块执行，如果不携带参数，则使用默认值所指向的区块执行，请看下面的实例：</p>
+					<pre class="brush: python;">
+					#!/usr/bin/env python3
+					#coding=utf-8
+
+					#choose_def函数，用于确定传入的数据是哪种类型，根据不同类型调用不同函数执行，如果不传入参数，则使用默认值（即typ="default",idx=0）
+					def choose_def(typ="default",idx=0):
+					    if type(typ)==type([]):
+					        print(c_dect(typ,idx))
+					    elif type(typ)==type(""):
+					        print(c_str(typ,idx))
+					#------
+					def c_dect(d,idx):
+					    return d[idx]
+					#------
+					def c_str(s,idx):
+					    return s[idx]
+					#------
+
+					lst=[1,2,3,4]
+					s="www.qingsword.com"
+					i=2
+					choose_def(lst,i)
+					choose_def(s,i)
+					choose_def()
+
+					#程序输出
+					3
+					w
+					d
+
+					#在上面的程序中，最后一次调用选择函数时没有携带参数，python会使用定义函数时设定的默认值（如果有），程序判断出"default"是一个字符串，所以调用字符串函数c_str()，因为默认的idx是0，所以打印出"default"第一个字符d
+					</pre>
+
+					<p>除了使用类型判断外，还可以使用字符串判断，通过每个类型判断所返回的字符串，来判断传入的参数属于那种类型，对上面的程序中的choose_def函数做出一点点修改，执行结果相同：</p>
+					<pre class="brush: python;">
+					#将type()判断后返回的值转化成字符串，与对应的字符串值比较
+					def choose_def(typ="default",idx=0):
+					    if str(type(typ))=="&lt;class 'list'&gt;":
+					        print(c_dect(typ,idx))
+					    elif str(type(typ))=="&lt;class 'str'&gt;":
+					        print(c_str(typ,idx))
+					</pre>
+
+					<p>当传递了一个错误的数据给函数时，除了使用try捕获异常外，还能够使用raise关键字来主动抛出异常，修改choose_def()函数，在末尾添加下面的语句：</p>
+
+					<pre class="brush: python;">
+					def choose_def(typ="default",idx=0):
+					    if str(type(typ))=="&lt;class 'list'&gt;":
+					        print(c_dect(typ,idx))
+					    elif str(type(typ))=="&lt;class 'str'&gt;":
+					        print(c_str(typ,idx))
+					    else:
+					        raise TypeError("错误的参数:%s"%typ)
+
+					#向函数传递一个错误的参数，整数
+					choose_def(123)
+
+					#当程序执行if判断时发现没有类型能够匹配传入的整型，所以跳转到else执行下面的raise语句，当raise语句被执行时，会立刻终止程序的执行，并抛出一个异常，这个异常是我们主动抛出的，下面是这个异常的显示信息，其中的中文内容是我们自定义的
+
+					builtins.TypeError: 错误的参数:123
+					</pre>
+
+					<p>最后再来看一个实例，创建一个函数，接受两个数值，返回这两个数值相加后的结果：</p>
+
+					<pre class="brush: python;">
+					#!/usr/bin/env python3
+					#coding=utf-8
+
+					#------如果输入的字符不是数值，if判断会匹配到else从而主动抛出一个异常
+					def a_plus(x,y):
+					    """返回x+y的值"""
+					    if is_Num(x)!=False and is_Num(y)!=False:
+					        return float(x)+float(y)
+					    else:
+					        raise TypeError("输入的数值错误：%s,%s"%(x,y))
+
+					#------用来判断输入的是否为数值数据，不论是浮点数，整数或科学计数法，使用float()转换时都不会报错，而其他的字符就会引发ValueError异常返回False，如果不报错，返回True
+					def is_Num(x):
+					    """判断键盘输入的是否为数字"""
+					    try:
+					        float(x)
+					    except ValueError:
+					        return False
+					    else:
+					        return True
+					#------
+					    
+					x=input("第一个数：")
+					y=input("第二个数：")
+					print("相加结果：%.2f"%a_plus(x, y))
+
+					#程序输出
+					第一个数：1.2
+					第二个数：1.3333
+					相加结果：2.53
+
+					第一个数：abc
+					第二个数：111
+					builtins.TypeError: 输入的数值错误：abc,111
+					</pre>
+						
+				<!-- /正文 -->
+
+				<footer class="text-footer">
+					<p>
+						*转载请注明来自:<a title="晴刃-自由、互助、分享、专注计算机技术。" href="http://www.qingsword.com" target="_blank">晴刃(QingSword.COM)</a>
+					</p>
+					<p>*原文连接:<a title="[Python]-8-函数" href="http://www.qingsword.com/qing/python-8.html" target="_blank">http://www.qingsword.com/qing/python-8.html</a></p>
+				</footer>
+			</article>
+			<!-- /文章区 -->	
+		</div>
+	</div>
+	<!-- /content -->
+	
+	<!-- footer -->
+	<footer id="footer">
+		<div class="footer-container">
+			QingSword.COM &nbsp;<img src="../logo/by-nc-sa.png" alt="Creative Commons" title="Creative Commons">
+		</div>
+	</footer>
+	<!-- /footer -->
+</body>
+</html>
