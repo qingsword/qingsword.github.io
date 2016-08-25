@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<!--Copyright©QingSword.COM︻☼1010D>-->
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
+	<meta name="description" content="晴刃,是一个致力推广实用计算机技术的个人博客;我们分享计算机知识;为计算机系统以及网络安全防范做出一份贡献。【专注技术 创造价值 共同进步】">
+	<meta name="keywords" content="晴刃,晴,qing,qingsword,ccna图文笔记,ubuntu,linux,ubuntu server,mysql,node.js,javascript,python,计算机技术博客">
+	<meta name="author" content="www.qingsword.com">
+	<title>[Python]-10-模块与包 - QingSword.COM</title>
+	<link rel="shortcut icon" type="image/x-icon" href="../logo/favicon.ico">
+	<link rel="stylesheet" type="text/css" href="../css/basic.css">
+	<link rel="stylesheet" type="text/css" href="../css/text.css">
+	<!-- 代码块高亮js -->
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shCore.css"/>
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shThemeRDark.css"/>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shCore.js"></script>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shBrushPython.js"></script>
+	<script type="text/javascript">
+	SyntaxHighlighter.all();
+	</script>
+</head>
+<body>
+	<!--header -->
+	<header id="nav">
+			<div class="nav-container"> 
+				<!-- 根大纲-->
+				<a href="http://www.qingsword.com" title="晴刃">
+					<h1 class="nav-logo">晴刃</h1>
+				</a>
+				<h2 class="nav-site-description desc-hidden">
+					自由、互助、分享、专注计算机技术
+				</h2>
+				<nav class="nav-links"> 
+					<!-- nav连接大纲-->
+					<h1 style="display:none;">网站导航</h1> 
+					<ul>
+						<li  class="li-hidden">
+							<a href="../index.html" title="home">
+								<span class="link-word"><img src="../logo/home.png" alt="home" class="link-img">首页</span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../web.html" title="web">
+								<span class="link-word"><img src="../logo/web.png" alt="web" class="link-img">前端<span class="word-hidden">设计</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../system.html" title="system">
+								<span class="link-word"><img src="../logo/linux.png" alt="linux" class="link-img">系统<span class="word-hidden">应用</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../net.html" title="net">
+								<span class="link-word"><img src="../logo/net.png" alt="net" class="link-img">网络<span class="word-hidden">技术</span></span>
+							</a>
+						</li>
+						<li>
+							<a href="../sitemap.html" title="sitemap">
+								<span class="link-word"><img src="../logo/archives.png" alt="archives" class="link-img"><span class="word-hidden">文章</span>归档</span>
+							</a>
+						</li>
+					</ul>
+				</nav>
+			</div>		
+	</header>
+	<!-- /header -->
+
+	<!-- content-->
+	<div id="content">
+		<div class="content-container">
+			<!-- 文章区 -->
+			<article class="text-container">
+				<header class="text-header">
+					<h1>[Python]-10-模块与包</h1>	
+				</header><!-- /header -->
+				<section class="text-body">
+					<h2>引言</h2>
+					<p>这篇文章介绍python中模块和包的概念。</p>
+					<!-- 目录 -->
+					<h2>文章目录</h2>
+					<ul class="contents">	
+						 <li><a href="#python-module-and-package-1">0×1.如何导入模块</a></li>
+						 <li><a href="#python-module-and-package-2">0×2.如何导入包</a></li>
+					 </ul>
+					<!-- /目录 -->
+
+					<!-- 正文 -->
+					<h2 id="python-module-and-package-1">0×1.如何导入模块</h2>
+
+					<p>简单的讲，模块就是可以扩展python功能的一些对象的集合，可以是类，方法，或者简单的数值对象，他们被存放在一个或多个单独的文件中，python安装后自带了大量的模块文件，我们也可以自己创建模块放入系统对应的目录中实现调用。</p>
+
+					<p>以ubuntu系统为例，存在与sys.path列表中的py文件，都可以被当做模块调用，不同的系统对应的位置可能不同，但都能通过下面的命令查看到：</p>
+					<pre class="brush: python;">
+					#在idle中查看python包含了哪些目录，在这些目录下的模块文件都能被识别和调用，sys.path实际上是一个内置的列表，我们可以使用append或extend方法将我们需要包含的目录添加到其中，这样python就能够调用我们设定的目录中的模块文件了，在这个列表中的第一个元素（本例为空字符），代表当前目录，即模块文件和调用它的文件在同一个目录中就能够实现调用，当在不同的目录中启动py程序的时候，这个元素会被py程序所在目录路径所替换
+					&gt;&gt;&gt; import sys
+					&gt;&gt;&gt; print(sys.path)
+					['', '/home/qing', '/usr/bin', '/usr/lib/python3.4', '/usr/lib/python3.4/plat-x86_64-linux-gnu', '/usr/lib/python3.4/lib-dynload', '/usr/local/lib/python3.4/dist-packages', '/usr/lib/python3/dist-packages']
+
+					#手动添加一个目录，操作方法和列表一样，这里不再赘述
+					&gt;&gt;&gt; sys.path.append("/home/qing/test")
+					&gt;&gt;&gt; print(sys.path)
+					['', '/home/qing', '/usr/bin', '/usr/lib/python3.4', '/usr/lib/python3.4/plat-x86_64-linux-gnu', '/usr/lib/python3.4/lib-dynload', '/usr/local/lib/python3.4/dist-packages', '/usr/lib/python3/dist-packages', '/home/qing/test']
+					</pre>
+
+					<p>可能大家已经注意到，在上面的实例中使用了一个import关键词，这个关键词可以用来调用模块和包，而sys正是python自带的模块之一（因为python内置的模块使用
+					c语言写的，所以系统中并没有sys.py文件），这个文件中包含一个path列表对象；我们自己创建的模块可以是一个.py后缀的python脚本文件，在导入模块的时候，不需要添加py后缀，如果熟悉HTML中css文件的导入概念，import的作用与HTML头部head标签中使用link标签将css文件导入HTML文档类似，请看下面的实例：</p>
+					<pre class="brush: python;">
+					#根据上面的解释，现在我们在同一个目录中创建两个py文件，一个为模块文件，一个用来调用这个模块
+
+					#模块文件m1.py，包含两个空类，仅完成简单的初始化操作
+					#!/usr/bin/env python3
+					#coding=utf-8
+					######
+					class One:
+
+					    #------
+					    def __init__(self,items=[]):
+					        """初始化列表"""
+					        self.items=items
+					 
+					######
+					class Two:
+
+					    #------
+					    def __init__(self,items={}):
+					        """初始化字典"""
+					        self.dect=items
+					
+					#调用文件test1.py与m1.py在同一个目录中
+					#!/usr/bin/env python3
+					#coding=utf-8
+					#通过m1.py的文件名，就能直接调用这个模块文件
+					import m1
+					
+					#lst是m1模块中One类的一个实例对象，dect是m1中Two类的实例对象
+					lst=m1.One()
+					dect=m1.Two()
+					print(lst.items,dect.dect)
+					
+					#程序输出
+					[] {}
+					</pre>
+					<p>除了上面这种导入方式外，还可以使用from...import语句来实现导入，请看下面的实例：</p>
+					<pre class="brush: python;">
+					#修改test1.py文件如下
+					#!/usr/bin/env python3
+					#这句话的意思是，从m1模块文件中导入Two这个对象（即Two类）
+					from m1 import Two
+					
+					#这种导入方式在实例化的时候，不需要写模块名称，能够直接使用对象名称，但我们除了能够访问Two类外，不能访问m1模块中其他的类，例如One
+					dect=Two()
+
+					#除此之外，还有一种更有趣的导入方法，修改test1.py文件如下
+					#!/usr/bin/env python3
+					#"星号"告诉python解释器，导入m1模块中所有的对象，在本例中相当于将One和Two这两个类导入到当前作用域，
+					from m1 import *
+					
+					#注意直接导入模块名称，和使用from导入某个或多个模块对象时，实例化对象语法上的区别，前者需要使用模块名称，后者则不需要
+					x=One()
+					y=Two()
+					</pre>
+					<p>在实际环境中，"from m1 import *"这种语法都是配合模块的"__init__"列表来实现导入的，请看下面的实例：</p>
+					<pre class="brush: python;">
+					#在m1.py文件头部添加一个"__init__"列表
+					#!/usr/bin/env python3
+					__all__=["One"]
+
+					#test1.py文件修改如下
+					#!/usr/bin/env python3
+					from m1 import *
+
+					#现在，在test1.py文件中，只能实例化m1.py文件头"__init__"列表中包含的那些对象，如果此时初始化一个Two()对象则会报错，这种设计的好处是，可以向用户开放模块中的可见对象，而一些内部对象则不会被包含在"__init__"列表中
+					x=One()
+					</pre>
+					<p>from这种设计的好处是，当某个模块中包含多层类和方法的时候，我们需要访问某个方法可能需要这样写"class1.class2.sub1.sub2.x()"，但如果我们只想访问x()而不想添加冗长的前缀，就可以使用"from class1.class2.sub1.sub2 import x"，这样我们实例化的时候，只需要输入x()就能访问到模块中这个方法了。</p>
+
+					<h2 id="python-module-and-package-2">0×2.如何导入包</h2>
+
+					<p>在上面的模块是一个单独的文件，而"包"可以是多个模块文件的集合，python中的"包"是以文件夹的形式存在的，python区分一个文件夹是"包"还是普通文件夹，主要搜索文件夹中是否存在"__init__.py"文件，如果有，则判断这个文件夹为"包"，请看下面的实例：</p>
+					<pre class="brush: python;">
+					#创建一个pack1文件夹，在其中创建一个"__init__.py"文件，并在其中创建两个模块文件m1.py，m2.py，将这个文件夹和需要调用它的文件放在同一个目录中
+
+					#m1.py文件内容，创建两个空类如下
+					#!/usr/bin/env python3
+					######
+					class m1_class1:
+					    #------
+					    def __init__(self,items=[]):
+					        self.lst=items
+
+					######
+					class m1_class2:
+					    #------
+					    def __init__(self,items={}):
+					        self.dect=items
+
+					#m2.py文件内容
+					#!/usr/bin/env python3
+					######
+					class m2_class1:
+					    #------
+					    def __init__(self,items=[]):
+					        self.lst=items
+
+					######
+					class m2_class2:
+					    #------
+					    def __init__(self,items={}):
+					        self.dect=items
+
+					#在python3规范中，现在已经可以使用py脚本访问这个包了，尽管"__init__.py"文件还是空的，只需要将包文件夹和想要访问这个包的脚本文件放在同一个目录中，我们就可以像导入模块那样来导入包中的模块，创建一个文件test2.py，将它和part1包放在同一个目录中，输入下面的内容
+					#!/usr/bin/env python
+					#coding=utf-8
+					#导入pack1包中的m1和m2模块
+					import pack1.m1
+					import pack1.m2
+
+					#分别实例化这两个模块中的类
+					p1=pack1.m1.m1_class1()
+					p2=pack1.m2.m2_class2()
+					print(p1.lst,p2.dect)
+
+					#程序输出
+					[] {}
+					</pre>
+
+					<p>同模块导入一样，如果我们不希望包中的所有模块都被访问到，这时就可以利用包目录中的"__init__.py"文件，在这个文件中输入下面的内容</p>
+					
+					<pre class="brush: python;">
+					#给"__init__.py"文件添加下面的内容
+					__all__=["m1"]
+
+					#修改test2.py文件的导入方式，使用from
+					#!/usr/bin/env python
+					#coding=utf-8
+					#这条语句将搜索pack1包中的"__init__.py"文件的__all__列表，并且仅加载列表中列出的模块，所以在这个实例中，test2.py文件将不能访问m2模块中的内容，除非使用import导入，或将m2添加到__all__列表中
+					from pack1 import *
+
+					#与模块的from相似，使用这种方法导入的包文件，实例化时不需要添加包的顶级目录名称
+					p1=m1.m1_class1()
+					</pre>
+						
+				<!-- /正文 -->
+
+				<footer class="text-footer">
+					<p>
+						*转载请注明来自:<a title="晴刃-自由、互助、分享、专注计算机技术。" href="http://www.qingsword.com" target="_blank">晴刃(QingSword.COM)</a>
+					</p>
+					<p>*原文连接:<a title="[Python]-10-模块与包" href="http://www.qingsword.com/qing/python-10.html" target="_blank">http://www.qingsword.com/qing/python-10.html</a></p>
+				</footer>
+			</article>
+			<!-- /文章区 -->	
+		</div>
+	</div>
+	<!-- /content -->
+	
+	<!-- footer -->
+	<footer id="footer">
+		<div class="footer-container">
+			QingSword.COM &nbsp;<img src="../logo/by-nc-sa.png" alt="Creative Commons" title="Creative Commons">
+		</div>
+	</footer>
+	<!-- /footer -->
+</body>
+</html>
