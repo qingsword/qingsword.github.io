@@ -129,6 +129,24 @@
 					The Activation Code is: AXX28-64XQX-G4Y6T-B691L
 					</pre>
 					<p>WingIDE功能十分强大，能够断点调试，单步跟踪，监控变量状态等等，使用方法与微软的vs十分类似。</p>
+
+					<p>Ps:在Ubuntu16.04中可能会遇到使用搜狗输入法在WingIDE中无法输入中文的情况，解决的方法是，找到/usr/bin/wing5.1(wing后的版本号可能不同)，使用管理员权限编辑这个文件，在第一行"#!/bin/bash"添加两行内容，操作如下：</p>
+					
+					<pre class="brush: bash;">
+					www@qingsword.com:~$ sudo vim /usr/bin/wing5.1
+
+					#添加后文件内容如下
+
+					#!/bin/sh
+					#添加下面这两行
+					export XMODIFIERS="@im=fcitx"
+					export QT_IM_MODULE="fcitx"
+
+					WINGHOME="/usr/lib/wingide5"; export WINGHOME
+					. "${WINGHOME}/run-wing.sh"
+					</pre>
+					<p>重新启动wingIDE后，就能使用搜狗输入中文了。</p>
+					
 						
 				<!-- /正文 -->
 
