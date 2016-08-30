@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<!--Copyright©QingSword.COM︻☼1010D>-->
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
+	<meta name="description" content="晴刃,是一个致力推广实用计算机技术的个人博客;我们分享计算机知识;为计算机系统以及网络安全防范做出一份贡献。【专注技术 创造价值 共同进步】">
+	<meta name="keywords" content="晴刃,晴,qing,qingsword,ccna图文笔记,ubuntu,linux,ubuntu server,mysql,node.js,javascript,python,计算机技术博客">
+	<meta name="author" content="www.qingsword.com">
+	<title>[Python]-11-文件读写 - QingSword.COM</title>
+	<link rel="shortcut icon" type="image/x-icon" href="../logo/favicon.ico">
+	<link rel="stylesheet" type="text/css" href="../css/basic.css">
+	<link rel="stylesheet" type="text/css" href="../css/text.css">
+	<!-- 代码块高亮js -->
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shCore.css"/>
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shThemeRDark.css"/>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shCore.js"></script>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shBrushPython.js"></script>
+	<script type="text/javascript">
+	SyntaxHighlighter.all();
+	</script>
+</head>
+<body>
+	<!--header -->
+	<header id="nav">
+			<div class="nav-container"> 
+				<!-- 根大纲-->
+				<a href="http://www.qingsword.com" title="晴刃">
+					<h1 class="nav-logo">晴刃</h1>
+				</a>
+				<h2 class="nav-site-description desc-hidden">
+					自由、互助、分享、专注计算机技术
+				</h2>
+				<nav class="nav-links"> 
+					<!-- nav连接大纲-->
+					<h1 style="display:none;">网站导航</h1> 
+					<ul>
+						<li  class="li-hidden">
+							<a href="../index.html" title="home">
+								<span class="link-word"><img src="../logo/home.png" alt="home" class="link-img">首页</span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../web.html" title="web">
+								<span class="link-word"><img src="../logo/web.png" alt="web" class="link-img">前端<span class="word-hidden">设计</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../system.html" title="system">
+								<span class="link-word"><img src="../logo/linux.png" alt="linux" class="link-img">系统<span class="word-hidden">应用</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../net.html" title="net">
+								<span class="link-word"><img src="../logo/net.png" alt="net" class="link-img">网络<span class="word-hidden">技术</span></span>
+							</a>
+						</li>
+						<li>
+							<a href="../sitemap.html" title="sitemap">
+								<span class="link-word"><img src="../logo/archives.png" alt="archives" class="link-img"><span class="word-hidden">文章</span>归档</span>
+							</a>
+						</li>
+					</ul>
+				</nav>
+			</div>		
+	</header>
+	<!-- /header -->
+
+	<!-- content-->
+	<div id="content">
+		<div class="content-container">
+			<!-- 文章区 -->
+			<article class="text-container">
+				<header class="text-header">
+					<h1>[Python]-11-文件读写</h1>	
+				</header><!-- /header -->
+				<section class="text-body">
+					<h2>引言</h2>
+					<p>这篇文章介绍如何使用python的os与shutil模块，对文件或文件夹进行读写、创建、删除等操作。</p>
+					<!-- 目录 -->
+					<h2>文章目录</h2>
+					<ul class="contents">	
+						 <li><a href="#python-os-path-1">0×1.文件相关操作</a></li>
+						 <li class="subli"><a href="#python-os-path-2">a.创建文件</a></li>
+						 <li class="subli"><a href="#python-os-path-3">b.读取文件内容</a></li>
+						 <li class="subli"><a href="#python-os-path-4">c.文件内容追加</a></li>
+						 <li class="subli"><a href="#python-os-path-5">d.文件读写异常</a></li>
+						 <li class="subli"><a href="#python-os-path-6">e.获取文件扩展名</a></li>
+						 <li class="subli"><a href="#python-os-path-7">f.获取文件绝对路径</a></li>
+						 <li class="subli"><a href="#python-os-path-8">g.获取文件大小</a></li>
+						 <li class="subli"><a href="#python-os-path-9">h.获取文件最新修改时间</a></li>
+						 <li class="subli"><a href="#python-os-path-10">i.文件的移动复制与删除</a></li>
+						 <li><a href="#python-os-path-11">0×2.文件夹相关操作</a></li>
+						 <li class="subli"><a href="#python-os-path-12">a.拼接路径</a></li>
+						 <li class="subli"><a href="#python-os-path-13">b.获取子目录名</a></li>
+						 <li class="subli"><a href="#python-os-path-14">c.规范化路径输出</a></li>
+						 <li class="subli"><a href="#python-os-path-15">d.判断目录或文件是否存在</a></li>
+						 <li class="subli"><a href="#python-os-path-16">e.列出目录下所有文件</a></li>
+						 <li class="subli"><a href="#python-os-path-17">f.创建删除文件夹</a></li>
+						 <li class="subli"><a href="#python-os-path-18">g.通配符的使用</a></li>
+						 <li><a href="#python-os-path-19">0×3.实例:日志文件轮换</a></li>
+					 </ul>
+					<!-- /目录 -->
+
+					<!-- 正文 -->
+					<h2 id="python-os-path-1">0×1.文件相关操作</h2>
+					<h3 id="python-os-path-2">a.创建文件</h3>
+
+					<p>语法：file1=open(文件路径,"w")，文件路径可以是相对路径或绝对路径，相对路径是相对当前运行的脚本目录的，windows下文件目录中的反斜杠需要使用转义输出，例如"C:\\windows\\system32\\filename.txt"，或者使用参数前缀"r"取消字符串中对反斜杠的特殊处理，例如r"c:\windows\system32\filename.txt"；本文所有的操作都使用ubuntu系统举例：</p>
+					<pre class="brush: python;">
+					#!/usr/bin/env python
+					#coding=utf-8
+					#在"/home/qing/test/"目录中创建qingsword.txt文件，如果文件不存在则创建，如果文件存在则覆盖，w参数告诉python解释器，创建一个可写入数据的文件，file1.write()往这个文件中写入了一行数据；如果不添加w则文件使用只读方式传递给file1对象，如果文件不存在则会触发"FileNotFoundError"异常。
+					file1=open("/home/qing/test/qingsword.txt","w")
+					file1.write("www.qingsword.com")
+					file1.close()  #关闭文件流
+					del file1      #删除文件对象释放资源
+
+					#如果要输入多行数据，可以使用三引号，python会根据三引号中的格式将每行数据写入文件中，三引号有点类似HTML语言中的pre标签
+					file1.write("""晴刃
+					qingsword
+					www.qingsword.com""")
+					</pre>
+					<p>本文使用三引号，像文件中输入了上面三行数据，下面来看看如何读取这些数据内容。</p>
+
+					<h3 id="python-os-path-3">b.读取文件内容</h3>
+
+					<p>读取文件可以使用文件对象的read()和readline()两个方法，read()会一次性读取所有的文件内容，readline()一次只读一行，在读取内容时，如果文本中有换行符（\n）也会被读取到，但在输出或写入其他文件时，这些换行符会被自动转换成换行，请看下面的实例：</p>
+					<pre class="brush: python;">
+					#!/usr/bin/env python
+					#coding=utf-8
+					import os
+					file_path="/home/qing/test/qingsword.txt"
+					#os.path.isfile()函数能够判断传入的路径是否为文件
+					if os.path.isfile(file_path):
+					    file1=open(file_path,"r")  #参数r表示以只读方式打开
+					    line1=file1.readline()   #读取一行
+					    print(line1)
+					    all_txt=file1.read()  #读取接下来的所有内容
+					    print(all_txt)
+					    file1.close()
+					    del file1
+
+					#程序输出，在下面的输出中"晴刃"和"qingsword"之间空了一行，这是因为"晴刃"后面有一个换行符，所以光标被移动到了下一行，而read()函数读取内容后使用print输出，print()函数会新起一行输出
+					晴刃
+
+					qingsword
+					www.qingsword.com
+					</pre>
+
+					<p>除了使用上面的方式读取文件内容外，还有一种读取方式，使用readlines()函数，它能够读取文件中的每一行数据并保存为一个列表，可以遍历列表输出每一行数据，或打印出每一行的字符数，请看下面的实例：</p>
+					<pre class="brush: python;">
+					#!/usr/bin/env python
+					#coding=utf-8
+					import os
+					file_path="/home/qing/test/qingsword.txt"
+					if os.path.isfile(file_path):
+					    file1=open(file_path,"r")
+					    file_dect=file1.readlines()
+					    print(file_dect) 
+					    for line in file_dect:
+					        print(len(line))  #输出每一行的字符数（包括回车符）
+
+					#程序输出，可以看到字符串的统计是包含回车符的
+					['晴刃\n', 'qingsword\n', 'www.qingsword.com']
+					3
+					10
+					17
+					</pre>
+
+					<h3 id="python-os-path-4">c.文件内容追加</h3>
+
+					<p>在上面内容的基础上，现在我们往qingsword.txt这个文件中追加内容，请看下面的实例：</p>
+					<pre class="brush: python;">
+					#!/usr/bin/env python
+					#coding=utf-8
+					import os
+					file_path="/home/qing/test/qingsword.txt"
+					if os.path.isfile(file_path):
+					    file1=open(file_path,"a") #a参数表示打开文件并追加内容
+					    #如果不想追加的内容顶在上一次内容的后面，可以写入一个回车符，或使用"三引号"换行输入，在使用"三引号"的时候注意，文本的缩进也会被保留，所以本例的输入都是顶格的
+					    file1.write("""
+					欢迎大家到我的博客学习：
+					www.qingsword.com""")
+					    file1.close()
+					    del file1
+					    file1=open(file_path,"r") #读取文件内容并输出
+					    print(file1.read())
+					    file1.close()
+					    del file1
+
+					#程序输出
+					晴刃
+					qingsword
+					www.qingsword.com
+					欢迎大家到我的博客学习：
+					www.qingsword.com
+					</pre>
+
+					<p>现在，上面的内容已经可以让我们将一个文件的内容复制出来追加到另外一个文件的末尾了，下面是一个简单的实现：</p>
+					<pre class="brush: python;">
+					#!/usr/bin/env python
+					#coding=utf-8
+					#创建两个文件，并写入数据
+					file_path_1="/home/qing/test/qingsword1.txt"
+					file_path_2="/home/qing/test/qingsword2.txt"
+					file1=open(file_path_1,"w")
+					file1.write("""晴刃
+					qingsword
+					www.qingsword.com""")
+					file2=open(file_path_2,"w")
+					file2.write("""欢迎大家到我的博客学习:
+					www.qingsword.com""")
+					file1.close()
+					file2.close()
+					del file1
+					del file2
+
+					#将"qingsword1.txt"的内容读取出来追加到"qingsword2.txt"下
+					file1=open(file_path_1,"r")
+					file2=open(file_path_2,"a")
+					#输入一个回车符，否则file1的第一行会紧贴file2的最后一行显示
+					file2.write("\n")
+					file2.write(file1.read())  #读取file1中所有数据，追加到file2末尾
+					file1.close()
+					file2.close()
+					del file1
+					del file2
+					file2=open(file_path_2,"r")
+					print(file2.read())
+					file2.close()
+					del file2
+
+					#程序输出
+					欢迎大家到我的博客学习:
+					www.qingsword.com
+					晴刃
+					qingsword
+					www.qingsword.com
+					</pre>
+
+					<h3 id="python-os-path-5">d.文件读写异常</h3>
+
+					<p>在对文件读写操作的时候，会出现下面这些常见的异常，如果希望程序更加的"友好"，我们应该提前了解并使用try语句块捕获这些异常；</p>
+
+					<p>FileNotFoundError：当以只读方式打开一个不存在的文件，或路径不存在时，或文件操作过程中找不到某文件时触发；</p>
+					<p>PermissionError：试图在一个没有权限的目录中读写文件时触发；</p>
+					<p>IsADirectoryError：试图往一个不存在的文件夹复制文件时触发；</p>
+					
+					<h3 id="python-os-path-6">e.获取文件扩展名</h3>
+
+					<p>os.path.splitext()函数可以用于获取文件的扩展名，请看下面的实例：</p>
+					<pre class="brush: python;">
+					#!/usr/bin/env python
+					#coding=utf-8
+					import os
+					print(os.path.splitext("qingsword.exe.txt"))
+					print(os.path.splitext("qingsword.exe.txt")[1])
+
+					#程序输出，os.path.splitext()函数可以将传入的文件名称的最后一个点后面的扩展名和前面的文件名称分割成一个元组，通过访问这个元组索引位置为1的元素，就能得到文件的扩展名
+					('qingsword.exe', '.txt')
+					.txt
+					</pre>
+
+					<h3 id="python-os-path-7">f.获取文件绝对路径</h3>
+
+					<p>os.path.abspath()函数可用于获取文件的绝对路径，这个函数无法判断传入的文件是否存在，就算这个文件不存在，仍然可以使用这个函数，函数会将文件名和当前脚本执行的绝对路径目录拼接起来：</p>
+					<pre class="brush: python;">
+					#!/usr/bin/env python
+					#coding=utf-8
+					import os
+					print(os.path.abspath("qingsword.txt"))
+
+					#程序输出
+					/home/qing/python-lab/qingsword.txt
+					</pre>
+
+					<h3 id="python-os-path-8">g.获取文件大小</h3>
+
+					<p>可以使用os.path.getsize()函数获取文件的大小，单位为byte：</p>
+					<pre class="brush: python;">
+					import os
+					print(os.path.getsize("/home/qing/test/qingsword.txt"))
+
+					#输出，qingsword.txt只有89字节
+					89
+					</pre>
+
+					<h3 id="python-os-path-9">h.获取文件最新修改时间</h3>
+
+					<p>os.path.getmtime()函数能够得到文件从1970年起到上次修改之间经过的秒数，使用time模块的ctime()方法，能够将这个秒数格式化为标准时间输出："星期 月 日 时:分:秒 年"</p>
+					<pre class="brush: python;">
+					#!/usr/bin/env python
+					#coding=utf-8
+					import os
+					import time
+					file_path="/home/qing/test/qingsword.txt"
+					print(time.ctime(os.path.getmtime(file_path)))
+
+					#程序输出
+					Mon Aug 29 17:01:00 2016
+					</pre>
+
+					<h3 id="python-os-path-10">i.文件的移动复制与删除</h3>
+
+					<p>python中可以使用shutil模块来实现文件的移动与复制，请看下面的实例：</p>
+					<pre class="brush: python;">
+					#!/usr/bin/env python
+					#coding=utf-8
+					import os
+					import shutil
+					if os.path.isfile("qing.txt"):
+					    #将当前脚本运行目录下的qing.txt文件复制并重命名为qingsword.txt
+					    shutil.copy("qing.txt","qingsword.txt") 
+					    os.remove("qing.txt") #删除文件
+					#isdir()函数能够判断目标是否为目录
+					if os.path.isfile("qingsword.txt") and os.path.isdir("pack1"):
+					    #将刚才复制的文件剪切移动到pack1目录下并重命名为qingsword.py
+					    shutil.move("qingsword.txt","pack1/qingsword.py")
+					</pre>
+
+					<h2 id="python-os-path-11">0×2.文件夹相关操作</h2>
+					<h3 id="python-os-path-12">a.拼接路径</h3>
+
+					<p>os.path.join()函数用于拼接路径，它不会判断两个路径是否存在，仅仅完成将前面的路径和后面的路径进行拼接的功能，请看下面的实例：</p>
+					<pre class="brush: python;">
+					#!/usr/bin/env python
+					#coding=utf-8
+					import os
+					path1="/www"
+					path2="qingsword/com"
+					print(os.path.join(path1,path2))
+
+					#输出
+					/www/qingsword/com
+					</pre>
+
+					<h3 id="python-os-path-13">b.获取子目录名</h3>
+
+					<p>有时候我们可能需要获取某个路径下最后一个子目录的名称，python提供了一个os.path.split()方法用于切割路径，请看下面的实例：</p>
+					<pre class="brush: python;">
+					#!/usr/bin/env python
+					#coding=utf-8
+					import os
+					path1="/www/qingsword/com"
+					#split()方法返回一个元组，包含两个元素，父路径和子目录名
+					print(os.path.split(path1))
+					#可以直接使用两个对象来接收元组中这两个元素
+					p1,p2=os.path.split(path1)
+					print(p1)
+					print(p2)
+
+					#输出
+					('/www/qingsword', 'com')
+					/www/qingsword
+					com
+					</pre>
+
+					<p>如果想递归获取路径中每一层目录的名称，可以使用下面的方法：</p>
+					<pre class="brush: python;">
+					#!/usr/bin/env python
+					#coding=utf-8
+					import os
+					#------
+					def split_fully(path):
+					    """递归获取路径中每一层目录的名称，返回一个元组"""
+					    parent_path,dir_name=os.path.split(path)
+					    if dir_name=="":
+					        return (parent_path,)
+					    else:
+					        return split_fully(parent_path)+(dir_name,)
+
+					path1="/www/qingsword/com"
+					for p in split_fully(path1):
+					    print(p)
+
+					#输出
+					/
+					www
+					qingsword
+					com
+					</pre>
+					<p>在上面这个实例中，程序的运行流程是这样的，split_fully()函数首先将"/www/qingsword/com"路径分割成"/www/qingsword"与"com"，因为dir_name不为空，所以执行return split_fully(parent_path)+(dir_name,)，这一句中(dir_name,)就相当于(com,)而前半段使用父路径再次调用函数本身，外层函数将被挂起等待split_fully(parent_path)结果的返回，这一次的调用parent_path="/www/qingsword"；</p>
+					<p>第一次调用自身"/www/qingsword"被分割成"/www"和"qingsword"，由于dir_name不为空，函数第二次调用自身，此时如果我们将所有变量都代入数据，返回最外层被挂起的函数查看return，应该是这样的结构return split_fully("/www")+(qingsword,)+(com,)；</p>
+					<p>第二次调用自身，"/www"被分割成parent_path="/"，dir_name="www"不为空，程序会第三次调用自身，这一次parent_path,dir_name=os.path.split(path)分割后，dir_name为空，所以返回parent_path="/"，最后一层一层返回，最外层的结构就变成了return ("/",)+("www",)+("qingsword",)+("com",),只需要遍历这个元组，就能得到每个元素的值。</p>
+
+					<h3 id="python-os-path-14">c.规范化路径输出</h3>
+
+					<p>在路径中，"."表示当前目录，".."表示父目录，如果我们不希望这些符号出现，可以使用os.path.normpath()函数，它不仅可以规范路径，将两个点自动解析成父目录，还能去除路径中多余的斜杠，请看下面的实例：</p>
+					<pre class="brush: python;">
+					#!/usr/bin/env python
+					#coding=utf-8
+					import os
+					path1="///www/./qingsword////hidden/..//com"
+					print(os.path.normpath(path1))
+
+					#normpath会自动清除目录中多余的斜杠，并且将..解析为父目录，所以hidden目录后面的..就相当于在hidden目录里面执行了一个"cd .."命令，返回了qingsword目录中，而www目录后面的.就代表当前目录，所以直接去掉了，最后输出如下
+					/www/qingsword/com
+					</pre>
+
+					<h3 id="python-os-path-15">d.判断目录或文件是否存在</h3>
+
+					<p>os.path.exists()函数能够判断目标是否存在，但不能判断目标是文件还是目录，请看下面的实例：</p>
+					<pre class="brush: python;">
+					#!/usr/bin/env python
+					#coding=utf-8
+					import os
+					path1="/www/qingsword/com"
+					print(os.path.exists(path1))
+					print(os.path.exists("textfile"))
+
+					#输出，如果目标存在就返回True，不存在就返回False
+					True
+					False
+					</pre>
+
+					<h3 id="python-os-path-16">e.列出目录下所有文件</h3>
+
+					<p>使用os.listdir()函数，可以返回目标目录下所有文件夹和文件的名称列表，请看下面的实例：</p>
+					<pre class="brush: python;">
+					#!/usr/bin/env python
+					#coding=utf-8
+					import os
+					#随便使用一个文件名，获取一下当前脚本所在目录的绝对路径
+					file_path=os.path.abspath("qingsword.py")
+					#取出父目录
+					parent_path=os.path.split(file_path)[0]
+					#遍历列表，打印出每个文件或文件夹的名称
+					for name in os.listdir(parent_path):
+					    print(name)
+
+					#如果想打印出目录下每个文件或文件夹的完整路径，可以修改print函数，下面两种方法效果相同
+					print(parent_path+"/"+name)
+					print(os.path.join(parent_path,name))
+					</pre>
+					<p>如果想要对listdir的输出进行排序，可以使用sorted()函数，默认按照字母顺序排列，并且区分大小写，大写字母&gt;符号&gt;小写字母，这样for中的name会按照排序后的顺序读取并拼接：</p>
+					<pre class="brush: python;">
+					#!/usr/bin/env python
+					#coding=utf-8
+					import os
+					file_path=os.path.abspath("qingsword.py")
+					parent_path=os.path.split(file_path)[0]
+					#排序输出
+					for name in sorted(os.listdir(parent_path)):
+					    print(os.path.join(parent_path,name))
+					</pre>
+
+					<p>上面的实例仅仅能够遍历某个目录下的文件和目录，但不能进行递归查询，也就是说，这个目录下的子目录中的文件是无法被搜索到的，下面提供一种遍历子目录文件的方法：</p>
+					<pre class="brush: python;">
+					#!/usr/bin/env python
+					#coding=utf-8
+					import os
+					#------
+					def print_tree(path):
+					    """递归目录"""
+					    if os.path.isdir(path):
+					        #遍历目录，打印绝对路径
+					        for name in os.listdir(path):
+					            abs_path=os.path.join(path,name)
+					            print(abs_path)
+					            #如果路径为目录，调用自身，打印子目录内容
+					            if os.path.isdir(abs_path):
+					                print_tree(abs_path)
+
+					print_tree("/home/qing/test")
+					</pre>
+
+					<p>再来看一个实例，读取目录下的文件，显示每个文件的绝对路径，大小和最后修改时间：</p>
+					<pre class="brush: python;">
+					#!/usr/bin/env python
+					#coding=utf-8
+					import os
+					import time
+					#------
+					def list_dir(path):
+					    """打印目录中文件或文件夹的大小，最后修改时间和绝对路径"""
+					    if os.path.isdir(path):
+					        for name in os.listdir(path):
+					            abs_path=os.path.join(path,name)
+					            sz=os.path.getsize(abs_path)
+					            modify_time=time.ctime(os.path.getmtime(abs_path))
+					            print("Size:%-8d Last Modify Time:%-25s Path:%s"%(sz,modify_time,abs_path))
+
+					list_dir("/home/qing/test")
+					</pre>
+
+					<h3 id="python-os-path-17">f.创建删除文件夹</h3>
+					
+					<p>创建文件夹：</p>
+					<pre class="brush: python;">
+					#!/usr/bin/env python
+					#coding=utf-8
+					import os
+					#os.mkdir()函数一次只能创建一个文件夹
+					if not os.path.exists("qingsword"):
+					    os.mkdir("qingsword")
+					#os.makedirs()函数能够一次性递归创建多个文件夹
+					if os.path.isdir("qingsword"):
+					    os.makedirs("qingsword/1/2/3/4")
+					</pre>
+					<p>Ps：在创建文件夹的过程中，如果目标存在，则会抛出一个"FileExistsError"异常。</p>
+
+					<p>删除文件夹：</p>
+					<pre class="brush: python;">
+					#!/usr/bin/env python
+					#coding=utf-8
+					import os
+					import shutil
+
+					if os.path.isdir("qingsword"):
+					    os.rmdir("qingsword/1/2/3/4")
+					    shutil.rmtree("qingsword")
+					</pre>
+
+					<p>Ps：os.rmdir()函数只能删除单个文件夹且文件夹下必须为空，否则会抛出一个"OSError"异常，而shutil模块的rmtree方法能够一次性删除目录及下面的所有文件。</p>
+
+					<h3 id="python-os-path-18">g.通配符的使用</h3>
+
+					<p>在python路径操作中，有下面这些比较常用的通配符：</p>
+					<p class="indent-p">
+					* 匹配多个字符；
+					</p>
+					<p class="indent-p">
+					? 匹配单个字符；
+					</p>
+					<p class="indent-p">
+					[...] 匹配括号中的单个字符，可以指定多个字符或字符范围，例如：[ABCD]代表ABCD任意一个都能匹配；[a-z]匹配小写字母表中任意一个字符；[0-9]匹配0-9数字中的任意一个；
+					</p>
+					<p class="indent-p">
+					[!...]不匹配括号中指定的任意一个或某个范围中的一个；
+					</p>
+
+					<p>在python中有一个通配符模块glob，这个模块的glob()函数同os.listdir()类似，都能返回某个目录下的文件，但glob.glob()函数更加强大，它能够配合通配符返回指定的文件类型，请看下面的实例：</p>
+					<pre class="brush: python;">
+					#!/usr/bin/env python
+					#coding=utf-8
+					import os
+					import glob
+					path1="/home/qing/test"
+					if os.path.isdir(path1):
+					    #返回path1目录下所有py后缀的文件
+					    print(glob.glob(os.path.join(path1,"*.py")))
+					    #返回文件名最后一个字符在a-d范围内的py文件
+					    print(glob.glob(os.path.join(path1,"*[a-d].py")))
+					    #返回文件名为四个字符的py文件
+					    print(glob.glob(os.path.join(path1,"????.py")))
+					    返回文件名为三个字符且最后一个字符不在b-f范围内的py文件
+					    print(glob.glob(os.path.join(path1,"??[!b-f].py")))
+					    #这是glob函数强大的地方，递归path1目录，返回目录以及子目录中所有py文件
+					    print(glob.glob(os.path.join(path1,"*/*.py")))
+					</pre>
+					<p>Ps：glob.glob()函数返回类型为列表。</p>
+
+					<h2 id="python-os-path-19">0×3.实例:日志文件轮换</h2>
+
+					<p>有时候我们可能需要不断的写入一些日志，每次写入的时候，会产生一个新的版本，新版本永远是不带文件号的，然后老版本会被复制成带尾号的样子，例如：qingsword.log，qingsword.log.1，qingsword.log.2，不带数字的是最新版本，2为最旧的版本，再次写入时2版本会被复制成3版本，1版本复制成2，最近一次保存会被复制成1，但是每次这样手动操作太麻烦了，如果文件量巨大耗时耗力，那么如何让程序自动来完成这些数字的轮换呢，请看下面这个实例：</p>
+					<pre class="brush: python;">
+					#!/usr/bin/env python
+					#coding=utf-8
+					import os
+					import shutil
+					import time
+
+					#------
+					def make_version_path(path,version):
+					    """返回版本文件路径"""
+					    if version==0:
+					        return path
+					    else:
+					        return path+"."+str(version)
+					#------
+					def rotate(path,version=0):
+					    """完成文件轮换"""
+					    if version>4:
+					        return
+					    old_path=make_version_path(path,version)
+					    if not os.path.exists(old_path):
+					        raise OSError("'%s' doesn't exist."%old_path)
+					    new_path=make_version_path(path,version+1)
+					    if os.path.exists(new_path):
+					        rotate(path, version+1)
+					    shutil.copy(old_path,new_path)
+					#------
+					def rotate_log_file(path):
+					    """创建新日志文件"""
+					    if not os.path.exists(path):
+					        file1=open(path,"w")
+					        file1.write(time.ctime(time.time()))
+					        file1.close()
+					        del file1
+					    else:
+					        file1=open(path,"a")
+					        file1.write("\n"+time.ctime(time.time()))
+					        file1.close()
+					        del file1
+					    rotate(path)
+
+					rotate_log_file("/home/qing/test/qingsword/qingsword.log")
+
+					#运行程序后，"/home/qing/test/qingsword/"下会创建一个"qingsword.log"文件，反复运行这个程序，会发现目录中的文件数量最多为6个，最大的文件编号为"qingsword.log.5"，这是因为在rotate()方法中做了最大版本号限制，如果version高于4，那么就结束调用自身，这段程最后可以完成文件版本从，4&gt;5，3&gt;4，2&gt;3，1&gt;2，0&gt;1的版本复制操作。
+					</pre>
+						
+				<!-- /正文 -->
+
+				<footer class="text-footer">
+					<p>
+						*转载请注明来自:<a title="晴刃-自由、互助、分享、专注计算机技术。" href="http://www.qingsword.com" target="_blank">晴刃(QingSword.COM)</a>
+					</p>
+					<p>*原文连接:<a title="[Python]-11-文件读写" href="http://www.qingsword.com/qing/python-11.html" target="_blank">http://www.qingsword.com/qing/python-11.html</a></p>
+				</footer>
+			</article>
+			<!-- /文章区 -->	
+		</div>
+	</div>
+	<!-- /content -->
+	
+	<!-- footer -->
+	<footer id="footer">
+		<div class="footer-container">
+			QingSword.COM &nbsp;<img src="../logo/by-nc-sa.png" alt="Creative Commons" title="Creative Commons">
+		</div>
+	</footer>
+	<!-- /footer -->
+</body>
+</html>
