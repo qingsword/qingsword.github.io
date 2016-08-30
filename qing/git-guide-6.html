@@ -321,6 +321,32 @@
 					</pre>
 					<p>这就是Github创建仓库并克隆到本地的全过程，现在，我们可以自己在Github上创建远程仓库并且克隆到本地修改，再push到远程仓库中了。</p>
 
+					<p>pull取回更新操作：</p>
+
+					<p>在多个人协同工作的环境下，在同一个仓库中维护相同的项目时，往往会遇到这种情况，我们在休息的时候别人可能修改并push了项目的部分代码，但这段修改在我们本地的仓库文件夹中并没有修改，这个时候就需要先使用pull将远程仓库的代码更新同步到本地仓库，再做修改提交，请看下面的实例：</p>
+					<pre class="brush: bash;">
+					#语法一：取回远程仓库分支的更新，再与本地的指定分支合并
+					#git pull &lt;远程主机名&gt; &lt;远程分支名&gt;:&lt;本地分支名&gt;
+					#例如，取回origin主机的test分支与本地master分支合并
+					www@qingsword.com:~/com$ git pull origin test:master
+
+					#语法二：取回远程仓库分支更新，与本地当前分支合并
+					#git pull &lt;远程主机名&gt; &lt;远程分支名&gt;
+					#例如，取回origin主机的master分支与本地当前所在分支合并
+					www@qingsword.com:~/com$ git pull origin master
+					</pre>
+					<p>在git clone的时候，所有本地仓库的分支默认与远程仓库的同名分支，自动建立了(tracking)追踪关系，本地分支与远程分支如果存在追踪关系，在pull操作的过程中，能够省略分支名称，git会自动取回远程与本地当前分支同名的分支更新，并且自动与本地当前分支合并，追踪关系也可以手动设置，请看下面的实例：</p>
+					<pre class="brush: bash;">
+					#手动配置追踪关系，指定本地master分支追踪origin/test分支
+					www@qingsword.com:~/com$ git branch --set-upstream master origin/test
+
+					#具有这种追踪关系后，在本地仓库的master分支，想要取回远程test分支与当前分支合并，只需要输入下面的命令，不需要输入远程分支名
+					www@qingsword.com:~/com$ git pull origin
+
+					#如果当前分支只有一个追踪分支，远程主机名也可以省略，代表从唯一一个追踪的分支下载更新与当前分支合并
+					www@qingsword.com:~/com$ git pull
+					</pre>
+
 					<h3 id="git-remote-repository-4">b.Coding</h3>
 					<p>在国内所有的代码托管平台中，只有"Coding"是最接近"Github"功能的，但感觉和"Github"仍然有差距，不过其优势是，全中文的操作界面简单易懂。</p>
 					<p>1）首先请到[<a title="Coding官方网站" href="https://coding.net" target="_blank" rel="nofollow">Coding官方网站</a>]注册一个账号并登陆。</p>
