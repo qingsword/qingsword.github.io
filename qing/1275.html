@@ -119,8 +119,16 @@
 						当登陆多个QQ的时候，有时候会出现双击托盘QQ无法看到任何QQ界面的情况，在这里我建议，打开QQ后不要点击缩小按钮，这样只要将其他程序缩小，就能看到这几个QQ主界面了，单个QQ基本上不会出现这些现象（或者打开ubuntu的多桌面工作区，专门用一个桌面来打开多个QQ）；<br>
 						如果QQ缩小后无法双击打开，请右击退出，重新运行QQ；
 					</p>
-					
-						
+					<p>在Ubuntu16.04中，安装了上面这个版本的QQ后搜狗输入法无法输入中文，解决的方法如下：</p>
+					<pre class="brush: bash;">
+					#使用文本编辑器打开QQ启动程序
+					qing@qingsword.com:~$ sudo vim /usr/bin/wine-qqintl
+
+					#在文件的头部#!/bin/sh的下面添加下面两行内容，保存后重启QQ，就能使用搜狗输入法输入中文了
+					export XMODIFIERS="@im=fcitx"
+					export QT_IM_MODULE="fcitx"
+					</pre>
+							
 				<!-- /正文 -->
 
 				<footer class="text-footer">

@@ -192,6 +192,27 @@
 					{'a', 'b', 'c'}
 					</pre>
 
+					<p>python提供了一个set()函数用于处理列表中的重复元素，将他们合并成一个元素，例如：</p>
+					<pre class="brush: python;">
+					#使用set()去除列表中的重复值
+					&gt;&gt;&gt; lst1=set([1,2,3,3,4,4])
+					&gt;&gt;&gt; lst2=set([3,4,5,5,6,6])
+					&gt;&gt;&gt; lst3=set(["a","a","b","c","c"])
+					
+					&gt;&gt;&gt; print(list(lst1))
+					[1, 2, 3, 4]
+					&gt;&gt;&gt; print(list(lst2))
+					[3, 4, 5, 6]
+					&gt;&gt;&gt; print(list(lst3))
+					['a', 'c', 'b']
+
+					#set类型的列表因为不存在重复值，所以可用于科学计算，例如求交集和并集
+					&gt;&gt;&gt; print(list(lst1&amp;lst2))
+					[3, 4]
+					&gt;&gt;&gt; print(list(lst1|lst2))
+					[1, 2, 3, 4, 5, 6]
+					</pre>
+
 					<h2 id="python-composite-data-3">0×3.字典</h2>
 
 					<p>python中，使用大括号能够创建字典，字典中每个元素都是以"键值对"的形式储存的，请看下面的实例：</p>
