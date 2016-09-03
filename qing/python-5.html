@@ -210,11 +210,16 @@
 					#python允许不同的键拥有相同的值，所以下面的语法是正确的
 					b={"one":"qing","two":"qing"} 
 
-					#有两种方法可以读取字典中的值，直接使用"字典[键]"来读取值，或使用"字典.get(键)"来读取值，在使用get()方法取出值的时候，如果get的键不存在，get()方法会返回一个"None"
+					#有两种方法可以读取字典中的值，直接使用"字典[键]"来读取值，或使用"字典.get(键)"来读取值，在使用get()方法取出值的时候，如果get的键不存在，get()方法会返回一个"None"，或我们指定的值
 					&gt;&gt;&gt; print(a["早餐"])
 					牛奶鸡蛋
 					&gt;&gt;&gt; print(a.get("午餐"))
 					可乐牛排
+					&gt;&gt;&gt; print(a.get("233"))
+					None
+					#如果字典中不存在"233"返回本站网址
+					&gt;&gt;&gt; print(a.get("233","www.qingsword.com"))
+					www.qingsword.com
 
 					#判断字典中是否存在某个键值对，除了使用get()方法看返回是否为"None"外，还能用关键字in，如果存在就返回True，否则返回False
 					&gt;&gt;&gt; "早餐" in a
