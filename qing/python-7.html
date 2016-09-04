@@ -207,6 +207,34 @@
 					banana
 					未捕获到异常
 					</pre>
+
+					<p>除了使用try捕获异常外，还能够使用raise来主动的抛出一个异常，例如：</p>
+					<pre class="brush: python;">
+					#!/usr/bin/env python3
+					#coding=utf-8
+					#创建一个绝对值转换函数
+					def my_abs(x):
+					    """绝对值转换函数，如果传入的不是一个整数或浮点数，则使用raise关键字抛出一个TypeError异常，isinstance()函数接收两个参数，第一个参数是要判断的传入值，第二个参数是一个判断范围，本例判断x是否为整形和浮点型"""
+					    if not isinstance(x,(int,float)):
+					        raise TypeError("Bad operand type.")
+					    elif x>=0:
+					        return x
+					    else:
+					        return -x
+
+					print(my_abs(-123))
+					print(my_abs(23))
+					print(my_abs(-3.14))
+
+					#程序输出
+					123
+					23
+					3.14
+
+					#如果传入一个错误的值，就会得到一个TypeError
+					print(my_abs("www.qingsword.com"))
+					TypeError: Bad operand type.
+					</pre>
 						
 				<!-- /正文 -->
 

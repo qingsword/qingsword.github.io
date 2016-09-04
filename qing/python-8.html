@@ -250,7 +250,7 @@
 					builtins.TypeError: 错误的参数:123
 					</pre>
 
-					<p>最后再来看一个实例，创建一个函数，接受两个数值，返回这两个数值相加后的结果：</p>
+					<p>再来看一个实例，创建一个函数，接受两个数值，返回这两个数值相加后的结果：</p>
 
 					<pre class="brush: python;">
 					#!/usr/bin/env python3
@@ -288,6 +288,72 @@
 					第二个数：111
 					builtins.TypeError: 输入的数值错误：abc,111
 					</pre>
+
+					<p>除了能够返回单个值外，函数还能一次返回多个值，在返回多个值的时候，这些值实际上是以元组的形式返回的，例如：</p>
+					<pre class="brush: python;">
+					#!/usr/bin/env python3
+					def my_def(x,y,z):
+					    """返回多个值的函数"""
+					    return x,y,z
+
+					#可以使用一个变量接受这些返回值，实际上x就指向了一个元组
+					x=my_def(1,2,3)
+					print(x)
+
+					#也可以用多个变量分别指向元组中的单个元素
+					a,b,c=my_def(1,2,3)
+					print(a)
+					print(b)
+					print(c)
+					
+					#程序输出
+					(1, 2, 3)
+					1
+					2
+					3
+					</pre>
+					<p>Ps：可能有点朋友会问，那么如果函数没有return语句呢？在没有return语句的函数执行完成后，返回一个None。</p>
+
+					<p>最后给出一个二元一次方程组求解的实例：</p>
+					<pre class="brush: python;">
+					#!/usr/bin/env python3
+					#coding=utf-8
+
+					import math
+
+					def quadratic(a,b,c):
+					    """二元一次方程组公式法求解"""
+					    #当传入的为一个非数值数据时，可以使用异常捕获try，或下面的方法抛出异常
+					    if not isinstance(a,(int,float)) or not isinstance(b,(int,float)) or not isinstance(c,(int,float)):
+					        raise TypeError("错误的参数传入，a,b,c只能是整数或小数：%s,%s,%s"%(a,b,c))
+					    #求出判别式
+					    disc=b**2-4*a*c
+					    #判别式的三种情况
+					    if disc&lt;0:
+					        return "方程无解"
+					    elif disc==0:
+					        result0=-b/2*a
+					        return "方程有唯一解："+str(result0)
+					    else:
+					        #math模块的sqrt()函数用于开方
+					        result1=(-b+math.sqrt(disc))/2*a
+					        result2=(-b-math.sqrt(disc))/2*a
+					        return "方程两个解分别为：%s，%s"%(str(result1),str(result2))
+					        
+					print(quadratic(4,8,4))
+					print(quadratic(2,6,4))
+					print(quadratic(2,3,3))
+
+					#程序输出
+					方程有唯一解：-16
+					方程两个解分别为：-4.0，-8.0
+					方程无解
+
+					#如果输入一个错误的值，就会抛出错误信息
+					print(quadratic("a",3,3))
+					TypeError: 错误的参数传入，a,b,c只能是整数或小数：a,3,3
+					</pre>
+
 						
 				<!-- /正文 -->
 
