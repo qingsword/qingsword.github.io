@@ -84,6 +84,7 @@
 						 <li><a href="#python-def-2">0×2.给函数添加文档说明</a></li>
 						 <li><a href="#python-def-3">0×3.函数的作用域</a></li>
 						 <li><a href="#python-def-4">0×4.带参数的函数</a></li>
+						 <li><a href="#python-def-5">0×5.递归函数</a></li>
 					 </ul>
 					<!-- /目录 -->
 
@@ -357,7 +358,76 @@
 					print(quadratic("a",3,3))
 					TypeError: 错误的参数传入，a,b,c只能是整数或小数：a,3,3
 					</pre>
+					
+					<h2 id="python-def-5">0×5.递归函数</h2>
 
+					<p>递归函数有点类似于循环，简单的讲，就是函数在运行过程中再次调用自身，通过这种调用来执行一些类似循环一样的工作，下面来看一个数学中阶乘的算法：</p>
+
+					<p>我们知道一个数的阶乘可以写成：</p>
+					<p class="indent-p">
+						n!=1×2×3×...×(n-1)×n=n×(n-1)!
+					</p>
+					<p>例如，5的阶乘：</p>
+					<p class="indent-p">
+						5!=1×2×3×4×5=5×4!
+					</p>
+					<p>这种算法用循环能够很轻松的实现，例如：</p>
+					<pre class="brush: python;">
+					#!/usr/bin/env python
+					#coding=utf-8
+					#--------
+					def fact(n):
+					    """计算n!"""
+					    s=1
+					    while n>1:
+					        s*=n
+					        n-=1
+					    return s
+					#计算出9的阶乘
+					print(fact(3))
+
+					#程序输出
+					6
+					</pre>
+					<p>而在一些没有循环的编程语言中，这个算法是用函数的递归来实现的，例如：</p>
+					<pre class="brush: python;">
+					#!/usr/bin/env python
+					#coding=utf-8
+					#--------
+					def fact(n):
+					    """n!=n*fact(n-1)!"""
+					    if n==1:
+					        return 1
+					    return n*fact(n-1)
+
+					print(fact(3))
+					</pre>
+					<p>运行这段程序会和循环得到相同的结果，这段递归函数的执行流程如下：</p>
+					<p class="indent-p">
+						fact(3)<br>
+						3*fact(3-1) <br>
+						3*(2*fact(2-1))<br>
+						3*(2*1)<br>
+						3*2<br>
+						6
+					</p>
+					<p>递归函数虽然好用，但在python中使用递归函数容易引发"栈溢出"（这在我们传递一个比较大的数据时，比如999的阶乘），处理"栈溢出"的一种方法是使用"尾递归"（在函数返回的时，调用自身，return语句不包含表达式），但Python解释器并没有提供支持"尾递归"的优化，如果python支持"尾递归"优化，那么上面的递归函数可以更改成下面的样子：</p>
+					<pre class="brush: python;">
+					#!/usr/bin/env python
+					#coding=utf-8
+					#--------
+					def fact(n):
+					    """计算n!"""
+					    return fact_a(n,1)
+					#--------
+					def fact_a(n,result):
+					    if n==1:
+					        return result
+					    return fact_a(n-1,n*result)
+
+					print(fact(6))
+					</pre>
+					<p>在上面的fact_a(n,result)函数中使用了"尾递归"优化，在return时调用函数自身，并且return语句中不包含表达式，只有函数本身，n-1与n*result两个参数会在调用函数之前被计算出来，在支持尾递归优化的编程语言中，这种调用方式使得栈不会增长，所以也能很好的避免"栈溢出"（但Python中却没有提供这种功能，所以Python中使用递归函数要谨慎）。</p>
 						
 				<!-- /正文 -->
 
