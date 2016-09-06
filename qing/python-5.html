@@ -213,6 +213,39 @@
 					[1, 2, 3, 4, 5, 6]
 					</pre>
 
+					<p>除了手动输入每个列表的元素外，python还提供了一个列表高级特性——"列表生成式"，配合for循环能够自动生成列表，例如：</p>
+					<pre class="brush: python;">
+					#"列表生成式"语法：[元素结果表达式 for循环 判断语句或嵌套循环]
+
+					#生成0~9中每位数字平方的列表
+					&gt;&gt;&gt; L0=[x*x for x in range(0,10)]
+					&gt;&gt;&gt; print(L0)
+					[0, 1, 4, 9, 16, 25, 36, 49, 64, 81]
+
+					#在0~9数字的平方结果中，如果能够整除2，则保存到列表中
+					&gt;&gt;&gt; L1=[x*x for x in range(0,10) if x%2==0]
+					&gt;&gt;&gt; print(L1)
+					[0, 4, 16, 36, 64]
+
+					#嵌套循环，实现全排列
+					&gt;&gt;&gt; L2=[x+y for x in "ABC" for y in "abc"]
+					&gt;&gt;&gt; print(L2)
+					['Aa', 'Ab', 'Ac', 'Ba', 'Bb', 'Bc', 'Ca', 'Cb', 'Cc']
+
+					#大小写转换
+					&gt;&gt;&gt; L3=[x.upper() for x in "abc"]
+					&gt;&gt;&gt; print(L3)
+					['A', 'B', 'C']
+					&gt;&gt;&gt; L3=[x.lower() for x in "ABC"]
+					&gt;&gt;&gt; print(L3)
+					['a', 'b', 'c']
+
+					#列表每个元素的结果表达式可以是多个变量的组合形式
+					&gt;&gt;&gt; L4=[a+"="+str(b) for a,b in {"one":1,"two":2}.items()]
+					&gt;&gt;&gt; print(L4)
+					['two=2', 'one=1']
+					</pre>
+
 					<h2 id="python-composite-data-3">0×3.字典</h2>
 
 					<p>python中，使用大括号能够创建字典，字典中每个元素都是以"键值对"的形式储存的，请看下面的实例：</p>
