@@ -164,9 +164,24 @@
 					a=["www.qingsword.com","晴刃","qingsword"]
 					for i in range(len(a)):
 					    print(str(i)+"~"+a[i])
+
+					#除了能够使用上面这种方法打印出每个元素对应的索引外，python还提供了一个enumerate函数，能够直接将列表分解成索引对应元素的形式，例如
+					#!/usr/yin/env python
+					#coding=utf-8
+					L=["a","b","c","d"]
+					print(tuple(enumerate(L)))
+					for i,a in enumerate(L):
+					    print(i,a)
+
+					#程序输出
+					((0, 'a'), (1, 'b'), (2, 'c'), (3, 'd'))
+					0 a
+					1 b
+					2 c
+					3 d
 					</pre>
 
-					<p>再来看一个for遍历字典键值的例子：</p>
+					<p>for迭代字典实例：</p>
 					<pre class="brush: python;">
 					#!/usr/yin/env python
 					#coding=utf-8
@@ -195,8 +210,50 @@
 					two 2
 					four 4
 					three 3
+
+					#for中携带多个变量不仅可以用在字典中，也能用在多维列表或元组中，例如
+					#!/usr/yin/env python
+					#coding=utf-8
+					L=[[1,11,111],[2,22,222],[3,33,333]]
+					for x,y,z in L:
+					    print(x,y,z)
+
+					#程序输出
+					1 11 111
+					2 22 222
+					3 33 333
+					</pre>
+
+					<p>for迭代字符串实例：</p>
+					<pre class="brush: python;">
+					#!/usr/yin/env python
+					#coding=utf-8
+
+					s0="www.qingsword.com"
+					s1=""
+					for a in s0:
+					    s1+=a
+					print(s1)
+
+					#程序使用for循环每次读取s0中的一个字符并将它添加到s1中，完成s0到s1的复制
 					</pre>
 					<p>Ps：while循环中的continue和break语句同样适用于for循环。</p>
+
+					<p>列表，字典，元组，字符串都是可迭代类型，那么如何判断哪种数据类型可迭代呢？可以使用collections模块的Iterable类型来判断，例如：</p>
+					<pre class="brush: python;">
+					#!/usr/yin/env python
+					#coding=utf-8
+					from collections import Iterable
+
+					print(isinstance(123,Iterable))
+					print(isinstance("www.qingsword.com",Iterable))
+					print(isinstance(["www.qingsword.com","qingsword"],Iterable))
+
+					#程序输出，从输出可以看到，整型123不能迭代，所以返回False，后面的字符串与列表都是可迭代类型
+					False
+					True
+					True
+					</pre>
 
 					<h2 id="python-if-while-for-try-3">0×3.异常捕获与处理</h2>
 					<p>关于异常处理的语句在if中已经简单演示过，try语句块和if一样，可以包含多个except分支用于捕获异常，在try末尾还能添加一个else分支，当没有捕获到异常时将会运行这个分支下的内容，可能有朋友会问："我怎么会知道异常名称是什么？什么时候会发生什么异常？"，当我们使用解释器运行程序的时候，总会遇见一些错误，发生错误时解释器会返回一个异常信息，其中就包含了异常名称，我们只需要将这些名称记录下来，然后使用except捕获他们即可，请看下面的实例：</p>
