@@ -85,6 +85,7 @@
 						 <li><a href="#python-def-3">0×3.函数的作用域</a></li>
 						 <li><a href="#python-def-4">0×4.带参数的函数</a></li>
 						 <li><a href="#python-def-5">0×5.递归函数</a></li>
+						 <li><a href="#python-def-6">0×6.生成器函数</a></li>
 					 </ul>
 					<!-- /目录 -->
 
@@ -428,6 +429,88 @@
 					print(fact(6))
 					</pre>
 					<p>在上面的fact_a(n,result)函数中使用了"尾递归"优化，在return时调用函数自身，并且return语句中不包含表达式，只有函数本身，n-1与n*result两个参数会在调用函数之前被计算出来，在支持尾递归优化的编程语言中，这种调用方式使得栈不会增长，所以也能很好的避免"栈溢出"（但Python中却没有提供这种功能，所以Python中使用递归函数要谨慎）。</p>
+
+					<h2 id="python-def-6">0×6.生成器函数</h2>
+
+					<p>"生成器函数"有点类似前面介绍过的"列表生成器"，每次迭代这个生成器函数时，才执行算法计算出下一个值，请看下面的实例：</p>
+
+					<pre class="brush: python;">
+					#首先来看一个正常的函数，传入一个数值num，打印出num位数的斐波那契数列
+					#!/usr/bin/env python
+					#coding=utf-8
+					def fibo(num):
+					    #同a=0 b=1 n=0
+					    a,b,n=0,1,0
+					    while n&lt;num:
+					        print(b)
+					        #同a=b b=a+b
+					        a,b=b,a+b
+					        n+=1
+					    return "End"
+					print(fibo(5))
+
+					#程序输出，此时fibo还只是普通函数
+					1
+					1
+					2
+					3
+					5
+					End
+
+					#将上面的普通函数改成"生成式函数"仅需要一步，将while中的print(b)替换成yield b，如下
+					#!/usr/bin/env python
+					#coding=utf-8
+					def fibo(num):
+					    a,b,n=0,1,0
+					    while n&lt;num:
+					        yield b
+					        a,b=b,a+b
+					        n+=1
+					    return "End"
+					print(fibo(5))
+
+					#程序输出
+					&lt;generator object fibo at 0x7fea773fdc50&gt;
+
+					#想要迭代这个生成式中的值，可以使用next()函数，或使用for循环
+					for x in fibo(5):
+					    print(x)
+
+					#输出
+					1
+					1
+					2
+					3
+					5
+
+					#可能大家会发现一个问题，迭代后，根本没有执行fibo最后的return语句，这是因为生成式函数在迭代的时候，遇到yield就返回，不再执行后面的内容，而再次访问这个生成式的时候，会接着上次yield返回的位置往下执行，如果想要获得生成式函数的return返回值，需要使用next()函数去迭代其内容，然后捕获StopIteration异常，这个return就包含在这个异常的value里，例如：
+					#!/usr/bin/env python
+					#coding=utf-8
+					def fibo(num):
+					    a,b,n=0,1,0
+					    while n&lt;num:
+					        yield b
+					        a,b=b,a+b
+					        n+=1
+					    return "End"
+
+					f=fibo(5)
+					while True:
+					    try:
+					        print(next(f))
+					    except StopIteration as erro:
+					        print(erro.value)
+					        break
+					
+					#程序输出
+					1
+					1
+					2
+					3
+					5
+					End
+					</pre>
+
 						
 				<!-- /正文 -->
 

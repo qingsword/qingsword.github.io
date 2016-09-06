@@ -249,9 +249,45 @@
 					 L5=[x.lower() for x in ["A","B",1,2]]
 
 					#可以使用下面的方法解决这个问题，isinstance函数接收两个参数，第一个参数是传入的值，第二个参数是比对类型，当传入的值和比对类型匹配的时候返回True，在下面这个列表生成式中，根据python中and和or的返回原理，当isinstance(x,str)为真时，返回x.lower()，即如果x是字符串，将其转换成小写，而当isinstance(x,str)为假时"isinstance(x,str) and x.lower()"为假，返回or后面的x，即将x不做任何修改添加到列表中
-					>>> L5=[isinstance(x,str) and x.lower() or x for x in ["A","B",1,2]]
-					>>> print(L5)
+					&gt;&gt;&gt; L5=[isinstance(x,str) and x.lower() or x for x in ["A","B",1,2]]
+					&gt;&gt;&gt; print(L5)
 					['a', 'b', 1, 2]
+					</pre>
+
+					<p>上面使用的"列表生成式"在创建列表的时候就已经计算出了列表的所有成员并储存在内存中了，这其实并不科学，有时我们创建的生成式会计算出很多元素，如果元素过多就会占用大量的内存，而我们仅需要访问列表中部分元素，这个时候就可以使用另外一种方式创建列表——"列表生成器"（generator）；</p>
+
+					<p>与"列表生成式"不同，"列表生成器"保存的仅仅是列表生成算法本身，只有当我们去迭代这个"列表生成器"对象的时候，才执行算法计算出我们访问的值，请看下面的实例：</p>
+					<pre class="brush: python;">
+					#创建"列表生成器"而不是"列表生成式"仅需要将中括号改成圆括号即可
+					&gt;&gt;&gt; L6=(x*x for x in range(0,10) if x%2==0)
+					&gt;&gt;&gt; print(L6)
+					&lt;generator object &lt;genexpr&gt; at 0x7faec4938410&gt;
+
+					#有两种方法来让生成器执行算法，第一种方法是使用next()函数，如果next()已经获取完所有值，则会抛出一个StopIteration异常
+					&gt;&gt;&gt; print(next(L6))
+					0
+					&gt;&gt;&gt; print(next(L6))
+					4
+					&gt;&gt;&gt; print(next(L6))
+					16
+					&gt;&gt;&gt; print(next(L6))
+					36
+					&gt;&gt;&gt; print(next(L6))
+					64
+					&gt;&gt;&gt; print(next(L6))
+					Traceback (most recent call last):
+					    print(next(L6))
+					StopIteration
+
+					#但实际应用中很少使用next()函数，而是使用for循环迭代
+					&gt;&gt;&gt; L6=(x*x for x in range(0,10) if x%2==0)
+					&gt;&gt;&gt; for a in L6:
+						print(a)	
+					0
+					4
+					16
+					36
+					64
 					</pre>
 
 					<h2 id="python-composite-data-3">0×3.字典</h2>
