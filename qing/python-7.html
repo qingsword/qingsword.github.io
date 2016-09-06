@@ -165,6 +165,37 @@
 					for i in range(len(a)):
 					    print(str(i)+"~"+a[i])
 					</pre>
+
+					<p>再来看一个for遍历字典键值的例子：</p>
+					<pre class="brush: python;">
+					#!/usr/yin/env python
+					#coding=utf-8
+
+					d={"one":1,"two":2,"three":3,"four":4}
+					#默认情况仅遍历字典的key，这等同于"for a in d.keys()"
+					for a in d:
+					    print(a)
+					#如果想要遍历值，可以使用下面的方法
+					for a in d.values():
+					    print(a)
+					#如果同时想遍历键值，可以在in之前使用两个变量
+					for a,b in d.items():
+					    print(a,b)
+
+					#程序输出
+					one
+					two
+					four
+					three
+					1
+					2
+					4
+					3
+					one 1
+					two 2
+					four 4
+					three 3
+					</pre>
 					<p>Ps：while循环中的continue和break语句同样适用于for循环。</p>
 
 					<h2 id="python-if-while-for-try-3">0×3.异常捕获与处理</h2>
