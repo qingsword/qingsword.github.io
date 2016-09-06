@@ -244,6 +244,14 @@
 					&gt;&gt;&gt; L4=[a+"="+str(b) for a,b in {"one":1,"two":2}.items()]
 					&gt;&gt;&gt; print(L4)
 					['two=2', 'one=1']
+
+					#有时候我们在生成一组列表的时候，如果使用了大小写转换函数，但生成式中却包含了数值类型，就会触发异常，例如
+					 L5=[x.lower() for x in ["A","B",1,2]]
+
+					#可以使用下面的方法解决这个问题，isinstance函数接收两个参数，第一个参数是传入的值，第二个参数是比对类型，当传入的值和比对类型匹配的时候返回True，在下面这个列表生成式中，根据python中and和or的返回原理，当isinstance(x,str)为真时，返回x.lower()，即如果x是字符串，将其转换成小写，而当isinstance(x,str)为假时"isinstance(x,str) and x.lower()"为假，返回or后面的x，即将x不做任何修改添加到列表中
+					>>> L5=[isinstance(x,str) and x.lower() or x for x in ["A","B",1,2]]
+					>>> print(L5)
+					['a', 'b', 1, 2]
 					</pre>
 
 					<h2 id="python-composite-data-3">0×3.字典</h2>
