@@ -82,7 +82,8 @@
 					<ul class="contents">	
 						 <li><a href="#python-if-while-for-try-1">0×1.使用if做出决策</a></li>
 						 <li><a href="#python-if-while-for-try-2">0×2.循环</a></li>
-						 <li><a href="#python-if-while-for-try-3">0×3.异常捕获与处理</a></li>
+						 <li><a href="#python-if-while-for-try-3">0×3.迭代器</a></li>
+						 <li><a href="#python-if-while-for-try-4">0×4.异常捕获与处理</a></li>
 					 </ul>
 					<!-- /目录 -->
 
@@ -239,6 +240,9 @@
 					</pre>
 					<p>Ps：while循环中的continue和break语句同样适用于for循环。</p>
 
+
+					<h2 id="python-if-while-for-try-3">0×3.迭代器</h2>
+					
 					<p>列表，字典，元组，字符串都是可迭代类型，那么如何判断哪种数据类型可迭代呢？可以使用collections模块的Iterable类型来判断，例如：</p>
 					<pre class="brush: python;">
 					#!/usr/bin/env python
@@ -254,8 +258,58 @@
 					True
 					True
 					</pre>
+					<p>这些可以直接作用于for循环的对象统称为可迭代对象（Iterable），而生成器（列表生成器和函数生成器）不但可以作用于for循环，还可以被next()函数不断调用并返回下一个值，直到最后抛出StopIteration错误。可以被next()函数调用并不断返回下一个值的对象称为迭代器（Iterator）；可以使用isinstance()判断一个对象是否是Iterator对象：</p>
+					<pre class="brush: python;">
+					#!/usr/bin/env python
+					#coding=utf-8
+					from collections import Iterator
+					print(isinstance([],Iterator))
+					print(isinstance("www.qingsword.com",Iterator))
+					print(isinstance({},Iterator))
+					print(isinstance((x for x in range(3)),Iterator))
 
-					<h2 id="python-if-while-for-try-3">0×3.异常捕获与处理</h2>
+					#从下面的输出可以看到，列表字符串和字典，虽然都是可迭代对象（Iterable），但他们都不是迭代器（Iterator），只有最后的列表生成器才是迭代器（是列表生成器而不是列表生成式，注意两者括号上的区别，一个是中括号，一个是圆括号，并且两者工作方式不一样）
+					False
+					False
+					False
+					True
+					</pre>
+					<p>在Python中，迭代器保存了一组算法，这组算法可以计算出一个数据流，这个数据流可以无穷大（比如实数集合），也可以是有限的数据流，迭代器对象可以被next()函数调用并不断返回下一个数据，直到没有数据时抛出StopIteration错误，所以迭代器对象是当我们访问这个迭代器时才计算出数据流中的下一个值。</p>
+
+					<p>python允许使用iter()函数，将一个可迭代对象转换成迭代器，例如：</p>
+					<pre class="brush: python;">
+					#!/usr/bin/env python
+					#coding=utf-8
+					from collections import Iterator
+					print(isinstance(iter([]),Iterator))
+					print(isinstance(iter("www.qingsword.com"),Iterator))
+
+					#程序输出
+					True
+					True
+					</pre>
+
+					<p>for循环与迭代器的比较如下：</p>
+					<pre class="brush: python;">
+					#!/usr/bin/env python
+					#coding=utf-8
+					L1=[1,2,3]
+					L2=iter(L1)
+					
+					#for循环迭代
+					for a in L1:
+					    print(a)
+					
+					#使用next()读取迭代器L2中的值
+					while True:
+					    try:
+					        print(next(L2))
+					    except StopIteration as err:
+					        break
+					</pre>
+					<p>从这个实例可以看出，Python的for循环与调用next()函数访问迭代器，他们本质上是一致的。</p>
+
+					<h2 id="python-if-while-for-try-4">0×4.异常捕获与处理</h2>
 					<p>关于异常处理的语句在if中已经简单演示过，try语句块和if一样，可以包含多个except分支用于捕获异常，在try末尾还能添加一个else分支，当没有捕获到异常时将会运行这个分支下的内容，可能有朋友会问："我怎么会知道异常名称是什么？什么时候会发生什么异常？"，当我们使用解释器运行程序的时候，总会遇见一些错误，发生错误时解释器会返回一个异常信息，其中就包含了异常名称，我们只需要将这些名称记录下来，然后使用except捕获他们即可，请看下面的实例：</p>
 					<pre class="brush: python;">
 					#!/usr/bin/env python3
