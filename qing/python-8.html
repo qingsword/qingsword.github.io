@@ -86,6 +86,12 @@
 						 <li><a href="#python-def-4">0×4.带参数的函数</a></li>
 						 <li><a href="#python-def-5">0×5.递归函数</a></li>
 						 <li><a href="#python-def-6">0×6.生成器函数</a></li>
+						 <li><a href="#python-def-7">0×7.高阶函数</a></li>
+						 <li class="subli"><a href="#python-def-8">a.map和reduce</a></li>
+						 <li class="subli"><a href="#python-def-9">b.filter</a></li>
+						 <li class="subli"><a href="#python-def-10">c.sorted</a></li>
+						 <li><a href="#python-def-11">0×8.返回函数</a></li>
+						 <li><a href="#python-def-12">0×9.匿名函数</a></li>
 					 </ul>
 					<!-- /目录 -->
 
@@ -535,7 +541,368 @@
 					[1, 3, 3, 1]
 					[1, 4, 6, 4, 1]
 					</pre>
-						
+
+					<h2 id="python-def-7">0×7.高阶函数</h2>
+
+					<p>如果一个函数可以接收另一个函数作为参数，这种函数就叫做"高阶函数"，例如：</p>
+					<pre class="brush: python;">
+					#!/usr/bin/env python
+					#coding=utf-8
+
+					#abs()是python内置的求绝对值的函数
+					print(abs(-23))
+					#变量可以指向函数，这个变量就是这个函数的一个引用
+					a=abs
+					print(a(-24))
+					#函数名本身也是变量，如果将内置函数名指向另外一个数值，那么它将不再能够计算绝对值，如果此时再用abs计算绝对值，就会报错
+					abs=233
+					print(abs)
+					#删除abs的指向，恢复默认的指向
+					del abs
+					print(abs(-25))
+
+					#自定义一个高阶函数，将abs函数传递给这个函数，用于计算|x|+|y|
+					#--------
+					def xandy(x,y,f):
+					    """高阶函数，返回|x|+|y|"""
+					    return f(x)+f(y)
+
+					print(xandy(-10,-20,abs))
+
+					#程序输出
+					23
+					24
+					233
+					25
+					30
+					</pre>
+					<p>通过这个实例，我们得出几个结论：python中所有函数名都是变量，并且可以改变他们的指向（虽然不推荐这样做），变量可以指向函数，高阶函数能够接收另一个函数作为参数。</p>
+					
+					<p>下面就来看几个python内置的高阶函数。</p>
+
+					<h3 id="python-def-8">a.map和reduce</h3>
+
+					<p>首先来看map()函数，这个函数接收两个值：一个是函数，一个是可迭代类型（Iterable）；map()将传入的函数作用于后面的可迭代类型中的每个值，请看下面的实例：</p>
+
+					<pre class="brush: python;">
+					#!/usr/bin/env python
+					#coding=utf-8
+					#--------
+					def square(x):
+					    """返回x的平方"""
+					    return x*x
+
+					L=[1,2,3,4,5]
+					#map第一个参数是一个函数，第二个参数是一个可迭代类型，map会读取列表L中的每个值，传递给square函数，最后使用list函数将map对象转换成列表输出
+					print(list(map(square,L)))
+
+					#程序输出
+					[1, 4, 9, 16, 25]
+					</pre>
+					<p>再来看一个利用map函数将数值列表转换成字符串列表的实例：</p>
+					<pre class="brush: python;">
+					#!/usr/bin/env python
+					#coding=utf-8
+					L=[1,2,3,4,5]
+					print(list(map(str,L)))
+
+					#程序输出
+					['1', '2', '3', '4', '5']
+
+					#使用循环可以达到同样的效果，但代码看起来却没有使用高阶函数那么简洁
+					#!/usr/bin/env python
+					#coding=utf-8
+					L0=[1,2,3,4,5]
+					L1=[]
+					for a in L0:
+					    L1.append(str(a))
+					print(L1)
+					</pre>
+
+					<p>再来看reduce函数，这个函数也接收两个值，第一个为函数，第二个参数也是一个可迭代类型，与map不同的是，reduce的第一个参数必须是可以接收两个传入参数的函数，reduce的工作原理如下：</p>
+					<p class="indent-p">reduce(f, [a, b, c, d]) = f(f(f(a, b), c), d)</p>
+					<p>reduce把一个函数作用在一个序列 [a, b, c, d,...]上，这个函数必须接收两个参数，reduce把结果继续和序列的下一个元素做累积计算。</p>
+					<p>下面来看一个将字符串类型（仅包含整型的字符串）转换成整型的实例：</p>
+					<pre class="brush: python;">
+					#!/usr/bin/env python
+					#coding=utf-8
+					from functools import  reduce
+					#--------
+					def str2int(x):
+					    """将传入的字符串整型转换成整型"""
+					    def char2num(a):
+					        """将单个字符转换成整型"""
+					        return {"0":0,"1":1,"2":2,"3":3,"4":4,"5":5,"6":6,"7":7,"8":8,"9":9}[a]
+					    def tonum(a,b):
+					        """返回整数"""
+					        return a*10+b
+					    return reduce(tonum,map(char2num,x))
+
+					print("10086")
+
+					#虽然没有添加异常处理模块，但我们已经利用map函数与reduce函数完成了一个int()函数原型，假设Python没有提供int()函数，你完全可以自己写一个把字符串转化为整数的函数，就像上面这样
+					</pre>
+
+					<h3 id="python-def-9">b.filter</h3>
+
+					<p>和map()类似，filter()也接收一个函数和一个序列。和map()不同的是，filter()把传入的函数依次作用于每个元素，然后根据返回值是True还是False决定保留还是丢弃该元素，例如：</p>
+					<pre class="brush: python;">
+					#实例一：返回奇数列表
+					#!/usr/bin/env python
+					#coding=utf-8
+					#--------
+					def is_odd(x):
+					    """如果x为奇数返回True，偶数返回False"""
+					    return x%2==1
+
+					L=[1,2,3,4,5,6,7,8]
+					print(list(filter(is_odd,L)))
+
+					#程序输出
+					[1, 3, 5, 7]
+
+					#实例二：去除列表中的空字符串
+					#!/usr/bin/env python
+					#coding=utf-8
+					#--------
+					def is_sp(x):
+					    """判断是否为空字符串"""
+					    return  x.strip()
+
+					L=[" ","a","b","    ","c"]
+					print(list(filter(is_sp,L)))
+
+					#程序输出
+					['a', 'b', 'c']
+
+					#实例三：输出1000以内所有回数（回数如121，131，前后对称）
+					#!/usr/bin/env python
+					#coding=utf-8
+					#--------
+					def is_back(x):
+					    """判断是否为回数，将传入数字转换成字符串然后使用分片反转，将反转的数字重新转换成整型并与原数比较"""
+					    return x==int(str(x)[::-1])
+
+					print(list(filter(is_back,range(1,1001))))
+					</pre>
+
+					<h3 id="python-def-10">c.sorted</h3>
+					
+					<p>Python内置的sorted()函数可用于对可迭代类型（列表等）进行排序，请看下面的实例：</p>
+					<pre class="brush: python;">
+					#默认情况下，数字从小到大，字母先大写后小写按照字母表顺序排列
+					&gt;&gt;&gt; L0=[1,-10,9,-2,23,-9]
+					&gt;&gt;&gt; print(sorted(L0))
+					[-10, -9, -2, 1, 9, 23]
+					&gt;&gt;&gt; L1=["B","a","C","d","b","X"]
+					&gt;&gt;&gt; print(sorted(L1))
+					['B', 'C', 'X', 'a', 'b', 'd']
+
+					#sorted是一个高阶函数，可通过key关键字传递一个函数，首先使用这个函数作用于列表的每一个元素，然后再按照默认排序，本例使用abs函数将列表每个元素都转换成正整数，然后按照sorted的默认排序从小到大，确定位置后，再将原列表对应的数字放到对应的位置上
+					&gt;&gt;&gt; print(sorted(L0,key=abs))
+					[1, -2, 9, -9, -10, 23]
+					#将列表中的字母全部转换成小写排序
+					&gt;&gt;&gt; print(sorted(L1,key=str.lower))
+					['a', 'B', 'b', 'C', 'd', 'X']
+					#使用reverse参数可以将排序反转
+					&gt;&gt;&gt; print(sorted(L1,key=str.lower,reverse=True))
+					['X', 'd', 'C', 'B', 'b', 'a']
+					</pre>
+					<p>再来看一个实例，使用自定义函数对列表进行排序：</p>
+
+					<pre class="brush: python;">
+					#!/usr/bin/env python
+					#coding=utf-8
+					L = [('John', 66), ('Qingsword', 96), ('George', 76), ('Lifa', 83)]
+					#--------
+					def by_name(L):
+					    """按名字排序"""
+					    return L[0].lower()
+					def by_score(L):
+					    """按分数排序"""
+					    return L[1]
+
+					print(sorted(L,key=by_name))
+					print(sorted(L,key=by_score))
+
+					#程序输出
+					[('George', 76), ('John', 66), ('Lifa', 83), ('Qingsword', 96)]
+					[('John', 66), ('George', 76), ('Lifa', 83), ('Qingsword', 96)]
+					</pre>
+					
+					<h2 id="python-def-11">0×8.返回函数</h2>
+
+					<p>高阶函数除了可以接受函数作为参数外，还可以把函数作为结果值返回，被返回的函数并没有立刻执行，直到被调用时才执行其中的内容，请看下面的实例：</p>
+
+					<pre class="brush: python;">
+					#!/usr/bin/env python
+					#coding=utf-8
+					#--------
+					def calc_sum(*n):
+					    """立即计算并返回传入的所有参数之和"""
+					    s=0
+					    for x in n:
+					        s+=x
+					    return s
+					#--------
+					def lazy_sum(*n):
+					    """将n_sum函数返回给调用者，只有当访问函数时才计算所有参数之和"""
+					    def n_sum():
+					        s=0
+					        for x in n:
+					            s+=x
+					        return s
+					    return n_sum
+
+					f1=calc_sum(1,2,3,2,1)
+					f2=lazy_sum(1,2,3,2,1)
+
+					#f1接收的是calc_sum函数的返回结果
+					print(f1)
+					#f2接收的只是一个返回函数n_sum
+					print(f2)
+					#访问n_sum函数时才计算结果
+					print(f2())
+
+					#程序输出
+					9
+					&lt;function lazy_sum.&lt;locals&gt;.n_sum at 0x7fc0410cae18&gt;
+					9
+					</pre>
+
+					<p>将函数作为返回值容易出现一些小问题，当返回函数中的值调用了外部的一些变量的时候，如果外部的变量发生改变，那么可能得到意料之外的结果，例如：</p>
+					<pre class="brush: python;">
+					#!/usr/bin/env python
+					#coding=utf-8
+					#--------
+					def count():
+					    L = []
+					    for i in range(1, 4):
+					        def fx():
+					            return i*i
+					        L.append(fx)
+					    return L
+
+					f1, f2, f3 = count()
+					print(f1())
+					print(f2())
+					print(f3())
+
+					#这段程序count()执行后会在L列表中生成三个函数[fx,fx,fx]，将这三个函数赋予三个变量f1,f2,f3，我们期望的函数执行结果应该是1,4,9，但实际上print输出三个函数的结果都是9，这是因为，在我们调用f1()，f2()，f3()之前，并不会去计算i*i的结果，而在我们调用这三个函数时，count()函数早已执行完成，for循环后i的值是3，所以f1()，f2()，f3()全部返回9
+
+					#如果期望得到1,4,9这样的结果，就应该在将fx函数添加到列表前，将i参数传递给另外的函数，让传递过去的参数保存在那个函数实例中，这样调用他们时才会得到对应的结果，就像下面这样
+					#!/usr/bin/env python
+					#coding=utf-8
+					#--------
+					def count():
+					    def f(i):
+					        def fx():
+					            return i*i
+					        return fx
+					    L = []
+					    for i in range(1, 4):
+					        L.append(f(i))
+					    return L
+
+					f1, f2, f3 = count()
+					print(f1())
+					print(f2())
+					print(f3())
+
+					#L.append(f(i))每次执行时，都会向f()传递当前的i值，这个i值被保留在当前f()实例中，而f()本身返回一个函数fx()，所以i*i并没有立刻计算，count执行完成后L列表中仍然保存的是三个返回的fx函数，直到他们被调用时，才分别计算每个fx函数中i的乘积
+					</pre>
+
+					<h2 id="python-def-12">0×9.匿名函数</h2>
+
+					<p>匿名函数使用关键字lambda定义，例如：</p>
+					<pre class="brush: python;">
+					#!/usr/bin/env python
+					#coding=utf-8
+					#--------
+					def print_website():
+					    """返回网站地址"""
+					    return "www.qingsword.com"
+					#--------
+					def squ(x):
+					    """求x的平方"""
+					    return x*x
+
+					a=lambda:"www.qingsword.com"
+					b=lambda x:x*x
+
+					print(print_website())
+					print(squ(12))
+					print(a())
+					print(b(11))
+
+					#程序输出
+					www.qingsword.com
+					144
+					www.qingsword.com
+					121
+
+					#在上面这个小程序中，前面两个是正常def定义的函数，下面的a和b是使用lambda定义的匿名函数，两者功能完全相同
+
+					#匿名函数的语法如下，参数列表就相当于def函数名称括号里面的部分，返回值就等同于def函数的return部分：
+					lambda 参数列表:返回值
+
+					#再来看个匿名函数实例，接收两个参数返回这两个参数的和
+					#!/usr/bin/env python
+					#coding=utf-8
+					s=lambda x,y:x+y
+					print(s(12,6))
+
+					#程序输出
+					18
+					</pre>
+
+					<p>理解了匿名函数的工作原理后，前面很多的函数都可以改成匿名函数的形式让程序更加简洁，下面是使用匿名函数配合map和reduce函数完成将字符串转换成浮点数的一个实例：</p>
+
+					<pre class="brush: python;">
+					#!/usr/bin/env python
+					#coding=utf-8
+					from functools import reduce 
+					def str2float(s):
+					    return reduce(lambda x,y:x*10+y,map(int,s[:s.find(".")]))+\
+					           reduce(lambda x,y:x/10+y,map(int,s[-1:s.find("."):-1]))/10
+
+					print(str2float("520.1314"))
+
+					#输入一个字符串浮点数，将输出一个数值浮点数，下面拆分一下这个程序的return部分
+
+					#reduce(lambda x,y:x*10+y,map(int,s[:s.find(".")]))
+					#这一部分完成字符串小数点前的部分到整数的转换
+					#s[:s.find(".")]切片将取出第一个字符到"."位置（本例是3），也就是0,1,2这三个索引位置的字符（即"520"）
+					#然后使用map将这三个字符转换成int形式，并且保存成可迭代类型
+					#reduce将逐个读取上一步中map得到的那个结果集，并使用匿名函数进行处理，本例为首先取出5和2得到52，再取出0得到520
+
+					#reduce(lambda x,y:x/10+y,map(int,s[-1:s.find("."):-1]))/10
+					#这一部分完成字符串小数点后面的一部分到浮点数的转换
+					#唯一需要解释一下的就是s[-1:s.find("."):-1]
+					#这个切片从-1的位置开始，倒序读取（末尾的-1代表倒序，如果是-2代表倒序并且读取间隔为2），直到"."位置
+					#这一部分最后会得到0.1314
+
+					#两部分相加得到最终结果
+					</pre>
+					
+					<p>匿名函数也可以用作返回函数，例如：</p>
+
+					<pre class="brush: python;">
+					#!/usr/bin/env python
+					#coding=utf-8
+					def a(x,y):
+					    return lambda :x+y
+
+					b=a(1,2)
+					print(b)
+					print(b())
+
+					#程序输出，只有当访问b()时才计算x+y的值
+					&lt;function a.&lt;locals&gt;.&lt;lambda> at 0x7f1c808a5d90&gt;
+					3
+					</pre>
+
+					
 				<!-- /正文 -->
 
 				<footer class="text-footer">
