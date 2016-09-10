@@ -92,6 +92,8 @@
 						 <li class="subli"><a href="#python-def-10">c.sorted</a></li>
 						 <li><a href="#python-def-11">0×8.返回函数</a></li>
 						 <li><a href="#python-def-12">0×9.匿名函数</a></li>
+						 <li><a href="#python-def-13">0×10.函数装饰器</a></li>
+						 <li><a href="#python-def-14">0×11.偏函数</a></li>
 					 </ul>
 					<!-- /目录 -->
 
@@ -902,6 +904,236 @@
 					3
 					</pre>
 
+					<h2 id="python-def-13">0×10.函数装饰器</h2>
+
+					<p>有时候我们需要在函数运行前执行一些操作，但又不能更改原函数，这个时候就能够用到"函数装饰器"，所谓的装饰器，实际上就是一个函数，它接收原函数作为传入参数，然后返回另外一个函数，这个返回的函数在原函数执行前，将执行一系列我们设定的操作，然后再执行原函数，请看下面的实例：</p>
+					<pre class="brush: python;">
+					#!/usr/bin/env python
+					#coding=utf-8
+					import time
+					#--------
+					#log函数返回一个wrapper函数，返回函数被调用前不会被执行，返回函数被执行后会打印出传入函数的名称（fx.__name__），并且在返回时调用传入函数
+					def log(fx):
+					    """接收一个传入函数并返回一个函数的装饰器"""
+					    def wrapper(*args,**kw):
+					        print("Execute %s()"%fx.__name__)
+					        return fx(*args,**kw)
+					    return wrapper
+					#--------
+					#在原函数前，使用@符号添加装饰器函数，这相当于在这个位置执行了一句now=log(now)，now函数名称变量被重新指向了log函数，原函数now被当成参数传递给了log函数，这段语句执行后相当于now=log函数返回的wrapper()函数，程序执行now()就等价与执行log中的wrapper()函数
+					@log
+					def now():
+					    """打印当前时间"""
+					    print(time.ctime(time.time()))
+					    print("End")
+
+					now()
+
+					#程序输出
+					Execute now()
+					Sat Sep 10 09:07:28 2016
+					End
+
+					#上面的wrapper函数是能够接收任意数量的参数的，将程序更改成下面的样子
+					#!/usr/bin/env python
+					#coding=utf-8
+					import time
+					#--------
+					def log(fx):
+					    """接收一个传入函数并返回一个函数的装饰器"""
+					    def wrapper(*args,**kw):
+					        print("Execute %s()"%fx.__name__)
+					        return fx(*args,**kw)
+					    return wrapper
+					#--------
+					@log
+					def now(*x,**kw):
+					    """打印当前时间"""
+					    print(time.ctime(time.time()))
+					    print(x)
+
+					now("www.qingsword.com")
+
+    					#程序输出
+    					Execute now()
+					Sat Sep 10 09:25:45 2016
+					('www.qingsword.com',)
+
+					#执行now()就等同于执行wrapper()，因为@log等价与now=log(now)，而log()返回wrapper()，就相当于now=wrapper()，wrapper()能够接收任意参数，所以传入参数"www.qingsword.com"将被传递到return fx(*args,**kw)的fx函数参数中
+					</pre>
+					<p>在上面的实例中，装饰器本身只能接收被装饰的函数作为传入参数，如果想要装饰器本身也能接收参数，需要更改程序如下：</p>
+					<pre class="brush: python;">
+					#!/usr/bin/env python
+					#coding=utf-8
+					import time
+					#--------
+					def log(text):
+					    """接收传入参数的装饰器"""
+					    def decorator(fx):
+					        """接收一个传入函数并返回一个函数"""
+					        def wrapper(*args,**kw):
+					            print("%s %s()"%(text,fx.__name__))
+					            return fx(*args,**kw)
+					        return wrapper
+					    return decorator
+					#--------
+					@log("Execute")
+					def now(*x,**kw):
+					    """打印当前时间"""
+					    print(time.ctime(time.time()))
+					    print(x)
+
+					now("www.qingsword.com")
+
+    					#程序输出
+    					Execute now()
+					Sat Sep 10 09:33:42 2016
+					('www.qingsword.com',)
+
+					#@log("Execute")等同于now=log("Execute")(now)，首先调用log传入参数"Execute"，log函数会返回decorator函数，这个函数接收一个传入参数，本例将被装饰的now函数传递给了它，decorator函数执行后再返回一个wrapper()函数，后面的步骤和上一个实例就一样了
+					</pre>
+					<p>上面的实例中，如果我们在程序末尾添加一个打印调用函数名称的语句：</p>
+					<pre class="brush: python;">
+					......
+					now("www.qingsword.com")
+					print(now.__name__)
+
+					#程序输出
+					wrapper
+
+					#这是因为装饰器将原函数now包装成了wrapper，now变量指向的其实是wrapper函数，这有时会带来不小的麻烦，那么如何让程序名称输出为原函数的名称，而不是装饰器的名称呢？更改如下
+					#!/usr/bin/env python
+					#coding=utf-8
+					import time
+					import functools
+					#--------
+					def log(text):
+					    """接收传入参数的装饰器"""
+					    def decorator(fx):
+					        """接收一个传入函数并返回一个函数"""
+					        #在wrapper上面也添加一个装饰器，传入原函数，这条语句执行后，会将返回的wrapper函数中的__name__字段替换成fx.__name__，也就是原函数的名称
+					        @functools.wraps(fx)
+					        def wrapper(*args,**kw):
+					            print("%s %s()"%(text,fx.__name__))
+					            return fx(*args,**kw)
+					        return wrapper
+					    return decorator
+					#--------
+					@log("Execute")
+					def now(*x,**kw):
+					    """打印当前时间"""
+					    print(time.ctime(time.time()))
+					    print(x)
+
+					now("www.qingsword.com")
+					print(now.__name__)
+    
+					#程序输出
+					Execute now()
+					Sat Sep 10 09:43:12 2016
+					('www.qingsword.com',)
+					now
+					</pre>
+
+					<p>最后来看一个完整的实例，要求装饰器在原函数执行前输出"begin call"，在原函数执行后输出"end call"，然后根据传入装饰器的参数判断是使用带参数的装饰器还是普通装饰器，请看下面的实例：</p>
+					<pre class="brush: python;">
+					#!/usr/bin/env python
+					#coding=utf-8
+					import time
+					import functools
+					#--------
+					def log(TxtOrFx):
+					    #判断传入的是函数还是字符串
+					    if type(TxtOrFx)==type(""):
+					        def decorator(fx):
+					            @functools.wraps(fx)
+					            def wrapper(*args,**kw):
+					                print("Begin call")
+					                print("%s %s()"%(TxtOrFx,fx.__name__))
+					                result=fx(*args,**kw)
+					                print("End call")
+					                return result
+					            return wrapper
+					        return decorator
+					    else:
+					        @functools.wraps(TxtOrFx)
+					        def wrapper(*args,**kw):
+					            print("Begin call")
+					            print("Execute %s()"%(TxtOrFx.__name__))
+					            result=TxtOrFx(*args,**kw)
+					            print("End call")
+					            return result
+					        return wrapper        
+					#--------
+					@log("Execute")
+					def now(*x,**kw):
+					    """打印当前时间"""
+					    print(time.ctime(time.time()))
+					    print(x)
+
+					now("www.qingsword.com")
+					print(now.__name__)
+
+					#程序输出，如果将@log("Execute")替换成@log，同样得到下面的输出结果
+					Begin call
+					Execute now()
+					Sat Sep 10 10:14:58 2016
+					('www.qingsword.com',)
+					End call
+					now
+					</pre>
+
+					<h2 id="python-def-14">0×11.偏函数</h2>
+
+					<p>偏函数是functools模块的一个叫做partial的函数提供的功能，这个函数接收的第一个参数是一个函数，后面依次是要传递给这个函数的参数，请看下面的实例：</p>
+
+					<pre class="brush: python;">
+					#!/usr/bin/env python
+					#coding=utf-8
+					import functools
+					#--------
+					def divi(x,y):
+					    """返回x%y"""
+					    return x%y
+
+					#第一个偏函数，10作为传递给divi函数的第一个参数，相当于默认参数divi(x=10,y)，这个时候使用d0只要传递给他第二个参数y的值，就能完成运算
+					d0=functools.partial(divi,10)
+					print(d0(3))
+
+					#d1定义的偏函数自带了两个默认参数，调用
+					d1的时候就不需要传入参数了，相当于divi(10,6)
+					d1=functools.partial(divi,10,6)
+					print(d1())
+
+					#将字符串"520"转换成整数520
+					f1=functools.partial(int,"520")
+					print(f1())
+
+					#int接受一个关键字参数base来定义传入给int的字符串是多少进制，本例等同于将传入给int的字符串当成二进制转换成十进制，调用的时候如果只专递一个字符串，默认当做二进制处理，也可以手动传入一个base值，比如base=16，传入的字符串会当做16进制处理
+					f2=functools.partial(int,base=2)
+					print(f2("1110"))
+					print(f2("1110",base=16))
+
+					#程序输出
+					1
+					4
+					520
+					14
+					4368
+
+					#再例如求最大值的偏函数
+					#!/usr/bin/env python
+					#coding=utf-8
+					import functools
+
+					max2=functools.partial(max,100)
+					print(max2(10,20,30,200))
+
+					#程序输出
+					200
+
+					#max函数接受多个传入值，相当于max(*args)，我们在定义max2的时候，提前预设了一个传入值，这相当于max(100,*args)，如果调用max2传入的值比100小，那么直接会返回100，否则会返回传入的最大值
+					</pre>
 					
 				<!-- /正文 -->
 
