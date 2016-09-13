@@ -81,7 +81,8 @@
 					<h2>文章目录</h2>
 					<ul class="contents">	
 						 <li><a href="#python-module-and-package-1">0×1.如何导入模块</a></li>
-						 <li><a href="#python-module-and-package-2">0×2.如何导入包</a></li>
+						 <li><a href="#python-module-and-package-2">0×2.安装第三方模块</a></li>
+						 <li><a href="#python-module-and-package-3">0×3.如何导入包</a></li>
 					 </ul>
 					<!-- /目录 -->
 
@@ -175,9 +176,61 @@
 					</pre>
 					<p>from这种设计的好处是，当某个模块中包含多层类和方法的时候，我们需要访问某个方法可能需要这样写"class1.class2.sub1.sub2.x()"，但如果我们只想访问x()而不想添加冗长的前缀，就可以使用"from class1.class2.sub1.sub2 import x"，这样我们实例化的时候，只需要输入x()就能访问到模块中这个方法了。</p>
 
-					<h2 id="python-module-and-package-2">0×2.如何导入包</h2>
+					<p>说到模块就不得不说一下python一个特殊的变量"__name__"，有时候我们编写了一个模块，在测试的时候，直接运行模块时，模块内部的一些方法不会被执行，这时候就可以用到变量"__name__"来主动的调用模块中的一些方法，请看下面的实例：</p>
+					<pre class="brush: python;">
+					#假如我们编写了下面这个helloworld.py模块，模块所有代码之前的第一个字符串是模块的说明文档，__author__变量后面是这个模块的作者名称，这些都是装饰性的语句可以不写
+					#!/usr/bin/env python
+					#coding=utf-8
+					"helloworld.py模块"  #模块说明
+					__author__="www.qingsword.com" #模块作者
+					
+					#打印出当前__name__变量的值
+					print("__name__  is ",__name__)
+					def test_m():
+					    print("Hello World")
 
-					<p>在上面的模块是一个单独的文件，而"包"可以是多个模块文件的集合，python中的"包"是以文件夹的形式存在的，python区分一个文件夹是"包"还是普通文件夹，主要搜索文件夹中是否存在"__init__.py"文件，如果有，则判断这个文件夹为"包"，请看下面的实例：</p>
+					#如果__name__变量的值是__main__调用test_m()方法
+					if __name__=="__main__":
+					    test_m()
+
+ 					#直接执行这个模块，将会打印出下面的内容
+ 					__name__  is  __main__
+					Hello World
+
+					#但如果我们现在使用另外一个文件导入这个模块
+					import helloworld
+
+					#执行import语句后，只得到了下面这一句
+					__name__  is  helloworld
+
+					#由此我们得到两个重要的结论：
+					#如果模块是被导入，__name__的值为模块名字
+					#如果模块是被直接执行，__name__的值为"__main__"
+
+					#这样设计的好处显而易见，当我们测试模块时直接运行模块代码__name__的值为"__main__"，通过if语句判断可以调用我们需要调用的函数，如果是其他文件调用这个模块，那么__name__的值为模块名字，if判断失败，将不会直接调用模块中如何方法，如果需要调用，要使用方法名称，如果我再在导入模块的文件中打印出__name__变量，程序的流程就会一目了然
+					#!/usr/bin/env python
+					#coding=utf-8
+					import helloworld
+					helloworld.test_m()
+					print("__name__ is",__name__)
+
+					#程序输出，第一个__name__输出的是模块的名称，第二个__name__输出的是当前的文件的名称，所有被直接运行的py文件的__name__变量值都是"__main__"
+					__name__  is  helloworld
+					Hello World
+					__name__ is __main__
+					</pre>
+
+					<h2 id="python-module-and-package-2">0×2.安装第三方模块</h2>
+					<p>除了能创建自己的模块外，python提供了大量的第三方模块，这些模块都各有功能，为程序开发节约了不少时间，ubuntu中安装第三方模块的方法非常简单，我只需要知道模块名称，就能够使用pip或pip3轻松的安装他们，下面用Pillow图形库举例，打开终端，输入下面的命令安装Pillow图形库：</p>
+					<pre class="brush: python;">
+					#如果使用的是python3，对应的第三方模块安装命令就是pip3，如果是python2，那么就是pip
+					www@qingsword.com:~$ sudo pip3 install Pillow
+					</pre>
+					<p>需要什么模块可以先去python第三方模块官方网站"pypi.python.org"查找模块名，然后使用上面的方法安装他们。</p>
+
+					<h2 id="python-module-and-package-3">0×3.如何导入包</h2>
+
+					<p>模块只是一个单独的文件，而"包"可以是多个模块文件的集合，python中的"包"是以文件夹的形式存在的，python区分一个文件夹是"包"还是普通文件夹，主要搜索文件夹中是否存在"__init__.py"文件，如果有，则判断这个文件夹为"包"，请看下面的实例：</p>
 					<pre class="brush: python;">
 					#创建一个pack1文件夹，在其中创建一个"__init__.py"文件，并在其中创建两个模块文件m1.py，m2.py，将这个文件夹和需要调用它的文件放在同一个目录中
 

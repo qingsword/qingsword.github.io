@@ -82,6 +82,7 @@
 					<ul class="contents">	
 						 <li><a href="#python-class-1">0×1.什么是python中的对象</a></li>
 						 <li><a href="#python-class-2">0×2.python中如何创建类</a></li>
+						 <li><a href="#python-class-3">0×3.类私有属性访问限制</a></li>
 					 </ul>
 					<!-- /目录 -->
 
@@ -278,6 +279,80 @@
 					{'apple': 1, 'orange': 2}
 					冰箱中并没有这个食物:banana，取出失败
 					食材：apple，库存不足，现有数量：1
+					</pre>
+
+					<h2 id="python-class-3">0×3.类私有属性访问限制</h2>
+
+					<p>在上面的电冰箱实例中，我们已经创建过了私有方法，python中所谓的私有方法和属性，就是在这些方法或属性名前添加两个"下划线"（例如__items），这样的属性或方法是不能用正常的方法访问到的，但不包括前后双下划线的那些（例如__len__），下面用一个实例来演示这些私有属性和方法的特性：</p>
+					<pre class="brush: python;">
+					#!/usr/bin/env python
+					#coding=utf-8
+					########
+					class Kitty(object):
+					    """私有属性__name和__age的类"""
+					    #--------
+					    def __init__(self,name="hello",age=1):
+					        """初始化"""
+					        self.__name=name
+					        self.__age=age
+					    #私有属性可以通过接口函数来调用
+					    #--------
+					    def get_age(self):
+					        """返回年龄"""
+					        return self.__age
+					    #--------
+					    def set_age(self,age):
+					        """设置年龄"""
+					        self.__age=age
+					    #--------
+					    def get_name(self):
+					        """返回名字"""
+					        return self.__name
+					    #--------
+					    def set_name(self,name):
+					        """设置名字"""
+					        self.__name=name
+					    #前后双下划线的方法，不是私有方法，外部可以直接访问，只有前置双下划线的属性或方法才是私有的，自能通过内部接口函数调用
+					    #--------
+					    def __get_name_len__(self):
+					        return len(self.__name)
+					
+					#实例化      
+					kt=Kitty()
+					#通过接口函数设置年龄和姓名
+					kt.set_age(2)
+					kt.set_name("www.qingsword.com")
+					#通过接口函数打印姓名和年龄
+					print(kt.get_name())
+					print(kt.get_age())
+					#打印出名字长度
+					print(kt.__get_name_len__())
+
+					#程序输出
+					www.qingsword.com
+					2
+					17
+
+					#从这个实例可以看出，前后带双下划线的方法或属性，都能直接访问到，而如果我们输入下面这3句，发现并没有报错，不是说私有属性不能直接访问吗，为什么可以直接kt.__name设置私有属性的值呢？这是因为，实际上我们使用实例kt.__name这种语法的时候，是对kt这个类实例，创建了一个新的属性__name，这个属性和Kitty内部的私有属性并不是一个属性，内部的__name属性已经被python解释器自动改名为_Kitty__name了
+					kt.__name="qingsword.com"
+					print(kt.__name)
+					print(kt._Kitty__name)
+
+					#从下面的程序输出可以看到，两者保存的数据并不相同
+					qingsword.com
+					www.qingsword.com
+
+					#这并不意味着外部就真的无法调用这些私有属性或方法，只是python解释器自动对这些私有数据添加了类名前缀，可以给私有属性添加带但下划线的类名前缀来直接访问他们，但并不推荐这么做
+					kt._Kitty__name="www.qingsword.com"
+
+					#可能大家会觉得很奇怪，为什么要添加这些私有的属性或方法，直接提供访问不好吗？实际上，可以通过创建接口函数，对私有数据进行过滤处理，例如
+					    #--------
+					    def set_age(self,age):
+					        """设置年龄"""
+					        if 0&lt;=age&lt;=150:
+					            self.__age=age
+					        else:
+					            print("年龄不科学")
 					</pre>
 						
 				<!-- /正文 -->
