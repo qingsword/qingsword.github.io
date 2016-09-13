@@ -83,6 +83,7 @@
 						 <li><a href="#python-class-1">0×1.什么是python中的对象</a></li>
 						 <li><a href="#python-class-2">0×2.python中如何创建类</a></li>
 						 <li><a href="#python-class-3">0×3.类私有属性访问限制</a></li>
+						 <li><a href="#python-class-4">0×4.继承与多态</a></li>
 					 </ul>
 					<!-- /目录 -->
 
@@ -353,6 +354,101 @@
 					            self.__age=age
 					        else:
 					            print("年龄不科学")
+					</pre>
+
+					<h2 id="python-class-4">0×4.继承与多态</h2>
+
+					<p>我们在创建类的时候，默认情况下都是继承了python的基类object，除此之外，我们还能让新建的类继承现有的类，继承后子类将拥有被继承的父类所有的属性和方法，下面用一个实例来演示这一特性：</p>
+					<pre class="brush: python;">
+					#!/usr/bin/env python
+					#coding=utf-8
+					########
+					class Parent(object):
+					    """父类，继承了object类，如果一个类是继承基类object，可以省略(object)不写，但写上也不会报错"""
+					    #--------
+					    def print_website(self):
+					        """打印网址"""
+					        print("www.qingsword.com")
+					    #--------
+					    def print_author(self):
+					        """打印作者名称"""
+					        print("QingSword")
+					########
+					class Sub_A(Parent):
+					    """继承Parent的子类，将父类写在子类后面的括号中，表示继承其所有的方法和属性，Sub_A重写了父类的print_website方法"""
+					    #--------
+					    def print_website(self):
+					        """打印网址"""
+					        print("qingsword.com")
+					########
+					class Sub_B(Parent):
+					    """继承Parent的子类，仅仅是一个空类，但却可以使用父类所有属性或方法"""
+					########
+					class Sub_C(object):
+					    """继承object的子类"""
+					    #--------
+					    def print_author(self):
+					        print("qingsword")
+					        
+					#--------
+					def print_info(x):
+					    """打印作者信息"""
+					    x.print_author()
+					
+					#首先实例化四个类
+					p=Parent()
+					a=Sub_A()
+					b=Sub_B()
+					c=Sub_C()
+
+					#访问父类的两个方法
+					p.print_website()
+					p.print_author()
+					#程序输出
+					www.qingsword.com
+					QingSword
+
+					#访问子类A的两个方法，如果一个子类中有与父类同名的属性或方法，那么它将覆盖父类的属性或方法，A类中重写了父类的print_website()，所以会优先被调用，虽然A类并没有print_author()方法，但是它将从父类Parent中继承这个方法，除非重写这个方法，否则就将直接调用父类的方法打印出作者信息
+					a.print_website()
+					a.print_author()
+					#程序输出
+					qingsword.com
+					QingSword
+
+					#B类中什么都没写，但他继承了父类Parent
+					b.print_author()
+					b.print_website()
+					#程序输出
+					www.qingsword.com
+					QingSword
+					
+					#再来看看这些对象他们的类型都是什么
+
+					#Parent类是继承object的，所以它可以是object类型，也可以是Parent类型，但不能是其子类型
+					print(isinstance(p,Parent))
+					print(isinstance(p,object))
+					print(isinstance(p,Sub_A))
+					#程序输出
+					True
+					True
+					False
+
+					#所有的子类型，可以是其父类型或Python基类object，也可以是其自身，所以下面的输出都是True
+					print(isinstance(a,Parent))
+					print(isinstance(a,Sub_A))
+					print(isinstance(b,Parent))
+					print(isinstance(b,Sub_B))
+
+					#像print_info()方法传递四个类，四个类可以是不同类型，甚至可以像print_info()传递其他方法名称，这是高级动态语言的一个最强大的地方——多态：print_info()方法接收一个变量，它不管接收的变量是什么类型，只关心这个变量能不能访问print_author()方法，这就是为什么C类虽然是继承了object，但它也有print_author()方法，所以程序不会报错
+					print_info(p)
+					print_info(a)
+					print_info(b)
+					print_info(c)
+					#程序输出
+					QingSword
+					QingSword
+					QingSword
+					qingsword
 					</pre>
 						
 				<!-- /正文 -->
