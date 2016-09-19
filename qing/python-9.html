@@ -84,6 +84,8 @@
 						 <li><a href="#python-class-2">0×2.python中如何创建类</a></li>
 						 <li><a href="#python-class-3">0×3.类私有属性访问限制</a></li>
 						 <li><a href="#python-class-4">0×4.继承与多态</a></li>
+						 <li><a href="#python-class-5">0×5.获取对象信息</a></li>
+						 <li><a href="#python-class-6">0×6.实例属性与类属性</a></li>
 					 </ul>
 					<!-- /目录 -->
 
@@ -450,6 +452,135 @@
 					QingSword
 					qingsword
 					</pre>
+					<h2 id="python-class-5">0×5.获取对象信息</h2>
+
+					<p>除了使用isinstance来匹配对象类型外，还能使用type来获取这些对象的类型，请看下面的实例：</p>
+					<pre class="brush: python;">
+					#!/usr/bin/env python
+					#coding=utf-8
+					#types模块中定义的常量可用于判断函数类型
+					import types
+					
+					#输出对象的类型
+					print(type("www.qingsword.com"))
+					#判断对象是否为字符串类型
+					print(type("qingsword.com")==str)
+					#程序输出
+					&lt;class 'str'&gt;
+					True
+
+					#如果对象是一个函数，就需要借助types模块中定义的常量来判断了
+					#--------
+					def fx():
+					    return 0
+
+					#判断fx是否为函数类型
+					print(type(fx)==types.FunctionType)
+
+					#判断是否为lambda类型
+					print(type(lambda :0)==types.LambdaType)
+
+					#判断len是否为内置的函数类型
+					print(type(len)==types.BuiltinFunctionType)
+
+					#判断表达式是否为列表生成器类型
+					print(type((x for x in range(10)))==types.GeneratorType)
+
+					#程序输出都为True
+
+					#isinstance同样能够完成这些操作，例如将判断fx函数的语句改成下面这样，返回值同样是True
+					print(isinstance(fx,types.FunctionType))
+					</pre>
+					<p>除了上面的两种对象类型判断外，配合getattr()、setattr()以及hasattr()，我们可以直接操作一个对象的状态，请看下面的实例：</p>
+					<pre class="brush: python;">
+					#!/usr/bin/env python
+					#coding=utf-8
+					class Ob_A(object):
+					    #---------
+					    def __init__(self,x=0):
+					        if type(x)==int:
+					            self.a=x
+					        else:
+					            raise TypeError("传入参数类型(%s)错误,正确的参数类型int"%type(x))
+					    #---------
+					    def sq(self):
+					        return self.a*self.a
+
+					oba=Ob_A(12)
+
+					#判断oba对象中是否有属性(或方法)a，返回True
+					print(hasattr(oba,"a"))
+
+					#获取属性(或方法)a，本例中a是一个属性值12，所以被print直接打印了出来
+					print(getattr(oba,"a"))
+
+					#是否有属性(或方法)b，返回False
+					print(hasattr(oba,"b"))
+
+					#给对象设置一个属性b，值为13
+					setattr(oba,"b",13)
+
+					#因为已经给对象添加了属性b，再次判断，返回True，并且打印出b的值13
+					print(hasattr(oba,"b"))
+					print(getattr(oba,"b"))
+
+					#判断oba对象中是否存在sq属性(或方法)
+					print(hasattr(oba,"sq"))
+
+					#使用sq对象指向oba对象的sq方法
+					sq=getattr(oba,"sq")
+
+					#从type可以看到sq是一个方法类型
+					print(type(sq))
+
+					#执行sq方法，返回144
+					print(sq())
+
+					#程序输出
+					True
+					12
+					False
+					True
+					13
+					True
+					&lt;class 'method'&gt;
+					144
+					</pre>
+					<p>这三个函数可用于探测对象中的信息，只有在不知道对象信息的时候，才会使用这三个函数，如果已经明确知道了一个对象中包含了哪些属性和方法，请直接调用他们。</p>
+
+					<h2 id="python-class-6">0×6.实例属性与类属性</h2>
+
+					<p>python是动态语言，在实例化后，还能给实例添加新的属性，但最好不要与类中的属性同名，请看下面的实例：</p>
+
+					<pre class="brush: python;">
+					#!/usr/bin/env python
+					#coding=utf-8
+					#Ob_A类中定义了一个类属性x，并且配置了其值为2
+					class Ob_A(object):
+					    x=2
+					
+					#实例化Ob_A类
+					oba=Ob_A()
+
+					#给oba实例创建一个新属性x，因为和Ob_A类中的属性同名，所以会覆盖原有属性值
+					oba.x=1
+
+					#打印出1
+					print(oba.x)
+
+					#类中的属性保持不变，打印出2
+					print(Ob_A.x)
+
+					#此时如果手动删除oba实例的x对象，再次打印oba实例的x对象，就会打印出原类中绑定的属性x值，打印出2
+					del oba.x
+					print(oba.x)
+
+					#程序输出
+					1
+					2
+					2
+					</pre>
+					<p>类在实例化后，如果需要给实例新增属性，建议属性名不要使用与原类中已经存在的属性同名，因为相同名称的实例属性将屏蔽掉类属性。</p>
 						
 				<!-- /正文 -->
 
