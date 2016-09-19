@@ -86,6 +86,9 @@
 						 <li><a href="#python-class-4">0×4.继承与多态</a></li>
 						 <li><a href="#python-class-5">0×5.获取对象信息</a></li>
 						 <li><a href="#python-class-6">0×6.实例属性与类属性</a></li>
+						 <li><a href="#python-class-7">0×7.属性和方法的动态绑定</a></li>
+						 <li><a href="#python-class-8">0×8.如何将类方法封装成属性</a></li>
+						 <li><a href="#python-class-9">0×9.类的多重继承</a></li>
 					 </ul>
 					<!-- /目录 -->
 
@@ -581,6 +584,144 @@
 					2
 					</pre>
 					<p>类在实例化后，如果需要给实例新增属性，建议属性名不要使用与原类中已经存在的属性同名，因为相同名称的实例属性将屏蔽掉类属性。</p>
+
+					<h2 id="python-class-7">0×7.属性和方法的动态绑定</h2>
+
+					<p>Python属于高级动态语言，与静态语言不同，当我们实例化一个类对象后，可以动态的给这个类实例绑定属性或方法，请看下面的实例：</p>
+					<pre class="brush: python;">
+					#!/usr/bin/env python
+					#coding=utf-8
+					from types import MethodType
+
+					#定义一个类，仅包含一个age属性
+					class Ob_A(object):
+					    def __init__(self,age=0):
+					        self.age=age
+					
+					#实例化Ob_A类
+					a=Ob_A(23)
+					#给Ob_A类的实例a新增一个name属性
+					a.name="qingsword"
+
+					#定义一个外部方法，稍后将它绑定到a实例
+					def get_sex(self):
+					    return "male"
+					
+					#使用types模块中的MethodType方法，将get_sex这个外部方法绑定到a实例的getsex变量上
+					a.getsex=MethodType(get_sex,a)
+
+					#执行a实例的getsex()就相当于执行了get_sex()
+					print(a.getsex())
+
+					#程序输出
+					male
+
+					#getsex名称仅限于a实例调用，如果此时再实例化一个Ob_A类，除非再次使用MethodType绑定一个新的get_sex方法，否则这个新的类实例是不能使用get_sex这个外部方法的
+					</pre>
+					<p>从上面这个实例可以看出，Python不会限制一个对象实例绑定多少外部属性和方法，但如果要限制他们，可以在类中使用__slots__属性，请看下面的实例：</p>
+
+					<pre class="brush: python;">
+					#!/usr/bin/env python
+					#coding=utf-8
+					from types import MethodType
+					########
+					class Ob_A(object):
+					    def __init__(self,age=0):
+					        self.age=age
+					    #定义了 __slots__属性后，Ob_A自身和所有实例，都只能使用这个元组中所包含的元素作为属性或方法名称
+					    __slots__=("name","age","get_sex")
+					########
+					#但__slots__属性对继承它的子类无效，除非这个子类中也包含一个__slots__属性，那么这个子类可以定义的属性或方法名就是自己的__slots__元组中包含的元素加上父类__slots__元组中包含的元素的集合
+					class Ob_B(Ob_A):
+					    x=0
+					########
+					def get_sex(self):
+					    return "male"
+					a=Ob_A(23)
+					a.name="qingsword"
+					a.get_sex=MethodType(get_sex,a)
+					print(a.get_sex())
+
+					#Ob_B类虽然继承Ob_A，但它没有包含__slots__属性，所以实例b可以添加任何属性或方法名，本例添加了一个web属性，指向了本站网址这段字符串地址
+					b=Ob_B()
+					b.web="www.qingsword.com"
+					print(b.web)
+					</pre>
+
+					<h2 id="python-class-8">0×8.如何将类方法封装成属性</h2>
+
+					<p>这一部分将使用python内置的@property装饰器，将类中的方法转换成属性，在外部看来，这个方法就像一个普通属性那样使用，请看下面的实例：</p>
+					<pre class="brush: python;">
+					#!/usr/bin/env python
+					#coding=utf-8
+					from datetime import datetime 
+					########
+					class Ob_A(object):
+					    def __init__(self,birth=2016):
+					        """初始化配置出身年份"""
+					        self.__birth=birth
+					    #使用@property装饰器将birth方法转换成属性
+					    @property
+					    def birth(self):
+					        """获取出身年份"""
+					        return self.__birth
+					    #使用@方法名.setter将这个方法设置成可写属性
+					    @birth.setter
+					    def birth(self,birth):
+					        """设置出身年份"""
+					        self.__birth=birth
+					    #仅有一个@property没有setter的方法，相当于一个只读属性
+					    @property
+					    def age(self):
+					        """返回年龄"""
+					        y=datetime.now()
+					        return y.year-self.__birth
+
+					x=Ob_A(2008)
+					print(x.birth)
+					#可以像设置属性值那样复制（如果是方法语法应该是x.birth(2000)）
+					x.birth=2000
+					print(x.birth)
+					print(x.age)
+
+					#程序输出
+					2008
+					2000
+					16
+					</pre>
+					<p>虽然上面的实例中，并没有对年龄做进一步的检测（比如年龄范围，输入类型等），但也不难看出，将函数封装成属性的样式可以让调用者写出更直观代码（比如x.birth=2000，而不是x.birth(2000)），而对封装者而言，可以在函数中去做各种条件判断来保证逻辑的合理。</p>
+
+					<h2 id="python-class-9">0×9.类的多重继承</h2>
+
+					<p>python中的类提供了多重继承的功能，比如C类可以继承B类同时又能继承A类，C类能够使用B和A类所有属性和方法，请看下面的实例：</p>
+					<pre class="brush: python;">
+					#!/usr/bin/env python
+					#coding=utf-8
+					########
+					class A(object):
+					    def _Print_website(self):
+					        print("www.qingsword.com")
+					########
+					class B(object):
+					    def _Print_HelloWorld(self):
+					        print("Hello World")
+					########
+					#多重继承只需要在子类括号中用逗号分隔需要继承的类即可
+					class C(A,B):
+					    def __init__(self):
+					        self.name="qingsword"
+					
+					#因为C类同时继承了A和B类，所以它的实例可以使用A和B类所有方法和属性
+					x=C()
+					x._Print_website()
+					x._Print_HelloWorld()
+					print(x.name)
+
+					#程序输出
+					www.qingsword.com
+					Hello World
+					qingsword
+					</pre>
 						
 				<!-- /正文 -->
 
