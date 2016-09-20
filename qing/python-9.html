@@ -90,6 +90,7 @@
 						 <li><a href="#python-class-8">0×8.如何将类方法封装成属性</a></li>
 						 <li><a href="#python-class-9">0×9.类的多重继承</a></li>
 						 <li><a href="#python-class-10">0×10.定制类</a></li>
+						 <li><a href="#python-class-11">0×11.枚举类</a></li>
 					 </ul>
 					<!-- /目录 -->
 
@@ -971,6 +972,115 @@
 					print(callable(str))  #True
 					print(callable([1,2,3]))  #False
 					</pre>
+					
+					<h2 id="python-class-11">0×11.枚举类</h2>
+
+					<p>Python3.0之后，提供了一个枚举类型，弥补了Python2没有枚举的不足，首先来看一个简单的枚举实例：</p>
+					<pre class="brush: python;">
+					#!/usr/bin/env python
+					#coding=utf-8
+					#导入枚举模块
+					from enum import Enum
+					
+					#定义一个枚举变量m
+					m = Enum('Month', ('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'))
+					
+					#使用不同的方法获取枚举中的名称和值，和列表不同，枚举的索引是从1开始的
+					print(m(1))  #Month.Jan
+					print(m.Mar)  #Month.Mar
+					print(m["Oct"])  #Month.Oct
+					print(m.Mar.value)  #3
+
+					#打印出枚举中所有的名称
+					x=len(m.__members__) #获得枚举个数
+					y=1
+					while True:
+					    if y&gt;x:
+					        break
+					    print(m(y))
+					    y+=1
+
+					#程序输出
+					Month.Jan
+					Month.Feb
+					Month.Mar
+					Month.Apr
+					Month.May
+					Month.Jun
+					Month.Jul
+					Month.Aug
+					Month.Sep
+					Month.Oct
+					Month.Nov
+					Month.Dec
+
+					#获取枚举成员名称和全名，m.__members__.items()会将枚举分割成一个列表，每个元素都为一个元组，每个元组中又包含一个字符串和一个字典类型，分割后的列表大概是这个样子[("Jan",&lt;Month.Jan:1&gt;),("Feb",&lt;Month.Feb:2&gt;)....]，然后使用name接收第一个参数（Jan），member接收第二个参数（&lt;Month.Jan:1&gt;），member可以访问键，用member.value可以访问值
+					for name, member in m.__members__.items():
+					    print(name,'=&gt;',member,',',member.value)
+
+					#程序输出
+					Jan =&gt; Month.Jan , 1
+					Feb =&gt; Month.Feb , 2
+					Mar =&gt; Month.Mar , 3
+					Apr =&gt; Month.Apr , 4
+					May =&gt; Month.May , 5
+					Jun =&gt; Month.Jun , 6
+					Jul =&gt; Month.Jul , 7
+					Aug =&gt; Month.Aug , 8
+					Sep =&gt; Month.Sep , 9
+					Oct =&gt; Month.Oct , 10
+					Nov =&gt; Month.Nov , 11
+					Dec =&gt; Month.Dec , 12
+					</pre>
+
+					<p>了解了枚举的创建和访问方法后，再来看看枚举类的创建方法：</p>
+					<pre class="brush: python;">
+					#!/usr/bin/env python
+					#coding=utf-8
+					from enum import Enum,unique
+					@unique  #unique装饰器可以确保枚举中没有重复值
+					class Week(Enum):
+					    """继承枚举类，可以指定每个名称的值"""
+					    Sun=0 #将起始索引设定成0
+					    Mon=1
+					    Tue=2
+					    Wed=3
+					    Thu=4
+					    Fri=5
+					    Sat=6
+					
+					#访问方法同枚举
+					print(Week(0))
+					print(Week.Sat.value)
+					print(Week["Thu"])
+
+					#程序输出
+					Week.Sun
+					6
+					Week.Thu
+					</pre>
+					<p>在Python3中，枚举类经常用于定义常量，因为枚举中每个名称对应的值是不可变的，例如：</p>
+					<pre class="brush: python;">
+					#!/usr/bin/env python
+					#coding=utf-8
+					from enum import Enum,unique
+					@unique
+					class const(Enum):
+					    """常量枚举类"""
+					    website="www.qingsword.com"
+					    author="qingsword"
+					    pi=3.1415
+
+					print(const.website.value)
+					print(const("qingsword"))
+					print(const["pi"].value)
+
+					#程序输出
+					www.qingsword.com
+					const.author
+					3.1415
+					</pre>
+
 						
 				<!-- /正文 -->
 
