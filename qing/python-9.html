@@ -89,6 +89,7 @@
 						 <li><a href="#python-class-7">0×7.属性和方法的动态绑定</a></li>
 						 <li><a href="#python-class-8">0×8.如何将类方法封装成属性</a></li>
 						 <li><a href="#python-class-9">0×9.类的多重继承</a></li>
+						 <li><a href="#python-class-10">0×10.定制类</a></li>
 					 </ul>
 					<!-- /目录 -->
 
@@ -721,6 +722,254 @@
 					www.qingsword.com
 					Hello World
 					qingsword
+					</pre>
+
+					<h2 id="python-class-10">0×10.定制类</h2>
+
+					<p>当我们实例化一个类对象后，使用print打印这个类对象，往往会打印出一个类名称和内存地址，请看下面的实例：</p>
+
+					<pre class="brush: python;">
+					#!/usr/bin/env python
+					#coding=utf-8
+					########
+					class A:
+					    #--------
+					    def __init__(self,name="qingsword"):
+					        self.name=name
+
+					x=A("www.qingsword.com")
+					print(x)
+
+					#程序输出
+					&lt;__main__.A object at 0x7f41d6039f28&gt;
+					</pre>
+
+					<p>为了让打印输出更加的友好，python提供了两个函数__str__和__repr__，前者可以让print打印一个对象时，输出这个函数下定制的返回信息；后者是在调试过程中让调试程序（IDLE提示符环境等）在直接输入对象时，能够打印出我们定制的信息，这两者通常写入相同的返回信息，例如，将上面的实例更改如下：</p>
+					<pre class="brush: python;">
+					#!/usr/bin/env python
+					#coding=utf-8
+					########
+					class A:
+					    #--------
+					    def __init__(self,name="qingsword"):
+					        self.name=name
+					    #--------
+					    def __str__(self):
+					        """定制对象返回信息"""
+					        return "Class A Object self.name=%s"%self.name
+					    #直接让repr函数等于str
+					    __repr__=__str__
+
+					x=A("www.qingsword.com")
+					print(x)
+
+					#程序输出
+					Class A Object self.name=www.qingsword.com
+					</pre>
+
+					<p>除了定制对象的输出信息外，如果一个类要用作for循环，Python提供了一个__iter__方法，该方法返回一个迭代对象，然后，Python的for循环就会不断调用该迭代对象的__next__()方法拿到循环的下一个值，直到遇到StopIteration错误时退出循环，可以将一个类定制成可迭代类，请看下面的实例：</p>
+					<pre class="brush: python;">
+					#!/usr/bin/env python
+					#coding=utf-8
+					########
+					class Fib(object):
+					    #--------
+					    def __init__(self):
+					        self.a,self.b=0,1
+					    #实例本身就是迭代对象，所以iter函数返回自己
+					    def __iter__(self):
+					        return self
+					    #如果对象中的a属性值大于20，就停止循环，否则返回每次循环中得到的a值
+					    def __next__(self):
+					        self.a,self.b=self.b,self.a+self.b
+					        if self.a>20:
+					            raise StopIteration()
+					        return self.a 
+
+					x=Fib()
+					for y in x:
+					    print(y)
+
+					#这是一个斐波拉契迭代类，程序输出如下
+					1
+					1
+					2
+					3
+					5
+					8
+					13
+
+					#如果删除类中的self.a>20的判断，可以将for循环更改成
+					for y in x:
+					    #可以手动指定一个迭代范围
+					    if y&lt;20:
+					        print(y)
+					    else:
+					        break
+					</pre>
+
+					<p>上面的可迭代类看起来更像是一个生成器，但现在我们还无法像列表那样使用一个索引来取得单个值，为此python提供了一个__getitem__方法，用于实现取得单个值的类，修改上面的程序如下：</p>
+
+					<pre class="brush: python;">
+					#!/usr/bin/env python
+					#coding=utf-8
+					########
+					class Fib(object): 
+					    #根据输入的n，返回x的值
+					    def __getitem__(self,n):
+					        #x和y只是函数中的一个局部变量，每次调用函数，都会被重新设置成1
+					        x,y=1,1
+					        while n>0:
+					            x,y=y,x+y
+					            n-=1
+					        return x
+					        
+					x=Fib()
+					print(x[2])
+					print(x[12])
+
+					#程序输出
+					2
+					233
+					</pre>
+
+					<p>如果想要给这个类添加一个切片功能，可以修改上面的代码如下：</p>
+					<pre class="brush: python;">
+					#!/usr/bin/env python
+					#coding=utf-8
+					########
+					class Fib(object):
+					    def __getitem__(self,n):
+					        #判断传入的是一个分片类型还是一个索引值
+					        if isinstance(n,int):
+					            x,y=1,1
+					            while n>0:
+					                x,y=y,x+y
+					                n-=1
+					            return x
+					        elif isinstance(n,slice):
+					            #获取分片的起始值
+					            start=n.start
+					            stop=n.stop
+					            if start is None:
+					                start=0
+					            x,y=1,1
+					            L=[]
+					            for a in range(stop):
+					                if a>=start:
+					                    L.append(x)
+					                x,y=y,x+y
+					            return L
+					        
+					x=Fib()
+					print(x[12]) 
+					print(x[:12])
+					print(x[6:12])
+
+					#程序输出
+					233
+					[1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144]
+					[13, 21, 34, 55, 89, 144]
+					</pre>
+					<p>上面这个简单的分片器并没有对负数和分片步长做处理，仅仅是提供一个思路，告诉大家，通过这种定制函数，可以将一个类定制成任何数据类型，可以是列表字典元组等等。</p>
+
+					<p>通常情况下，我们调用一个对象的某个属性和方法时，如果这个属性和方法不存在，就会报错，如下所示：</p>
+					<pre class="brush: python;">
+					#!/usr/bin/env python
+					#coding=utf-8
+					########
+					class A(object):
+					    def __init__(self):
+					        self._path=""
+
+					x=A()
+					#调用_path没有问题
+					print(x._path)
+					#但调用一个不存在的sub属性就会报错，提示sub属性不存在
+					print(x.sub)
+					</pre>
+					<p>python提供了一个__getattr__函数，它接收一个不存在的属性或方法名称，然后返回一个我们设定的值，如果我们没有定义返回值，它将返回一个None，这比直接抛出一个错误要友好的多，请看下面的实例：</p>
+					<pre class="brush: python;">
+					#!/usr/bin/env python
+					#coding=utf-8
+					########
+					class A(object):
+					    def __init__(self):
+					        self._path=""
+					    def __getattr__(self,attr):
+					        if attr=="blog":
+					            return "www.qingsword.com"
+					        elif attr=="doit":
+					            return "ok"
+					        #一个函数返回值
+					        elif attr=="age":
+					            return lambda :23
+
+					x=A()
+					print(x.blog)
+					print(x.doit)
+					print(x.age())
+					print(x.nothing)
+
+					#程序输出
+					www.qingsword.com
+					ok
+					23
+					None
+					</pre>
+					<p>请注意__getattr__函数只有当类中没有定义这些属性值时才接收他们，并且根据我们自己的判断返回值，如果类中有这些属性或方法，则会优先使用它们，另外，如果这个函数接收到了一个没有定义返回值的名称，默认返回None，除非手动抛出一个AttributeError，比如，在if的末尾添加下面的代码，再次运行就会抛出一个异常，提示nothing不存在：</p>
+					<pre class="brush: python;">
+					else:
+					raise AttributeError("错误的属性或方法名:%s"%attr)	
+					</pre>
+					<p>__getattr__最常见的应用就是链式调用，请看下面的实例：</p>
+					<pre class="brush: python;">
+					#!/usr/bin/env python
+					#coding=utf-8
+					########
+					class A(object):
+					    def __init__(self,path=""):
+					        self._path=path
+					        print('self._path is %s' % self._path)
+					    def __getattr__(self,attr):
+					        return A("%s/%s"%(self._path,attr))
+					    def __str__(self):
+					        return self._path
+					    __repr__=__str__
+
+					x=A()
+					print(x.www.qingsword.com)
+
+					#程序输出
+					#x=A()初始化时的输出
+					self._path is
+					#x.www时因为没有www属性，调用了__getattr__函数，并且传递了一个www，然后递归调用A，这一步相当于A("/www")
+					self._path is /www
+					#x.www.qingsword会再次激活__getattr__函数，因为www并没有qingsword属性，以此类推
+					self._path is /www/qingsword 
+					self._path is /www/qingsword/com
+					/www/qingsword/com
+					</pre>
+					
+					<p>我们在实例化一个对象的时候，可以通过"对象名.属性名"来使用其中的属性，或者通过"对象名.方法名()"来调用其中的方法，除此之外，python提供了一个__call__函数，这个函数允许对象调用自身，请看下面的实例：</p>
+					<pre class="brush: python;">
+					#!/usr/bin/env python
+					#coding=utf-8
+					########
+					class A(object):
+					    def __init__(self,name="qingsword"):
+					        self.name=name
+					    def __call__(self):
+					        print("My name is %s"%self.name)
+
+					x=A()
+					#直接调用对象自身，就相当于执行了对象内的__call__函数，就好像x本身是一个函数而不是类对象一样
+					x()  #输出"My name is qingsword"
+
+					#我们可以通过callable()函数来判断一个对象是否可调用，这个函数返回一个布尔值，如果我们注释掉A类中的call函数，那么下面的第一句就会返回False，大家可以尝试一下
+					print(callable(x))  #True
+					print(callable(str))  #True
+					print(callable([1,2,3]))  #False
 					</pre>
 						
 				<!-- /正文 -->
