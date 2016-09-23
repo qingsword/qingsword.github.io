@@ -335,8 +335,10 @@
 					    pass
 					else:
 					    print("未捕获到异常")
+					finally:
+					    print("End")
 
-					#异常处理语句块可以包含多个except用来捕获不同的异常，当不需要对捕获到的异常进行处理时，可以在分支中输入pass，代表不做任何操作，try语句块的末尾可以跟随一个else分支，当没有捕获到异常时会执行这个分支，但一般不需要添加这个分支，当程序执行过程中遇到异常时，如果添加了异常处理语句，会直接跳转到异常分支进行处理，而不继续执行下面的语句，如果没有任何异常处理能够匹配，程序会因为出错而直接终止运行
+					#异常处理语句块可以包含多个except用来捕获不同的异常，当不需要对捕获到的异常进行处理时，可以在分支中输入pass，代表不做任何操作，try语句块的末尾可以跟随一个else分支，当没有捕获到异常时会执行这个分支，但一般不需要添加这个分支，同时还可以添加要个finally分支，不论有没有捕获到异常，这个分支都会被执行，当程序执行过程中遇到异常时，如果添加了异常处理语句，会直接跳转到异常分支进行处理，而不继续执行下面的语句，如果没有任何异常处理能够匹配，程序会因为出错而直接终止运行
 
 					#执行上面的程序，当输入一个非数字的字符时，会触发ValueError异常（这个ValueError就是异常名），并且打印出异常信息（这个异常是在i=int(i)时发生的，因为要被转换的字符不是数字）
 					输入你需要的水果编号(1-4)：a
@@ -348,6 +350,7 @@
 					输入你需要的水果编号(1-4)：1
 					banana
 					未捕获到异常
+					End
 					</pre>
 
 					<p>除了使用try捕获异常外，还能够使用raise来主动的抛出一个异常，例如：</p>
@@ -377,7 +380,158 @@
 					print(my_abs("www.qingsword.com"))
 					TypeError: Bad operand type.
 					</pre>
-						
+					<p>有时候我们捕获到了一种错误，但却想抛出另外一种类型的错误（虽然这种情况并不多见），也可以使用raise关键字，例如：</p>
+					<pre class="brush: python;">
+					#!/usr/bin/env python3
+					#coding=utf-8
+					import logging
+					def A(x=233):
+					    return x/0 #会遇到一个被除数不能是0的错误
+					try:
+					    A()
+					except ZeroDivisionError as err:
+					    #捕获这个错误后，自定义抛出一个TypeError错误
+					    raise TypeError("一般，不要抛出完全不同类型的错误")
+					</pre>
+					<p>上面这种抛出一个完全不同类型的错误并不是推荐的做法，除非你知道自己在做什么，正确的抛出错误方法如下：</p>
+					<pre class="brush: python;">
+					#!/usr/bin/env python3
+					#coding=utf-8
+					import logging
+					def A(x=233):
+					    try:
+					        return x/0
+					    except ZeroDivisionError as err:
+					        print("被除数不能是0")
+					        raise #如果不带参数，就会把当前错误原样抛出
+					A()
+					</pre>
+
+					<p>再来看一个错误实例，Python允许使用try捕获错误，但如果没有使用try语句，那么错误会从源头开始一层层返回，直到被python解释器捕获，例如下面的程序：</p>
+					<pre class="brush: python;">
+					#!/usr/bin/env python3
+					#coding=utf-8
+					def A(x):
+					    return x/0 #错误的发源，0不能是被除数
+					def B(x):
+					    return A(x)*2
+					def C():
+					    B(0)
+					
+					#当我们执行C()的时候，程序就会报错
+					C()
+					print("End") #这一句没有被执行，程序出错后就终止了
+
+					#错误输出
+					File "test2.py", line 10, in &lt;module&gt;
+					  C() #首先判断出错误是因为这个语句引起
+					File "test2.py", line 8, in C
+					  B(0) #但这个错误是因为C的B(0)语句
+					File "test2.py", line 6, in B
+					  return A(x)*2 #错误又被追溯到B中的return语句
+					File "test2.py", line 4, in A
+					  return x/0 #最后才追溯到A中的return语句
+					#打印出错误类型是ZeroDivisionError，被除数不能是0
+					builtins.ZeroDivisionError: division by zero
+					</pre>
+
+					<p>我们注意到上面的程序在除错后就直接终止了，但实际情况中我们可能需要记录并打印出这些错误信息，但仍然让程序继续运行直到结束，可以使用日志记录模块logging来完成这些操作，修改上面的程序如下：</p>
+					<pre class="brush: python;">
+					#!/usr/bin/env python3
+					#coding=utf-8
+					import logging #引入日志模块
+					def A(x):
+					    return x/0
+					def B(x):
+					    return A(x)*2
+					def C():
+					    try:
+					        B(0)
+					    except Exception as err:
+					        logging.exception(err)  #记录并打印捕获到的错误
+
+					C()
+					print("end")
+
+					#将logging.exception写在except中能够记录并打印出错误日志，输出这些错误日志信息后，程序会继续执行，最后打印出end（日志记录模块比print更加详细的记录了错误的调用步骤，让我们能够明白错误的源头在哪里，如果只是print(err)就只会打印出division by zero），下面是程序输出
+					ERROR:root:division by zero
+					Traceback (most recent call last): #错误跟踪信息
+					  File "test2.py", line 10, in C
+					    B(0)
+					  File "test2.py", line 7, in B
+					    return A(x)*2
+					  File "test2.py", line 5, in A
+					    return x/0
+					ZeroDivisionError: division by zero
+					end  #程序报错后继续执行，直到完结
+					</pre>
+					
+					<p>大家可能注意到了我们捕获的不同错误都有错误名称，这些名称在Python中是分层设计的（错误其实也是类，所有的错误类型都继承自BaseException），不同的错误有它们的父类和子类，父类的捕获优先级高于子类，也就意味着我们在except中如果设置了一个父类的名称，那么它将捕获所有子类错误，而再写一个except捕获它的子类就没有意义了，也不永远不会被执行，下面这个列表列出了所有的错误类，缩进的是子类，通过这个列表不难看出，为什么在上面的实例中通过捕获Exception错误就能捕获到ZeroDivisionError错误，因为ZeroDivisionError是Exception的子类：</p>
+					<pre class="brush: python;">
+					BaseException
+					 +-- SystemExit
+					 +-- KeyboardInterrupt
+					 +-- GeneratorExit
+					 +-- Exception
+					      +-- StopIteration
+					      +-- StopAsyncIteration
+					      +-- ArithmeticError
+					      |    +-- FloatingPointError
+					      |    +-- OverflowError
+					      |    +-- ZeroDivisionError
+					      +-- AssertionError
+					      +-- AttributeError
+					      +-- BufferError
+					      +-- EOFError
+					      +-- ImportError
+					      +-- LookupError
+					      |    +-- IndexError
+					      |    +-- KeyError
+					      +-- MemoryError
+					      +-- NameError
+					      |    +-- UnboundLocalError
+					      +-- OSError
+					      |    +-- BlockingIOError
+					      |    +-- ChildProcessError
+					      |    +-- ConnectionError
+					      |    |    +-- BrokenPipeError
+					      |    |    +-- ConnectionAbortedError
+					      |    |    +-- ConnectionRefusedError
+					      |    |    +-- ConnectionResetError
+					      |    +-- FileExistsError
+					      |    +-- FileNotFoundError
+					      |    +-- InterruptedError
+					      |    +-- IsADirectoryError
+					      |    +-- NotADirectoryError
+					      |    +-- PermissionError
+					      |    +-- ProcessLookupError
+					      |    +-- TimeoutError
+					      +-- ReferenceError
+					      +-- RuntimeError
+					      |    +-- NotImplementedError
+					      |    +-- RecursionError
+					      +-- SyntaxError
+					      |    +-- IndentationError
+					      |         +-- TabError
+					      +-- SystemError
+					      +-- TypeError
+					      +-- ValueError
+					      |    +-- UnicodeError
+					      |         +-- UnicodeDecodeError
+					      |         +-- UnicodeEncodeError
+					      |         +-- UnicodeTranslateError
+					      +-- Warning
+					           +-- DeprecationWarning
+					           +-- PendingDeprecationWarning
+					           +-- RuntimeWarning
+					           +-- SyntaxWarning
+					           +-- UserWarning
+					           +-- FutureWarning
+					           +-- ImportWarning
+					           +-- UnicodeWarning
+					           +-- BytesWarning
+					           +-- ResourceWarning
+					</pre>
 				<!-- /正文 -->
 
 				<footer class="text-footer">

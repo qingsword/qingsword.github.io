@@ -99,6 +99,7 @@
 						 <li class="subli"><a href="#python-os-path-17">f.创建删除文件夹</a></li>
 						 <li class="subli"><a href="#python-os-path-18">g.通配符的使用</a></li>
 						 <li><a href="#python-os-path-19">0×3.实例:日志文件轮换</a></li>
+						 <li><a href="#python-os-path-20">0×4.内存文件读写</a></li>
 					 </ul>
 					<!-- /目录 -->
 
@@ -167,6 +168,57 @@
 					10
 					17
 					</pre>
+
+					<p>在上面的代码中，并没有添加错误处理语句，python3推荐的正确的打开文件和关闭文件的方法是使用with...as语句块，本文其他代码仅为了方便并没有使用这种规范的书写方式，在实际应用中，应该遵循下面这种语法来打开文件：</p>
+					<pre class="brush: python;">
+					#!/usr/bin/env python3
+					#coding=utf-8
+					import os
+					try: #添加错误处理
+					    if os.path.isfile("hello.py") and os.path.isfile("if.py"):
+					        #使用with来打开一个或多个文件，本例为两个文件（可以用逗号隔开打开任意多个文件），as后面是将文件赋予的对象名称，相当于f1=open("hello.py","r")，使用with的好处是，不需要对对象调用close()函数，with会在区块运行结束后自动调用close()关闭这些文件
+					        with open("hello.py","r") as f1,open("if.py") as f2:
+					            print(f1.read())
+					            for line in f2.readlines():
+					                #strip()函数能够去掉字符串前后空格以及换行符与制表符等
+					                print(line.strip())
+					#如果os操作过程中遇到错误会被捕获，本例并没有对可能出现的os错误做细分处理
+					except Exception as erro:
+					    pass
+					</pre>
+					<p>python3的规范中，所有打开文件的操作，都推荐包含在一个with语句块中，with表达式内部包含两个重要函数，__enter__函数将open()函数的返回值赋予as后面的对象，最后不论在该语句块出现了什么异常，都会在离开时执行__exit__函数，该函数会自动逐个关闭打开的文件对象。</p>
+
+					<p>如果我们读取的不是一个文本文件，是一个压缩包文件，一张图片，或一个视频文件，这个时候就需要使用rb参数来读取二进制数据流，例如：</p>
+					<pre class="brush: python;">
+					#!/usr/bin/env python3
+					#coding=utf-8
+					import os
+					try:
+					    if os.path.isfile("cat.jpeg"):
+					        with open("cat.jpeg","rb") as img1:
+					            #读取这张图片二进制数据流的前10个字节
+					            print(img1.read(10))
+					except Exception as erro:
+					    pass
+
+					#程序输出
+					b'\xff\xd8\xff\xe0\x00\x10JFIF'
+					</pre>
+
+					<p>使用参数r来读取文本文件默认是以utf-8编码读取的，如果需要读取其他编码的文件，需要在open命令中添加字符编码，例如：</p>
+					<pre class="brush: python;">
+					#!/usr/bin/env python3
+					#coding=utf-8
+					import os
+					try:
+					    if os.path.isfile("testfile"):
+					        #假设testfile是以gbk编码的，如果文件读取过程中遇到编码错误，直接忽略错误，如果不添加errors关键字，遇到编码错误时，会抛出UnicodeDecodeError异常
+					        with open("testfile","r",encoding="GBK",errors="ignore") as f1:
+					            print(f1.read(1))
+					except Exception as erro:
+					    pass
+					</pre>
+
 
 					<h3 id="python-os-path-4">c.文件内容追加</h3>
 
@@ -238,10 +290,11 @@
 					qingsword
 					www.qingsword.com
 					</pre>
+					<p>在实际应用中，请将读写操作包含在一个with...as代码快中进行，确保文件会被正常关闭，同读取文件类似，使用wb参数可以写入二进制数据，使用encoding参数可以指定写入的数据的编码方式。</p>
 
 					<h3 id="python-os-path-5">d.文件读写异常</h3>
 
-					<p>在对文件读写操作的时候，会出现下面这些常见的异常，如果希望程序更加的"友好"，我们应该提前了解并使用try语句块捕获这些异常；</p>
+					<p>在对文件读写操作的时候，会出现下面这些常见的异常，如果希望程序更加的"友好"，我们应该提前了解并使用try语句块捕获这些异常，下面列举三个比较常见的异常，这些异常都属于OSError异常类；</p>
 
 					<p>FileNotFoundError：当以只读方式打开一个不存在的文件，或路径不存在时，或文件操作过程中找不到某文件时触发；</p>
 					<p>PermissionError：试图在一个没有权限的目录中读写文件时触发；</p>
@@ -273,6 +326,9 @@
 
 					#程序输出
 					/home/qing/python-lab/qingsword.txt
+
+					#如果是获取当前脚本所在目录的绝对路径，可以使用下面的语法
+					os.path.abspath(".")
 					</pre>
 
 					<h3 id="python-os-path-8">g.获取文件大小</h3>
@@ -421,28 +477,26 @@
 					#!/usr/bin/env python
 					#coding=utf-8
 					import os
-					#随便使用一个文件名，获取一下当前脚本所在目录的绝对路径
-					file_path=os.path.abspath("qingsword.py")
-					#取出父目录
-					parent_path=os.path.split(file_path)[0]
+					#获取当前脚本所在目录的绝对路径
+					file_path=os.path.abspath(".")
+
 					#遍历列表，打印出每个文件或文件夹的名称
-					for name in os.listdir(parent_path):
+					for name in os.listdir(file_path):
 					    print(name)
 
 					#如果想打印出目录下每个文件或文件夹的完整路径，可以修改print函数，下面两种方法效果相同
-					print(parent_path+"/"+name)
-					print(os.path.join(parent_path,name))
+					print(file_path+"/"+name)
+					print(os.path.join(file_path,name))
 					</pre>
 					<p>如果想要对listdir的输出进行排序，可以使用sorted()函数，默认按照字母顺序排列，并且区分大小写，大写字母&gt;符号&gt;小写字母，这样for中的name会按照排序后的顺序读取并拼接：</p>
 					<pre class="brush: python;">
 					#!/usr/bin/env python
 					#coding=utf-8
 					import os
-					file_path=os.path.abspath("qingsword.py")
-					parent_path=os.path.split(file_path)[0]
+					file_path=os.path.abspath(".")
 					#排序输出
-					for name in sorted(os.listdir(parent_path)):
-					    print(os.path.join(parent_path,name))
+					for name in sorted(os.listdir(file_path)):
+					    print(os.path.join(file_path,name))
 					</pre>
 
 					<p>上面的实例仅仅能够遍历某个目录下的文件和目录，但不能进行递归查询，也就是说，这个目录下的子目录中的文件是无法被搜索到的，下面提供一种遍历子目录文件的方法：</p>
@@ -482,6 +536,23 @@
 					            print("Size:%-8d Last Modify Time:%-25s Path:%s"%(sz,modify_time,abs_path))
 
 					list_dir("/home/qing/test")
+					</pre>
+
+					<p>利用列表生成式可以很简洁的打印出某一类型的文件列表，例如：</p>
+					<pre class="brush: python;">
+					#!/usr/bin/env python3
+					#coding=utf-8
+					import os
+					#列出脚本所在文件夹中所有文件和文件夹名称
+					print([x for x in os.listdir(os.path.abspath("."))])
+
+					#列出脚本所在文件夹中所有子文件夹名称
+					print([x for x in os.listdir(os.path.abspath("."))\
+					       if os.path.isdir(x)])
+
+					#列出脚本所在文件夹中所有py文件名称
+					print([x for x in os.listdir(os.path.abspath("."))\
+					       if os.path.isfile(x) and os.path.splitext(x)[1]==".py"])
 					</pre>
 
 					<h3 id="python-os-path-17">f.创建删除文件夹</h3>
@@ -598,6 +669,89 @@
 					rotate_log_file("/home/qing/test/qingsword/qingsword.log")
 
 					#运行程序后，"/home/qing/test/qingsword/"下会创建一个"qingsword.log"文件，反复运行这个程序，会发现目录中的文件数量最多为6个，最大的文件编号为"qingsword.log.5"，这是因为在rotate()方法中做了最大版本号限制，如果version高于4，那么就结束调用自身，这段程最后可以完成文件版本从，4&gt;5，3&gt;4，2&gt;3，1&gt;2，0&gt;1的版本复制操作。
+					</pre>
+
+					<h2 id="python-os-path-20">0×4.内存文件读写</h2>
+
+					<p>有时我们不需要将数据写入硬盘，只需要在内存中创建一个临时文件流，暂时保存一些数据，这个时候就可以用到StringIO和BytesIO，前者用来读写字符串数据，后者用来读写二进制数据，请看下面的实例：</p>
+					<pre class="brush: python;">
+					#!/usr/bin/env python3
+					#coding=utf-8
+					#导入内存读写模块
+					from io import StringIO,BytesIO
+
+					#初始化一个空内存字符串读写对象
+					mf=StringIO()
+
+					#同文件读写一样，写入数据
+					mf.write("""My website：
+					www.qingsword.com""")
+
+					#查看当前文件流指针位置，写入后指针在文件流的末尾
+					print(mf.tell())  #29
+
+					#将指针指向第一个字符
+					mf.seek(0)
+
+					#读取全部内容（如果没有使用seek(0)，这一步将读取不到任何数据）
+					print(mf.read())
+
+					#读取完成后，指针停留在文件流末尾
+					print(mf.tell()) #29
+
+					#将指针移动到第三个字符的位置开始读取
+					mf.seek(2)
+					L=mf.readlines()
+					for line in L:
+					    print(line.strip())
+
+					#如果不移动数据流指针，想一次性读取所有数据流，可以使用getvalue()方法
+					print(mf.getvalue())
+
+					#程序输出
+					29
+					My website：
+					www.qingsword.com
+					29
+					website：
+					www.qingsword.com
+					My website：
+					www.qingsword.com
+
+					
+					#初始化一个二进制内存数据流对象，将晴刃这两个字编码成utf-8，写入这个数据流对象
+					bf=BytesIO()
+					bf.write("晴刃".encode("utf-8"))
+					print(bf.getvalue())
+					bf.seek(0)
+					print(bf.read(3))
+					print(bf.tell())
+
+					#程序输出
+					b'\xe6\x99\xb4\xe5\x88\x83'
+					b'\xe6\x99\xb4'
+					3
+					</pre>
+					<p>必要时，我们可以将内存中的文件流写入磁盘中的指定文件中，例如：</p>
+					<pre class="brush: python;">
+					#!/usr/bin/env python3
+					#coding=utf-8
+					from  io import StringIO
+					#创建一个内存文件流
+					mf=StringIO("晴刃\nwww.qingsword.com")
+					mf.seek(0) #将文件流指针设置成0
+
+					#读取内存文件流中的所有数据，写入磁盘中当前脚本所在目录下的qing文件中
+					with open("qing","w") as f1:
+					    f1.write(mf.read())
+
+					#查看写入是否成功
+					with open("qing","r") as f1:
+					    print(f1.read())
+
+					#程序输出（输出换行了，因为内存流创建的时候，包含了一个换行符\n）
+					晴刃
+					www.qingsword.com
 					</pre>
 						
 				<!-- /正文 -->

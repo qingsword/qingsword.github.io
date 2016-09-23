@@ -91,6 +91,7 @@
 						 <li><a href="#python-class-9">0×9.类的多重继承</a></li>
 						 <li><a href="#python-class-10">0×10.定制类</a></li>
 						 <li><a href="#python-class-11">0×11.枚举类</a></li>
+						 <li><a href="#python-class-12">0×12.动态类</a></li>
 					 </ul>
 					<!-- /目录 -->
 
@@ -1080,7 +1081,51 @@
 					const.author
 					3.1415
 					</pre>
+					
+					<h2 id="python-class-12">0×12.动态类</h2>
 
+					<p>动态语言和静态语言在创建类的时候也有所不同，动态语言类的创建是在程序执行后才依次执行类中的语句，动态化创建一个类，而静态语言是在编译时就已经创建了这些类；我们在使用type判断一个类的类型时，往往看到类的类型是type，这又与动态类的创建有什么关系呢？请看下面的实例：</p>
+					<pre class="brush: python;">
+					#!/usr/bin/env python
+					#coding=utf-8
+					########
+					class A(object):
+					    def Website(self):
+					        print("www.qingsword.com")
+
+					x=A()
+					print(type(A))
+					print(type(x))
+
+					#程序输出，从输出中可以看到，x是A类的一个实例，但A类本身却是一个class type
+					&lt;class 'type'&gt;
+					&lt;class '__main__.A'&gt;
+					</pre>
+					<p>实际上type方法不仅可以判断对象的类型，python还可以使用它来动态创建类，而使用type动态创建的类与直接使用class创建的类效果是一样的，这就是为什么上面type判断A类的类型是class type的原因，实际上两者可以看做同一种类型，下面演示了如果通过type来动态创建一个类：</p>
+					<pre class="brush: python;">
+					#!/usr/bin/env python
+					#coding=utf-8
+					def Website(self):
+					    print("www.qingsword.com")
+					def SayHellow(self,name="qingsword"):
+					    print("Hellow %s"%name)
+					#B指向一个Type动态创建的类，所以B就代表这个类(A)本身
+					#type的语法：
+					#type("类名",(继承类列表,...),dict(类方法名=绑定的方法名,...))
+					#使用这种方法我们就可以动态的将外部的方法绑定到一个类中，从而在运行时创建一个类
+					B=type("A",(object,),dict(web=Website,hellow=SayHellow))
+					x=B()
+					print(x)
+					print(type(B))
+					x.web()
+					x.hellow("xxx")
+
+					#程序输出
+					&lt;__main__.A object at 0x7f7d70821048&gt;
+					&lt;class 'type'&gt;
+					www.qingsword.com
+					Hellow xxx
+					</pre>
 						
 				<!-- /正文 -->
 
