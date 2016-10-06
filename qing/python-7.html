@@ -300,7 +300,7 @@
 					for a in L1:
 					    print(a)
 					
-					#使用next()读取迭代器L2中的值
+					#使用next()读取迭代器L2中的值(也可以使用for循环)
 					while True:
 					    try:
 					        print(next(L2))
@@ -384,7 +384,6 @@
 					<pre class="brush: python;">
 					#!/usr/bin/env python3
 					#coding=utf-8
-					import logging
 					def A(x=233):
 					    return x/0 #会遇到一个被除数不能是0的错误
 					try:
@@ -397,7 +396,6 @@
 					<pre class="brush: python;">
 					#!/usr/bin/env python3
 					#coding=utf-8
-					import logging
 					def A(x=233):
 					    try:
 					        return x/0
