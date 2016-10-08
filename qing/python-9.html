@@ -114,7 +114,7 @@
 					&gt;&gt;&gt; print(s.__len__())
 					17
 					</pre>
-					<p>实际上，我们定义一个字符串对象的时候，python在其内部初始化了一个str类，这个类中包含了python提供的对字符串处理的内置方法，现在这么说可能有点生疏，等大家看完第二段自己手动创建了一个类之后，就会明白上面这些内部方法和接口函数的工作原理了。</p>
+					<p>在定义一个字符串对象的时候，python在其内部初始化了一个str类，这个类中包含了python提供的对字符串处理的内置方法，等大家看完本文第2部分，自己手动创建了一个类之后，就自然会明白上面这些内部方法和接口函数的工作原理了。</p>
 
 					<h2 id="python-class-2">0×2.python中如何创建类</h2>
 
@@ -170,7 +170,7 @@
 					        """内部方法，向items字典添加键值，如果food_name不在items字典的键列表中，说明这是一个新添加的食物，将数量初始化为0，然后加上传递给这个函数的quantity的值（可能是一个或者多个）"""
 					        if (not food_name in self.items.keys()):
 					            self. items[food_name]=0
-					        self.items[food_name]=self.items[food_name]+quantity
+					        self.items[food_name]+=quantity
 					    
 					    #--------
 					    def add_one(self,food_name):
@@ -209,16 +209,17 @@
 					            
 					    #--------
 					    def __get_multi(self,food_name,quantity):
-					        """取出食物的内部方法，这个方法接受两个值，一个为食物名称，一个为食物数量，第一个if判断冰箱中是否存在这个食物，第二个if调用has()函数将食物名称和数量传递给它，用于判断冰箱中是否还有这么多食物，如果有，则从中取出对应数量的食物，第三个if在刚才取出食物后，判断该食物是否还有库存，如果食物数量为0，则从字典中删除这个食物"""
-					        if not food_name in self.items.keys():
-					            print("冰箱中并没有这个食物:%s，取出失败"%food_name)
-					            return False
+					        """取出食物的内部方法，这个方法接受两个值，一个为食物名称，一个为食物数量，首先if判断冰箱中是否存在这种食物，如果有将其从类实例的items字典中减去对应数量，减去数量后再判断这种食物库存是否为0，如果为0，将其从items字典中删除，如果冰箱中没有这种食物或者库存不足（这些都在has_various方法中判断），跳转到else语句，判断是库存不足还是根本没有这种食物"""
 					        if self.has(food_name,quantity):
-					            self.items[food_name]-=quantity     
-					            print("成功取出:%s，数量%s"%(food_name,quantity))
-					        if self.items[food_name] == 0:
-					            self.items.pop(food_name)
-					        return True
+					            self.items[food_name]-=quantity
+					            print("成功取出%s,数量%s"%(food_name,quantity))
+					            if self.items[food_name]==0:
+					                self.items.pop(food_name)    
+					        else:
+					            if not food_name in self.items.keys():
+					                print("冰箱中并没有这种食物:%s"%food_name)
+					            else:
+					                print("食物'%s'库存不足，现有数量:%s"%(food_name,self.items[food_name]))
 					     
 					    #--------
 					    def get_one(self,food_name):
@@ -232,62 +233,39 @@
 					     
 					    #--------
 					    def get_many(self,food_dect):
-					        """取出多个食物，这个函数接收一个字典参数，for循环遍历这个传入的字典中的键列表，然后判断Fridge类中items字典中这个名称对应的数量是否大于等于传入的这个字典中设置的数量，如果判断成立，表示冰箱中还有足够的食物，调用__get_multi取出这些食物和对应的数量，如果不满足条件，则提示用户，库存补足和现有数量"""
+					        """取出多个食物，这个函数接收一个字典参数，for循环遍历这个传入的字典中的键列表，调用__get_multi取出这些食物和对应的数量"""
 					        if type(food_dect)!=type({}):
 					            raise TypeError("食物名称和数量必须使用字典，错误的数据输入：%s"%food_dict)
 					        for food in food_dect.keys():
-					            if self.items[food]&gt;=food_dect[food]:
-					                self.__get_multi(food,food_dect[food])
-					            else:
-					                print("食材：%s，库存不足，现有数量：%s"%(food,self.items[food])) 
+					            self.__get_multi(food,food_dect[food])
 					########       
 					
 					#初始化Fridge类
 					p=Fridge()
-					print(p.items)
 
-					#分别调用add函数，像Fridge类添加单个和多个食物
-					d={"orange":5,"apple":3}
-					p.add_one("banana")
-					p.add_many(d)
+					#添加食物
+					p.add_one("orange")
+					p.add_many({"apple":2,"banana":5})
 					print(p.items)
+					#输出
+					{'apple': 2, 'orange': 1, 'banana': 5}
 
-					#如果Fridge中至少有一个orange，取出它
+					#判断食物是否存在
+					print(p.has("orange"))  #True
+					print(p.has("apple",3)) #False
+
+					#取出食物
 					if p.has("orange"):
 					    p.get_one("orange")
-					    print(p.items)
-					else:
-					    print("冰箱里已经没有orange了")
-					 
-					#如果冰箱中还有5个apple告知用户，如果没有输出现有apple数量
-					if p.has("apple",5):
-					    print("冰箱里至少还有5个apple")
-					else:    
-					    print("冰箱里的apple数量:%s"%p.items["apple"])
-					
-					#判断冰箱中是否有字典中这些食物和数量，如果有取出它们
-					if p.has_various({"apple":2,"orange":2,"banana":1}):
-					    p.get_many({"apple":2,"orange":2,"banana":1})
+					p.get_mulit({"banana":4,"apple":4})
+					p.get_one("www.qingsword.com")
 					print(p.items)
-
-					#因为冰箱中只有1个banana，刚才已经取出了，所以这里会提示并没有这个食物
-					p.get_one("banana")
-
-					#提示库存补足，因为现在只有一个apple在冰箱中
-					p.get_many({"apple":3})
-					    
-					#程序输出
-					{}
-					{'banana': 1, 'apple': 3, 'orange': 5}
-					成功取出:orange，数量1
-					{'banana': 1, 'apple': 3, 'orange': 4}
-					冰箱里的apple数量:3
-					成功取出:banana，数量1
-					成功取出:apple，数量2
-					成功取出:orange，数量2
-					{'apple': 1, 'orange': 2}
-					冰箱中并没有这个食物:banana，取出失败
-					食材：apple，库存不足，现有数量：1
+					#输出
+					成功取出orange,数量1
+					成功取出banana,数量4
+					食物'apple'库存不足，现有数量:2
+					冰箱中并没有这种食物：www.qingsword.com
+					{'apple': 2, 'banana': 1}
 					</pre>
 
 					<h2 id="python-class-3">0×3.类私有属性访问限制</h2>
