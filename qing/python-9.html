@@ -350,7 +350,7 @@
 					#coding=utf-8
 					########
 					class Parent(object):
-					    """父类，继承了object类，如果一个类是继承基类object，可以省略(object)不写，但写上也不会报错"""
+					    """父类，继承了object类，如果一个类是继承基类object，可以省略(object)不写，但写上看起来更加的规范"""
 					    #--------
 					    def print_website(self):
 					        """打印网址"""
@@ -368,7 +368,7 @@
 					        print("qingsword.com")
 					########
 					class Sub_B(Parent):
-					    """继承Parent的子类，仅仅是一个空类，但却可以使用父类所有属性或方法"""
+					    """继承Parent的子类，仅仅是一个空类，但却可以使用父类所有属性或方法（注意，对空类最好添加一个这样的注释，否则在某些编辑器下可能会出现缩进IndentationError错误）"""
 					########
 					class Sub_C(object):
 					    """继承object的子类"""
@@ -646,7 +646,7 @@
 					    def birth(self):
 					        """获取出身年份"""
 					        return self.__birth
-					    #使用@方法名.setter将这个方法设置成可写属性
+					    #使用@方法名.setter将这个方法设置成可写属性(一个方法名称必须先使用过property装饰器，才能使用setter)
 					    @birth.setter
 					    def birth(self,birth):
 					        """设置出身年份"""
@@ -747,7 +747,7 @@
 					Class A Object self.name=www.qingsword.com
 					</pre>
 
-					<p>除了定制对象的输出信息外，如果一个类要用作for循环，Python提供了一个__iter__方法，该方法返回一个迭代对象，然后，Python的for循环就会不断调用该迭代对象的__next__()方法拿到循环的下一个值，直到遇到StopIteration错误时退出循环，可以将一个类定制成可迭代类，请看下面的实例：</p>
+					<p>除了定制对象的输出信息外，如果一个类要用作for循环，Python提供了一个__iter__方法，该方法返回一个迭代对象，可使用for循环迭代这个对象，for会不断调用该对象的__next__()方法拿到循环的下一个值，直到遇到StopIteration错误（或break）退出循环，可以将一个类定制成可迭代类，请看下面的实例：</p>
 					<pre class="brush: python;">
 					#!/usr/bin/env python
 					#coding=utf-8
@@ -972,12 +972,8 @@
 
 					#打印出枚举中所有的名称
 					x=len(m.__members__) #获得枚举个数
-					y=1
-					while True:
-					    if y&gt;x:
-					        break
-					    print(m(y))
-					    y+=1
+					for i in range(1,x+1):
+					    print(m(i))
 
 					#程序输出
 					Month.Jan
@@ -1079,7 +1075,7 @@
 					&lt;class 'type'&gt;
 					&lt;class '__main__.A'&gt;
 					</pre>
-					<p>实际上type方法不仅可以判断对象的类型，python还可以使用它来动态创建类，而使用type动态创建的类与直接使用class创建的类效果是一样的，这就是为什么上面type判断A类的类型是class type的原因，实际上两者可以看做同一种类型，下面演示了如果通过type来动态创建一个类：</p>
+					<p>实际上type方法不仅可以判断对象的类型，python还可以使用它来动态创建类，而使用type动态创建的类与直接使用class创建的类效果是一样的，这就是为什么上面type判断A类的类型是class type的原因，实际上两者可以看做同一种类型，下面的实例演示了如何通过type动态创建一个类：</p>
 					<pre class="brush: python;">
 					#!/usr/bin/env python
 					#coding=utf-8
