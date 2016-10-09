@@ -161,9 +161,9 @@
 					x=One()
 					y=Two()
 					</pre>
-					<p>在实际环境中，"from m1 import *"这种语法都是配合模块的"__init__"列表来实现导入的，请看下面的实例：</p>
+					<p>在实际环境中，"from m1 import *"这种语法都是配合模块的"__all__"列表来实现导入的，请看下面的实例：</p>
 					<pre class="brush: python;">
-					#在m1.py文件头部添加一个"__init__"列表
+					#在m1.py文件头部添加一个"__all__"列表
 					#!/usr/bin/env python3
 					__all__=["One"]
 
@@ -171,7 +171,7 @@
 					#!/usr/bin/env python3
 					from m1 import *
 
-					#现在，在test1.py文件中，只能实例化m1.py文件头"__init__"列表中包含的那些对象，如果此时初始化一个Two()对象则会报错，这种设计的好处是，可以向用户开放模块中的可见对象，而一些内部对象则不会被包含在"__init__"列表中
+					#现在，在test1.py文件中，只能实例化m1.py文件头"__all__"列表中包含的那些对象，如果此时初始化一个Two()对象则会报错，使用这种方法，可以向用户开放模块中的可见对象，而一些内部对象则不会被包含在"__all__"列表中
 					x=One()
 					</pre>
 					<p>from这种设计的好处是，当某个模块中包含多层类和方法的时候，我们需要访问某个方法可能需要这样写"class1.class2.sub1.sub2.x()"，但如果我们只想访问x()而不想添加冗长的前缀，就可以使用"from class1.class2.sub1.sub2 import x"，这样我们实例化的时候，只需要输入x()就能访问到模块中这个方法了。</p>
@@ -185,7 +185,7 @@
 					__author__="www.qingsword.com" #模块作者
 					
 					#打印出当前__name__变量的值
-					print("__name__  is ",__name__)
+					print("__name__ is",__name__)
 					def test_m():
 					    print("Hello World")
 
@@ -194,28 +194,28 @@
 					    test_m()
 
  					#直接执行这个模块，将会打印出下面的内容
- 					__name__  is  __main__
+ 					__name__ is __main__
 					Hello World
 
 					#但如果我们现在使用另外一个文件导入这个模块
 					import helloworld
 
 					#执行import语句后，只得到了下面这一句
-					__name__  is  helloworld
+					__name__ is helloworld
 
 					#由此我们得到两个重要的结论：
 					#如果模块是被导入，__name__的值为模块名字
 					#如果模块是被直接执行，__name__的值为"__main__"
 
-					#这样设计的好处显而易见，当我们测试模块时直接运行模块代码__name__的值为"__main__"，通过if语句判断可以调用我们需要调用的函数，如果是其他文件调用这个模块，那么__name__的值为模块名字，if判断失败，将不会直接调用模块中如何方法，如果需要调用，要使用方法名称，如果我再在导入模块的文件中打印出__name__变量，程序的流程就会一目了然
+					#这样设计的好处显而易见，当我们测试模块时直接运行模块代码__name__的值为"__main__"，通过if语句判断可以调用我们需要调用的函数，如果是其他文件调用这个模块，那么__name__的值为模块名字，if判断失败，将不会直接调用模块中如何方法，如果需要调用，要使用方法名称，在导入模块的文件中打印出__name__变量，程序的流程就会一目了然
 					#!/usr/bin/env python
 					#coding=utf-8
 					import helloworld
 					helloworld.test_m()
 					print("__name__ is",__name__)
 
-					#程序输出，第一个__name__输出的是模块的名称，第二个__name__输出的是当前的文件的名称，所有被直接运行的py文件的__name__变量值都是"__main__"
-					__name__  is  helloworld
+					#程序输出，第一个__name__输出的是模块的名称（这是在import导入helloworld模块时，模块中的print的输出），第二个__name__输出的是当前的文件的名称，所有被直接运行的py文件的__name__变量值都是"__main__"
+					__name__ is helloworld
 					Hello World
 					__name__ is __main__
 					</pre>
@@ -266,8 +266,7 @@
 					#!/usr/bin/env python
 					#coding=utf-8
 					#导入pack1包中的m1和m2模块
-					import pack1.m1
-					import pack1.m2
+					import pack1.m1,pack1.m2
 
 					#分别实例化这两个模块中的类
 					p1=pack1.m1.m1_class1()
