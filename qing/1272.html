@@ -99,14 +99,14 @@
 					#3.无论使用git或者直接去页面下载，最后在本地都会得到一个freshplayerplugin文件夹，里面就是我们要编译的源代码，在编译之前，先安装下面的组件
 					qing@qingsword.com:~$ sudo apt-get install cmake gcc g++ pkg-config ragel libasound2-dev libssl-dev libglib2.0-dev libpango1.0-dev libgl1-mesa-dev libevent-dev libgtk2.0-dev libxrandr-dev libxrender-dev libxcursor-dev libv4l-dev libgles2-mesa-dev libavcodec-dev libva-dev libvdpau-dev libdrm-dev
 
-					#如果第2步提示关联依赖，请先执行下面这条命令后，再执行第2步
+					#如果第3步提示关联依赖，执行下面这条命令可以自动解决所有的依存关系
 					qing@qingsword.com:~$ sudo apt-get -f install
 					
 					#4.进入文件夹，创建build目录并进入其中编译
 					qing@qingsword.com:~$ cd freshplayerplugin/
-					qing@qingsword.com:~/freshplayerplugin$ mkdir build
+					qing@qingsword.com:~/freshplayerplugin$ sudo mkdir build
 					qing@qingsword.com:~/freshplayerplugin$ cd build
-					qing@qingsword.com:~/freshplayerplugin/build$ cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo .. &amp;&amp; make
+					qing@qingsword.com:~/freshplayerplugin/build$ sudo cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo .. &amp;&amp; sudo make
 
 					#5.编译完成后在当前文件夹中会得到一个叫做"libfreshwrapper-flashplayer.so"的文件，这就是我们需要的flashplayer插件主文件，将这个文件去掉可执行权限后，复制到Firefox插件目录下（火狐的插件目录有可能改变，一般在/usr/lib/目录中查找mozilla或firefox，进入目录后查看有没有plugins目录，复制到其中即可，本例使用firefox45.02这个版本，插件目录如下）
 					qing@qingsword.com:~/freshplayerplugin/build$ sudo chmod -x libfreshwrapper-flashplayer.so &amp;&amp; sudo cp libfreshwrapper-flashplayer.so /usr/lib/firefox/browser/plugins/

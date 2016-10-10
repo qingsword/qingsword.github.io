@@ -107,88 +107,135 @@
 					<h2 id="python-os-path-1">0×1.文件相关操作</h2>
 					<h3 id="python-os-path-2">a.创建文件</h3>
 
-					<p>语法：file1=open(文件路径,"w")，文件路径可以是相对路径或绝对路径，相对路径是相对当前运行的脚本目录的，windows下文件目录中的反斜杠需要使用转义输出，例如"C:\\windows\\system32\\filename.txt"，或者使用参数前缀"r"取消字符串中对反斜杠的特殊处理，例如r"c:\windows\system32\filename.txt"；本文所有的操作都使用ubuntu系统举例：</p>
+					<p>Python中创建文件是通过内置的open()函数实现的，这个函数接收最基本的两个参数，第一个为文件路径（相对或绝对路径），第二个是对文件的操作方式（读写），创建文件有下面两种语法：</p>
+					<p class="indent-p">语法一：file1=open("文件路径","w")</p>
+					<p class="indent-p">语法二：with open("文件路径","w") as file1:</p>
+					<p>其中file1是文件对象名称，参数"w"参数告诉python解释器，创建一个可写入数据的文件，并在关闭数据流前，保持可写入状态，语法二是python3推荐的标准方法。</p>
+
+					<p>文件路径可以是相对路径或绝对路径，相对路径是相对当前运行的脚本目录的，windows下文件目录中的反斜杠需要使用转义输出，例如："C:\\windows\\system32\\filename.txt"；或使用参数前缀"r"取消字符串中对反斜杠的特殊处理，例如：r"c:\windows\system32\filename.txt"；本文所有的操作都使用ubuntu系统举例：</p>
 					<pre class="brush: python;">
 					#!/usr/bin/env python
 					#coding=utf-8
-					#在"/home/qing/test/"目录中创建qingsword.txt文件，如果文件不存在则创建，如果文件存在则覆盖，w参数告诉python解释器，创建一个可写入数据的文件，file1.write()往这个文件中写入了一行数据；如果不添加w则文件使用只读方式传递给file1对象，如果文件不存在则会触发"FileNotFoundError"异常。
+					#使用语法一，在"/home/qing/test/"目录中创建qingsword.txt文件，如果文件不存在则创建，如果文件存在则覆盖，file1.write()往这个文件中写入了一行数据；如果不添加参数"w"则文件使用只读方式传递给file1对象，在只读模式下，如果文件不存在则会触发"FileNotFoundError"异常。
 					file1=open("/home/qing/test/qingsword.txt","w")
 					file1.write("www.qingsword.com")
 					file1.close()  #关闭文件流
 					del file1      #删除文件对象释放资源
 
 					#如果要输入多行数据，可以使用三引号，python会根据三引号中的格式将每行数据写入文件中，三引号有点类似HTML语言中的pre标签
-					file1.write("""晴刃
+
+					#使用语法二，完成上面的操作(python3推荐)
+					#!/usr/bin/env python3
+					#coding=utf-8
+					with open("/home/qing/test/qingsword.txt","w") as file1:
+					    file1.write("""晴刃
 					qingsword
 					www.qingsword.com""")
 					</pre>
-					<p>本文使用三引号，像文件中输入了上面三行数据，下面来看看如何读取这些数据内容。</p>
+					<p>注意到上面的两种语法，语法二并没有使用close()函数来关闭文件流，这是因为with表达式内部包含两个重要函数，__enter__和__exit__，__enter__函数负责将open()函数的返回值赋予as后面的对象（file1），最后不论该语句块出现了什么异常，都会在离开时执行__exit__函数，该函数会自动逐个关闭打开的文件对象；这样设计的好处显而易见，在语法一中，如果在close()函数执行前，程序出现异常退出了，那么这个文件流不会被正常关闭，将会一直占用着系统资源，所以推荐使用with来打开一个文件。</p>
+					<p>本例使用语法二，像文件中输入了三行数据，下面来看看如何读取这些数据内容。</p>
 
 					<h3 id="python-os-path-3">b.读取文件内容</h3>
 
 					<p>读取文件可以使用文件对象的read()和readline()两个方法，read()会一次性读取所有的文件内容，readline()一次只读一行，在读取内容时，如果文本中有换行符（\n）也会被读取到，但在输出或写入其他文件时，这些换行符会被自动转换成换行，请看下面的实例：</p>
 					<pre class="brush: python;">
-					#!/usr/bin/env python
+					#!/usr/bin/env python3
 					#coding=utf-8
-					import os
-					file_path="/home/qing/test/qingsword.txt"
-					#os.path.isfile()函数能够判断传入的路径是否为文件
-					if os.path.isfile(file_path):
-					    file1=open(file_path,"r")  #参数r表示以只读方式打开
-					    line1=file1.readline()   #读取一行
-					    print(line1)
-					    all_txt=file1.read()  #读取接下来的所有内容
-					    print(all_txt)
-					    file1.close()
-					    del file1
+					import os  #导入os模块
+					#os.path.isfile()函数能够判断传入的路径是否为文件，open函数中的参数"r"表示以只读方式打开文件
+					if os.path.isfile("/home/qing/test/qingsword.txt"):
+					    with open("/home/qing/test/qingsword.txt","r") as file1:
+					        line1=file1.readline() #读取一整行（遇到回车符\n终止）
+					        print(line1)
+					        line1=file1.readline()
+					        print(line1)
+					        line1=file1.readline()
+					        print(line1)
 
-					#程序输出，在下面的输出中"晴刃"和"qingsword"之间空了一行，这是因为"晴刃"后面有一个换行符，所以光标被移动到了下一行，而read()函数读取内容后使用print输出，print()函数会新起一行输出
+					#程序输出，输出中每行之间空了一行，这是因为"晴刃"和"qingsword"后面有都有一个换行符"\n"，输出文本数据后光标被移动到了下一行，而print()函数默认情况下会新起一行输出，所以又会再往下移动一行，才会得到下面这样的结果
 					晴刃
 
 					qingsword
-					www.qingsword.com
-					</pre>
 
-					<p>除了使用上面的方式读取文件内容外，还有一种读取方式，使用readlines()函数，它能够读取文件中的每一行数据并保存为一个列表，可以遍历列表输出每一行数据，或打印出每一行的字符数，请看下面的实例：</p>
-					<pre class="brush: python;">
-					#!/usr/bin/env python
+					www.qingsword.com
+
+					#如果想去掉换行符，可以使用strip("\n")筛选掉每行前后的换行符，如下
+					#!/usr/bin/env python3
 					#coding=utf-8
 					import os
-					file_path="/home/qing/test/qingsword.txt"
-					if os.path.isfile(file_path):
-					    file1=open(file_path,"r")
-					    file_dect=file1.readlines()
-					    print(file_dect) 
-					    for line in file_dect:
-					        print(len(line))  #输出每一行的字符数（包括回车符）
+					if os.path.isfile("/home/qing/test/qingsword.txt"):
+					    with open("/home/qing/test/qingsword.txt","r") as file1:
+					        line1=file1.readline().strip("\n")
+					        print(line1)
+					        line1=file1.readline().strip("\n")
+					        print(line1)
+					        line1=file1.readline().strip("\n")
+					        print(line1)
 
-					#程序输出，可以看到字符串的统计是包含回车符的
+					#输出
+					晴刃
+					qingsword
+					www.qingsword.com
+
+					#如果一行的数据太长，一次性读取可能会导致内存溢出，使用readline(字符数)可以读取指定的字符数，例如
+					#!/usr/bin/env python3
+					#coding=utf-8
+					import os
+					if os.path.isfile("/home/qing/test/qingsword.txt"):
+					    with open("/home/qing/test/qingsword.txt","r") as file1:
+					        line1=file1.readline(2) #获取"晴刃"两个字符
+					        print(line1)
+					        line1=file1.readline() #获取到"\n"回车符，当readline遇到回车符时，指定多少字符都没有意义，因为readline遇到回车符后就返回，不会接着往下读取
+					        print(line1)
+					        line1=file1.readline(4) #再获取接下来4个字符"qing"
+					        print(line1)
+
+					#输出，根据前面的解释，很容易明白为什么两行数据间会空两行了
+					晴刃
+
+
+					qing
+					</pre>
+
+					<p>除了使用上面的方式读取文件内容外，还有一种读取方式，使用readlines()函数，它能够读取文件中的每一行数据并保存为一个列表，每行数据相当于列表的一个元素，可以遍历列表每个元素输出每一行数据，或打印出每一行的字符数，请看下面的实例：</p>
+					<pre class="brush: python;">
+					#!/usr/bin/env python3
+					#coding=utf-8
+					import os
+					if os.path.isfile("/home/qing/test/qingsword.txt"):
+					    with open("/home/qing/test/qingsword.txt","r") as file1:
+					        lines=file1.readlines()
+					        print(lines)
+					        for line in lines:
+					            #输出每一行的字符数（不包括回车符）
+					            print(len(line.strip("\n")))
+
+					#程序输出
 					['晴刃\n', 'qingsword\n', 'www.qingsword.com']
-					3
-					10
+					2
+					9
 					17
 					</pre>
 
-					<p>在上面的代码中，并没有添加错误处理语句，python3推荐的正确的打开文件和关闭文件的方法是使用with...as语句块，本文其他代码仅为了方便并没有使用这种规范的书写方式，在实际应用中，应该遵循下面这种语法来打开文件：</p>
+					<p>with不仅仅能打开单个文件，还能一次性打开多个文件，如下：</p>
 					<pre class="brush: python;">
 					#!/usr/bin/env python3
 					#coding=utf-8
 					import os
 					try: #添加错误处理
 					    if os.path.isfile("hello.py") and os.path.isfile("if.py"):
-					        #使用with来打开一个或多个文件，本例为两个文件（可以用逗号隔开打开任意多个文件），as后面是将文件赋予的对象名称，相当于f1=open("hello.py","r")，使用with的好处是，不需要对对象调用close()函数，with会在区块运行结束后自动调用close()关闭这些文件
+					        #使用with来打开一个或多个文件（可以用逗号分隔任意多个文件），使用with的好处是，不需要调用close()函数，with会在区块运行结束后自动调用close()关闭这些文件；read()函数能够一次性读取文件流当前指针所在位置，到文件结尾的所有内容
 					        with open("hello.py","r") as f1,open("if.py") as f2:
 					            print(f1.read())
 					            for line in f2.readlines():
-					                #strip()函数能够去掉字符串前后空格以及换行符与制表符等
+					                #不带任何参数的strip()函数能够去掉字符串前后空格以及换行符与制表符等
 					                print(line.strip())
 					#如果os操作过程中遇到错误会被捕获，本例并没有对可能出现的os错误做细分处理
 					except Exception as erro:
 					    pass
 					</pre>
-					<p>python3的规范中，所有打开文件的操作，都推荐包含在一个with语句块中，with表达式内部包含两个重要函数，__enter__函数将open()函数的返回值赋予as后面的对象，最后不论在该语句块出现了什么异常，都会在离开时执行__exit__函数，该函数会自动逐个关闭打开的文件对象。</p>
 
-					<p>如果我们读取的不是一个文本文件，是一个压缩包文件，一张图片，或一个视频文件，这个时候就需要使用rb参数来读取二进制数据流，例如：</p>
+					<p>如果我们读取的不是一个文本文件，是一个压缩包文件，一张图片，或一个视频文件，这个时候就需要使用"rb"参数来读取二进制数据流，例如：</p>
 					<pre class="brush: python;">
 					#!/usr/bin/env python3
 					#coding=utf-8
@@ -196,7 +243,7 @@
 					try:
 					    if os.path.isfile("cat.jpeg"):
 					        with open("cat.jpeg","rb") as img1:
-					            #读取这张图片二进制数据流的前10个字节
+					            #读取当前目录下"cat.jpeg"图片文件二进制数据流的前10个字节
 					            print(img1.read(10))
 					except Exception as erro:
 					    pass
@@ -224,22 +271,19 @@
 
 					<p>在上面内容的基础上，现在我们往qingsword.txt这个文件中追加内容，请看下面的实例：</p>
 					<pre class="brush: python;">
-					#!/usr/bin/env python
+					#!/usr/bin/env python3
 					#coding=utf-8
 					import os
 					file_path="/home/qing/test/qingsword.txt"
 					if os.path.isfile(file_path):
-					    file1=open(file_path,"a") #a参数表示打开文件并追加内容
+					    #"a"参数表示打开文件并追加内容
 					    #如果不想追加的内容顶在上一次内容的后面，可以写入一个回车符，或使用"三引号"换行输入，在使用"三引号"的时候注意，文本的缩进也会被保留，所以本例的输入都是顶格的
-					    file1.write("""
+					    with open(file_path,"a") as file1:
+					        file1.write("""
 					欢迎大家到我的博客学习：
 					www.qingsword.com""")
-					    file1.close()
-					    del file1
-					    file1=open(file_path,"r") #读取文件内容并输出
-					    print(file1.read())
-					    file1.close()
-					    del file1
+					    with open(file_path,"r") as file1:
+					        print(file1.read()) #读取文件所有内容并输出
 
 					#程序输出
 					晴刃
@@ -251,46 +295,36 @@
 
 					<p>现在，上面的内容已经可以让我们将一个文件的内容复制出来追加到另外一个文件的末尾了，下面是一个简单的实现：</p>
 					<pre class="brush: python;">
-					#!/usr/bin/env python
+					#!/usr/bin/env python3
 					#coding=utf-8
-					#创建两个文件，并写入数据
-					file_path_1="/home/qing/test/qingsword1.txt"
-					file_path_2="/home/qing/test/qingsword2.txt"
-					file1=open(file_path_1,"w")
-					file1.write("""晴刃
-					qingsword
+					import os
+					#创建两个文件，分别写入数据
+					file_path_1="/home/qing/test/qingsword_1.txt"
+					file_path_2="/home/qing/test/qingsword_2.txt"
+					with open(file_path_1,"w") as file1,\
+					     open(file_path_2,"w") as file2:
+					    file1.write("""欢迎大家到我的博客学习：
 					www.qingsword.com""")
-					file2=open(file_path_2,"w")
-					file2.write("""欢迎大家到我的博客学习:
-					www.qingsword.com""")
-					file1.close()
-					file2.close()
-					del file1
-					del file2
+					    file2.write("晴刃")
 
-					#将"qingsword1.txt"的内容读取出来追加到"qingsword2.txt"下
-					file1=open(file_path_1,"r")
-					file2=open(file_path_2,"a")
-					#输入一个回车符，否则file1的第一行会紧贴file2的最后一行显示
-					file2.write("\n")
-					file2.write(file1.read())  #读取file1中所有数据，追加到file2末尾
-					file1.close()
-					file2.close()
-					del file1
-					del file2
-					file2=open(file_path_2,"r")
-					print(file2.read())
-					file2.close()
-					del file2
+					#将file_path_2文件中的内容追加到file_path_1文件内容下
+					if os.path.isfile(file_path_1) and\
+					   os.path.isfile(file_path_2):
+					    with open(file_path_2,"r") as file1,\
+					         open(file_path_1,"a") as file2:
+					        file2.write("\n")
+					        file2.write(file1.read())
+					
+					#打印出file_path_1文件内容
+					if os.path.isfile(file_path_1):
+					    with open(file_path_1,"r") as file1:
+					        print(file1.read())
 
 					#程序输出
 					欢迎大家到我的博客学习:
 					www.qingsword.com
 					晴刃
-					qingsword
-					www.qingsword.com
 					</pre>
-					<p>在实际应用中，请将读写操作包含在一个with...as代码快中进行，确保文件会被正常关闭，同读取文件类似，使用wb参数可以写入二进制数据，使用encoding参数可以指定写入的数据的编码方式。</p>
 
 					<h3 id="python-os-path-5">d.文件读写异常</h3>
 
