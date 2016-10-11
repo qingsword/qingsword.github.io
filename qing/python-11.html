@@ -98,13 +98,16 @@
 						 <li class="subli"><a href="#python-os-path-16">e.列出目录下所有文件</a></li>
 						 <li class="subli"><a href="#python-os-path-17">f.创建删除文件夹</a></li>
 						 <li class="subli"><a href="#python-os-path-18">g.通配符的使用</a></li>
-						 <li><a href="#python-os-path-19">0×3.实例:日志文件轮换</a></li>
-						 <li><a href="#python-os-path-20">0×4.内存文件读写</a></li>
+						 <li class="subli"><a href="#python-os-path-19">h.文件和文件夹重命名</a></li>
+						 <li class="subli"><a href="#python-os-path-20">i.文件夹复制</a></li>
+						 <li><a href="#python-os-path-21">0×3.实例:日志文件轮换</a></li>
+						 <li><a href="#python-os-path-22">0×4.内存文件读写</a></li>
 					 </ul>
 					<!-- /目录 -->
 
 					<!-- 正文 -->
 					<h2 id="python-os-path-1">0×1.文件相关操作</h2>
+
 					<h3 id="python-os-path-2">a.创建文件</h3>
 
 					<p>Python中创建文件是通过内置的open()函数实现的，这个函数接收最基本的两个参数，第一个为文件路径（相对或绝对路径），第二个是对文件的操作方式（读写），创建文件有下面两种语法：</p>
@@ -656,7 +659,48 @@
 					</pre>
 					<p>Ps：glob.glob()函数返回类型为列表。</p>
 
-					<h2 id="python-os-path-19">0×3.实例:日志文件轮换</h2>
+					<h3 id="python-os-path-19">h.文件和文件夹重命名</h3>
+
+					<p>os模块的rename方法可以实现文件和文件夹重命名的操作，请看下面的实例：</p>
+					<pre class="brush: python;">
+					#!/usr/bin/env python3
+					#coding=utf-8
+					import os
+					#如果file1存在且file2不存在，将file1改名为file2，file1可以是文件或文件夹的绝对或相对路径
+					if os.path.exists("file1") and not os.path.exists("file2"):
+					    os.rename("file1","file2")
+					</pre>
+
+					<h3 id="python-os-path-20">i.文件夹复制</h3>
+
+					<p>可以使用shutil模块的copytree方法来拷贝一个目录到目标位置，例如：</p>
+
+					<pre class="brush: python;">
+					#!/usr/bin/env python3
+					#coding=utf-8
+					import os
+					import shutil
+					def copyDir(src,dst):
+					    """完成源文件夹到目标位置的复制"""
+					    if os.path.isdir(src) and not os.path.exists(dst):
+					        shutil.copytree(src,dst)
+					        print("复制成功。")
+					    else:
+					        print("复制失败。")
+					def moveDir(src,dst):
+					    """完成源文件夹到目标位置的移动"""
+					    if os.path.isdir(src) and not os.path.exists(dst):
+					        shutil.copytree(src,dst)
+					        shutil.rmtree(src)
+					        print("移动成功。")
+					    else:
+					        print("移动失败。")    
+
+					moveDir("dir1","dir2")
+					copyDir("dir1","dir2") 
+					</pre>
+
+					<h2 id="python-os-path-21">0×3.实例:日志文件轮换</h2>
 
 					<p>有时候我们可能需要不断的写入一些日志，每次写入的时候，会产生一个新的版本，新版本永远是不带文件号的，然后老版本会被复制成带尾号的样子，例如：qingsword.log，qingsword.log.1，qingsword.log.2，不带数字的是最新版本，2为最旧的版本，再次写入时2版本会被复制成3版本，1版本复制成2，最近一次保存会被复制成1，但是每次这样手动操作太麻烦了，如果文件量巨大耗时耗力，那么如何让程序自动来完成这些数字的轮换呢，请看下面这个实例：</p>
 					<pre class="brush: python;">
@@ -705,7 +749,7 @@
 					#运行程序后，"/home/qing/test/qingsword/"下会创建一个"qingsword.log"文件，反复运行这个程序，会发现目录中的文件数量最多为6个，最大的文件编号为"qingsword.log.5"，这是因为在rotate()方法中做了最大版本号限制，如果version高于4，那么就结束调用自身，这段程最后可以完成文件版本从，4&gt;5，3&gt;4，2&gt;3，1&gt;2，0&gt;1的版本复制操作。
 					</pre>
 
-					<h2 id="python-os-path-20">0×4.内存文件读写</h2>
+					<h2 id="python-os-path-22">0×4.内存文件读写</h2>
 
 					<p>有时我们不需要将数据写入硬盘，只需要在内存中创建一个临时文件流，暂时保存一些数据，这个时候就可以用到StringIO和BytesIO，前者用来读写字符串数据，后者用来读写二进制数据，请看下面的实例：</p>
 					<pre class="brush: python;">
