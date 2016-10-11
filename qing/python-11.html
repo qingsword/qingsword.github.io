@@ -732,16 +732,12 @@
 					#------
 					def rotate_log_file(path):
 					    """创建新日志文件"""
-					    if not os.path.exists(path):
-					        file1=open(path,"w")
-					        file1.write(time.ctime(time.time()))
-					        file1.close()
-					        del file1
+					    if os.path.exists(path):
+					        with open(path,"a") as file1:
+					            file1.write("\n"+time.ctime(time.time()))
 					    else:
-					        file1=open(path,"a")
-					        file1.write("\n"+time.ctime(time.time()))
-					        file1.close()
-					        del file1
+					        with open(path,"w") as file1:
+					            file1.write(time.ctime(time.time()))
 					    rotate(path)
 
 					rotate_log_file("/home/qing/test/qingsword/qingsword.log")
@@ -759,32 +755,26 @@
 					from io import StringIO,BytesIO
 
 					#初始化一个空内存字符串读写对象
-					mf=StringIO()
-
-					#同文件读写一样，写入数据
-					mf.write("""My website：
+					with StringIO() as si:
+					    #同文件读写一样，写入数据
+					    si.write("""My website：
 					www.qingsword.com""")
+					    #查看当前文件流指针位置，写入后指针在文件流的末尾
+					    print(si.tell())  #29
+					    #将指针指向第一个字符
+					    si.seek(0)
+					    #读取全部内容（如果没有使用seek(0)，这一步将读取不到任何数据）
+					    print(si.read())
 
-					#查看当前文件流指针位置，写入后指针在文件流的末尾
-					print(mf.tell())  #29
-
-					#将指针指向第一个字符
-					mf.seek(0)
-
-					#读取全部内容（如果没有使用seek(0)，这一步将读取不到任何数据）
-					print(mf.read())
-
-					#读取完成后，指针停留在文件流末尾
-					print(mf.tell()) #29
-
-					#将指针移动到第三个字符的位置开始读取
-					mf.seek(2)
-					L=mf.readlines()
-					for line in L:
-					    print(line.strip())
-
-					#如果不移动数据流指针，想一次性读取所有数据流，可以使用getvalue()方法
-					print(mf.getvalue())
+					    #读取完成后，指针停留在文件流末尾
+					    print(si.tell()) #29
+					    #将指针移动到第三个字符的位置开始读取
+					    si.seek(2)
+					    L=si.readlines()
+					    for line in L:
+					        print(line.strip())
+					    #如果不移动数据流指针，想一次性读取所有数据流，可以使用getvalue()方法
+					    print(si.getvalue())
 
 					#程序输出
 					29
@@ -798,12 +788,12 @@
 
 					
 					#初始化一个二进制内存数据流对象，将晴刃这两个字编码成utf-8，写入这个数据流对象
-					bf=BytesIO()
-					bf.write("晴刃".encode("utf-8"))
-					print(bf.getvalue())
-					bf.seek(0)
-					print(bf.read(3))
-					print(bf.tell())
+					with BytesIO() as bf:
+					    bf.write("晴刃".encode("utf-8"))
+					    print(bf.getvalue())
+					    bf.seek(0)
+					    print(bf.read(3))
+					    print(bf.tell())
 
 					#程序输出
 					b'\xe6\x99\xb4\xe5\x88\x83'
@@ -814,19 +804,19 @@
 					<pre class="brush: python;">
 					#!/usr/bin/env python3
 					#coding=utf-8
-					from  io import StringIO
-					#创建一个内存文件流
-					mf=StringIO("晴刃\nwww.qingsword.com")
-					mf.seek(0) #将文件流指针设置成0
+					from io import StringIO
+					#创建一个内存文件流，并传入两行字符串，同时打开一个可写的磁盘文件流
+					with StringIO("晴刃\nwww.qingsword.com") as mf,\
+					     open("qing","w") as f1:
+					    mf.seek(0) #将内存文件流指针设置成0
 
-					#读取内存文件流中的所有数据，写入磁盘中当前脚本所在目录下的qing文件中
-					with open("qing","w") as f1:
+					    #读取内存文件流中的所有数据，写入磁盘中当前脚本所在目录下的qing文件中
 					    f1.write(mf.read())
 
 					#查看写入是否成功
 					with open("qing","r") as f1:
 					    print(f1.read())
-
+					
 					#程序输出（输出换行了，因为内存流创建的时候，包含了一个换行符\n）
 					晴刃
 					www.qingsword.com
