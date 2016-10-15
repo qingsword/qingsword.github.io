@@ -372,13 +372,13 @@
 					    p1.start()
 					    p1.join()
 					    t_stop=time.time()
-					    print("(%s)执行结束，耗时%0.2f"%(os.getpid(),t_stop-t_start))
+					    print("(%s)执行结束，耗时%0.2f秒"%(os.getpid(),t_stop-t_start))
 
 					#程序输出
 					当前程序进程(12153)
 					子进程(12154) 开始执行，父进程为（12153）
 					(12154)执行结束，耗时2.00秒
-					(12153)执行结束，耗时2.01
+					(12153)执行结束，耗时2.01秒
 					</pre>
 
 					<h3 id="python-multiprocessing-4">b.使用进程池Pool</h3>
@@ -563,8 +563,7 @@
 					#用于向列队中put消息
 					def writer(q):
 					    print("writer启动(%s),父进程为(%s)"%(os.getpid(),os.getppid()))
-					    L=(x for x in "qing")
-					    for i in L:
+					    for i in "qing":
 					        q.put(i)
 					        time.sleep(random.random()*3) 
 					        #设置一个延迟来模拟进程put消息的时间差
@@ -611,8 +610,7 @@
 
 					def writer(q):
 					    print("writer启动(%s),父进程为(%s)"%(os.getpid(),os.getppid()))
-					    L=(x for x in "qing")
-					    for i in L:
+					    for i in "qing":
 					        q.put(i)
 
 					if __name__=="__main__":
