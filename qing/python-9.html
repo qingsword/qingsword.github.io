@@ -1081,24 +1081,24 @@
 					#coding=utf-8
 					def Website(self):
 					    print("www.qingsword.com")
-					def SayHellow(self,name="qingsword"):
-					    print("Hellow %s"%name)
+					def SayHello(self,name="qingsword"):
+					    print("Hello %s"%name)
 					#B指向一个Type动态创建的类，所以B就代表这个类(A)本身
 					#type的语法：
 					#type("类名",(继承类列表,...),dict(类方法名=绑定的方法名,...))
 					#使用这种方法我们就可以动态的将外部的方法绑定到一个类中，从而在运行时创建一个类
-					B=type("A",(object,),dict(web=Website,hellow=SayHellow))
+					B=type("A",(object,),dict(web=Website,hello=SayHello))
 					x=B()
 					print(x)
 					print(type(B))
 					x.web()
-					x.hellow("xxx")
+					x.hello("xxx")
 
 					#程序输出
 					&lt;__main__.A object at 0x7f7d70821048&gt;
 					&lt;class 'type'&gt;
 					www.qingsword.com
-					Hellow xxx
+					Hello xxx
 					</pre>
 						
 				<!-- /正文 -->

@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<!--Copyright©QingSword.COM︻☼1010D>-->
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
+	<meta name="description" content="晴刃,是一个致力推广实用计算机技术的个人博客;我们分享计算机知识;为计算机系统以及网络安全防范做出一份贡献。【专注技术 创造价值 共同进步】">
+	<meta name="keywords" content="晴刃,晴,qing,qingsword,ccna图文笔记,ubuntu,linux,ubuntu server,mysql,node.js,javascript,python,计算机技术博客">
+	<meta name="author" content="www.qingsword.com">
+	<title>[Python]-16-正则表达式基础 - QingSword.COM</title>
+	<link rel="shortcut icon" type="image/x-icon" href="../logo/favicon.ico">
+	<link rel="stylesheet" type="text/css" href="../css/basic.css">
+	<link rel="stylesheet" type="text/css" href="../css/text.css">
+	<!-- 代码块高亮js -->
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shCore.css"/>
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shThemeRDark.css"/>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shCore.js"></script>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shBrushPython.js"></script>
+	<script type="text/javascript">
+	SyntaxHighlighter.all();
+	</script>
+</head>
+<body>
+	<!--header -->
+	<header id="nav">
+			<div class="nav-container"> 
+				<!-- 根大纲-->
+				<a href="http://www.qingsword.com" title="晴刃">
+					<h1 class="nav-logo">晴刃</h1>
+				</a>
+				<h2 class="nav-site-description desc-hidden">
+					自由、互助、分享、专注计算机技术
+				</h2>
+				<nav class="nav-links"> 
+					<!-- nav连接大纲-->
+					<h1 style="display:none;">网站导航</h1> 
+					<ul>
+						<li  class="li-hidden">
+							<a href="../index.html" title="home">
+								<span class="link-word"><img src="../logo/home.png" alt="home" class="link-img">首页</span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../web.html" title="web">
+								<span class="link-word"><img src="../logo/web.png" alt="web" class="link-img">前端<span class="word-hidden">设计</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../system.html" title="system">
+								<span class="link-word"><img src="../logo/linux.png" alt="linux" class="link-img">系统<span class="word-hidden">应用</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../net.html" title="net">
+								<span class="link-word"><img src="../logo/net.png" alt="net" class="link-img">网络<span class="word-hidden">技术</span></span>
+							</a>
+						</li>
+						<li>
+							<a href="../sitemap.html" title="sitemap">
+								<span class="link-word"><img src="../logo/archives.png" alt="archives" class="link-img"><span class="word-hidden">文章</span>归档</span>
+							</a>
+						</li>
+					</ul>
+				</nav>
+			</div>		
+	</header>
+	<!-- /header -->
+
+	<!-- content-->
+	<div id="content">
+		<div class="content-container">
+			<!-- 文章区 -->
+			<article class="text-container">
+				<header class="text-header">
+					<h1>[Python]-16-正则表达式基础</h1>	
+				</header><!-- /header -->
+				<section class="text-body">
+					<h2>引言</h2>
+					<p>正则表达式不是Python语法的一部分，它是独立的用于处理字符串的强大工具，在支持正则表达式的语言里，正则表达式是通用的，这篇文章介绍Python中的re模块，它提供了常用的正则表达式语法支持。</p>
+					<!-- 目录 -->
+					<h2>文章目录</h2>
+					<ul class="contents">	
+						 <li><a href="#python-RegEx-1">0×1.正则表达式基本语法</a></li>
+						 <li><a href="#python-RegEx-2">0×2.Python常用正则表达式实例</a></li>
+						 <li class="subli"><a href="#python-RegEx-3">a.re模块匹配实例</a></li>
+						 <li class="subli"><a href="#python-RegEx-4">b.字符串切片</a></li>
+						 <li class="subli"><a href="#python-RegEx-5">c.字符串分组</a></li>
+						 <li class="subli"><a href="#python-RegEx-6">d.编译正则表达式</a></li>
+						 <li class="subli"><a href="#python-RegEx-7">e.非贪婪模式匹配</a></li>
+					 </ul>
+					<!-- /目录 -->
+
+					<!-- 正文 -->
+					<h2 id="python-RegEx-1">0×1.正则表达式基本语法</h2>
+
+					<p>正则表达式的基本语法对于支持它的编程语言都是通用的，下面是一些常用语法与说明：</p>
+
+					<p>字符匹配：</p>
+					<p class="indent-p">
+					● . :（英文句点）匹配任意单个字符（换行符\n除外）；<br>
+					● \ :（斜杠）用于特殊符号的转义；<br>
+					● \d :匹配单个数字；<br>
+					● \D :匹配单个非数字；<br>
+					● \w :匹配单个单词字符（大小写字母以及数字）；<br>
+					● \W :匹配单个非单词字符；<br>
+					● \s :匹配单个空白字符（包括：空格，\n，\r，\t，\f，\v）；<br>
+					● \S :匹配单个非空白字符；
+					</p>
+					<p>范围与数量匹配：</p>
+					<p class="indent-p">
+					● [...] :（中括号）匹配中括号中的单个字符，或字符范围中的单个字符，例如[abc]为匹配abc三个字符中的任意一个，[a-z]为匹配全体小写字母中的任意一个；<br>
+					● [^...] :在中括号匹配的基础上取反，即不匹配中括号中的单个字符或范围中的单个字符；<br>
+					● * :（星号）匹配星号前一个字符0次或无限次，例如"ab*c"可以匹配"ac"，"abc"，"abbbbc"；<br>
+					● + :（加号）匹配加号前一个字符1次或无限次，与星号唯一的区别就是，至少要匹配一次，例如"ab+c"不能匹配"ac"，但可以匹配"abc"，"abbbbc"；<br>
+					● ? :（问号）匹配问号前一个字符0次或1次，例如"ab?c"可以匹配"ac"，"abc"，但不能匹配"abbbbc"；<br>
+					● {m} :匹配大括号前一个字符m次，例如"ab{3}c"可以匹配"abbbc"但不能匹配"abc"，"abbc"；<br>
+					● {m,n} :匹配大括号前一个字符m至n次 ，如果省略m则默认m为0，如果省略n则默认n为无穷大，如两者都省略，等同于"星号"，例如"ab{2,4}c"可以匹配"abbc"，"abbbc"，"abbbbc"，但不能匹配"abc"；<br>
+					● *? :使星号匹配变成非贪婪模式，大部分程序支持中正则表达式默认都是使用贪婪模式，非贪婪模式多用于字符串分组，将在本文第二部分演示；<br>
+					● +? :使加号匹配变成非贪婪模式；<br>
+					● ?? :使问号匹配变成非贪婪模式；<br>
+					● {m,n} ? :使大括号匹配变成非贪婪模式；
+					</p>
+
+					<p>边界、逻辑与分组：</p>
+					<p class="indent-p">
+					● ^ :（上标）匹配字符串开头，例如"^ab"能够匹配"ab123"，但不能匹配"bb123"，凡是以"ab"开头的字符串都能匹配；<br>
+					● $ :（dollar符）匹配字符串结尾，例如".*\.py$"能够匹配所有".py"结尾的字符串；<br>
+					● ^...$ :全匹配，例如"^abcd$"只能匹配字符串"abcd"；<br>
+					● | :（shift+\打出来的竖线）先判断|左边是否匹配，如果匹配就不用去判断右边，如果不匹配再判断右边是否匹配，例如"^abc|.*\.py$"，匹配以"abc"开头，或以".py"结尾的所有字符串，如 "abchello"，"hello.py"；
+					● () :（中括号）括号中的字符将被当做一个整体，也经常与|配合使用，例如"a(\d\d)b"表示a和b之间必须包含两个数字（如"a12b"），"a(123|456)b"表示a与b之间必须包含123或456；
+					</p>
+
+					<p>了解了这些基础规则后，下面来看python如何使用这些正则表达式。</p>
+					
+					<h2 id="python-RegEx-2">0×2.Python常用正则表达式实例</h2>
+					<h3 id="python-RegEx-3">a.re模块匹配实例</h3>
+
+					<p>Python内置的re模块提供了对正则表达式的支持，先来看几个简单的实例：</p>
+
+					<pre class="brush: python;">
+					#!/usr/bin/env python3
+					#coding=utf-8
+					#导入re模块
+					import re
+
+					#re.match(r"正则表达式","要匹配的字符串")，在正则表达式前使用r前缀，可以避免\的转义，本例匹配所有a与b之间包含三个数字的字符串
+					rex=re.match(r"a...b", "a123b")
+					print(rex) #打印出一个SRE_Match对象
+
+					#re.math进行判断时，如果匹配返回一个SRE_Match对象，如果不匹配，返回None
+					if rex:
+					    print("True")
+					else:
+					    print("False")
+					
+					#程序输出
+					&lt;_sre.SRE_Match object; span=(0, 5), match='a123b'&gt;
+					True
+
+					#修改上程序中的re.match(r"a...b", "a123b")部分，去掉print(rex)语句，使用第一部分介绍的正则表达式，看看程序如何输出
+					
+					#1.匹配数字和非数字
+					re.match(r"a\d\d\db", "a111b")
+					True
+					re.match(r"a\d\d\db", "a1b")
+					False
+					re.match(r"a\Db", "a2b")
+					False
+
+					#2.匹配单词和非单词
+					re.match(r"a\w\w\we", "abcde")
+					True
+					re.match(r"a\w\w\we", "a12De")
+					True
+					re.match(r"a\w\W\we", "a1_De")
+					True
+
+					#3.中括号匹配
+					re.match(r"a[bcd]e", "abce")
+					False
+					re.match(r"a[bcd]e", "abe")
+					True
+					re.match(r"a[^bcd]e", "abe")
+					False
+					re.match(r"a[^bcd]e", "axe")
+					True
+
+					#4.星号匹配
+					re.match(r"ab*c", "abc")
+					True
+					re.match(r"ab*c", "ac")
+					True
+
+					#5.加号匹配
+					re.match(r"ab+c", "ac")
+					False
+					re.match(r"ab+c", "abbbc")
+					True
+
+					#6.问号匹配
+					re.match(r"ab?c", "ac")
+					True
+					re.match(r"ab?c", "abbc")
+					False
+
+					#剩下的大家自己按照上面的格式去测试即可
+					</pre>
+
+					<h3 id="python-RegEx-4">b.字符串切片</h3>
+
+					<p>使用正则表达式对字符串切片，比使用字符串自带的split方法更加的灵活和强大，请看下面的实例：</p>
+					<pre class="brush: python;">
+					#!/usr/bin/env python3
+					#coding=utf-8
+					import re
+					#普通的字符串split
+					print("a b c  d   e".split(" "))
+					#使用正则表达式实现split，使用一个或多个空格完成切片处理
+					print(re.split(r"\s+", "a b c  d   e"))
+					#包含一个或多个空格、原点、分号、逗号的切片处理
+					print(re.split(r"[\s\.\;\,]+", "a ,b ;;c ... d   e"))
+
+					#程序输出，普通的字符串切片对多个连续空格的处理会产生空的字符串，而正则表达式则不会
+					['a', 'b', 'c', '', 'd', '', '', 'e']
+					['a', 'b', 'c', 'd', 'e']
+					['a', 'b', 'c', 'd', 'e']
+					</pre>
+
+					<h3 id="python-RegEx-5">c.字符串分组</h3>
+
+					<p>re模块的groups()方法能够将匹配的字符串进行分组处理，每个需要分组匹配的正则表达式被包含在一对圆括号中，请看下面的实例：</p>
+					<pre class="brush: python;">
+					#!/usr/bin/env python3
+					#coding=utf-8
+					import re
+					#首先匹配后面的字符串是否以三位数字开头，6到8位数字结尾，如果匹配可以使用groups和group取出正则表达式对应括号中的内容
+					a=re.match(r"^(\d{3})-(\d{6,8})$","010-88888888")
+					if a:
+					    print(a.groups()) #取出分组后的元祖列表
+					    print(a.group(0)) #取出匹配到的全部字符
+					    print(a.group(1)) #第一个括号中匹配的内容
+					    print(a.group(2)) #第二个括号中匹配的内容，如果有多个括号以此类推
+
+					#程序输出
+					('010', '88888888')
+					010-88888888
+					010
+					88888888
+					</pre>
+					<p>再来看一个计算机时间匹配的例子：</p>
+					<pre class="brush: python;">
+					#!/usr/bin/env python3
+					#coding=utf-8
+					import re
+					t="23:53:09"
+					#下面是一个全匹配，从头到尾，必须满足第一个分号前，第一位可以是0或1，第二位可以是0~9，或者第一位是2，第二位是0~3，或者0~9，这是我们一天时间的整点数，后面分别是从0~59的数字匹配
+					a=re.match(r'^([01][0-9]|2[0-3]|[0-9]):([0-5][0-9]|[0-9]):([0-5][0-9]|[0-9])$', t)
+					if a:
+					    print(a.groups())
+					    print(a.group(0))
+					    print(a.group(1))
+					    print(a.group(2))
+					    print(a.group(3))
+
+					#程序输出
+					('23', '53', '09')
+					23:53:09
+					23
+					53
+					09
+					</pre>
+
+					<h3 id="python-RegEx-6">d.编译正则表达式</h3>
+
+					<p>在上面的每一次正则表达式的匹配使用中，Python解释器都会首先编译正则表达式，然后再用编译后的正则表达式去匹配字符串，在大量重复的匹配环境下，这样的效率十分低；</p>
+					<p>如果一个正则表达式并不需要修改，那么就应该提前预编译（compile）它，之后每次的匹配操作都不需要再次编译，直接使用预编译好的规则去匹配即可，这样可以提高程序执行的效率，下面是一个预编译的实例：</p>
+					<pre class="brush: python;">
+					#!/usr/bin/env python3
+					#coding=utf-8
+					import re
+					t1="23:53:09"
+					t2="19:02:12"
+					#将匹配时钟的正则表达式预编译
+					re_c=re.compile(r'^([01][0-9]|2[0-3]|[0-9]):([0-5][0-9]|[0-9]):([0-5][0-9]|[0-9])$')
+
+					#之后的每一次匹配，都不需要再编译
+					a=re_c.match(t1)
+					b=re_c.match(t2)
+					print(a.groups())
+					print(b.groups())
+
+					#程序输出
+					('23', '53', '09')
+					('19', '02', '12')
+					</pre>
+
+					<h3 id="python-RegEx-7">e.非贪婪模式匹配</h3>
+					<p>在大部分语言的支持中，正则表达式是使用贪婪模式的，也就意味着尽可能多的匹配字符串（一少部分语言内置的是非贪婪模式），用一个实例来解释什么是贪婪模式：</p>
+					<pre class="brush: python;">
+					#!/usr/bin/env python3
+					#coding=utf-8
+					import re
+					#匹配a开头，紧接着0个或多个b，结尾为一个或者多个b再加一个单字符c，贪婪模式下，第一组会尽可能多的匹配b，也就意味着，第二组只能匹配到一个bc
+					print(re.match(r"^(ab*)(b+c)$","abbbbbc").groups())
+
+					#非贪婪模式下，星号最少是0个，那么就使用0个作为匹配规则
+					print(re.match(r"^(ab*?)(b+c)$","abbbbbc").groups())
+
+					#加号匹配一个或多个，非贪婪模式就是一个
+					print(re.match(r"^(ab+)(b+c)$","abbbbbc").groups())
+					print(re.match(r"^(ab+?)(b+c)$","abbbbbc").groups())
+
+					#问号匹配0个或者一个，非贪婪模式就是0个
+					print(re.match(r"^(ab?)(b+c)$","abbbbbc").groups())
+					print(re.match(r"^(ab??)(b+c)$","abbbbbc").groups())
+
+					#程序输出，从输出中可以看出，贪婪模式是尽可能的多匹配，非贪婪模式是尽可能的少匹配
+					('abbbb', 'bc')
+					('a', 'bbbbbc')
+					('abbbb', 'bc')
+					('ab', 'bbbbc')
+					('ab', 'bbbbc')
+					('a', 'bbbbbc')
+					</pre>
+						
+				<!-- /正文 -->
+
+				<footer class="text-footer">
+					<p>
+						*转载请注明来自:<a title="晴刃-自由、互助、分享、专注计算机技术。" href="http://www.qingsword.com" target="_blank">晴刃(QingSword.COM)</a>
+					</p>
+					<p>*原文连接:<a title="[Python]-16-正则表达式基础" href="http://www.qingsword.com/qing/python-16.html" target="_blank">http://www.qingsword.com/qing/python-16.html</a></p>
+				</footer>
+			</article>
+			<!-- /文章区 -->	
+		</div>
+	</div>
+	<!-- /content -->
+	
+	<!-- footer -->
+	<footer id="footer">
+		<div class="footer-container">
+			QingSword.COM &nbsp;<img src="../logo/by-nc-sa.png" alt="Creative Commons" title="Creative Commons">
+		</div>
+	</footer>
+	<!-- /footer -->
+</body>
+</html>
