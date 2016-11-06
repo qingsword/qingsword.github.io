@@ -82,6 +82,7 @@
 						 <li><a href="#ubuntu-install-uget-and-aria2-1">0×1.安装uGet和aria2</a></li>
 						 <li><a href="#ubuntu-install-uget-and-aria2-2">0×2.在火狐浏览器中安装FlashGot插件</a></li>
 						 <li><a href="#ubuntu-install-uget-and-aria2-3">0×3.使用纯终端aria2下载</a></li>
+						 <li><a href="#ubuntu-install-uget-and-aria2-4">0×4.使用纯终端wget下载</a></li>
 					 </ul>
 					<!-- /目录 -->
 
@@ -260,6 +261,33 @@
 						seed-time=1
 					</pre>
 					<p>Ps：经过测试，aria2对热门的bt资源下载速度可以达到带宽上限，对于一些冷门的资源，建议大家用迅雷离线下好后再以上方法下载到本地。另外，aria2的本地配置文件与uGet并不兼容，创建了本地aria2.conf后会导致uGet启动后不能启动aria2，所以，建议大家选择一种自己喜欢的下载方式，或者不创建本地配置文件，在使用aria2终端下载的时候手动添加一些常用参数。</p>
+
+					<h2 id="ubuntu-install-uget-and-aria2-4">0×4.使用纯终端wget下载</h2>
+
+					<p>纯终端下除了aria2之外，还有一个十分常用的下载器wget，使用方法如下：</p>
+					<pre class="brush: bash;">
+					#1.在ubuntu上的安装
+					www@qingsword.com:~$ sudo apt-get install wget
+
+					#2.常用参数介绍
+					-c 断点续传
+					-P 指定下载目录
+					-O 常用于重命名下载文件
+
+					#3.实例一，下载单个文件保存到终端所在目录的www.qingsword.com目录下（如果不指定目录，就是下载到当前目录中）
+					www@qingsword.com:~$ wget -c -P /www.qingsword.com "要下载的文件URL地址"
+
+					#4.实例二，后台下载
+					www@qingsword.com:~$ wget -cb "要下载的文件URL地址"
+					在后台运行，pid 为 7461。 #后台进程ID
+					将把输出写入至 “wget-log”。#下载进度文件
+
+					#查看下载进度（上面的输出写入的是哪个文件，下面的tail命令就查看哪个文件，因为在相同目录中同时在后台下载多个文件时，输出会写入不同的wget-log文件，例如wget-log.1,wget-log.2等等）
+					www@qingsword.com:~$ tail -f wget-log
+
+					#5.实例三，将下载的文件重命名为qingsword.exe保存
+					www@qingsword.com:~$ wget -c -O qingsword.exe "要下载的文件URL地址"
+					</pre>
 				<!-- /正文 -->
 
 				<footer class="text-footer">
