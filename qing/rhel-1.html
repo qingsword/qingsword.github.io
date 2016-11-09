@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<!--Copyright©QingSword.COM︻☼1010D>-->
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
+	<meta name="description" content="晴刃,是一个致力推广实用计算机技术的个人博客;我们分享计算机知识;为计算机系统以及网络安全防范做出一份贡献。【专注技术 创造价值 共同进步】">
+	<meta name="keywords" content="晴刃,晴,qing,qingsword,ccna图文笔记,ubuntu,linux,ubuntu server,mysql,node.js,javascript,python,计算机技术博客">
+	<meta name="author" content="www.qingsword.com">
+	<title>[RHEL]-1-如何重置RHEL用户密码 - QingSword.COM</title>
+	<link rel="shortcut icon" type="image/x-icon" href="../logo/favicon.ico">
+	<link rel="stylesheet" type="text/css" href="../css/basic.css">
+	<link rel="stylesheet" type="text/css" href="../css/text.css">
+	<!-- 代码块高亮js -->
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shCore.css"/>
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shThemeRDark.css"/>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shCore.js"></script>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shBrushBash.js"></script>
+	<script type="text/javascript">
+	SyntaxHighlighter.all();
+	</script>
+</head>
+<body>
+	<!--header -->
+	<header id="nav">
+			<div class="nav-container"> 
+				<!-- 根大纲-->
+				<a href="http://www.qingsword.com" title="晴刃">
+					<h1 class="nav-logo">晴刃</h1>
+				</a>
+				<h2 class="nav-site-description desc-hidden">
+					自由、互助、分享、专注计算机技术
+				</h2>
+				<nav class="nav-links"> 
+					<!-- nav连接大纲-->
+					<h1 style="display:none;">网站导航</h1> 
+					<ul>
+						<li  class="li-hidden">
+							<a href="../index.html" title="home">
+								<span class="link-word"><img src="../logo/home.png" alt="home" class="link-img">首页</span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../web.html" title="web">
+								<span class="link-word"><img src="../logo/web.png" alt="web" class="link-img">前端<span class="word-hidden">设计</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../system.html" title="system">
+								<span class="link-word"><img src="../logo/linux.png" alt="linux" class="link-img">系统<span class="word-hidden">应用</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../net.html" title="net">
+								<span class="link-word"><img src="../logo/net.png" alt="net" class="link-img">网络<span class="word-hidden">技术</span></span>
+							</a>
+						</li>
+						<li>
+							<a href="../sitemap.html" title="sitemap">
+								<span class="link-word"><img src="../logo/archives.png" alt="archives" class="link-img"><span class="word-hidden">文章</span>归档</span>
+							</a>
+						</li>
+					</ul>
+				</nav>
+			</div>		
+	</header>
+	<!-- /header -->
+
+	<!-- content-->
+	<div id="content">
+		<div class="content-container">
+			<!-- 文章区 -->
+			<article class="text-container">
+				<header class="text-header">
+					<h1>[RHEL]-1-如何重置RHEL用户密码</h1>	
+				</header><!-- /header -->
+				<section class="text-body">
+					<h2>引言</h2>
+					<p>这篇文章将介绍，在RHEL系统中，当我们忘记了root密码时如何通过内核功能来重置root密码。</p>
+					<!-- 目录 -->
+					<h2>文章目录</h2>
+					<ul class="contents">	
+						 <li><a href="#rhel-reset-root-passwd-1">0×1.RHEL6如何重设root密码</a></li>
+						 <li><a href="#rhel-reset-root-passwd-2">0×2.RHEL7如何重设root密码</a></li>
+					 </ul>
+					<!-- /目录 -->
+
+					<!-- 正文 -->
+					<h2 id="rhel-reset-root-passwd-1">0×1.RHEL6如何重设root密码</h2>
+					<p>RHEL6与RHEL7重置root密码的方法稍有区别，开机后在如下图所示启动界面，敲击键盘任意键，进入grub选择界面：</p>
+					<img src="images/rhel-reset-passwd-01.jpg" alt="rhel-reset-passwd-01" title="rhel-reset-passwd-01">
+					<p>在选择界面中，选择对应系统，按下键盘"e"键：</p>
+					<img src="images/rhel-reset-passwd-02.jpg" alt="rhel-reset-passwd-02" title="rhel-reset-passwd-02">
+					<p>然后选择到对应的系统内核，按下键盘"e"键，如下图所示：</p>
+					<img src="images/rhel-reset-passwd-03.jpg" alt="rhel-reset-passwd-03" title="rhel-reset-passwd-03">
+					<p>使用键盘的方向键，移动光标，在"quiet"后面添加一个空格，输入"single"，然后回车返回上图（图3）的界面中，按"b"键启动系统，进入单用户模式：</p>
+					<img src="images/rhel-reset-passwd-04.jpg" alt="rhel-reset-passwd-04" title="rhel-reset-passwd-04">
+
+					<p>在单用户模式下，可以使用"passwd root"命令来重置root密码，如果命令无效(不提示新密码的输入)，可以使用"vim /etc/passwd"命令编辑passwd文件，将"root:x:0:0:root:/root:/bin/bash"中的x删除保存重启即可（这样进入系统时，输入root用户名就能直接进入，相当于清空了root密码）。</p>
+					<pre class="brush: bash;">
+					#1.方法一
+					[www@qingsword.com /]# passwd root
+
+					#2.方法二
+					[www@qingsword.com /]# vim /etc/passwd
+
+					#删除root这一行中的字符"x"
+					root:x:0:0:root:/root:/bin/bash 
+					</pre>
+
+					<h2 id="rhel-reset-root-passwd-2">0×2.RHEL7如何重设root密码</h2>
+					<p>首先在grub选择界面中选择需要恢复root密码的RHEL系统，按下键盘的"e"键，编辑启动脚本代码：</p>
+					<img src="images/rhel-reset-passwd-05.jpg" alt="rhel-reset-passwd-05" title="rhel-reset-passwd-05">
+					<p>用键盘方向键移动光标，在倒数第二行的末尾添加一个空格，输入"rd.break"，然后按"ctrl+x"保存退出，如下图所示：</p>
+					<img src="images/rhel-reset-passwd-06.jpg" alt="rhel-reset-passwd-06" title="rhel-reset-passwd-06">
+					<p>稍后就会进入应急启动模式，在这个模式中使用下面的命令来重置root密码：</p>
+					<pre class="brush: bash;">
+					#1.首先以可读写方式重新挂载/sysroot
+					switch_root:/# mount -o remount,rw /sysroot
+
+					#2.将程序执行参考的根目录改成/sysroot
+					switch_root:/# chroot /sysroot
+
+					#3.将root用户的密码改成qingsword.com（也可以直接passwd root来设置root密码）
+					sh-4.2# echo "qingsword.com" | passwd --stdin root
+
+					#4.如果系统开启了selinux必须执行这一句，否则可以跳过
+					sh-4.2# touch /.autorelabel
+
+					#5.退出并且重启
+					sh-4.2# exit
+					switch_root:/# reboot
+					</pre>
+						
+				<!-- /正文 -->
+
+				<footer class="text-footer">
+					<p>
+						*转载请注明来自:<a title="晴刃-自由、互助、分享、专注计算机技术。" href="http://www.qingsword.com" target="_blank">晴刃(QingSword.COM)</a>
+					</p>
+					<p>*原文连接:<a title="[RHEL]-1-如何重置RHEL用户密码" href="http://www.qingsword.com/qing/rhel-1.html" target="_blank">http://www.qingsword.com/qing/rhel-1.html</a></p>
+				</footer>
+			</article>
+			<!-- /文章区 -->	
+		</div>
+	</div>
+	<!-- /content -->
+	
+	<!-- footer -->
+	<footer id="footer">
+		<div class="footer-container">
+			QingSword.COM &nbsp;<img src="../logo/by-nc-sa.png" alt="Creative Commons" title="Creative Commons">
+		</div>
+	</footer>
+	<!-- /footer -->
+</body>
+</html>
