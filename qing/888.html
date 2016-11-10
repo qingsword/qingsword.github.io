@@ -145,6 +145,9 @@
 					drwxr-xr-x. 3 qingsword qingsword     4096 Jan  1 10:08 vmtools
 					-rw-rw-r--. 1 qingsword qingsword 59410183 Jan  1 10:34 vmtools.tar.gz
 
+					#如果要排除目录中的某个文件或目录，可以添加--exclude参数，每个exclude参数可以排除掉目录中的一个对象（可以是文件或目录）
+					qing@qingsword.com:~$  tar -vczf vmtools.tar.gz --exclude=for.py --exclude=if.py vmtools/
+
 					#解压缩归档文件，参数x代表"释放归档"
 					qing@qingsword.com:~$ tar -vxzf vmtools.tar.gz
 

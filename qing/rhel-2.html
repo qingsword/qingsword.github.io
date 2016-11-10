@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<!--Copyright©QingSword.COM︻☼1010D>-->
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
+	<meta name="description" content="晴刃,是一个致力推广实用计算机技术的个人博客;我们分享计算机知识;为计算机系统以及网络安全防范做出一份贡献。【专注技术 创造价值 共同进步】">
+	<meta name="keywords" content="晴刃,晴,qing,qingsword,ccna图文笔记,ubuntu,linux,ubuntu server,mysql,node.js,javascript,python,计算机技术博客">
+	<meta name="author" content="www.qingsword.com">
+	<title>[RHEL]-2-如何查看与修改时间 - QingSword.COM</title>
+	<link rel="shortcut icon" type="image/x-icon" href="../logo/favicon.ico">
+	<link rel="stylesheet" type="text/css" href="../css/basic.css">
+	<link rel="stylesheet" type="text/css" href="../css/text.css">
+	<!-- 代码块高亮js -->
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shCore.css"/>
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shThemeRDark.css"/>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shCore.js"></script>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shBrushBash.js"></script>
+	<script type="text/javascript">
+	SyntaxHighlighter.all();
+	</script>
+</head>
+<body>
+	<!--header -->
+	<header id="nav">
+			<div class="nav-container"> 
+				<!-- 根大纲-->
+				<a href="http://www.qingsword.com" title="晴刃">
+					<h1 class="nav-logo">晴刃</h1>
+				</a>
+				<h2 class="nav-site-description desc-hidden">
+					自由、互助、分享、专注计算机技术
+				</h2>
+				<nav class="nav-links"> 
+					<!-- nav连接大纲-->
+					<h1 style="display:none;">网站导航</h1> 
+					<ul>
+						<li  class="li-hidden">
+							<a href="../index.html" title="home">
+								<span class="link-word"><img src="../logo/home.png" alt="home" class="link-img">首页</span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../web.html" title="web">
+								<span class="link-word"><img src="../logo/web.png" alt="web" class="link-img">前端<span class="word-hidden">设计</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../system.html" title="system">
+								<span class="link-word"><img src="../logo/linux.png" alt="linux" class="link-img">系统<span class="word-hidden">应用</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../net.html" title="net">
+								<span class="link-word"><img src="../logo/net.png" alt="net" class="link-img">网络<span class="word-hidden">技术</span></span>
+							</a>
+						</li>
+						<li>
+							<a href="../sitemap.html" title="sitemap">
+								<span class="link-word"><img src="../logo/archives.png" alt="archives" class="link-img"><span class="word-hidden">文章</span>归档</span>
+							</a>
+						</li>
+					</ul>
+				</nav>
+			</div>		
+	</header>
+	<!-- /header -->
+
+	<!-- content-->
+	<div id="content">
+		<div class="content-container">
+			<!-- 文章区 -->
+			<article class="text-container">
+				<header class="text-header">
+					<h1>[RHEL]-2-如何查看与修改时间</h1>	
+				</header><!-- /header -->
+				<section class="text-body">
+					<h2>引言</h2>
+					<p>这篇文章介绍两个比较常用的命令行查看与修改系统时间的命令，date和cal。</p>
+					<!-- 目录 -->
+					<h2>文章目录</h2>
+					<ul class="contents">	
+						 <li><a href="#rhel-date-1">0×1.如何使用date命令查看系统时间</a></li>
+						 <li><a href="#rhel-date-2">0×2.如何使用cal命令查看日历</a></li>
+					 </ul>
+					<!-- /目录 -->
+
+					<!-- 正文 -->
+					<h2 id="rhel-date-1">0×1.如何使用date命令查看系统时间</h2>
+
+					<p>Linux的date命令可以用于查看系统当前时间，下面是几个常用的参数实例：</p>
+					<pre class="brush: bash;">
+					#1.直接输入date命令，使用默认格式查看
+					www@qingsword.com:~$ date
+					2016年 11月 10日 星期四 10:44:35 CST
+
+					#2.date允许使用"+"号来控制时间的输出格式，+%Y表示输出完整年份
+					www@qingsword.com:~$ date "+%Y"
+					2016
+					
+					#3.输出月份
+					www@qingsword.com:~$ date "+%m"
+					11
+
+					#4.输出日期
+					www@qingsword.com:~$ date "+%d"
+					10
+
+					#5.输出小时
+					www@qingsword.com:~$ date "+%H"
+					10
+
+					#6.输出分钟
+					www@qingsword.com:~$ date "+%M"
+					44
+
+					#7.输出秒
+					www@qingsword.com:~$ date "+%S"
+					01
+
+					#8.完整的年月日时分秒格式输出
+					www@qingsword.com:~$ date "+%Y-%m-%d %H:%M:%S"
+					2016-11-10 10:45:33
+
+					#9.输出今天是一年中的第几天
+					www@qingsword.com:~$ date "+%j"
+					315
+
+					#10.输出现在是上午（AM）还是下午（PM）
+					www@qingsword.com:~$ date "+%p"
+					上午
+
+					#11.输出今天星期几
+					www@qingsword.com:~$ date "+%A"
+					星期四
+
+					#12.输出当前月份
+					www@qingsword.com:~$ date "+%B"
+					十一月
+
+					#13.输出时区
+					www@qingsword.com:~$ date "+%Z"
+					CST
+					</pre>
+					<p>date除了用于查看时间，还能添加-s参数，用于修改时间：</p>
+					<pre class="brush: bash;">
+					#时间的修改需要root权限
+					#单独设置年月日
+					www@qingsword.com:~# date -s "20121221"
+					Fri Dec 21 00:00:00 CST 2012
+					
+					#单独设置时分秒
+					www@qingsword.com:~# date -s "12:21:10"
+					Fri Dec 21 12:21:10 CST 2012
+
+					#一起设置年月日时分秒
+					www@qingsword.com:~# date -s "20161021 20:15:23"
+					Fri Oct 21 20:15:23 CST 2016
+					</pre>
+
+					<h2 id="rhel-date-2">0×2.如何使用cal命令查看日历</h2>
+					<p>除了使用date查看当前时间外，使用cal命令能够更加直观的查看日历：</p>
+					<pre class="brush: bash;">
+					#查看本月日历
+					www@qingsword.com:~$ cal
+					      十一月 2016        
+					日  一 二  三 四  五 六  
+					       1  2  3  4  5  
+					 6  7  8  9 10 11 12  
+					13 14 15 16 17 18 19  
+					20 21 22 23 24 25 26  
+					27 28 29 30           
+					
+					#查看本月（包含）前后一个月的日历（连续三个月）              
+					www@qingsword.com:~$ cal -3
+					
+					#查看今天是一年中的第几天（以天数显示的日历）
+					www@qingsword.com:~$ cal -j
+					         十一月 2016            
+					 日  一   二  三   四  五  六  
+					        306 307 308 309 310  
+					311 312 313 314 315 316 317  
+					318 319 320 321 322 323 324  
+					325 326 327 328 329 330 331  
+					332 333 334 335              
+					
+					#查看一年的日历                  
+					www@qingsword.com:~$ cal -y
+					</pre>
+						
+				<!-- /正文 -->
+
+				<footer class="text-footer">
+					<p>
+						*转载请注明来自:<a title="晴刃-自由、互助、分享、专注计算机技术。" href="http://www.qingsword.com" target="_blank">晴刃(QingSword.COM)</a>
+					</p>
+					<p>*原文连接:<a title="[RHEL]-2-如何查看与修改时间" href="http://www.qingsword.com/qing/rhel-2.html" target="_blank">http://www.qingsword.com/qing/rhel-2.html</a></p>
+				</footer>
+			</article>
+			<!-- /文章区 -->	
+		</div>
+	</div>
+	<!-- /content -->
+	
+	<!-- footer -->
+	<footer id="footer">
+		<div class="footer-container">
+			QingSword.COM &nbsp;<img src="../logo/by-nc-sa.png" alt="Creative Commons" title="Creative Commons">
+		</div>
+	</footer>
+	<!-- /footer -->
+</body>
+</html>
