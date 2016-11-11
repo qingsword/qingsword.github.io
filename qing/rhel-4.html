@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<!--Copyright©QingSword.COM︻☼1010D>-->
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
+	<meta name="description" content="晴刃,是一个致力推广实用计算机技术的个人博客;我们分享计算机知识;为计算机系统以及网络安全防范做出一份贡献。【专注技术 创造价值 共同进步】">
+	<meta name="keywords" content="晴刃,晴,qing,qingsword,ccna图文笔记,ubuntu,linux,ubuntu server,mysql,node.js,javascript,python,计算机技术博客">
+	<meta name="author" content="www.qingsword.com">
+	<title>[RHEL]-4-进程管理 - QingSword.COM</title>
+	<link rel="shortcut icon" type="image/x-icon" href="../logo/favicon.ico">
+	<link rel="stylesheet" type="text/css" href="../css/basic.css">
+	<link rel="stylesheet" type="text/css" href="../css/text.css">
+	<!-- 代码块高亮js -->
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shCore.css"/>
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shThemeRDark.css"/>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shCore.js"></script>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shBrushBash.js"></script>
+	<script type="text/javascript">
+	SyntaxHighlighter.all();
+	</script>
+</head>
+<body>
+	<!--header -->
+	<header id="nav">
+			<div class="nav-container"> 
+				<!-- 根大纲-->
+				<a href="http://www.qingsword.com" title="晴刃">
+					<h1 class="nav-logo">晴刃</h1>
+				</a>
+				<h2 class="nav-site-description desc-hidden">
+					自由、互助、分享、专注计算机技术
+				</h2>
+				<nav class="nav-links"> 
+					<!-- nav连接大纲-->
+					<h1 style="display:none;">网站导航</h1> 
+					<ul>
+						<li  class="li-hidden">
+							<a href="../index.html" title="home">
+								<span class="link-word"><img src="../logo/home.png" alt="home" class="link-img">首页</span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../web.html" title="web">
+								<span class="link-word"><img src="../logo/web.png" alt="web" class="link-img">前端<span class="word-hidden">设计</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../system.html" title="system">
+								<span class="link-word"><img src="../logo/linux.png" alt="linux" class="link-img">系统<span class="word-hidden">应用</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../net.html" title="net">
+								<span class="link-word"><img src="../logo/net.png" alt="net" class="link-img">网络<span class="word-hidden">技术</span></span>
+							</a>
+						</li>
+						<li>
+							<a href="../sitemap.html" title="sitemap">
+								<span class="link-word"><img src="../logo/archives.png" alt="archives" class="link-img"><span class="word-hidden">文章</span>归档</span>
+							</a>
+						</li>
+					</ul>
+				</nav>
+			</div>		
+	</header>
+	<!-- /header -->
+
+	<!-- content-->
+	<div id="content">
+		<div class="content-container">
+			<!-- 文章区 -->
+			<article class="text-container">
+				<header class="text-header">
+					<h1>[RHEL]-4-进程管理</h1>	
+				</header><!-- /header -->
+				<section class="text-body">
+					<h2>引言</h2>
+					<p>这篇文章主要介绍RHEL比较常用的五个进程管理命令——ps、top、kill、pkill、pidof。</p>
+					<!-- 目录 -->
+					<h2>文章目录</h2>
+					<ul class="contents">	
+						 <li><a href="#rhel-ps-1">0×1.使用ps查看用户进程</a></li>
+						 <li><a href="#rhel-top-2">0×2.使用top查看用户进程</a></li>
+						 <li><a href="#rhel-pidof-3">0×3.使用pidof查询进程PID</a></li>
+					 </ul>
+					<!-- /目录 -->
+
+					<!-- 正文 -->
+					<h2 id="rhel-ps-1">0×1.使用ps查看用户进程</h2>
+
+					<p>ps的常用参数如下：</p>
+					<p class="indent-p">
+						l 长格式输出<br>
+						u 按用户名和启动时间的顺序来显示进程<br>
+						f 树形显示（父进程和子进程一目了然，想要完全终止某个进程，需要kill这个进程的父进程，仅仅是结束子进程父进程可能重新创建此子进程）<br>
+						a 显示所有用户的所有进程（包括其他用户）<br>
+						x 显示无控制终端的进程
+					</p>
+
+					<p>常用的参数组合为aux，请看下面的实例：</p>
+					<pre class="brush: bash;">
+					[root@qingsword.com ~]# ps -aux
+					USER PID %CPU %MEM VSZ   RSS TTY STAT START TIME COMMAND
+					root   1  1.5  0.3 52840 6644 ?   Ss  07:28 0:02 /usr/lib/systemd/systemd
+					..省略部分输出..
+
+					#输出各字段详解
+					#USER列：进程的所有者
+					#PID列：进程的唯一ID，ID为1的进程是内核加载完成后启动的第一个进程，在RHEL7以上版本中为systemd，在HREL6以下版本中为init，也是所有进程的父进程
+
+					#%CPU列：当前进程CPU使用率
+					#%MEM列：当前进程内存使用率
+
+					#VSZ列：虚拟内存使用量(KB)
+					#RSS列：固定内存量(KB)
+					#TTY列：进程所在终端
+
+					#STAT列：进程状态信息
+					 #R(运行)正在运行或在运行队列中等待
+					 #S(中断)休眠中, 随时可以被其他程序唤醒
+					 #D(不可中断)收到信号不唤醒和不可运行, 进程必须等待直到有中断发生
+					 #Z(僵尸)子进程将要退出还没有完全退出时，父进程收集并释放其占用的资源，这个短暂的状态称为僵尸状态，如果子进程释放失败，将变成僵尸进程，对系统稳定性造成影响
+					 #T:(停止)进程收到SIGSTOP, SIGSTP, SIGTIN, SIGTOU信号后停止运行
+					 #s(小写)进程的领导者（在它下面有子进程）
+					 #&lt; 优先级高的进程  
+					 #N 优先级低的进程  
+					 #L 部分数据被锁进内存的进程  
+					 #+ 后台进程组   
+					 #l 多线程进程
+
+					#START列：进程被启动的时间
+					#TIME列：进程从启动到现在，占用过的CPU时间总和
+					#COMMAND列：启动这条进程所使用的命令与参数
+					</pre>
+
+					<h2 id="rhel-top-2">0×2.使用top查看用户进程</h2>
+
+					<p>使用top命令可以进入top进程管理界面，这是一个类似于"windows任务管理器"的进程界面，默认每3秒刷新一次，默认将占用CPU最多的进程排在最上面，界面如下：</p>
+					<img src="images/rhel-top.jpg" alt="rhel-top" title="rhel-top">
+					<p>现在来逐行解释一下这个界面：</p>
+					<p class="indent-p">
+					第一行：top名称 - 系统当前时间 up top运行了多长时间，有多少用户(终端)登录了系统，系统负载:1分钟 5分钟 15分钟；
+					<br>
+					系统负载量一般在1以下是比较好的一个状态，如果长时间在3以上，就说明系统负载率非常的高了，要考虑更换硬件。
+					</p>
+					<p class="indent-p">
+					第二行：总进程数，当前运行的进程数，休眠的进程数，已经停止的进程，僵尸进程数；
+					</p>
+					<p class="indent-p">
+					第三行：CPU信息:  用户进程占用CPU总百分比 us,  内核空间占用CPU百分比 sy,  用户进程空间内改变过优先级的进程占用CPU百分比 ni, 空闲CPU百分比  id,  等待输入输出的CPU时间百分比 wa,  0.0 hi,  0.0 si,  0.0 st；
+					<br>
+					最重要的两个参数，第一个为CPU总使用率，第二个为CPU空闲率，在top界面下，按下键盘数字键1，可以分别查看每个CPU内核的使用情况；
+					</p>
+					<p class="indent-p">
+					第四行：内存使用情况: 总的内存量 total，空闲内存 free，已经使用的内存 used，用作内核缓存的内存量 buffer/ 缓冲的交换区总量 cached；
+					</p>
+					<p class="indent-p">
+					第五行：交换空间（一般是当内存不足时从硬盘借用的一部分空间，本例中的系统没有配置swap，所以全部为0，如果划分了swap分区，并且交换分区的used值长时间不为0，就要考虑是不是内存不足了）；	
+					</p>
+					<p class="indent-p">
+					第六行：这一行空行，用来与top交互，当按下s键时，会在这里提示你输入一个进程刷新时间，单位秒，默认为3秒，当按下k键时提示输入一个需要结束的PID，两次回车后就能够结束这个进程；	
+					</p>
+					<p>第七行为用户进程列描述信息，各列含义如下：</p>
+					<p class="indent-p">
+					PID：进程id<br>
+					USER：进程所有者的用户名<br>
+					PR：优先级（数值越高，优先级越低）<br>
+					NI：nice值（数值越高，优先级越低）<br>
+					VIRT：进程使用的虚拟内存总量，单位kb，VIRT=SWAP+RES<br>
+					RES：进程使用的、未被换出的物理内存大小，单位kb，RES=CODE+DATA<br>
+					SHR：共享内存大小，单位kb<br>
+					S：进程状态（同ps）<br>
+					%CPU：上次更新到现在的CPU时间占用百分比<br>
+					%MEM：进程使用的物理内存百分比 <br>
+					TIME+：进程使用的CPU时间总计<br>
+					COMMAND：启动进程所使用的命令与参数 
+					</p>
+
+					<p>top中常用的指令如下：</p>
+					<p class="indent-p">
+						使用"shift+&gt;"和"shift+&lt;"来改变进程的排序（默认使用CPU使用率排序）；<br>
+						s  设置进程刷新时间间隔，单位秒，按空格可以立即刷新列表；<br>
+						k  输入PID即可杀死进程；<br>
+						M  按照内存占用由大到小排列；<br>
+						P  按照CPU占用由大到小；<br>
+						Pg Up和Pg Dn  上下翻页；<br>
+						Home和End  到首页或尾页；<br>
+						q  退出top；<br>
+						h  help命令提示；
+					</p>
+
+					<h2 id="rhel-pidof-3">0×3.使用pidof查询进程PID</h2>
+
+					<p>除了使用上面两个命令外，有时候我们仅直到进程的名称要想查看进程的PID，可以用到pidof命令，打开两个终端，其中一个运行top命令，然后在另一个终端中查找top进程的pid：</p>
+					<pre class="brush: bash;">
+					#下面部分命令可能需要root权限
+					#找出pid后，可以使用kill命令来强行结束top进程
+					[root@qingsword.com ~]# pidof top
+					9407
+					[root@qingsword.com ~]# kill 9407
+
+					#pkill命令接收一个进程名称来结束这个进程，下面的命令与上面效果相同
+					[root@qingsword.com ~]# pkill top
+					
+					#如果一些进程有多个子进程（比如httpd）pidof时会出现很多PID号，使用kill逐个结束略显繁琐，此时可以使用killall一次性结束这个进程和所有子进程
+					[root@qingsword.com ~]# pidof httpd
+					9408 9409 9410
+					[root@qingsword.com ~]# killall httpd
+					</pre>
+					<p>Ps：kill接收一个pid号用于结束单个进程，pkill接收一个进程名称用于结束单个进程，killall接收一个进程名称用于结束单个或多个进程与其子进程。</p>
+	
+				<!-- /正文 -->
+
+				<footer class="text-footer">
+					<p>
+						*转载请注明来自:<a title="晴刃-自由、互助、分享、专注计算机技术。" href="http://www.qingsword.com" target="_blank">晴刃(QingSword.COM)</a>
+					</p>
+					<p>*原文连接:<a title="[RHEL]-4-进程管理" href="http://www.qingsword.com/qing/rhel-4.html" target="_blank">http://www.qingsword.com/qing/rhel-4.html</a></p>
+				</footer>
+			</article>
+			<!-- /文章区 -->	
+		</div>
+	</div>
+	<!-- /content -->
+	
+	<!-- footer -->
+	<footer id="footer">
+		<div class="footer-container">
+			QingSword.COM &nbsp;<img src="../logo/by-nc-sa.png" alt="Creative Commons" title="Creative Commons">
+		</div>
+	</footer>
+	<!-- /footer -->
+</body>
+</html>
