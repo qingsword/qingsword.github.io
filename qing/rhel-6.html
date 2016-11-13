@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<!--Copyright©QingSword.COM︻☼1010D>-->
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
+	<meta name="description" content="晴刃,是一个致力推广实用计算机技术的个人博客;我们分享计算机知识;为计算机系统以及网络安全防范做出一份贡献。【专注技术 创造价值 共同进步】">
+	<meta name="keywords" content="晴刃,晴,qing,qingsword,ccna图文笔记,ubuntu,linux,ubuntu server,mysql,node.js,javascript,python,计算机技术博客">
+	<meta name="author" content="www.qingsword.com">
+	<title>[RHEL]-6-配置yum源 - QingSword.COM</title>
+	<link rel="shortcut icon" type="image/x-icon" href="../logo/favicon.ico">
+	<link rel="stylesheet" type="text/css" href="../css/basic.css">
+	<link rel="stylesheet" type="text/css" href="../css/text.css">
+	<!-- 代码块高亮js -->
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shCore.css"/>
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shThemeRDark.css"/>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shCore.js"></script>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shBrushBash.js"></script>
+	<script type="text/javascript">
+	SyntaxHighlighter.all();
+	</script>
+</head>
+<body>
+	<!--header -->
+	<header id="nav">
+			<div class="nav-container"> 
+				<!-- 根大纲-->
+				<a href="http://www.qingsword.com" title="晴刃">
+					<h1 class="nav-logo">晴刃</h1>
+				</a>
+				<h2 class="nav-site-description desc-hidden">
+					自由、互助、分享、专注计算机技术
+				</h2>
+				<nav class="nav-links"> 
+					<!-- nav连接大纲-->
+					<h1 style="display:none;">网站导航</h1> 
+					<ul>
+						<li  class="li-hidden">
+							<a href="../index.html" title="home">
+								<span class="link-word"><img src="../logo/home.png" alt="home" class="link-img">首页</span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../web.html" title="web">
+								<span class="link-word"><img src="../logo/web.png" alt="web" class="link-img">前端<span class="word-hidden">设计</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../system.html" title="system">
+								<span class="link-word"><img src="../logo/linux.png" alt="linux" class="link-img">系统<span class="word-hidden">应用</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../net.html" title="net">
+								<span class="link-word"><img src="../logo/net.png" alt="net" class="link-img">网络<span class="word-hidden">技术</span></span>
+							</a>
+						</li>
+						<li>
+							<a href="../sitemap.html" title="sitemap">
+								<span class="link-word"><img src="../logo/archives.png" alt="archives" class="link-img"><span class="word-hidden">文章</span>归档</span>
+							</a>
+						</li>
+					</ul>
+				</nav>
+			</div>		
+	</header>
+	<!-- /header -->
+
+	<!-- content-->
+	<div id="content">
+		<div class="content-container">
+			<!-- 文章区 -->
+			<article class="text-container">
+				<header class="text-header">
+					<h1>[RHEL]-6-配置yum源</h1>	
+				</header><!-- /header -->
+				<section class="text-body">
+					<h2>引言</h2>
+					<p>这篇文件详解RHEL上yum源的配置，包括"本地yum源"、"替换CentOS网络源"等。</p>
+					<!-- 目录 -->
+					<h2>文章目录</h2>
+					<ul class="contents">	
+						 <li><a href="#rhel-yum-1">0×1.如何搭建本地yum源</a></li>
+						 <li><a href="#rhel-yum-2">0×2.将RHEL yum源替换成CentOS网络源</a></li>
+					 </ul>
+					<!-- /目录 -->
+
+					<!-- 正文 -->
+					<h2 id="rhel-yum-1">0×1.如何搭建本地yum源</h2>
+
+					<p>本地yum源就是使用RHEL安装光盘里面附带的rpm本地仓库作为yum安装源，首先可以将光盘中的内容全部拷贝出来，存放到本地文件夹中，然后替换yum配置文件指向这个文件夹即可，请看下面的实例：</p>
+
+					<pre class="brush: bash;">
+					#使用管理员权限，完成下面的操作
+
+					#1.在本地创建一个文件夹，用于存放RHEL安装光盘中的内容
+					[www@qingsword.com ~]# mkdir /media/CDrepo
+
+					#2.将光盘插入光驱，挂载到/mnt目录，然后将其中的内容复制到上面的目录中（也可以在其他PC上先用U盘拷贝，然后挂载u盘，总之将RHEL光盘中的全部文件想办法拷贝到上面创建的目录即可）
+					[www@qingsword.com ~]# mount /dev/cdrom /mnt
+					[www@qingsword.com ~]# cp -r /mnt/* /media/CDrepo/
+
+					#3.将/etc/yum.repos.d/文件夹中的后缀为.repo文件备份，创建一个新的后缀为.repo文件，文件名随意，本例为LocalRHEL7.repo
+					[www@qingsword.com ~]# cd /etc/yum.repos.d/
+					#如果没有这个文件请跳过下面这一步
+					[www@qingsword.com /etc/yum.repos.d/]# mv packagekit-media.repo packagekit-media.repo.bk
+
+					[www@qingsword.com /etc/yum.repos.d/]# vim LocalRHEL7.repo
+
+					#在LocalRHEL7.repo文件中输入下面的内容
+					#源名称，可自定义，但必须包含在中括号中
+					[Local_rhel7]
+					name=local_rhel7 #同上
+					#源地址，使用本地源，指向上面我们创建的文件夹
+					baseurl=file:///media/CDrepo
+					enabled=1 #使当前配置文件可用，0为不可用
+					gpgcheck=1 #开启验证，开启后需要指定验证文件
+					#验证文件地址，如果上面的验证值为0，就不需要写下面这一句，本例使用光盘中自带的验证文件验证安装包的完整性
+					gpgkey=file:///media/CDrepo/RPM-GPG-KEY-redhat-release
+
+					#配置完成后，重建rpm数据库，清空并重新生成缓存，尝试安装一下tree软件，如果可以安装成功，表明本地源已经搭建成功了
+					[www@qingsword.com ~]# rpm --rebuilddb
+					[www@qingsword.com ~]# yum clean all
+					[www@qingsword.com ~]# yum makecache 
+
+					[www@qingsword.com ~]# yum install -y tree
+					</pre>
+
+					<h2 id="rhel-yum-2">0×2.将RHEL yum源替换成阿里云CentOS源</h2>
+					<p>如果觉得使用本地源不能获得最新的软件包更新，除了付费注册RHEL系统使用RHEL官方yum源外，还可以替换系统自带的yum软件，使用国内的阿里或163源，下面使用阿里云的CentOS源举例，将RHEL7系统的yum源替换成阿里云CentOS7在线源：</p>
+
+					<p>开始之前，需要我们去阿里云的镜像站下载几个文件：</p>
+					<p class="indent-p">
+					1.从[http://mirrors.aliyun.com/repo/]下载对应系统版本的repo文件，本例使用的是RHEL7，所以下载对应的"Centos-7.repo"；
+					</p>
+					<p class="indent-p">
+					2.从[http://mirrors.aliyun.com/centos/]下载对应系统版本的包验证文件，本例下载"RPM-GPG-KEY-CentOS-7 "；
+					</p>
+					<p class="indent-p">
+					3.从第2步的地址中，进入对应的系统版本，本例进入"7"然后定位到[http://mirrors.aliyun.com/centos/7/os/x86_64/Packages/]目录中，查找并下载下面这四个文件；<br>
+					python-iniparse-0.4-9.el7.noarch.rpm<br>
+					yum-3.4.3-132.el7.centos.0.1.noarch.rpm<br>
+					yum-metadata-parser-1.1.4-10.el7.x86_64.rpm<br>
+					yum-plugin-fastestmirror-1.1.31-34.el7.noarch.rpm<br>
+					请注意：你所看到的版本号可能与上面的有出入，但软件名称（比如yum-metadata-parser）一定是相同的，除非官方做出修改，所以搜索软件时搜索软件名称即可，如果按照上面给出的名字可能会找不到对应软件；
+					</p>
+					<p class="indent-p">
+					4.将上面这6个文件通过wget下载到服务器上，然后按照下面的步骤；
+					</p>
+					<pre class="brush: bash;">
+					#确保文件已经下载到终端所在目录
+					[root@qingsword.com ~]# ls
+					Centos-7.repo
+					python-iniparse-0.4-9.el7.noarch.rpm
+					RPM-GPG-KEY-CentOS-7
+					yum-3.4.3-132.el7.centos.0.1.noarch.rpm
+					yum-metadata-parser-1.1.4-10.el7.x86_64.rpm
+					yum-plugin-fastestmirror-1.1.31-34.el7.noarch.rpm
+
+					#删除RHEL7自带的yum
+					[root@qingsword.com ~]# rpm -qa|grep yum|xargs rpm -e --nodeps
+
+					#首先安装python-iniparse
+					[root@qingsword.com ~]# rpm -ivh python-iniparse-0.4-9.el7.noarch.rpm
+					
+					#导入验证包文件
+					[root@qingsword.com ~]# rpm --import RPM-GPG-KEY-CentOS-7
+
+					#安装yum-metadata-parser
+					[root@qingsword.com ~]# rpm -ivh yum-metadata-parser-1.1.4-10.el7.x86_64.rpm 
+
+					#同时安装yum与yum-plugin-fastestmirror
+					[root@qingsword.com ~]# rpm -ivh yum-3.4.3-132.el7.centos.0.1.noarch.rpm yum-plugin-fastestmirror-1.1.31-34.el7.noarch.rpm 
+
+					#将repo文件拷贝到/etc/yum.repos.d/目录中，如果此目录中还存在其他的repo文件，请使用mv先将他们备份到其它位置，确保这个文件夹下只存在一个.repo后缀的文件
+					[root@qingsword.com ~]# cp Centos-7.repo /etc/yum.repos.d/
+
+					#使用vim编辑Centos-7.repo
+					[root@qingsword.com ~]# vim /etc/yum.repos.d/Centos-7.repo
+
+					#输入一个:号，在末行模式中，搜索字符串"$releasever"，将其替换成"7"（注意，本例替换的是CentOS7的网络源所以就是将repo文件中的"$releasever"替换成7，如果你替换的版本是6，这一步就将7改成6，以此类推），语法如下，替换后保存退出
+					:%s/\$releasever/7/g
+
+					#重建rpm数据库，清空并重建缓存
+					[root@qingsword.com ~]# rpm --rebuilddb
+					[root@qingsword.com ~]# yum clean all &amp;&amp; yum makecache 
+					</pre>
+					<p>如果能够成功的从网络更新yum缓存，说明替换成功了。</p>
+
+				<!-- /正文 -->
+
+				<footer class="text-footer">
+					<p>
+						*转载请注明来自:<a title="晴刃-自由、互助、分享、专注计算机技术。" href="http://www.qingsword.com" target="_blank">晴刃(QingSword.COM)</a>
+					</p>
+					<p>*原文连接:<a title="[RHEL]-6-配置yum源" href="http://www.qingsword.com/qing/rhel-6.html" target="_blank">http://www.qingsword.com/qing/rhel-6.html</a></p>
+				</footer>
+			</article>
+			<!-- /文章区 -->	
+		</div>
+	</div>
+	<!-- /content -->
+	
+	<!-- footer -->
+	<footer id="footer">
+		<div class="footer-container">
+			QingSword.COM &nbsp;<img src="../logo/by-nc-sa.png" alt="Creative Commons" title="Creative Commons">
+		</div>
+	</footer>
+	<!-- /footer -->
+</body>
+</html>
