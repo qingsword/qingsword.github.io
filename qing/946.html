@@ -130,11 +130,11 @@
 					<p>CentOS以及Ubuntu下有一种终端界面通用的WiFi连接组件wpasupplicant，在CentOS7以及Ubuntu14.04往后版本中默认都安装了这个组件，但这个组件和图形界面下的NetworkManager管理器有冲突，如果想在图形界面下测试这种连接方式，请先关闭NetworkManager服务，请看下面的演示：</p>
 					<pre class="brush: bash;">
 					#1.确保NetworkManager服务已经关闭，没有运行图形界面的，可以跳过这一步
-					# CentOS关闭NetworkManager服务命令
-					qing@qingsword.com~$ sudo service NetworkManager stop
+					# CentOS关闭NetworkManager服务命令(请使用管理员权限执行)
+					qing@qingsword.com~# systemctl stop NetworkManager
 
 					#Ubuntu关闭NetworkManager服务命令
-					qing@qingsword.com~$ sudo service network-manager stop
+					qing@qingsword.com~$ sudo systemctl stop NetworkManager
 
 					#2.查询本机无线网卡编号（wls35u1），本例仅一块无线网卡，如果有多块也会罗列在这里
 					qing@qingsword.com~$ iw dev

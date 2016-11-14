@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<!--Copyright©QingSword.COM︻☼1010D>-->
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
+	<meta name="description" content="晴刃,是一个致力推广实用计算机技术的个人博客;我们分享计算机知识;为计算机系统以及网络安全防范做出一份贡献。【专注技术 创造价值 共同进步】">
+	<meta name="keywords" content="晴刃,晴,qing,qingsword,ccna图文笔记,ubuntu,linux,ubuntu server,mysql,node.js,javascript,python,计算机技术博客">
+	<meta name="author" content="www.qingsword.com">
+	<title>[RHEL]-7-常用系统状态检测命令 - QingSword.COM</title>
+	<link rel="shortcut icon" type="image/x-icon" href="../logo/favicon.ico">
+	<link rel="stylesheet" type="text/css" href="../css/basic.css">
+	<link rel="stylesheet" type="text/css" href="../css/text.css">
+	<!-- 代码块高亮js -->
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shCore.css"/>
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shThemeRDark.css"/>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shCore.js"></script>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shBrushBash.js"></script>
+	<script type="text/javascript">
+	SyntaxHighlighter.all();
+	</script>
+</head>
+<body>
+	<!--header -->
+	<header id="nav">
+			<div class="nav-container"> 
+				<!-- 根大纲-->
+				<a href="http://www.qingsword.com" title="晴刃">
+					<h1 class="nav-logo">晴刃</h1>
+				</a>
+				<h2 class="nav-site-description desc-hidden">
+					自由、互助、分享、专注计算机技术
+				</h2>
+				<nav class="nav-links"> 
+					<!-- nav连接大纲-->
+					<h1 style="display:none;">网站导航</h1> 
+					<ul>
+						<li  class="li-hidden">
+							<a href="../index.html" title="home">
+								<span class="link-word"><img src="../logo/home.png" alt="home" class="link-img">首页</span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../web.html" title="web">
+								<span class="link-word"><img src="../logo/web.png" alt="web" class="link-img">前端<span class="word-hidden">设计</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../system.html" title="system">
+								<span class="link-word"><img src="../logo/linux.png" alt="linux" class="link-img">系统<span class="word-hidden">应用</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../net.html" title="net">
+								<span class="link-word"><img src="../logo/net.png" alt="net" class="link-img">网络<span class="word-hidden">技术</span></span>
+							</a>
+						</li>
+						<li>
+							<a href="../sitemap.html" title="sitemap">
+								<span class="link-word"><img src="../logo/archives.png" alt="archives" class="link-img"><span class="word-hidden">文章</span>归档</span>
+							</a>
+						</li>
+					</ul>
+				</nav>
+			</div>		
+	</header>
+	<!-- /header -->
+
+	<!-- content-->
+	<div id="content">
+		<div class="content-container">
+			<!-- 文章区 -->
+			<article class="text-container">
+				<header class="text-header">
+					<h1>[RHEL]-7-常用系统状态检测命令</h1>	
+				</header><!-- /header -->
+				<section class="text-body">
+					<h2>引言</h2>
+					<p>这篇文章介绍RHEL中最常用的几个系统状态检测命令，包括：网络状态、内存、主机名及其架构、系统负载及其用户登录状态等。</p>
+					<!-- 目录 -->
+					<h2>文章目录</h2>
+					<ul class="contents">	
+						 <li><a href="#rhel-system-status-1">0×1.查看网络状态</a></li>
+						 <li><a href="#rhel-system-status-2">0×2.使用uname查看系统版本</a></li>
+						 <li><a href="#rhel-system-status-3">0×3.使用uptime命令查看系统负载</a></li>
+						 <li><a href="#rhel-system-status-4">0×4.使用free命令查看内存</a></li>
+						 <li><a href="#rhel-system-status-5">0×5.查看登录终端记录</a></li>
+						 <li><a href="#rhel-system-status-6">0×6.查看当前用户历史命令</a></li>
+						 <li><a href="#rhel-system-status-7">0×7.使用sosreport命令生成诊断包</a></li>
+					 </ul>
+					<!-- /目录 -->
+
+					<!-- 正文 -->
+					<h2 id="rhel-system-status-1">0×1.查看网络状态</h2>
+
+					<p>RHEL6以前系统中最常用的查看网络状态的命令就是ifconfig，下面是这个命令的一些基本用法举例：</p>
+					<pre class="brush: bash;">
+					[root@qingsword.com ~]# ifconfig
+					#eno16777736为网卡的标识名称，inet后是这块网卡的IP地址，子网掩码，广播地址
+					eno16777736:  ..省略部分输出
+					  inet 192.168.1.106  netmask 255.255.255.0  broadcast 192.168.1.255
+					  ..省略部分输出
+					  #ether后是这块网卡的MAC地址
+					  ether 00:0c:29:78:31:59  txqueuelen 1000  (Ethernet)
+					  #RX packets为这块网卡接收到的数据量
+					  RX packets 13099  bytes 14064504 (13.4 MiB)
+					  RX errors 0  dropped 0  overruns 0  frame 0
+					  #TX packets为这块网卡发送的数据量
+					  TX packets 1646  bytes 168262 (164.3 KiB)
+					  TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+					
+					#系统默认的环回接口
+					lo: flags=73 ..省略部分输出
+					</pre>
+					<p>在RHEL6之前的版本中，有线网卡的网卡号一般为"eth"开头，无线网卡号一般为"wlan"开头，而RHEL7之后的版本中，"en" 前缀代表以太网，"wl"前缀代表无线网卡，"vir" 前缀代表虚拟接口。</p>
+					
+					<p>ifconfig不仅能用来查看网卡信息，还能用来停用或启用网卡，给网卡配置临时的IP地址（重启失效）；<br>请参考[<a title="[Linux实用命令]-12-网络配置浅析" href="946.html" target="_blank">[Linux实用命令]-12-网络配置浅析</a>]</p>
+
+					<p>在RHEL7以上版本中，官方推荐使用ip命令查看和配置网络接口信息，下面是一些常用的ip命令举例；</p>
+					<p>● 查看IP地址及网卡信息（同ifconfig）：</p>
+					<pre class="brush: bash;">
+					#可以简写成ip a
+					[root@qingsword.com ~]# ip addr
+					1: lo: &lt;LOOPBACK,UP,LOWER_UP&gt;
+					    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+					    inet 127.0.0.1/8 scope host lo
+					       valid_lft forever preferred_lft forever
+					    inet6 ::1/128 scope host 
+					       valid_lft forever preferred_lft forever
+					2: eno16777736: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt;
+					   #MAC地址
+					    link/ether 00:0c:29:78:31:59 brd ff:ff:ff:ff:ff:ff
+					   #inet IP/子网掩码 brd 广播地址
+					    inet 192.168.1.106/24 brd 192.168.1.255 scope global dynamic eno16777736
+					       valid_lft 4333sec preferred_lft 4333sec
+					    inet6 fe80::20c:29ff:fe78:3159/64 scope
+
+					#单独查看一块网卡
+					[root@qingsword.com ~]# ip addr show eno16777736
+					2: eno16777736: 
+					 ink/ether 00:0c:29:78:31:59 brd ff:ff:ff:ff:ff:ff
+					 inet 192.168.1.106/24 brd 192.168.1.255 scope global dynamic eno16777736
+					 valid_lft 6655sec preferred_lft 6655sec
+					 inet6 fe80::20c:29ff:fe78:3159/64 scope link 
+					  valid_lft forever preferred_lft forever
+					</pre>
+
+					<p>● 查看网卡的接口数据收发统计信息（比ifconfig更详细）</p>
+					<pre class="brush: bash;">
+					[root@qingsword.com ~]# ip -s link
+					1: lo: 
+					 link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+					 RX: bytes  packets  errors  dropped overrun mcast   
+					 980        10       0       0       0       0      
+					 X: bytes  packets  errors  dropped carrier collsns 
+					 980        10       0       0       0       0      
+					2: eno16777736: 
+					 link/ether 00:0c:29:78:31:59 brd ff:ff:ff:ff:ff:ff
+					 #接收到的数据包统计
+					 RX: bytes  packets  errors  dropped overrun mcast   
+					 9393834    6644     0       0       0       0    
+					 #发送出的数据包统计  
+					 TX: bytes  packets  errors  dropped carrier collsns 
+					 87120      1123     0       0       0       0 
+
+					#单独查看一块网卡的数据统计信息
+					[root@qingsword.com ~]# ip -s link show eno16777736
+					</pre>
+
+					<p>● 显示系统路由表，添加删除路由条目：</p>
+					<pre class="brush: bash;">
+					#显示当前路由表，第一条为默认路由，第二条为局域网路由
+					[root@qingsword.com ~]# ip route show
+					default via 192.168.1.1 dev eno16777736  proto static  metric 1024 
+					192.168.1.0/24 dev eno16777736  proto kernel  scope link  src 192.168.1.106
+					
+					##删除路由条目
+					#删除默认路由
+					[root@qingsword.com ~]# ip route del default via 192.168.1.1
+
+					#删除普通路由
+					[root@qingsword.com ~]# ip route del 192.168.1.0/24
+
+					##添加路由条目
+					#添加一条默认路由（未知网段的数据发往192.168.1.1，设备号为eno16777736）
+					[root@qingsword.com ~]# ip route add default via 192.168.1.1 dev eno16777736
+
+					#添加一条普通路由（发往192.168.2.0/24网段的数据发往192.168.1.1，设备号为eno16777736）
+					[root@qingsword.com ~]# ip route add 192.168.2.0/24 via 192.168.1.1 dev eno16777736
+					</pre>
+
+					<p>● 查看ARP列表，绑定与删除ARP</p>
+					<pre class="brush: bash;">
+					#查看本地ARP缓存，命令可简写成ip nei
+					[root@qingsword.com ~]# ip neighbor
+					192.168.1.1 dev eno16777736 lladdr ec:26:ca:01:e3:c2 DELAY
+					
+					#添加静态ARP绑定
+					[root@qingsword.com ~]# ip nei add 192.168.1.23 lladdr 11:11:11:11:11:11 dev eno16777736 nud perm
+
+					[root@qingsword.com ~]# ip nei
+					192.168.1.23 dev eno16777736 lladdr 11:11:11:11:11:11 PERMANENT
+					192.168.1.1 dev eno16777736 lladdr ec:26:ca:01:e3:c2 REACHABLE
+
+					#删除ARP条目（必须指定IP与对应的网卡地址）
+					[root@qingsword.com ~]# ip nei del 192.168.1.23 dev eno16777736
+					</pre>
+					
+					<h2 id="rhel-system-status-2">0×2.使用uname查看系统版本</h2>
+
+					<p>当我们需要下载安装一些软件的时候，可能需要先了解自己系统的构架以及内核信息等，这个时候就可以用到uname命令，例如：</p>
+					<pre class="brush: bash;">
+					#这条命令只需要看下面注释的三个部分即可
+					[root@qingsword.com ~]# uname -a
+					Linux qingsword.com(机器名称) 3.10.0-123.el7(内核版本) .x86_64 #1 SMP Mon May 5 11:16:57 EDT 2014 x86_64 x86_64 x86_64(64位系统) GNU/Linux
+
+					#除此之外，如果想查看RHEL的版本信息，可以查看下面这个文件中的内容
+					[root@qingsword.com ~]# more /etc/redhat-release 
+					Red Hat Enterprise Linux Server release 7.0 (Maipo)
+					</pre>
+
+					<h2 id="rhel-system-status-3">0×3.使用uptime命令查看系统负载</h2>
+
+					<p>系统负载除了可以使用top命令查看外，uptime命令能够将top命令输出中的第一行单独打印出来：</p>
+					<pre class="brush: bash;">
+					[root@qingsword.com ~]# uptime
+ 					00:51:25 up 9 min,  2 users,  load average: 0.02, 0.52, 0.49
+					</pre>
+
+					<h2 id="rhel-system-status-4">0×4.使用free命令查看内存</h2>
+
+					<p>free命令能够将top命令输出中的4,5行单独的显示出来：</p>
+					<pre class="brush: bash;">
+					#默认以K为单位
+					[root@qingsword.com ~]# free 
+					             total       used       free     shared    buffers     cached
+					Mem:       1870784    1069868     800916       9836        924     279848
+					-/+ buffers/cache:     789096    1081688
+					Swap:            0          0          0
+
+					#以M为单位
+					[root@qingsword.com ~]# free -m
+					             total       used       free     shared    buffers     cached
+					Mem:          1826       1044        782          9          0        273
+					-/+ buffers/cache:        770       1056
+					Swap:            0          0          0
+
+					#人性化输出
+					[root@qingsword.com ~]# free -h
+					             total       used       free     shared    buffers     cached
+					Mem:          1.8G       1.0G       781M       9.6M       924K       273M
+					-/+ buffers/cache:       771M       1.0G
+					Swap:           0B         0B         0B
+					</pre>
+
+					<h2 id="rhel-system-status-5">0×5.查看登录终端记录</h2>
+
+					<p>who命令可以查看当前登录的用户，last可以查看登录的历史记录：</p>
+					<pre class="brush: bash;">
+					#本例中:0为root登录的图形界面，pts/0为图形界面中打开的一个shell窗口
+					[root@qingsword.com ~]# who
+					root  :0  2016-11-14 00:43 (:0)
+					root  pts/0  2016-11-14 00:45 (:0)
+
+					#使用last命令可以查看所有系统的登入记录，这些记录是保存在文件中的，命令只是查看了文件中的内容，文件内容是可以被篡改的，所以用这条命令来判断系统有没有被非法登录过并不可取
+					[root@qingsword.com ~]# last
+					root  pts/0 :0  Mon Nov 14 00:45 still logged in
+					</pre>
+					
+					<h2 id="rhel-system-status-6">0×6.查看当前用户历史命令</h2>
+
+					<p>history命令可以用于查看当前用户输入过的历史命令列表，并可以直接从历史列表中取出某条命令执行：</p>
+					<pre class="brush: bash;">
+					#查看历史命令列表中的最后三条记录
+					[root@qingsword.com ~]# history | tail -n 3
+					  154  history
+					  155  who
+					  156  history | tail -n 3
+
+					#重新执行第155条命令
+					[root@qingsword.com ~]# !155
+					who
+					root     :0       2016-11-14 00:43 (:0)
+					root     pts/0    2016-11-14 00:45 (:0)
+
+					#历史命令记录最多可以保存的条目数量是/etc/profile文件中的HISTSIZE变量决定的，我的系统中最多为1000条
+					[root@qingsword.com ~]# more /etc/profile | grep HISTSIZE=
+					HISTSIZE=1000
+
+					#暂时清空历史命令记录（重启后失效）
+					[root@qingsword.com ~]# history -c
+
+					#要想真正清空当前用户的命令历史记录，需要清空当前用户家目录中的.bash_history文件中的所有数据
+					[root@qingsword.com ~]# vim ~/.bash_history
+					1000dd
+					:wq
+					</pre>
+
+					<h2 id="rhel-system-status-7">0×7.使用sosreport命令生成诊断包</h2>
+
+					<p>当我们遇到解决不了的问题时，红帽提供了一个sosreport命令用于收集并生成诊断消息，将收集到的诊断信息（一个压缩包）发送给红帽公司，他们会根据这个压缩包中提供的内容来判断问题的根源，将解决方案发送给你（收费服务）：</p>
+					<pre class="brush: bash;">
+					#直接在终端中输入命令，默认三个回车后，开始收集系统信息
+					[root@qingsword.com ~]# sosreport
+					Your sosreport has been generated and saved in:
+					#最后会生成一个tar归档，将这个压缩包发送给红帽技术支持即可
+ 					 /var/tmp/sosreport-qingsword.com-20161114012652.tar.xz
+					</pre>
+						
+				<!-- /正文 -->
+
+				<footer class="text-footer">
+					<p>
+						*转载请注明来自:<a title="晴刃-自由、互助、分享、专注计算机技术。" href="http://www.qingsword.com" target="_blank">晴刃(QingSword.COM)</a>
+					</p>
+					<p>*原文连接:<a title="[RHEL]-7-常用系统状态检测命令" href="http://www.qingsword.com/qing/rhel-7.html" target="_blank">http://www.qingsword.com/qing/rhel-7.html</a></p>
+				</footer>
+			</article>
+			<!-- /文章区 -->	
+		</div>
+	</div>
+	<!-- /content -->
+	
+	<!-- footer -->
+	<footer id="footer">
+		<div class="footer-container">
+			QingSword.COM &nbsp;<img src="../logo/by-nc-sa.png" alt="Creative Commons" title="Creative Commons">
+		</div>
+	</footer>
+	<!-- /footer -->
+</body>
+</html>
