@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<!--Copyright©QingSword.COM︻☼1010D>-->
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
+	<meta name="description" content="晴刃,是一个致力推广实用计算机技术的个人博客;我们分享计算机知识;为计算机系统以及网络安全防范做出一份贡献。【专注技术 创造价值 共同进步】">
+	<meta name="keywords" content="晴刃,晴,qing,qingsword,ccna图文笔记,ubuntu,linux,ubuntu server,mysql,node.js,javascript,python,计算机技术博客">
+	<meta name="author" content="www.qingsword.com">
+	<title>[RHEL]-8-常用文本编辑命令 - QingSword.COM</title>
+	<link rel="shortcut icon" type="image/x-icon" href="../logo/favicon.ico">
+	<link rel="stylesheet" type="text/css" href="../css/basic.css">
+	<link rel="stylesheet" type="text/css" href="../css/text.css">
+	<!-- 代码块高亮js -->
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shCore.css"/>
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shThemeRDark.css"/>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shCore.js"></script>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shBrushBash.js"></script>
+	<script type="text/javascript">
+	SyntaxHighlighter.all();
+	</script>
+</head>
+<body>
+	<!--header -->
+	<header id="nav">
+			<div class="nav-container"> 
+				<!-- 根大纲-->
+				<a href="http://www.qingsword.com" title="晴刃">
+					<h1 class="nav-logo">晴刃</h1>
+				</a>
+				<h2 class="nav-site-description desc-hidden">
+					自由、互助、分享、专注计算机技术
+				</h2>
+				<nav class="nav-links"> 
+					<!-- nav连接大纲-->
+					<h1 style="display:none;">网站导航</h1> 
+					<ul>
+						<li  class="li-hidden">
+							<a href="../index.html" title="home">
+								<span class="link-word"><img src="../logo/home.png" alt="home" class="link-img">首页</span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../web.html" title="web">
+								<span class="link-word"><img src="../logo/web.png" alt="web" class="link-img">前端<span class="word-hidden">设计</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../system.html" title="system">
+								<span class="link-word"><img src="../logo/linux.png" alt="linux" class="link-img">系统<span class="word-hidden">应用</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../net.html" title="net">
+								<span class="link-word"><img src="../logo/net.png" alt="net" class="link-img">网络<span class="word-hidden">技术</span></span>
+							</a>
+						</li>
+						<li>
+							<a href="../sitemap.html" title="sitemap">
+								<span class="link-word"><img src="../logo/archives.png" alt="archives" class="link-img"><span class="word-hidden">文章</span>归档</span>
+							</a>
+						</li>
+					</ul>
+				</nav>
+			</div>		
+	</header>
+	<!-- /header -->
+
+	<!-- content-->
+	<div id="content">
+		<div class="content-container">
+			<!-- 文章区 -->
+			<article class="text-container">
+				<header class="text-header">
+					<h1>[RHEL]-8-常用文本编辑命令</h1>	
+				</header><!-- /header -->
+				<section class="text-body">
+					<h2>引言</h2>
+					<p>这篇文章介绍RHEL下最常用的一些文本查看、编辑、搜索与筛选命令。</p>
+					<!-- 目录 -->
+					<h2>文章目录</h2>
+					<ul class="contents">	
+						 <li><a href="#rhel-text-edit-1">0×1.文本查看</a></li>
+						 <li class="subli"><a href="#rhel-text-edit-2">a.cat命令</a></li>
+						 <li class="subli"><a href="#rhel-text-edit-3">b.more命令</a></li>
+						 <li class="subli"><a href="#rhel-text-edit-4">c.head命令</a></li>
+						 <li class="subli"><a href="#rhel-text-edit-5">d.tail命令</a></li>
+						 <li><a href="#rhel-text-edit-6">0×2.文本状态与筛选</a></li>
+						 <li class="subli"><a href="#rhel-text-edit-7">a.tr命令</a></li>
+						 <li class="subli"><a href="#rhel-text-edit-8">b.wc命令</a></li>
+						 <li class="subli"><a href="#rhel-text-edit-9">c.stat命令</a></li>
+						 <li class="subli"><a href="#rhel-text-edit-10">d.cut命令</a></li>
+						 <li class="subli"><a href="#rhel-text-edit-11">e.diff命令</a></li>
+						 <li class="subli"><a href="#rhel-text-edit-12">f.touch命令</a></li>
+						 <li class="subli"><a href="#rhel-text-edit-13">g.dd命令</a></li>
+						 <li class="subli"><a href="#rhel-text-edit-14">h.file命令</a></li>
+						 <li class="subli"><a href="#rhel-text-edit-15">i.grep命令</a></li>
+						 <li class="subli"><a href="#rhel-text-edit-16">j.find命令</a></li>
+						 
+					 </ul>
+					<!-- /目录 -->
+
+					<!-- 正文 -->
+					<h2 id="rhel-text-edit-1">0×1.文本查看</h2>
+					<h3 id="rhel-text-edit-2">a.cat命令</h3>
+
+					<p>cat命令用于文本内容的查看，常用参数为-n，显示行数，例如：</p>
+					<pre class="brush: bash;">
+					#查看rc.local文件内容并显示行数（一般不需要显示行数直接cat FileName即可）
+					[root@qingsword.com ~]# cat -n /etc/rc.local
+					</pre>
+
+					<h3 id="rhel-text-edit-3">b.more命令</h3>
+
+					<p>more也是用来查看文件内容的，不同于cat，cat一次性将文件内容打印在屏幕上，而more会在文件内容超出一屏能够显示的高度时，在底部显示一个more与百分比，用户按下空格键向下滚动一屏，按回车向下滚动一格，例如：</p>
+					<pre class="brush: bash;">
+					#使用more查看本地用户账户保存文件
+					[root@qingsword.com ~]# more /etc/passwd
+
+					#使用cat配合管道符也能达到相同的效果，将cat命令的输出作为more命令的输入
+					[root@qingsword.com ~]# cat /etc/passwd | more
+					</pre>
+
+					<h3 id="rhel-text-edit-4">c.head命令</h3>
+
+					<p>head命令使用-n参数能够指定仅显示文件的头几行，如果不带参数，默认显示文件的前10行（不同系统默认值可能不同），例如：</p>
+					<pre class="brush: bash;">
+					#仅显示passwd文件的前4行
+					[root@qingsword.com ~]# head -n 4 /etc/passwd
+					</pre>
+
+					<h3 id="rhel-text-edit-5">d.tail命令</h3>
+
+					<p>与head命令相反，tail命令默认仅显示文件末尾10行，可以使用-n参数指定行数，例如：</p>
+					<pre class="brush: bash;">
+					#查看passwd文件的末四行
+					[root@qingsword.com ~]# tail -n 4 /etc/passwd
+					</pre>
+
+					<h2 id="rhel-text-edit-6">0×2.文本状态与筛选</h2>
+					<h3 id="rhel-text-edit-7">a.tr命令</h3>
+
+					<p>tr命令能够根据匹配列表进行字符串的替换，语法格式:"tr [原始字符] [目标字符]"，例如：</p>
+					<pre class="brush: bash;">
+					#假如有下面这个文件，内容如下
+					[root@qingsword.com ~]# more 1.qingsword.com 
+					xxx.qingsword.com
+					xxx.qingsword.btf
+
+					#将输出中的x替换成w，b替换成c，t替换成o，f替换成m，原始字符与目标字符是一一对应的关系，用逗号分隔
+					[root@qingsword.com ~]# more 1.qingsword.com | tr [x,b,t,f] [w,c,o,m]
+					www.qingsword.com
+					www.qingsword.com
+
+					#两次替换，先替换成正确网址，再将网址中的小写字母全部转化成大写字母，原始字符与目标字符能够是单个或者多个，也可以是一个范围
+					[root@qingsword.com ~]# more 1.qingsword.com | tr [x,b,t,f] [w,c,o,m] | tr [a-z] [A-Z]
+					WWW.QINGSWORD.COM
+					WWW.QINGSWORD.COM
+
+					#将替换后的结果通过重定向输出到另外一个文件中
+					[root@qingsword.com ~]# more 1.qingsword.com | tr [x,b,t,f] [w,c,o,m] | tr [a-z] [A-Z] > 2.qingsword.com
+					[root@qingsword.com ~]# more 2.qingsword.com 
+					WWW.QINGSWORD.COM
+					WWW.QINGSWORD.COM
+					</pre>
+					<p>Ps：注意，tr并不能改变文件中的内容，只能配合管道符将前面命令输出的内容通过tr后面的转换规则进行转换输出。</p>
+
+					<h3 id="rhel-text-edit-8">b.wc命令</h3>
+
+					<p>wc命令可用于统计文件的行数，字符数与单词数（英文环境），例如：</p>
+					<pre class="brush: bash;">
+					#输出sudoers文件的行数，单词数与字符数
+					[root@qingsword.com ~]# wc /etc/sudoers
+					 118  596 4018 /etc/sudoers
+
+					#单独输出行数
+					[root@qingsword.com ~]# wc -l /etc/sudoers
+					118 /etc/sudoers
+
+					#单独输出单词数
+					[root@qingsword.com ~]# wc -w /etc/sudoers
+					596 /etc/sudoers
+
+					#单独输出字符数
+					[root@qingsword.com ~]# wc -c /etc/sudoers
+					4018 /etc/sudoers	
+					</pre>
+
+					<h3 id="rhel-text-edit-9">c.stat命令</h3>
+
+					<p>在介绍这个命令之前，需要先了解一下Linux系统中文件的三种不同时间，分别是：Access访问时间（atime）、Modify修改时间（mtime）、Change状态改动时间（ctime）；</p>
+					<p>这三种时间会在满足下面这些条件时自动修改：</p>
+					<p class="indent-p">
+						1、Access访问时间，读一次这个文件的内容，这个时间就会更新。比如对这个文件运用 more、cat等命令。ls、stat命令都不会修改文件的访问时间。<br>
+						2、Modify修改时间，修改时间是文件内容最后一次被修改时间。比如：vi后保存文件。ls -l列出的时间就是这个时间。<br>
+						3、Change状态改动时间，是该文件的i节点最后一次被修改的时间，通过chmod、chown命令修改一次文件属性，这个时间就会更新。
+					</p>
+					<p>stat命令能够用来查看文件的属性，其中就包括了文件的权限与上面的三种时间，例如：</p>
+					<pre class="brush: bash;">
+					#首先来看看刚才创建的文件
+					[root@qingsword.com ~]# stat 1.qingsword.com 
+					  File: ‘1.qingsword.com’
+					  Size: 36        	Blocks: 8          IO Block: 4096   regular file
+					Device: fd00h/64768d	Inode: 103571457   Links: 1
+					Access: (0644/-rw-r--r--)  Uid: (    0/    root)   Gid: (    0/    root)
+					Context: unconfined_u:object_r:admin_home_t:s0
+					Access: 2016-11-14 22:29:02.689588782 -0500
+					Modify: 2016-11-14 22:28:57.667810729 -0500
+					Change: 2016-11-14 22:28:57.668810675 -0500
+					 Birth: -
+					</pre>
+					<p>在稍后的touch命令中，会介绍如何修改这三种时间。</p>
+					<p>Ps：我在实际操作时发现，如果频繁的cat并不会刷新atime，必须间隔一定的时间（具体时间和必须的触发事件未测试），这是为了降低系统负载。</p>
+
+					<h3 id="rhel-text-edit-14">d.cut命令</h3>
+
+					<p>cut命令能够按列来切割提取字符，请看下面的实例：</p>
+					<pre class="brush: bash;">
+					#首先使用cat读取passwd文件中的内容，传递给cut命令，cut命令的-d参数后面（不用空格）接需要用什么来将文件分割成多列，因为passwd里每条记录是用":"分隔的，所以本例使用":"分割，然后用-f参数，取出第一列打印到屏幕上（f和1之间也不需要有空格），取出第2列就是-f2，以此类推
+					[root@qingsword.com ~]# cat /etc/passwd | cut -d: -f1
+
+					#这个命令配合wc命令，可以统计出passwd中有多少用户
+					[root@qingsword.com ~]# cat /etc/passwd | cut -d: -f1 | wc -l
+					</pre>
+
+					<h3 id="rhel-text-edit-11">e.diff命令</h3>
+
+					<p>diff命令能够比对文件内容之间的差异，例如：</p>
+					<pre class="brush: bash;">
+					#比对两个文件的区别，不同的地方会用大于号和小于号显示出来
+					[root@qingsword.com ~]# diff 1.qingsword.com 2.qingsword.com 
+					1,2c1,2
+					&lt; xxx.qingsword.com
+					&lt; qingsword.btf
+					---
+					&gt; WWW.QINGSWORD.COM
+					&gt; WWW.QINGSWORD.COM
+
+					#仅比对两个文件内容是否相同，不打印出两个文件的内容
+					[root@qingsword.com ~]# diff --brief 1.qingsword.com 2.qingsword.com 
+					Files 1.qingsword.com and 2.qingsword.com differ
+
+					#详细模式显示，不同的内容前会被添加感叹号
+					[root@qingsword.com ~]# diff -c 1.qingsword.com 2.qingsword.com 
+					*** 1.qingsword.com	2016-11-14 23:36:40.702145917 -0500
+					--- 2.qingsword.com	2016-11-14 22:30:08.702429379 -0500
+					***************
+					*** 1,2 ****
+					! xxx.qingsword.com
+					! qingsword.btf
+					--- 1,2 ----
+					! WWW.QINGSWORD.COM
+					! WWW.QINGSWORD.COM
+					</pre>
+
+					<h3 id="rhel-text-edit-12">f.touch命令</h3>
+
+					<p>touch命令不仅能够用来创建空文件，还能用来修改atime和mtime，例如：</p>
+					<pre class="brush: bash;">
+					#单独修改文件的atime，-t后面的时间格式为： [YY]MMDDhhmm[.ss]，中括号中的内容可以不写，例如12121111就代表今年的12月12号11时11分，本例将文件的atime修改成2011年2月23号10时10分10秒
+					[root@qingsword.com ~]# touch -a -t 1102231010.10 2.qingsword.com 
+					[root@qingsword.com ~]# stat 2.qingsword.com 
+					Access: 2011-02-23 10:10:10.000000000 -0500
+					Modify: 2016-11-15 00:32:33.548731282 -0500
+					Change: 2016-11-15 00:37:28.489721793 -0500
+
+					#单独修改文件的mtime
+					[root@qingsword.com ~]# touch -m -t 1311231111.11 2.qingsword.com 
+					[root@qingsword.com ~]# stat 2.qingsword.com 
+					Access: 2011-02-23 10:10:10.000000000 -0500
+					Modify: 2013-11-23 11:11:11.000000000 -0500
+					Change: 2016-11-15 00:38:04.846227731 -0500
+
+					#一起修改atime与mtime
+					[root@qingsword.com ~]# touch -d "2016-11-11 11:11:11" 2.qingsword.com
+					[root@qingsword.com ~]# stat 2.qingsword.com 
+					Access: 2016-11-11 11:11:11.000000000 -0500
+					Modify: 2016-11-11 11:11:11.000000000 -0500
+					Change: 2016-11-15 00:39:07.054381717 -0500
+					</pre>
+
+					<h3 id="rhel-text-edit-13">g.dd命令</h3>
+
+					<p>dd命令是Linux中十分强大的文件复制命令，它能够按字节复制文件内容，也能用来制作U盘启动盘等，请看下面的实例：</p>
+
+					<pre class="brush: bash;">
+					#创建一个文件，写入本站网址
+					[root@qingsword.com ~]# touch a.qingsword.com
+					[root@qingsword.com ~]# echo "www.qingsword.com" >a.qingsword.com
+
+					#用dd命令，从a.qingsword.com文件中读取内容，输出到b.qingsword.com文件中（不存在就创建），复制长度为4字节（bs=4），复制一次（count=1）
+					[root@qingsword.com ~]# dd if=a.qingsword.com of=b.qingsword.com bs=4 count=1
+					1+0 records in
+					1+0 records out
+					4 bytes (4 B) copied, 0.00026445 s, 15.1 kB/s
+
+					#因为英文字符一个字符占用1字节，所以b.qingsword.com文件中的内容就是本站网址前4个字符
+					[root@qingsword.com ~]# cat b.qingsword.com 
+					www. 
+
+					#如果想复制8个字节，除了直接bs=8之外，还能将count调节成2，总之复制的总字节数为bs*count
+					[root@qingsword.com ~]# dd if=a.qingsword.com of=b.qingsword.com bs=4 count=2
+					2+0 records in
+					2+0 records out
+					8 bytes (8 B) copied, 0.000821312 s, 9.7 kB/s
+
+					#再次查看，发现复制了8个字节的长度
+					[root@qingsword.com ~]# cat b.qingsword.com 
+					www.qing
+					</pre>
+					<p>使用dd制作u盘启动盘请参考[<a title="Linux环境怎样制作u盘系统启动盘" href="85.html" target="_blank">Linux环境怎样制作u盘系统启动盘</a>]</p>
+
+					<h3 id="rhel-text-edit-14">h.file命令</h3>
+
+					<p>file命令能够很方便的显示文件类型，请看下面的实例：</p>
+					<pre class="brush: bash;">
+					#分别查看一个文本文件，文件夹和一个设备文件
+					[root@qingsword.com ~]# file 1.qingsword.com 
+					1.qingsword.com: ASCII text
+					[root@qingsword.com ~]# file Desktop/
+					Desktop/: directory
+					[root@qingsword.com ~]# file /dev/sda
+					/dev/sda: block special
+					</pre>
+
+					<h3 id="rhel-text-edit-15">i.grep命令</h3>
+
+					<p>grep命令经常用在管道符后，用于删选其他命令的输出，实际上这个命令是能够单独使用的，请看下面的实例：</p>
+					<pre class="brush: bash;">
+					#语法：grep 要筛选的内容 目标文件
+
+					#从passwd中筛选出包含root的条目
+					[root@qingsword.com ~]# grep root /etc/passwd
+					root:x:0:0:root:/root:/bin/bash
+					operator:x:11:0:operator:/root:/sbin/nologin
+
+					#添加参数-n，可以打印出条目在文件中所处的行数
+					[root@qingsword.com ~]# grep -n root /etc/passwd
+					1:root:x:0:0:root:/root:/bin/bash
+					10:operator:x:11:0:operator:/root:/sbin/nologin
+
+					#参数-c能够统计删选后条目的数量
+					[root@qingsword.com ~]# grep -c root /etc/passwd
+					2
+
+					#参数-v实现反选功能，即打印出passwd文件中不包含root的条目
+					[root@qingsword.com ~]# grep -v root /etc/passwd
+
+					#使用管道符的效果与上面相同
+					[root@qingsword.com ~]# cat /etc/passwd | grep root
+					[root@qingsword.com ~]# cat /etc/passwd | grep -n root
+					</pre>
+
+					<h3 id="rhel-text-edit-16">j.find命令</h3>
+					<p>find命令可以用于查找系统中的指定文件，功能可谓十分强大，请看下面的实例：</p>
+					<pre class="brush: bash;">
+					#-name参数按照文件名查找(支持正则表达式)，本例查找/home目录中以"qingsword.com"结尾的所有文件
+					[root@qingsword.com ~]# find /home -name "*qingsword.com" 
+
+					#查找根目录中属于qing用户的文件，并且仅显示最后四条
+					[root@qingsword.com ~]# find / -user qing | tail -n 4
+
+					#查找根目录中，权限包含SUID的文件，并且仅列出最后4个
+					[root@qingsword.com ~]# find / -perm -4000 | tail -n 4
+
+					#查找根目录中以qingsword.com结尾的所有文件，-exec参数会将find查找到的结果集传递给后面的命令执行，{}就代表了find命令查找到的结果集，使用cp命令将结果集中的文件或文件夹全部复制到当前用户的桌面上，结尾的"\;"为固定语法，必须写上
+					[root@qingsword.com ~]# find / -name "*qingsword.com" -exec cp -r {} Desktop/ \;
+					</pre>
+
+					<p>除了上面这些参数外，find还有几个比较常用的参数：</p>
+					<p class="indent-p">
+						-nouser：匹配没有所有者的文件（多出现在用户被删除，而用户创建的文件还在）；
+					</p>
+					<p class="indent-p">
+						-group：匹配属于这个组的所有文件；
+					</p>
+					<p class="indent-p">
+						-nogroup：匹配没有所属组的文件；
+					</p>
+					<p class="indent-p">
+						-size：匹配文件的大小：例如"find / -size +200k"查找根目录中超过200k的文件，如果是-200k就是查找小于200k的文件；
+					</p>
+					<p class="indent-p">
+						-prune：查找过程需要忽略的目录；
+					</p>
+
+					<p>在查找一些常用命令时，whereis命令比find更加高效，例如我们想知道ls命令在系统的哪些目录中，可以使用下面的的命令：</p>
+					<pre class="brush: bash;">
+					#列出包含ls的所有目录
+					[root@qingsword.com ~]# whereis ls
+					ls: /usr/bin/ls /usr/share/man/man1/ls.1.gz /usr/share/man/man1p/ls.1p.gz
+					</pre>
+						
+				<!-- /正文 -->
+
+				<footer class="text-footer">
+					<p>
+						*转载请注明来自:<a title="晴刃-自由、互助、分享、专注计算机技术。" href="http://www.qingsword.com" target="_blank">晴刃(QingSword.COM)</a>
+					</p>
+					<p>*原文连接:<a title="[RHEL]-8-常用文本编辑命令" href="http://www.qingsword.com/qing/rhel-8.html" target="_blank">http://www.qingsword.com/qing/rhel-8.html</a></p>
+				</footer>
+			</article>
+			<!-- /文章区 -->	
+		</div>
+	</div>
+	<!-- /content -->
+	
+	<!-- footer -->
+	<footer id="footer">
+		<div class="footer-container">
+			QingSword.COM &nbsp;<img src="../logo/by-nc-sa.png" alt="Creative Commons" title="Creative Commons">
+		</div>
+	</footer>
+	<!-- /footer -->
+</body>
+</html>
