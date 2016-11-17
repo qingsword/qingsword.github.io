@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<!--Copyright©QingSword.COM︻☼1010D>-->
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
+	<meta name="description" content="晴刃,是一个致力推广实用计算机技术的个人博客;我们分享计算机知识;为计算机系统以及网络安全防范做出一份贡献。【专注技术 创造价值 共同进步】">
+	<meta name="keywords" content="晴刃,晴,qing,qingsword,ccna图文笔记,ubuntu,linux,ubuntu server,mysql,node.js,javascript,python,计算机技术博客">
+	<meta name="author" content="www.qingsword.com">
+	<title>[RHEL]-10-shell脚本 - QingSword.COM</title>
+	<link rel="shortcut icon" type="image/x-icon" href="../logo/favicon.ico">
+	<link rel="stylesheet" type="text/css" href="../css/basic.css">
+	<link rel="stylesheet" type="text/css" href="../css/text.css">
+	<!-- 代码块高亮js -->
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shCore.css"/>
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shThemeRDark.css"/>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shCore.js"></script>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shBrushBash.js"></script>
+	<script type="text/javascript">
+	SyntaxHighlighter.all();
+	</script>
+</head>
+<body>
+	<!--header -->
+	<header id="nav">
+			<div class="nav-container"> 
+				<!-- 根大纲-->
+				<a href="http://www.qingsword.com" title="晴刃">
+					<h1 class="nav-logo">晴刃</h1>
+				</a>
+				<h2 class="nav-site-description desc-hidden">
+					自由、互助、分享、专注计算机技术
+				</h2>
+				<nav class="nav-links"> 
+					<!-- nav连接大纲-->
+					<h1 style="display:none;">网站导航</h1> 
+					<ul>
+						<li  class="li-hidden">
+							<a href="../index.html" title="home">
+								<span class="link-word"><img src="../logo/home.png" alt="home" class="link-img">首页</span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../web.html" title="web">
+								<span class="link-word"><img src="../logo/web.png" alt="web" class="link-img">前端<span class="word-hidden">设计</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../system.html" title="system">
+								<span class="link-word"><img src="../logo/linux.png" alt="linux" class="link-img">系统<span class="word-hidden">应用</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../net.html" title="net">
+								<span class="link-word"><img src="../logo/net.png" alt="net" class="link-img">网络<span class="word-hidden">技术</span></span>
+							</a>
+						</li>
+						<li>
+							<a href="../sitemap.html" title="sitemap">
+								<span class="link-word"><img src="../logo/archives.png" alt="archives" class="link-img"><span class="word-hidden">文章</span>归档</span>
+							</a>
+						</li>
+					</ul>
+				</nav>
+			</div>		
+	</header>
+	<!-- /header -->
+
+	<!-- content-->
+	<div id="content">
+		<div class="content-container">
+			<!-- 文章区 -->
+			<article class="text-container">
+				<header class="text-header">
+					<h1>[RHEL]-10-shell脚本</h1>	
+				</header><!-- /header -->
+				<section class="text-body">
+					<h2>引言</h2>
+					<p>Linux下的shell脚本，就像是windows下的Batch批处理，能够熟练的使用sh脚本可以极大的提高工作效率。</p>
+					<!-- 目录 -->
+					<h2>文章目录</h2>
+					<ul class="contents">	
+						 <li><a href="#rhel-shell-1">0×1.条件判断式</a></li>
+						 <li><a href="#rhel-shell-2">0×2.shell脚本实例</a></li>
+					 </ul>
+					<!-- /目录 -->
+
+					<!-- 正文 -->
+					<h2 id="rhel-shell-1">0×1.条件判断式</h2>
+
+					<p>在阅读本文前，请大家先参考一下[<a title="[ubuntu入门手册]-16-Shell脚本基础。" href="1330.html" target="_blank">[ubuntu入门手册]-16-Shell脚本基础</a>]这篇文章中的内容，本文不会对shell脚本的基础语法做过多的解释。</p>
+					<p>下面首先来看看Shell脚本中的条件判断式的工作方式：</p>
+					<p class="indent-p">
+						条件判断式被包含在一对中括号中，若条件成立则返回数字0，否则便返回其他数值（条件不成立时，大多数情况下返回1）；
+					</p>
+					<p>条件判断语句可判断文件、逻辑、整数值、字符串等，文件判断有如下常用参数：</p>
+					<p class="indent-p">
+					-d 判断是否为目录；<br>
+					-e 判断文件或目录是否存在；<br>
+					-f 判断是否为文件；<br>
+					-r 判断当前用户对文件是否有读取权限；<br>
+					-w 判断当前用户对文件是否有写入权限；<br>
+					-x 判断当前用户对文件是否有执行权限；
+					</p>
+
+					<p>下面来看几个简单实例：</p>
+					<pre class="brush: bash;">
+					#在终端所在目录有两个文件和一个文件夹，权限如下所示
+					[qing@qingsword.com ~]$ ls -ld file_a file_b dir_a/
+					drwxrwxr-x. 2 qing qing 6 Nov 17 03:58 dir_a/
+					-rw-rw-r--. 1 qing qing 0 Nov 17 03:58 file_a
+					----------. 1 qing qing 0 Nov 17 03:58 file_b
+
+					#判断file_a是否为文件，"$?"可以打印出上一条命令的返回结果，如果条件成立"$?"的值就会是0，如果条件不成立就会是非0的其他值
+					[qing@qingsword.com ~]$ [ -f file_a ]
+					[qing@qingsword.com ~]$ echo $?
+					0
+
+					#判断file_a是否为目录
+					[qing@qingsword.com ~]$ [ -d file_a ]
+					[qing@qingsword.com ~]$ echo $?
+					1
+
+					#判断file_a是否存在（file_a可以是目录或文件）
+					[qing@qingsword.com ~]$ [ -e file_a ]
+					[qing@qingsword.com ~]$ echo $?
+					0
+
+					[qing@qingsword.com ~]$ [ -d dir_a ]
+					[qing@qingsword.com ~]$ echo $?
+					0
+
+					#判断当前用户对file_b是否有可写权限
+					[qing@qingsword.com ~]$ [ -w file_b ]
+					[qing@qingsword.com ~]$ echo $?
+					1
+					</pre>
+
+					<p>条件判断中添加逻辑运算符：</p>
+					<pre class="brush: bash;">
+					#逻辑"或"运算符运用到条件判断中，和如何语言所用的逻辑相同，如果file_a存在，那么将运行&amp;&amp;后面的部分，如果不存在，则不会执行echo
+					[qing@qingsword.com ~]$ [ -e file_a ] &amp;&amp; echo "目标存在" 
+					目标存在
+
+					#逻辑"与"运算符，如果前面的表达式为假，则执行echo
+					[qing@qingsword.com ~]$ [ -e file_c ] || echo "目标不存在" 
+					目标不存在
+
+					#将两者结合使用
+					[qing@qingsword.com ~]$ [ -e file_c ] &amp;&amp; echo "目标存在" || echo "目标不存 在"
+					目标不存在
+
+					#如果用户不为root，打印hello user，否则打印出hello root，$USER变量保存了当前登录终端的用户名（等号和不等号可用于字符串的比对）
+					[qing@qingsword.com ~]$ [ $USER != root ] &amp;&amp; echo "hello user" || echo "hello root"
+					hello user
+					</pre>
+					<p>除了=和!=可用于判断字符串是否相等外，还有一个比较常用的参数-z，可用于判断字符串是否为空，例如：</p>
+					<pre class="brush: bash;">
+					[qing@qingsword.com ~]$ str1=""
+					[qing@qingsword.com ~]$ str2="www.qingsword.com"
+					[qing@qingsword.com ~]$ [ -z $str1 ] &amp;&amp; echo "空字符串" || echo "非空字符串"
+					空字符串
+					[qing@qingsword.com ~]$ [ -z $str2 ] &amp;&amp; echo "空字符串" || echo "非空字符串"
+					非空字符串
+					</pre>
+
+					<p>在进行整数大小比对时，推荐使用参数操作符，下面是一些常用的参数操作符：</p>
+					<p class="indent-p">
+					-eq 判断是否等于；<br>
+					-ne 判断是否不等于；<br>
+					-gt 判断是否大于；<br>
+					-lt 判断是否小于；<br>
+					-le 判断是否等于或小于；<br>
+					-ge 判断是否大于或等于；
+					</p>
+					<p>下面举几个简单实例：</p>
+					<pre class="brush: bash;">
+					#判断1是否等于2
+					[qing@qingsword.com ~]$ [ 1 -eq 2 ] &amp;&amp; echo "True" || echo "False"
+					False
+
+					#判断1是否等于1
+					[qing@qingsword.com ~]$ [ 1 -eq 1 ] &amp;&amp; echo "True" || echo "False"
+					True
+
+					#判断1是否不等于2
+					[qing@qingsword.com ~]$ [ 1 -ne 2 ] &amp;&amp; echo "True" || echo "False"
+					True
+
+					#判断1是否小于等于2
+					[qing@qingsword.com ~]$ [ 1 -le 2 ] &amp;&amp; echo "True" || echo "False"
+					True
+					</pre>
+
+					<p>下面是整数判断式在实际环境中的应用，判断系统可用内存是否低于某个值：</p>
+					<pre class="brush: bash;">
+					#首先将free命令的执行结果保存到FreeMEM变量中（一旦保存，这个值就不会变化了，在实际环境中，可以每间隔多少秒执行一次下面的语句，然后判断内存是否低于一个指定的值），下面这条命令，首先用grep筛选出了free命令中的Mem行，再使用awk命令取出这一行中的第四列
+					[qing@qingsword.com ~]$ FreeMEM=$(free -m | grep Mem: |awk '{print $4}')
+
+					[qing@qingsword.com ~]$ echo $FreeMEM
+					149
+
+					#然后使用我们上面的整数判断式去判断这个值是否低于500
+					[qing@qingsword.com ~]$ [ $FreeMEM -le 500 ] &amp;&amp; echo "可用内存低于500M" || echo "可用内存高于500M"
+					可用内存低于500M
+					</pre>
+					
+					<h2 id="rhel-shell-2">0×2.shell脚本实例</h2>
+					<p>实例一：局域网存活主机探测</p>
+
+					<pre class="brush: bash;">
+					#用vim创建example_1.sh脚本，输入下面的内容
+					[qing@qingsword.com ~]$ vim example_1.sh
+					#!/bin/bash
+					IPADDR_subnet="192.168.1."
+					#从100循环到110
+					for ((i=100;i&lt;=110;i=i+1))
+					do 
+					 #将两个字符串连接起来，得到IP地址
+					 IPADDR=${IPADDR_subnet}${i}
+					 #使用ping命令探测每一个主机，ping2次，数据包发送间隔0.2秒，等待超时时间为1秒（大写W），将输出重定向到null文件
+					 ping -c 2 -i 0.2 -W 1 $IPADDR &amp;&gt; /dev/null
+					 #通过$?判断上一条命令是否成功执行
+					 if [ $? -eq 0 ] ; then
+					  echo "Host $IPADDR is On-line"
+					 else
+					  echo "Host $IPADDR is Off-line"
+					 fi
+					done
+
+					#执行结果如下
+					[qing@qingsword.com ~]$ bash example_1.sh 
+					Host 192.168.1.100 is Off-line
+					Host 192.168.1.101 is On-line
+					Host 192.168.1.102 is Off-line
+					Host 192.168.1.103 is Off-line
+					Host 192.168.1.104 is On-line
+					Host 192.168.1.105 is On-line
+					Host 192.168.1.106 is Off-line
+					Host 192.168.1.107 is Off-line
+					Host 192.168.1.108 is Off-line
+					Host 192.168.1.109 is Off-line
+					Host 192.168.1.110 is Off-line
+					</pre>
+					<p>Ps：能够ping通只能说明对方主机应答ICMP数据包，一些防火墙屏蔽了ICMP的主机，就算主机是开机状态，但也可能ping不通。</p>
+
+					<p>实例二：实现批量创建用户</p>
+
+					<pre class="brush: bash;">
+					#方法一：
+					[qing@qingsword.com ~]$ vim example_2.sh
+					#!/bin/bash
+					u="User_"
+					#提示用户输出一个密码作为这些用户的密码
+					read -p "Enter the users password:" PASSWD
+					#循环创建4个用户
+					for ((i=1;i&lt;=4;i=i+1))
+					do
+					 #用户名为User_1~4
+					 USER=${u}${i}
+
+					 #如果用户存在
+					 id $USER &amp;&gt; /dev/null
+					 if [ $? -eq 0 ] ; then
+					  echo "$USER already exists"
+					 else
+					  #如果用户不存在，创建并设置密码
+					  useradd $USER
+					  echo $PASSWD | passwd --stdin $USER &amp;&gt; /dev/null
+					  if [ $? -eq 0 ] ; then
+					   echo "$USER Create Success."
+					  else
+					   echo "$USER Create Failure."
+					  fi
+					 fi
+					done
+
+					#方法二：
+					#先创建一个user.txt文件保存需要创建的用户的用户名
+					[qing@qingsword.com ~]$ echo "qing_1" &gt;&gt; user.txt
+					[qing@qingsword.com ~]$ echo "qing_2" &gt;&gt; user.txt
+					[qing@qingsword.com ~]$ echo "qing_3" &gt;&gt; user.txt
+
+					#使用脚本文件逐行读取上面这个user.txt文件
+					[qing@qingsword.com ~]$ vim example_3.sh
+					#!/bin/bash
+					read -p "Enter the users password:" PASSWD
+
+					#使用for循环，逐行读取cat user.txt执行结果集中的用户名（`cat user.txt`为$(cat user.txt)）
+					for USER in `cat user.txt`
+					do
+					 id $USER &amp;&gt; /dev/null
+					 if [ $? -eq 0 ] ; then
+					  echo "$USER already exists"
+					 else
+					  useradd $USER &amp;&gt; /dev/null
+					  echo "$PASSWD" | passwd --stdin $USER &amp;&gt; /dev/null
+					  if [ $? -eq 0 ] ; then
+					   echo "$USER Create Success."
+					  else
+					   echo "$USER Create Failure."
+					  fi
+					 fi
+					done
+					</pre>
+					
+					<p>实例三：猜数字</p>
+					<pre class="brush: bash;">
+					[qing@qingsword.com ~]$ vim example_4.sh
+					#!/bin/bash
+					#计数器
+					COUNT=0
+					#初始化一个0~999之间的整数，expr计算命令会计算后面表达式的值，$RANDOM是一个系统随机值变量，范围为0~32767，用这个随机值除以1000取余，就能得到0~999之间的随机整数
+					N=$(expr $RANDOM % 1000)
+					echo "猜数字游戏，请输入一个0~999之间的整数"
+					while true
+					 do
+					  read -p "你猜:" NUM
+					  #计数器加1
+					  let COUNT++ 
+					  if [ $NUM -lt $N ] ; then
+					   echo "小了"
+					  elif [ $NUM -gt $N ] ; then
+					   echo "大了"
+					  elif [ $NUM -eq $N ] ; then
+					   echo "恭喜，猜对了！"
+					   echo "一共猜了$COUNT次"
+					   exit 0
+					  fi
+					 done
+					</pre>
+
+					<p>实例四：判断用户输入是字母、数字还是特殊字符</p>
+
+					<pre class="brush: bash;">
+					[qing@qingsword.com ~]$ vim example_5.sh
+					#!/bin/bash
+					read -p "请输入一个字符:" CHAR
+					case $CHAR in
+					[a-z]|[A-Z])
+					 echo "大小写字母" ;;
+					[0-9])
+					 echo "数字" ;;
+					*)
+					 echo "特殊字符"
+					esac
+
+					#程序输出
+					[qing@qingsword.com ~]$ bash example_5.sh 
+					请输入一个字符:1
+					数字
+					[qing@qingsword.com ~]$ bash example_5.sh 
+					请输入一个字符:a
+					大小写字母
+					[qing@qingsword.com ~]$ bash example_5.sh 
+					请输入一个字符:G
+					大小写字母
+					[qing@qingsword.com ~]$ bash example_5.sh 
+					请输入一个字符:*
+					特殊字符
+					</pre>
+						
+				<!-- /正文 -->
+
+				<footer class="text-footer">
+					<p>
+						*转载请注明来自:<a title="晴刃-自由、互助、分享、专注计算机技术。" href="http://www.qingsword.com" target="_blank">晴刃(QingSword.COM)</a>
+					</p>
+					<p>*原文连接:<a title="[RHEL]-10-shell脚本" href="http://www.qingsword.com/qing/rhel-10.html" target="_blank">http://www.qingsword.com/qing/rhel-10.html</a></p>
+				</footer>
+			</article>
+			<!-- /文章区 -->	
+		</div>
+	</div>
+	<!-- /content -->
+	
+	<!-- footer -->
+	<footer id="footer">
+		<div class="footer-container">
+			QingSword.COM &nbsp;<img src="../logo/by-nc-sa.png" alt="Creative Commons" title="Creative Commons">
+		</div>
+	</footer>
+	<!-- /footer -->
+</body>
+</html>

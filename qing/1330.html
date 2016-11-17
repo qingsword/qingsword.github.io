@@ -93,6 +93,22 @@
 
 					<!-- 正文 -->
 					<h2 id="ubuntu-shell-1">0×1.变量的定义与输出</h2>
+
+					<p>shell脚本实际上就是将我们在终端中的命令集成起来批量的执行，用规定的语法结构来控制脚本的执行流程，系统将我们编写的sh脚本交给"解释器"执行，最常见的解释器就是bash，用下面的命令可以查看系统中所有可用的shell解释器：</p>
+					<pre class="brush: bash;">
+					qing@qingsword.com:~$ cat /etc/shells 
+					# /etc/shells: valid login shells
+					/bin/sh
+					/bin/dash
+					/bin/bash
+					/bin/rbash
+					/usr/bin/tmux
+
+					#显示当前系统默认使用的shell解释器
+					qing@qingsword.com:~$ echo $SHELL
+					/bin/bash
+					</pre>
+
 					<p>按照国际惯例，第一个shell脚本输出"hello world"：</p>
 					<pre class="brush: bash;">
 					#1.创建并编辑一个shell
@@ -107,9 +123,13 @@
 					hw=Hello\!\ world\!  
 					echo $hw       #输出变量值
 
-					#3.执行这个shell
+					#3.执行这个shell（使用bash sh01.sh也可以）
 					qing@qingsword.com:~$ sh sh01.sh 
 					Hello! world!   #输出
+
+					#除了直接使用bash调用脚本外，还可以给脚本添加可执行权限，之后只需要输入脚本命令，系统会使用默认的脚本解释器去执行它，例如
+					qing@qingsword.com:~$ sudo chmod +x sh01.sh
+					qing@qingsword.com:~$ ./sh01.sh
 					</pre>
 					<p>单引号和双引号的区别：</p>
 					<pre class="brush: bash;">
@@ -131,6 +151,17 @@
 					My name is qingsword
 					My name is $name
 					</pre>
+					<p>除了上面两种引号外，还有一种特殊的引号，esc下面，数字键1左边的那个键，能够打出一个`，包含在`中的内容，将被解释器直接执行，例如：</p>
+					<pre class="brush: bash;">
+					#定义一个变量x，这个变量等于一句命令，这句命令被包含在`对中，脚本执行到这里时，将会直接执行语句`tail -n 2 /etc/passwd`并将这条命令执行后的返回结果保存到x变量中，使用echo就能打印出这个变量的值
+					qing@qingsword.com:~$ x=`tail -n 2 /etc/passwd`
+					qing@qingsword.com:~$ echo $x
+
+					#可能在有些脚本中，会看到下面这种语法，实际上执行一下就会发现，输出与上面这种完全相同，所以`tail -n 2 /etc/passwd`就等同于$(tail -n 2 /etc/passwd)，只是写法不相同
+					qing@qingsword.com:~$ x=$(tail -n 2 /etc/passwd)
+					qing@qingsword.com:~$ echo $x
+					</pre>
+
 					<h2 id="ubuntu-shell-2">0×2.键盘输入与参数传递</h2>
 					<p>使用read关键字，可以读取键盘输入，这有点类似C语言的scanf，请看下面的实例：</p>
 					<pre class="brush: bash;">
@@ -140,6 +171,8 @@
 					#by www.qingsword.com
 					echo "Please keyin your name then press Enter:"
 					read name #读取键盘输入保存到name变量中
+					#上面这两句可以用下面这一句代替，效果是相同的，read的-p参数用于打印一段需要显示在屏幕的文字，随后的name变量接收用户从键盘输入的值
+					# read -p "Please keyin your name then press Enter:" name
 					echo "Hello $name\nWelcome!" #输出
 
 					qing@qingsword.com:~$ sh sh03.sh 
