@@ -129,7 +129,7 @@
 					#LVM的创建必须使用root权限，如果没有给硬盘分区，可以直接使用硬盘号将其创建为PV，将sdb和sdc这两块硬盘创建成PV
 					qing@qingsword.com:~$ sudo pvcreate /dev/sd[b-c] 
 
-					#如果硬盘已经被分区，请携带分区号，例如，sdb和sdc都划分了一个分区
+					#如果硬盘已经被分区，请携带分区号，例如，sdb和sdc都划分了一个分区，如果使用分区的形式添加，最好在fdisk创建分区时，使用t将分区类型改成8e（LVM）
 					qing@qingsword.com:~$ sudo pvcreate /dev/sdb1 /dev/sdc1 
 
 					#查看刚创建好的PV
@@ -139,6 +139,7 @@
 					/dev/sdc lvm2 ---  20.00g 20.00g
 					</pre>
 					<p>PV创建好了就可以创建VG了。</p>
+					<P>Ps：若使用fdisk分区后提示找不到分区，可以执行partprobe命令刷新分区表。</P>
 
 					<h3 id="Linux-LVM-4">b.如何创建VG</h3>
 
@@ -205,6 +206,9 @@
 					#更新lv0大小（必须）
 					qing@qingsword.com:~$ sudo resize2fs /dev/vg0/lv0
 
+					#如果是xfs文件系统，上一条命令会报错，必须使用xfs_growfs来刷新磁盘大小，如下
+					qing@qingsword.com:~$ sudo xfs_growfs /dev/vg0/lv0
+
 					#查看，lv0被扩充到了15G
 					qing@qingsword.com:~$ df -h
 					文件系统             容量  已用  可用 已用% 挂载点
@@ -238,8 +242,8 @@
 					#然后缩小文件系统，本例将lv0从15G缩小到10G大小
 					qing@qingsword.com:~$ sudo resize2fs /dev/vg0/lv0 10G
 
-					#最后将lv0缩小5G，缩小有风险，请慎用
-					qing@qingsword.com:~$ sudo lvreduce -L -5G /dev/vg0/lv0 
+					#最后将lv0缩小到10G（一定要和上面resize2fs命令中的大小相同），缩小有风险，请慎用
+					qing@qingsword.com:~$ sudo lvreduce -L 10G /dev/vg0/lv0 
 					  WARNING: Reducing active logical volume to 10.00 GiB
 					  THIS MAY DESTROY YOUR DATA (filesystem etc.)
 					Do you really want to reduce lv0? [y/n]: y
@@ -268,11 +272,17 @@
 					#-L后面填写的大小和lv0大小一致，-s -n后面跟自定义的备份名称，再跟需要备份的逻辑卷完整路径
 					qing@qingsword.com:~$ sudo lvcreate -L 10G -s -n lv0bk /dev/vg0/lv0
 
-					#快照保存了创建时，对应逻辑卷所有数据，路径"/dev/vg0/lv0back"，如果lv0的数据被破坏，只需要将快照文件挂载到某个目录，然后将其中的数据完整拷贝到lv0即可将lv0恢复到快照创建时的状态
+					#快照保存了创建时，对应逻辑卷所有数据，路径"/dev/vg0/lv0back"
 					qing@qingsword.com:~$ sudo lvs
 					LV    VG   Attr       LSize  Pool Origin
 					lv0   vg0  owi-a-s--- 10.00g                                                    
 					lv0bk vg0  swi-a-s--- 10.00g   lv0
+
+					#如果逻辑卷出了问题，可以用快照恢复，快照恢复一次后，会自删除
+					qing@qingsword.com:~$ sudo lvconvert --merge /dev/vg0/lv0bk
+					qing@qingsword.com:~$ sudo lvs
+					LV    VG   Attr       LSize  Pool Origin
+					lv0   vg0  owi-a-s--- 10.00g 
 					</pre>
 
 					<h2 id="Linux-LVM-14">0×5.如何删除LVM</h2>
@@ -298,7 +308,7 @@
 
 					<h3 id="Linux-LVM-17">c.如何删除PV</h3>
 					<pre class="brush: bash;">
-					#删除两块pv硬盘*/
+					#删除两块pv硬盘，删除前请确保这个pv没有被添加到vg中，否则应该先使用vgreduce移除vg中的pv
 					qing@qingsword.com:~$ sudo pvremove /dev/sd[b-c]
 					</pre>
 
