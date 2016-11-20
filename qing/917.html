@@ -89,6 +89,7 @@
 						 <li><a href="#Linux-mkfs-8">0×3.使用mkfs格式化分区</a></li>
 						 <li><a href="#Linux-mount-9">0×4.使用mount挂载分区</a></li>
 						 <li class="subli"><a href="#Linux-fstab-10">a.编辑/etc/fstab文件实现自动挂载</a></li>
+						 <li><a href="#Linux-mkswap-11">0×5.创建SWAP分区</a></li>
 					 </ul>
 					<!-- /目录 -->
 
@@ -360,7 +361,45 @@
 					/dev/sdb5   /home/qing/sdb5  ext4   defaults    0  0
 
 					#保存退出，这样每次系统重启都会自动将/dev/sdb5分区挂载到/home/qing/sdb5目录中了
-					</pre>		
+					</pre>
+
+					<h2 id="Linux-mkswap-11">0×5.创建SWAP分区</h2>
+
+					<p>现在假设我们系统没有分配SWAP交换分区，而后我们想添加一个SWAP分区（或者扩充现有的SWAP分区大小），可以先使用fdisk从空余磁盘中取出一部分空间，然后激活成SWAP分区，请看下面的实例：</p>
+					<pre class="brush: bash;">
+					#分区的步骤这里就不给出了，只是要注意在分区时使用
+					t参数将分区类型替换成82交换分区，假设我分了一个/dev/sdb1分区大小是5G，下面将这个分区的类型改成Linux swap
+					....省略分区步骤....
+					Command (m for help): t
+					Selected partition 1
+					Hex code (type L to list all codes): 82
+					Changed type of partition 'Linux' to 'Linux swap / Solaris'
+					Command (m for help): w
+					The partition table has been altered!
+
+					#使用mkswap将分区格式化成SWAP分区
+					[root@qingsword.com:~]# mkswap /dev/sdb1
+
+					#现在系统中的swap分区大小是0
+					[root@qingsword.com:~]# free -h
+					             total       used       free     shared    buffers     cached
+					Mem:          1.8G       1.0G       770M       9.7M       1.2M       360M
+					-/+ buffers/cache:       695M       1.1G
+					Swap:           0B         0B         0B
+
+					#使用swapon让上面格式化后的swap分区起作用
+					[root@qingsword.com:~]# swapon /dev/sdb1
+
+					#再次查看，swap分区的大小变成了5G
+					[root@qingsword.com:~]# free -h
+					             total       used       free     shared    buffers     cached
+					Mem:          1.8G       1.0G       765M       9.7M       1.2M       360M
+					-/+ buffers/cache:       699M       1.1G
+					Swap:         5.0G         0B       5.0G
+
+					#最后，如果想要让swap分区开机挂载使用，需要将下面这一句信息写入/etc/fstab文件中
+					/dev/sdb1 swap swap defaults 0 0
+					</pre>
 						
 				<!-- /正文 -->
 
