@@ -278,7 +278,7 @@
 					lv0   vg0  owi-a-s--- 10.00g                                                    
 					lv0bk vg0  swi-a-s--- 10.00g   lv0
 
-					#如果逻辑卷出了问题，可以用快照恢复，快照恢复一次后，会自删除
+					#如果逻辑卷出了问题，可以用快照恢复，快照恢复一次后，会自删除（注意：恢复前一定要将被恢复的分区先umount卸载，否则可能出现无法恢复的错误）
 					qing@qingsword.com:~$ sudo lvconvert --merge /dev/vg0/lv0bk
 					qing@qingsword.com:~$ sudo lvs
 					LV    VG   Attr       LSize  Pool Origin
