@@ -103,12 +103,14 @@
 					# ONBOOT=yes 网络服务启时自动启动
 					# BOOTPROTO=dhcp 使用动态IP分配
 					# USERCTL=no 不允许其他用户使用命令行修改配置
+					# NM_CONTROLLED=no 禁用NetworkManager服务，否则绑定会失效
 
 					TYPE=Ethernet
 					DEVICE=bond0
 					ONBOOT=yes
 					BOOTPROTO=dhcp   
 					USERCTL=no
+					NM_CONTROLLED=no
 
 					#如果想使用静态IP配置，可以使用下面的内容，IP地址和网关请根据自己的网络情况更改
 					TYPE=Ethernet
@@ -119,6 +121,7 @@
 					NETMASK=255.255.255.0
 					GATEWAY=192.168.1.1 
 					USERCTL=no
+					NM_CONTROLLED=no
 					</pre>
 
 					<h2 id="Linux-nic-bond-2">0×2.修改被绑定网卡的配置文件</h2>
