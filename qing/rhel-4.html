@@ -83,6 +83,7 @@
 						 <li><a href="#rhel-ps-1">0×1.使用ps查看用户进程</a></li>
 						 <li><a href="#rhel-top-2">0×2.使用top查看用户进程</a></li>
 						 <li><a href="#rhel-pidof-3">0×3.使用pidof查询进程PID</a></li>
+						 <li><a href="#rhel-ss-4">0×4.使用ss查看网络进程PID</a></li>
 					 </ul>
 					<!-- /目录 -->
 
@@ -209,6 +210,30 @@
 					[root@qingsword.com ~]# killall httpd
 					</pre>
 					<p>Ps：kill接收一个pid号用于结束单个进程，pkill接收一个进程名称用于结束单个进程，killall接收一个进程名称用于结束单个或多个进程与其子进程。</p>
+
+					<h2 id="rhel-ss-4">0×4.使用ss查看网络进程PID</h2>
+
+					<p>ss同netstat一样，能够查询网络连接状态，并且ss相比netstat更加的高效，请看下面的实例：</p>
+					<pre class="brush: bash;">
+					#显示所有网络套接字信息（包括已经断开连接的）
+					# -n 不解析主机名
+					# -a 显示所有的套接字
+					# -t 显示tcp套接字
+					# -u 显示utp套接字
+					[qing@qingsword.com ~]# ss -natu
+
+					#如果想要查看还处于连接状态的套接字，可以使用参数-l
+					[qing@qingsword.com ~]# ss -natul
+
+					#如果想要查看某个套接字是被哪个进程启用的，可以使用参数-p，这个参数会在套接字信息下显示出创建这个连接的用户名以及进程PID号，查到PID号后，就能够使用kill来结束它
+					[qing@qingsword.com ~]# ss -natup
+
+					#查看网络数据包统计信息
+					[qing@qingsword.com ~]# ss -s
+
+					#添加一个-m参数能够查看套接字的内存使用情况，用于判断哪个进程占用了系统资源十分有用
+					qing@qingsword:~$ ss -antump
+					</pre>
 	
 				<!-- /正文 -->
 

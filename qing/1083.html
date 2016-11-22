@@ -90,29 +90,28 @@
 					<!-- 正文 -->
 					<h2 id="Linux-nic-bond-1">0×1.创建绑定网卡的配置文件</h2>
 					
-					<p>在绑定物理网卡前，如果是在桌面环境下配置需要先禁用NetworkManager服务，然后再创建逻辑网卡的配置文件：</p>
+					<p>首先创建逻辑网卡的配置文件：</p>
 					<pre class="brush: bash;">
 					#以下所有操作如果添加sudo前缀，代表使用root权限执行
 
-					#1.禁用NetworkManager服务
-					qing@qingsword.com:~$ sudo service NetworkManager stop
-
-					#2.使用vim创建配置件ifcfg-bond0，其中bond0为这块逻辑网卡的自定义名称
+					#使用vim创建配置件ifcfg-bond0，其中bond0为这块逻辑网卡的自定义名称
 					qing@qingsword.com:~$ sudo vim /etc/sysconfig/network-scripts/ifcfg-bond0
 
 					#根据实际环境，输入配置信息:
+					# TYPE=Ethernet 连接类型
 					# DEVICE=bond0 逻辑网卡的设备名称为bond0
 					# ONBOOT=yes 网络服务启时自动启动
 					# BOOTPROTO=dhcp 使用动态IP分配
-					# mode=后面的参数控制了网卡绑定模式，0为负载均衡模式，1为主动备份模式，负载均衡模式将网络流量平均分配给多块网卡，提高吞吐量，主动备份模式只使用一块网卡，其他网卡用作备份，当使用中的网卡出现故障时自动顶替
+					# USERCTL=no 不允许其他用户使用命令行修改配置
 
+					TYPE=Ethernet
 					DEVICE=bond0
 					ONBOOT=yes
 					BOOTPROTO=dhcp   
 					USERCTL=no
-					BONDING_OPTS="mode=0 miimon=50" 
 
 					#如果想使用静态IP配置，可以使用下面的内容，IP地址和网关请根据自己的网络情况更改
+					TYPE=Ethernet
 					DEVICE=bond0
 					ONBOOT=yes
 					BOOTPROTO=static
@@ -120,21 +119,26 @@
 					NETMASK=255.255.255.0
 					GATEWAY=192.168.1.1 
 					USERCTL=no
-					BONDING_OPTS="mode=0 miimon=50"
 					</pre>
 
 					<h2 id="Linux-nic-bond-2">0×2.修改被绑定网卡的配置文件</h2>
 
-					<p>修改配置之前，需要先关闭正在使用中的网卡，本例使用的服务器安装了两块网卡，使用"ifconfig -a"查询到的网卡编号为eno16777736、eno33554984 ，先关闭它们，然后修改它们的配置文件（在实际环境中，可以将多块网卡绑定成一块逻辑网卡，配置方法相同，本例仅使用了两块网卡）：</p>
+					<p>使用"ifconfig"或"nmcli device status"查询需要绑定的网卡编号（在实际环境中，可以将多块网卡绑定成一块逻辑网卡，配置方法相同，本例仅使用了两块网卡）：</p>
 					<pre class="brush: bash;">
-					#1.注意，不同环境下物理网卡名称和这里的不同，请先使用"ifconfig -a"命令查看并替换下面的eno33554984、eno16777736
-					qing@qingsword.com:~$ sudo ifconfig eno33554984 down
-					qing@qingsword.com:~$ sudo ifconfig eno16777736 down
+					qing@qingsword.com:~$ nmcli device status
+					DEVICE       TYPE      STATE         CONNECTION 
+					eno16777736  ethernet  disconnected  --         
+					eno33554984  ethernet  disconnected  --         
+					lo           loopback  unmanaged     --
+					</pre>
 
-					#2.修改配置文件，删除替换其中的全部信息
+					<p>查询到的设备编号为eno16777736、eno33554984然后使用vim修改它们的配置文件：</p>
+					<pre class="brush: bash;">
+					#删除替换其中的全部信息
 					qing@qingsword.com:~$ sudo vim /etc/sysconfig/network-scripts/ifcfg-eno33554984
 
 					#添加如下信息
+					TYPE=Ethernet
 					DEVICE=eno33554984   #网卡设备名称
 					BOOTPROTO=none
 					ONBOOT=yes
@@ -145,7 +149,8 @@
 
 					#第二块网卡的配置文件
 					qing@qingsword.com:~$ sudo vim /etc/sysconfig/network-scripts/ifcfg-eno16777736
-
+					
+					TYPE=Ethernet
 					DEVICE=eno16777736  
 					BOOTPROTO=none
 					ONBOOT=yes
@@ -157,18 +162,27 @@
 					<h2 id="Linux-nic-bond-3">0×3.创建网卡绑定配置文件</h2>
 
 					<pre class="brush: bash;">
-					#创建启动支持配置文件
-					qing@qingsword.com:~$ sudo vim /etc/modprobe.d/bonding.conf
+					#创建启动支持配置文件bond.conf
+					qing@qingsword.com:~$ sudo vim /etc/modprobe.d/bond.conf
 
-					#输入下面的内容，其中bond0为第一节中创建的逻辑网卡设备号
+					#输入下面的内容，其中bond0为第一节中创建的逻辑网卡设备号，并使用bonding技术
+					#miimon为网卡刷新时间50毫秒，当某块网卡出现故障时，最多50毫秒就能被发现
+					# mode=后面的参数控制了网卡绑定模式
+					# 0为负载均衡模式须设置Switch支援
+					# 1为主动备份模式
+					# 6也为负载均衡模式无须设置Switch支援
+					#负载均衡模式将网络流量平均分配给多块网卡，提高吞吐量，在一块网卡坏掉时另一块接管所有工作
+					#主动备份模式只使用一块网卡，其他网卡用作备份，当使用中的网卡出现故障时自动顶替
+
 					alias bond0 bonding
+					options bond0 miimon=50 mode=6
 					</pre>
 
 					<h2 id="Linux-nic-bond-4">0×4.启动逻辑网卡并测试</h2>
-					<p>因为本例使用的绑定模式为"负载均衡"，启动逻辑网卡bond0后，去尝试下载一个软件，使用ifconfig可以监控到流量被平均分配给了多块网卡：</p>
+					<p>因为本例使用的绑定模式为"6负载均衡"，启动逻辑网卡bond0后，去尝试下载一个软件，使用ifconfig可以监控到流量被平均分配给了多块网卡：</p>
 					<pre class="brush: bash;">
-					#启动逻辑网卡，如果启动的时候提示MAC冲突，请查看被绑定的物理网卡是否处于关闭状态
-					qing@qingsword.com:~$ sudo ifconfig bond0 up
+					#重新启动网络服务，让配置生效
+					qing@qingsword.com:~$ sudo systemctl restart network
 
 					#监控网卡的流量，此时打开一个网页，或者下载一个文件，就可以看到流量被负载均衡了
 					qing@qingsword.com:~$ watch -n 1 ifconfig
