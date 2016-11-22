@@ -76,31 +76,135 @@
 				</header><!-- /header -->
 				<section class="text-body">
 					<h2>引言</h2>
-					<p></p>
+					<p>这篇文章主要介绍ssh常用的配置，ssh登录时的两种密码认证方式，并且介绍如何使用scp通过ssh传输文件。</p>
 					<!-- 目录 -->
 					<h2>文章目录</h2>
 					<ul class="contents">	
-						 <li><a href="#xxx1">0×1.</a></li>
-						 <li><a href="#xxx2">0×2.</a></li>
-						 <li class="subli"><a href="#xxx3">a.</a></li>
-						 <li class="subli"><a href="#xxx4">b.</a></li>
+						 <li><a href="#rhel-ssh-1">0×1.ssh配置文件常用参数</a></li>
+						 <li><a href="#rhel-ssh-2">0×2.ssh登录验证方式</a></li>
+						<li><a href="#rhel-scp-3">0×3.如何scp传输文件</a></li>
+						<li><a href="#rhel-ssh-4">0×4.如何使用ssh端口转发</a></li>
 					 </ul>
 					<!-- /目录 -->
 
 					<!-- 正文 -->
-					<h2 id="xxx1">0×1.</h2>
-					<h2 id="xxx2">0×2.</h2>
-					<h3 id="xxx3">a.</h3>
-					<h3 id="xxx4">b.</h3>
-					<p></p>
+					<h2 id="rhel-ssh-1">0×1.ssh配置文件常用参数</h2>
+
+					<p>RHEL系统中默认安装了openssh-server软件包，其中就包含了ssh远程登录服务，可以使用下面的命令来查看系统中安装的openssh版本：</p>
 					<pre class="brush: bash;">
+					[root@qingsword.com ~]# rpm -aq openssh*
+					openssh-6.4p1-8.el7.x86_64
+					openssh-server-6.4p1-8.el7.x86_64
+					openssh-clients-6.4p1-8.el7.x86_64
+
+					#如果上面的命令没有返回openssh-server，可以使用yum安装
+					[root@qingsword.com ~]# yum install -y openssh-server
+					</pre>
+					<p>服务安装好后默认的配置文件位置在"/etc/ssh/sshd_config"，这个配置文件中的内容非常多，大部分都不需要去配置，有几个比较常用的配置参数，解释如下：</p>
+					<p class="indent-p">
+					#Port 22 默认的sshd服务端口；<br>
+					#ListenAddress 0.0.0.0 设定sshd服务端监听的IP地址（服务器上有多块网卡时，指定在哪块网卡上监听ssh传入连接）；<br>
+					#Protocol 2 SSH协议的版本号（默认为2，无需设置）；<br>
+					#HostKey /etc/ssh/ssh_host_key SSH协议版本为1时，私钥存放的位置；<br>
+					HostKey /etc/ssh/ssh_host_rsa_key SSH协议版本为2时，RSA私钥存放的位置；<br>
+					#HostKey /etc/ssh/ssh_host_dsa_key SSH协议版本为2时，DSA私钥存放的位置；<br>
+					#PermitRootLogin yes 设定是否允许root用户直接登录（在RHEL系统中默认为yes，在Ubuntu等系统中默认为no）；<br>
+					#StrictModes yes 当远程用户私钥改变时则直接拒绝连接；<br>
+					#MaxAuthTries 6 最大密码尝试次数；<br>
+					#MaxSessions 10 最大终端数（默认最大为10，可以修改这个配置允许更多终端连接）；<br>
+					#PasswordAuthentication yes 是否允许密码验证；<br>
+					#PermitEmptyPasswords no 是否允许空密码登陆（不安全，建议关闭）；
+					</p>
+					<p>如果需要修改上面的任意配置，只需要将配置前的#去除，然后修改对应参数即可。</p>
+					<p>如果修改了ssh默认的端口号，请将新的端口号添加到系统防火墙iptables中，再添加到selinux配置中，否则其他主机会连接失败，如果仅为了做实验，可以清空iptables然后关闭selinux子系统，如下：</p>
+					<pre class="brush: bash;">
+					#关闭selinux子系统，清空iptables防火墙配置
+					[root@qingsword.com ~]# setenforce 0
+					[root@qingsword.com ~]# iptables -F
+
+					#修改ssh默认端口为23333
+					[root@qingsword.com ~]# vim /etc/ssh/sshd_config 
+					将
+					#Port 22
+					修改成
+					Port 23333
+
+					#每次对配置文件做出修改，都需要重启sshd服务使其生效
+					[root@qingsword.com ~]# systemctl restart sshd.service 
 					
+					#如果ssh服务端修改了登录端口，就需要在客户端使用参数-p指定端口号，如下
+					[root@qingsword.com ~]# ssh -p 23333 登录用户名@服务器ip地址
 					</pre>
 
-					<p class="indent-p">
-						
-					</p>
-					<img src="images/" alt="" title="">
+					<h2 id="rhel-ssh-2">0×2.ssh登录验证方式</h2>
+
+					<p>ssh登录方式分为两种，一种使用账户密码验证，另一种使用密钥对的方式，下面分别演示这两种登录方式，在局域网中，ssh服务器地址为192.168.1.100，客户机为192.168.1.105；</p>
+
+					<p>密码验证方式登录ssh：</p>
+					<pre class="brush: bash;">
+					#使用客户机105登录100，使用的登录用户为qing（这个用户是ssh服务器上创建的普通用户，而非本地105机器上的用户，如果想使用ssh服务器的root用户登录，可以将qing替换成root，前提是你需要知道账户对应的登录密码）
+					qing@qingsword.com:~$ ssh qing@192.168.1.100
+					The authenticity of host '192.168.1.100 (192.168.1.100)' can't be established.
+					ECDSA key fingerprint is SHA256:
+					#需要接受一个公钥，输入yes回车
+					Are you sure you want to continue connecting (yes/no)? yes
+					qing@192.168.1.100's password: #输入用户qing对应密码
+					Last login: Mon Nov 21 22:02:41 2016 from 192.168.1.105
+
+					#这就以qing的身份远程登录上了ssh服务器，从who的输出中可以看到是从105机器上登录的
+					[qing@qingsword.com ~]$ who
+					root     :0           2016-11-22 00:08 (:0)
+					root     pts/0        2016-11-22 00:08 (:0)
+					root     pts/1        2016-11-22 00:12 (:0)
+					qing     pts/2        2016-11-22 00:14 (192.168.1.105)
+
+					[qing@qingsword.com ~]$ exit
+					登出
+					</pre>
+
+					<p>第二中登录方式是使用密钥对，首先需要使用ssh-keygen命令在本地生成一个密钥对：</p>
+					<pre class="brush: bash;">
+					#在客户端创建密钥对，直接输入ssh-keygen，默认会以rsa 2048位创建密钥
+					qing@qingsword.com:~$ ssh-keygen
+					Generating public/private rsa key pair.
+					Enter file in which to save the key (/home/qing/.ssh/id_rsa):#设置密钥的存储路径，使用默认回车即可       
+					Created directory '/home/qing/.ssh'.
+					Enter passphrase (empty for no passphrase): #回车就是不给密钥加密(建议给密钥加一个密码，但一定不要忘记了这个密码，否则就不能解密密钥了)
+					Enter same passphrase again: #再次输入密码
+					</pre>
+					<p>创建完成后，查看对应的目录（请用自己的用户名替换下面路径中的qing）</p>
+					<pre class="brush: bash;">
+					#在路径中会看到两个文件，其中id_rsa.pub中保存的就是当前用户的公钥，id_rsa中保存的就是当前用户的私钥（如果你要用这种方式验证，一定要保存好这两个文件）
+
+					qing@qingsword.com:~$ ls /home/qing/.ssh/
+					id_rsa  id_rsa.pub
+					</pre>
+					<p>之后将公钥传递给ssh服务端：</p>
+					<pre class="brush: bash;">
+					#使用下面的命令会将本地的id_rsa.pub公钥中的内容传递给服务器中qing用户，保存在ssh服务器的"/home/qing/.ssh/authorized_keys"文件中（使用的是服务器哪个用户传递的本地公钥，公钥就保存在对应用户的家目录中的.ssh目录下的一个叫做authorized_keys的文件中，这个文件中会保存很多远程用户传递过来的公钥信息）
+					
+					#如果本地有多个公钥文件，可以添加参数 -i 然后在后面指定本地的公钥路径，将指定的公钥传递给服务器，本例仅有一个公钥，所以不需要指定
+					qing@qingsword.com:~$ ssh-copy-id qing@192.168.1.100
+					</pre>
+					<p>再次使用qing用户登录就不需要输入密码了：</p>
+					<pre class="brush: bash;">
+					qing@qingsword.com:~$ ssh qing@192.168.1.100
+
+					[qing@qingsword.com ~]$ exit
+					登出
+					Connection to 192.168.1.100 closed.
+					</pre>
+					<p>Ps：如果没有ssh-copy-id命令，可能是没有安装openssh-client。</p>
+					<p>如果想让服务器仅允许这种密钥登录方式，可以修改sshd_config配置文件中的PasswordAuthentication参数，将yes改为no，并去掉前面的#，重启sshd服务后，就只能使用密钥登录方式了。</p>
+
+					<h2 id="rhel-scp-3">0×3.如何scp传输文件</h2>
+					<p>请参考下面这篇文章：<br>
+					<a title="[ubuntu入门手册]-13-使用ssh实现文件安全互传" href="1126.html" target="_blank">[ubuntu入门手册]-13-使用ssh实现文件安全互传</a></p>
+					
+					<h2 id="rhel-ssh-4">0×4.如何使用ssh端口转发</h2>
+
+					<p>请参考下面这篇文章：<br>
+					<a title="[ubuntu入门手册]-18-SSH端口转发" href="1339.html" target="_blank">[ubuntu入门手册]-18-SSH端口转发</a></p>
 						
 				<!-- /正文 -->
 
