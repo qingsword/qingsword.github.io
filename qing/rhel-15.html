@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<!--Copyright©QingSword.COM︻☼1010D>-->
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
+	<meta name="description" content="晴刃,是一个致力推广实用计算机技术的个人博客;我们分享计算机知识;为计算机系统以及网络安全防范做出一份贡献。【专注技术 创造价值 共同进步】">
+	<meta name="keywords" content="晴刃,晴,qing,qingsword,ccna图文笔记,ubuntu,linux,ubuntu server,mysql,node.js,javascript,python,计算机技术博客">
+	<meta name="author" content="www.qingsword.com">
+	<title>[RHEL]-15-使用不间断会话Screen - QingSword.COM</title>
+	<link rel="shortcut icon" type="image/x-icon" href="../logo/favicon.ico">
+	<link rel="stylesheet" type="text/css" href="../css/basic.css">
+	<link rel="stylesheet" type="text/css" href="../css/text.css">
+	<!-- 代码块高亮js -->
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shCore.css"/>
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shThemeRDark.css"/>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shCore.js"></script>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shBrushBash.js"></script>
+	<script type="text/javascript">
+	SyntaxHighlighter.all();
+	</script>
+</head>
+<body>
+	<!--header -->
+	<header id="nav">
+			<div class="nav-container"> 
+				<!-- 根大纲-->
+				<a href="http://www.qingsword.com" title="晴刃">
+					<h1 class="nav-logo">晴刃</h1>
+				</a>
+				<h2 class="nav-site-description desc-hidden">
+					自由、互助、分享、专注计算机技术
+				</h2>
+				<nav class="nav-links"> 
+					<!-- nav连接大纲-->
+					<h1 style="display:none;">网站导航</h1> 
+					<ul>
+						<li  class="li-hidden">
+							<a href="../index.html" title="home">
+								<span class="link-word"><img src="../logo/home.png" alt="home" class="link-img">首页</span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../web.html" title="web">
+								<span class="link-word"><img src="../logo/web.png" alt="web" class="link-img">前端<span class="word-hidden">设计</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../system.html" title="system">
+								<span class="link-word"><img src="../logo/linux.png" alt="linux" class="link-img">系统<span class="word-hidden">应用</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../net.html" title="net">
+								<span class="link-word"><img src="../logo/net.png" alt="net" class="link-img">网络<span class="word-hidden">技术</span></span>
+							</a>
+						</li>
+						<li>
+							<a href="../sitemap.html" title="sitemap">
+								<span class="link-word"><img src="../logo/archives.png" alt="archives" class="link-img"><span class="word-hidden">文章</span>归档</span>
+							</a>
+						</li>
+					</ul>
+				</nav>
+			</div>		
+	</header>
+	<!-- /header -->
+
+	<!-- content-->
+	<div id="content">
+		<div class="content-container">
+			<!-- 文章区 -->
+			<article class="text-container">
+				<header class="text-header">
+					<h1>[RHEL]-15-使用不间断会话Screen</h1>	
+				</header><!-- /header -->
+				<section class="text-body">
+					<h2>引言</h2>
+					<p>Screen会话一般用在不稳定的网络环境，用户远程登录了某台服务器后，创建一个Screen会话开始工作，当网络不小心断开时，会话中的内容不会丢失。</p>
+					<!-- 目录 -->
+					<h2>文章目录</h2>
+					<ul class="contents">	
+						 <li><a href="#rhel-screen-1">0×1.安装Screen</a></li>
+						 <li><a href="#rhel-screen-2">0×2.Screen会话实例</a></li>
+						 <li class="subli"><a href="#rhel-screen-3">a.如何创建Screen会话</a></li>
+						 <li class="subli"><a href="#rhel-screen-4">b.如何挂起Screen会话</a></li>
+						 <li class="subli"><a href="#rhel-screen-5">c.如何在Screen会话中新建会话窗口</a></li>
+						 <li class="subli"><a href="#rhel-screen-6">d.如何在Screen会话窗口间切换</a></li>
+						 <li class="subli"><a href="#rhel-screen-7">e.如何锁定Screen会话</a></li>
+						 <li class="subli"><a href="#rhel-screen-8">f.如何彻底关闭Screen会话</a></li>
+						  <li><a href="#rhel-screen-9">0×3.Screen会话共享</a>
+					 </ul>
+					<!-- /目录 -->
+
+					<!-- 正文 -->
+					<h2 id="rhel-screen-1">0×1.安装Screen</h2>
+
+					<p>默认情况下RHEL系统并没有安装Screen，需要使用yum进行安装，确保yum仓库配置正确，使用下面的命令：</p>
+					<pre class="brush: bash;">
+					[root@qingsword.com ~]# yum install -y screen
+					</pre>
+
+					<h2 id="rhel-screen-2">0×2.Screen会话实例</h2>
+					<h3 id="rhel-screen-3">a.如何创建Screen会话</h3>
+
+					<p>使用大写-S来创建新的会话，例如：</p>
+					<pre class="brush: bash;">
+					#-S参数后面是这个新会话的名称，可以自定义，输入下面这条命令后，会发现终端进入了会话模式，在图形界面中，终端窗口上面会显示[Screen 0:]等字样，代表当前进入的是第0个会话，在字符界面下会清屏，就像进入了另外一个终端一样
+					[root@qingsword.com ~]# screen -S www.qingsword.com
+					</pre>
+					<p>此时，在这个会话下所做的所有操作都会被保存在会话进程中，网络出现故障断线任务也不会终止，再次连接上后又能恢复当前的工作进程。</p>
+
+					<h3 id="rhel-screen-4">b.如何挂起Screen会话</h3>
+
+					<p>如果此时我们想将刚才创建的会话进程暂时的挂起（也叫分离），放入后台，等需要的时候再唤醒，可以按键盘的[ctrl]+[a]组合键，然后单独按一下[d]，屏幕上就会出现一行提示，分离了刚才的会话：</p>
+					<pre class="brush: bash;">
+					#4387是这个会话的后台进程ID，可用这个ID来恢复会话
+					[detached from 4387.www.qingsword.com]
+
+					#可以使用-ls参数来查看系统上都运行了哪些会话，其中就能看到我们刚才分离的会话，会话名称后面的括号中：
+					# (Attached)表示这个会话当前已经有人连接上在操作，是一个活动会话；
+					# (Detached)表示这个会话已经被分离（挂起），可以再次连接；
+					# (Dead)表示已经被结束的会话，无法连接；
+					[root@qingsword.com ~]# screen -ls
+					There are screens on:
+					  4387.www.qingsword.com (Detached)
+
+					#如果我们想继续4387会话的工作，可以使用-r参数，再次连接到会话中
+					[root@qingsword.com ~]# screen -r 4387
+					</pre>
+					<p>如果新建了多个会话，就可以使用上面这种方法在会话之间切换来完成不同的工作任务。</p>
+
+					<h3 id="rhel-screen-5">c.如何在Screen会话中新建会话窗口</h3>
+					<p>使用"screen -S"创建的会话任务就像是一个大的容器，在这个会话容器下，还能创建不同的"子会话"，这些子会话就叫"会话窗口"，它们不会出现在"screen -ls"列表中，但可以在会话容器中查看到，并且能够在不同会话窗口间切换，这样我们就能够将某一类工作放在一个大的会话容器中，然后创建多个"子会话"来完成不同的工作。</p>
+					<p>接着上面的实验，首先连接到4387会话，然后使用组合件[ctrl]+[a]，再按一下[c]键，就会新建一个子会话，并且切换到子会话窗口中。</p>
+
+					<p>Ps：在会话中，命令键入总是以组合件[ctrl]+[a]加单独按键的形式。</p>
+
+					<h3 id="rhel-screen-6">d.如何在Screen会话窗口间切换</h3>
+
+					<p>有多种方式可以在会话的子窗口间切换：</p>
+					<p class="indent-p">
+					组合件[ctrl]+[a]，再按一下[w]键，可以查看当前会话有多少个子会话，图形界面会显示在终端的标题栏中，字符界面会显示在屏幕左下角，例如[6*$ root@qingsword.com~/Lb]，表示当前处在会话的第6个子会话下（不是当前会话开头会显示6-$或6$，带星号的为当前处于的窗口）；
+					</p>
+					<p class="indent-p">
+					组合件[ctrl]+[a]，再按数字键[0-9]可以在0~9的子会话间切换（必须先使用[c]创建出这些会话）；
+					</p>
+					<p class="indent-p">
+					组合件[ctrl]+[a]，再按[n]，切换到下一个会话窗口；
+					</p>
+					<p class="indent-p">
+					组合件[ctrl]+[a]，再按[p]，切换到上一个会话窗口；
+					</p>
+					<p class="indent-p">
+					在子窗口中输入exit回车后，就关闭了这个子会话，自动跳转到前一个子窗口中；<br>
+					用组合件[ctrl]+[a]，再按[k]也能关闭当前子会话，系统会提示你是否确定，输入y回车后就能结束子会话，如果会话中只有一个子会话存在，这个操作（exit或[k]）会直接关闭总会话，且无法再连接；
+					</p>
+					<h3 id="rhel-screen-6">e.如何锁定Screen会话</h3>
+					
+					<p>用当前登录用户的密码锁定（必须输出密码才能解锁），组合件[ctrl]+[a]，再按[x]。</p>
+
+					<h3 id="rhel-screen-8">f.如何彻底关闭Screen会话</h3>
+
+					<p>彻底关闭会话，可以使用exit将会话中的子会话逐个退出，也可以使用kill命令直接杀死会话进程，例如：</p>
+					<pre class="brush: bash;">
+					[root@qingsword.com ~]# kill 4387
+					</pre>
+					
+					<h2 id="rhel-screen-9">0×3.Screen会话共享</h2>
+					
+					<p>这是一个比较好玩的功能，让多个人共享同一个会话进程，请看下面的实例：</p>
+					
+					<pre class="brush: bash;">
+					#假设服务器的ip为192.168.1.113，这台服务器上面使用root权限运行了一个screen会话，客户机qingA首先ssh到服务器
+					qingA@qingsword.com ~$ ssh root@192.168.1.113
+					root@192.168.1.113's password: 
+					Last login: Wed Nov 23 09:55:53 2016 from 192.168.1.105
+
+					#查看会话列表
+					[root@qingsword.com ~]# screen -ls
+					There are screens on:
+						6354.qing	(Attached)
+					2 Sockets in /var/run/screen/S-root.
+
+					#使用共享方式加入会话6354
+					[root@qingsword.com ~]# screen -x 6354
+					
+					#加入后，服务器和qingA所输入的任何命令，双方都是实时显示的，就像在共用一台电脑一样，并且这种共享不限于两个人，可以是多个人同时连接同一个会话，这对于解决一些棘手的问题时十分有帮助，可以让多个人一起来诊断问题的原因，如果想要单独断开共享可以使用组合件[ctrl]+[a]，再按[d]，这并不会影响其它人的共享，但如果你使用exit断开共享，那么其它人也会执行这个命令从而全部断开，一定要注意。
+					</pre>
+						
+				<!-- /正文 -->
+
+				<footer class="text-footer">
+					<p>
+						*转载请注明来自:<a title="晴刃-自由、互助、分享、专注计算机技术。" href="http://www.qingsword.com" target="_blank">晴刃(QingSword.COM)</a>
+					</p>
+					<p>*原文连接:<a title="[RHEL]-15-使用不间断会话Screen" href="http://www.qingsword.com/qing/rhel-15.html" target="_blank">http://www.qingsword.com/qing/rhel-15.html</a></p>
+				</footer>
+			</article>
+			<!-- /文章区 -->	
+		</div>
+	</div>
+	<!-- /content -->
+	
+	<!-- footer -->
+	<footer id="footer">
+		<div class="footer-container">
+			QingSword.COM &nbsp;<img src="../logo/by-nc-sa.png" alt="Creative Commons" title="Creative Commons">
+		</div>
+	</footer>
+	<!-- /footer -->
+</body>
+</html>
