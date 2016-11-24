@@ -135,6 +135,21 @@
 					#如果ssh服务端修改了登录端口，就需要在客户端使用参数-p指定端口号，如下
 					[root@qingsword.com ~]# ssh -p 23333 登录用户名@服务器ip地址
 					</pre>
+					<p>在一些非安全的环境中，不建议关闭SElinux，在确保SElinux开启的状态下，可以使用下面的方法来修改ssh默认的连接端口：</p>
+					<pre class="brush: bash;">
+					#打开SElinux子系统
+					[root@qingsword.com ~]# setenforce 1
+
+					#查询SElinux子系统中对ssh允许的开放端口
+					[root@qingsword httpd]# semanage port -l | grep ssh
+					ssh_port_t                     tcp      22
+
+					#将我们自定义的端口号添加到ssh_port_t列表里（如果要删除这个端口，就将下面命令中的-a替换成-d）
+					[root@qingsword httpd]# semanage port -a -t ssh_port_t -p tcp 23333
+
+					#重启ssh服务，这样就能够在SElinux开启的情况下，使用我们自定义的端口来连接ssh了
+					[root@qingsword httpd]# systemctl restart sshd.service
+					</pre>
 
 					<h2 id="rhel-ssh-2">0×2.ssh登录验证方式</h2>
 
