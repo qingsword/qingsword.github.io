@@ -212,11 +212,11 @@
 					[root@qingsword.com ~]# pdbedit -a -u sambauser
 
 					#查看smb服务的用户数据库列表包含哪些用户
-					[root@qingsword ~]# pdbedit -L
+					[root@qingsword.com ~]# pdbedit -L
 					sambauser:1001:
 
 					#可以使用-x参数来删除数据库中的某个用户，例如
-					[root@qingsword ~]# pdbedit -x sambauser
+					[root@qingsword.com ~]# pdbedit -x sambauser
 
 					#将共享目录的所有者和属组改成sambauser
 					[root@qingsword.com ~]# chown -R sambauser:sambauser /home/qingsword.com/
@@ -245,28 +245,31 @@
 					[root@qingsword.com ~]# yum -y install cifs-utils
 
 					#创建验证文件
-					[root@qingsword ~]# vim auth.samba
+					[root@qingsword.com ~]# vim auth.samba
 					username=sambauser
 					password=123456
 					domain=QS
 
 					#修改验证文件权限（主要是为了安全考虑）
-					[root@qingsword ~]# chmod 600 auth.samba
+					[root@qingsword.com ~]# chmod 600 auth.samba
 
 					#创建本地挂载目录
-					[root@qingsword ~]# mkdir /qs
+					[root@qingsword.com ~]# mkdir /qs
 
 					#编辑fstab文件，新增一条挂载规则，使用刚才创建的验证文件来验证，类型为cifs，将服务器上的qingsword共享挂载到本地的/qs目录
-					[root@qingsword ~]# vim /etc/fstab
+					[root@qingsword.com ~]# vim /etc/fstab
 					//192.168.1.233/qingsword /qs cifs credentials=/root/auth.samba 0 0
 					
 					#将/etc/fstab文件中所添加的所有挂载项都挂载上
-					[root@qingsword ~]# mount -a
+					[root@qingsword.com ~]# mount -a
 
 					#进入/qs目录就能够看到服务器共享文件夹中的内容了
-					[root@qingsword ~]# cd /qs
+					[root@qingsword.com ~]# cd /qs
 					[root@qingsword qs]# ls
 					123.txt  qing
+
+					#如果不想修改fstab，仅使用mount命令挂载，可以如下，同样是将服务器的samba共享目录挂载到本地的/qs目录
+					[root@qingsword.com ~]# mount -t cifs -o username=sambauser,password=123456 //192.168.1.233/qingsword /qs
 					</pre>
 						
 				<!-- /正文 -->
