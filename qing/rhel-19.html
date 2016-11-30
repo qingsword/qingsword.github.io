@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<!--Copyright©QingSword.COM︻☼1010D>-->
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
+	<meta name="description" content="晴刃,是一个致力推广实用计算机技术的个人博客;我们分享计算机知识;为计算机系统以及网络安全防范做出一份贡献。【专注技术 创造价值 共同进步】">
+	<meta name="keywords" content="晴刃,晴,qing,qingsword,ccna图文笔记,ubuntu,linux,ubuntu server,mysql,node.js,javascript,python,计算机技术博客">
+	<meta name="author" content="www.qingsword.com">
+	<title>[RHEL]-19-使用NFS服务共享文件 - QingSword.COM</title>
+	<link rel="shortcut icon" type="image/x-icon" href="../logo/favicon.ico">
+	<link rel="stylesheet" type="text/css" href="../css/basic.css">
+	<link rel="stylesheet" type="text/css" href="../css/text.css">
+	<!-- 代码块高亮js -->
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shCore.css"/>
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shThemeRDark.css"/>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shCore.js"></script>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shBrushBash.js"></script>
+	<script type="text/javascript">
+	SyntaxHighlighter.all();
+	</script>
+</head>
+<body>
+	<!--header -->
+	<header id="nav">
+			<div class="nav-container"> 
+				<!-- 根大纲-->
+				<a href="http://www.qingsword.com" title="晴刃">
+					<h1 class="nav-logo">晴刃</h1>
+				</a>
+				<h2 class="nav-site-description desc-hidden">
+					自由、互助、分享、专注计算机技术
+				</h2>
+				<nav class="nav-links"> 
+					<!-- nav连接大纲-->
+					<h1 style="display:none;">网站导航</h1> 
+					<ul>
+						<li  class="li-hidden">
+							<a href="../index.html" title="home">
+								<span class="link-word"><img src="../logo/home.png" alt="home" class="link-img">首页</span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../web.html" title="web">
+								<span class="link-word"><img src="../logo/web.png" alt="web" class="link-img">前端<span class="word-hidden">设计</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../system.html" title="system">
+								<span class="link-word"><img src="../logo/linux.png" alt="linux" class="link-img">系统<span class="word-hidden">应用</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../net.html" title="net">
+								<span class="link-word"><img src="../logo/net.png" alt="net" class="link-img">网络<span class="word-hidden">技术</span></span>
+							</a>
+						</li>
+						<li>
+							<a href="../sitemap.html" title="sitemap">
+								<span class="link-word"><img src="../logo/archives.png" alt="archives" class="link-img"><span class="word-hidden">文章</span>归档</span>
+							</a>
+						</li>
+					</ul>
+				</nav>
+			</div>		
+	</header>
+	<!-- /header -->
+
+	<!-- content-->
+	<div id="content">
+		<div class="content-container">
+			<!-- 文章区 -->
+			<article class="text-container">
+				<header class="text-header">
+					<h1>[RHEL]-19-使用NFS服务共享文件</h1>	
+				</header><!-- /header -->
+				<section class="text-body">
+					<h2>引言</h2>
+					<p>在上一篇文章中介绍了Samba服务，它能够实现跨系统平台的文件共享，这篇文章将介绍Linux间通用的文件共享服务NFS。</p>
+					<!-- 目录 -->
+					<h2>文章目录</h2>
+					<ul class="contents">	
+						 <li><a href="#rhel-nfs-1">0×1.安装NFS</a></li>
+						 <li><a href="#rhel-nfs-2">0×2.NFS共享配置实例</a></li>
+						 <li><a href="#rhel-autofs-3">0×3.使用autofs实现自动挂载NFS共享目录</a></li>
+					 </ul>
+					<!-- /目录 -->
+
+					<!-- 正文 -->
+					<h2 id="rhel-nfs-1">0×1.安装NFS</h2>
+
+					<p>NFS（Network Files System）网络文件系统，它允许网络中的主机通过TCP/IP协议进行资源共享，NFS服务依赖于RPC服务，必需保证RPC服务在系统中也同样被安装才能够使用NFS服务，默认RHEL7中已经安装了NFS服务与RPC服务，如果没有安装NFS，可以通过下面的命令来安装：</p>
+					<pre class="brush: bash;">
+					[root@qingsword.com ~]# yum -y install nfs-utils
+					</pre>
+
+					<h2 id="rhel-nfs-2">0×2.NFS共享配置实例</h2>
+					<p>实验环境：</p>
+					<p class="indent-p">
+					RHEL7，NFS服务端，安装了nfs-utils，IP 192.168.1.233/24；<br>
+					CentOS7，NFS客户端；<br>
+					两台机器处于同一局域网且能够互相ping通；
+					</p>
+					<p>1）首先设置服务端iptables</p>
+					<pre class="brush: bash;">
+					#可以将NFS对应的服务端口加入iptables规则列表中，本例直接选择清空规则列表并保存
+					[root@qingsword.com ~]# iptables -F
+					[root@qingsword.com ~]# service iptables save
+					</pre>
+
+					<p>2）在服务端创建共享目录</p>
+					<pre class="brush: bash;">
+					#创建目录并设置权限
+					[root@qingsword.com ~]# mkdir /qingsword.com
+					[root@qingsword.com ~]# chmod 777 /qingsword.com/
+
+					#在共享目录中创建一个文件，让客户端读取
+					[root@qingsword.com ~]# echo "welcome to my website www.qingsword.com" &gt; /qingsword.com/hello.txt
+					</pre>
+
+					<p>3）修改NFS主配置文件</p>
+					<pre class="brush: bash;">
+					[root@qingsword.com ~]# vim /etc/exports
+					#参数格式如下
+					# 共享的目录 允许访问这个共享目录的网段(可读写,数据即时同步,将NFS登录用户映射为NFS服务端匿名用户)
+					/qingsword.com 192.168.1.0/24(rw,sync,all_squash)
+
+					#在网段和括号之间不需要空格，括号中的参数用逗号分隔，详解如下
+					# ro 只读默认
+					# rw 读写模式
+					# root_squash 客户端使用root用户访问时，映射为NFS服务端匿名用户
+					# no_root_squash 客户端使用root用户访问时，映射为NFS服务端root用户
+					# all_squash 不论客户端使用什么帐户，均映射为NFS服务端匿名用户
+					# sync 	同时将数据写入到内存与硬盘中，保证不丢失数据
+					# async 优先将数据保存到内存，然后再写入硬盘，效率更高，但可能造成数据丢失
+					</pre>
+
+					<p>4）重启NFS服务，使配置生效</p>
+					<pre class="brush: bash;">
+					#首先确保系统的RPC服务处于运行状态
+					[root@qingsword.com ~]# systemctl status rpcbind
+					   Active: active (running)
+					
+					#重启NFS服务
+					[root@qingsword.com ~]# systemctl restart nfs-server
+
+					#如果需要开机自启动
+					[root@qingsword.com ~]# systemctl enable nfs-server
+					</pre>
+					<p>5）配置客户端</p>
+					<pre class="brush: bash;">
+					#Ubuntu系统可以使用下面的命令安装NFS
+					qing@qingsword.com:~$ sudo apt install nfs-common
+
+					#CentOS7默认也安装了NFS，通过下面的命令来探测服务器上有哪些共享目录
+					[root@qingsword.com ~]# showmount -e 192.168.1.233
+					Export list for 192.168.1.233:
+					/qingsword.com 192.168.1.0/24
+					
+					#showmount有三个常用参数
+					# -e 显示NFS服务端的共享列表
+					# -a 显示本机挂载NFS资源的情况
+					# -v 显示版本号
+
+					#在本地创建挂载目录，挂载服务端共享目录
+					[root@qingsword.com ~]# mkdir /nfs_dir
+					[root@qingsword.com ~]# mount -t nfs 192.168.1.233:/qingsword.com /nfs_dir
+
+					#能够读取服务端上创建的hello.txt文件内容，说明挂载成功了
+					[root@qingsword.com ~]# cat /nfs_dir/hello.txt 
+					welcome to my website www.qingsword.com
+
+					#如果想要开机自动挂载，可以将下面的这一条加入fstab文件中
+					[root@qingsword.com ~]# vim /etc/fstab
+
+					192.168.1.233:/qingsword.com /nfs_dir nfs defaults 0 0
+					</pre>
+
+					<p>Ps：NFS相对于Samba配置要简单的多，而且不需要验证，但这种共享方式只能在Linux系统之间进行。</p>
+
+					<h2 id="rhel-autofs-3">0×3.使用autofs实现自动挂载NFS共享目录</h2>
+
+					<p>有时我们并不希望NFS共享目录一直挂载在我们的某个目录中，但又不想频繁的使用mount/umount去手动挂载卸载，这个时候就可以使用autofs服务，这个服务类似于一个守护进程，只有当我们试图去访问一个配置文件中设置的挂载点时，才自动将目标挂载到目录，我们退出挂载点后，目录又将自动卸载。</p>
+					
+					<p>1）安装autofs服务</p>
+					<pre class="brush: bash;">
+					[root@qingsword.com ~]# yum install -y autofs
+					</pre>
+					<p>2）修改主配置</p>
+					<pre class="brush: bash;">
+					[root@qingsword.com ~]# vim /etc/auto.master
+					#在其末尾添加一句，意思是将/etc/nfs.misc文件中指定的目标，挂载到/nmt目录下
+					/nmt /etc/nfs.misc
+
+					#创建挂载目标文件，nfs是挂载文件夹显示的名称，-rw指定挂载的权限为可读写，-ro为只读，后面是要挂载的目标，本例为NFS服务端的共享文件夹
+					[root@qingsword.com ~]# vim /etc/nfs.misc
+					nfs -rw 192.168.1.233:/qingsword.com
+
+					#上面这两条设置，意思就是将NFS服务端的目录在访问时自动挂载到/mnt/nfs目录中（这个本地目录只有在访问时才会存在，稍后会演示到，这个nfs目录就是上面这一步中第一个参数的名称）
+					</pre>
+
+					<p>3）重启autofs服务</p>
+					<pre class="brush: bash;">
+					[root@qingsword.com ~]# systemctl restart autofs
+
+					#如果需要开机自启动
+					[root@qingsword.com ~]# systemctl enable autofs
+					</pre>
+					<p>4）测试</p>
+					<pre class="brush: bash;">
+					#进入/mnt目录，ls后并没有子目录
+					[root@qingsword.com ~]# cd /mnt
+					[root@qingsword mnt]# ls
+
+					#使用cd切入nfs目录，就将执行autofs挂载操作，这个时候/mnt目录下就会自动创建出一个nfs目录，并且挂载到NFS服务端的共享目录上
+					[root@qingsword mnt]# cd nfs
+					[root@qingsword nfs]# ls
+					hello.txt
+					</pre>
+					<p>Ps：使用autofs自动挂载时，每个父目录只能指定一个自动挂载的隐藏目录（例如：/etc/auto.master文件中如果第一条写了/nmt /etc/nfs.misc那么再在下面写一条/nmt /etc/smb.misc，下面这一条就不会生效，因为他们指向了同一个父目录/mnt）。</p>
+				<!-- /正文 -->
+
+				<footer class="text-footer">
+					<p>
+						*转载请注明来自:<a title="晴刃-自由、互助、分享、专注计算机技术。" href="http://www.qingsword.com" target="_blank">晴刃(QingSword.COM)</a>
+					</p>
+					<p>*原文连接:<a title="[RHEL]-19-使用NFS服务共享文件" href="http://www.qingsword.com/qing/rhel-19.html" target="_blank">http://www.qingsword.com/qing/rhel-19.html</a></p>
+				</footer>
+			</article>
+			<!-- /文章区 -->	
+		</div>
+	</div>
+	<!-- /content -->
+	
+	<!-- footer -->
+	<footer id="footer">
+		<div class="footer-container">
+			QingSword.COM &nbsp;<img src="../logo/by-nc-sa.png" alt="Creative Commons" title="Creative Commons">
+		</div>
+	</footer>
+	<!-- /footer -->
+</body>
+</html>
