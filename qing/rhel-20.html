@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<!--Copyright©QingSword.COM︻☼1010D>-->
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
+	<meta name="description" content="晴刃,是一个致力推广实用计算机技术的个人博客;我们分享计算机知识;为计算机系统以及网络安全防范做出一份贡献。【专注技术 创造价值 共同进步】">
+	<meta name="keywords" content="晴刃,晴,qing,qingsword,ccna图文笔记,ubuntu,linux,ubuntu server,mysql,node.js,javascript,python,计算机技术博客">
+	<meta name="author" content="www.qingsword.com">
+	<title>[RHEL]-20-使用bind服务实现域名解析 - QingSword.COM</title>
+	<link rel="shortcut icon" type="image/x-icon" href="../logo/favicon.ico">
+	<link rel="stylesheet" type="text/css" href="../css/basic.css">
+	<link rel="stylesheet" type="text/css" href="../css/text.css">
+	<!-- 代码块高亮js -->
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shCore.css"/>
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shThemeRDark.css"/>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shCore.js"></script>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shBrushBash.js"></script>
+	<script type="text/javascript">
+	SyntaxHighlighter.all();
+	</script>
+</head>
+<body>
+	<!--header -->
+	<header id="nav">
+			<div class="nav-container"> 
+				<!-- 根大纲-->
+				<a href="http://www.qingsword.com" title="晴刃">
+					<h1 class="nav-logo">晴刃</h1>
+				</a>
+				<h2 class="nav-site-description desc-hidden">
+					自由、互助、分享、专注计算机技术
+				</h2>
+				<nav class="nav-links"> 
+					<!-- nav连接大纲-->
+					<h1 style="display:none;">网站导航</h1> 
+					<ul>
+						<li  class="li-hidden">
+							<a href="../index.html" title="home">
+								<span class="link-word"><img src="../logo/home.png" alt="home" class="link-img">首页</span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../web.html" title="web">
+								<span class="link-word"><img src="../logo/web.png" alt="web" class="link-img">前端<span class="word-hidden">设计</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../system.html" title="system">
+								<span class="link-word"><img src="../logo/linux.png" alt="linux" class="link-img">系统<span class="word-hidden">应用</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../net.html" title="net">
+								<span class="link-word"><img src="../logo/net.png" alt="net" class="link-img">网络<span class="word-hidden">技术</span></span>
+							</a>
+						</li>
+						<li>
+							<a href="../sitemap.html" title="sitemap">
+								<span class="link-word"><img src="../logo/archives.png" alt="archives" class="link-img"><span class="word-hidden">文章</span>归档</span>
+							</a>
+						</li>
+					</ul>
+				</nav>
+			</div>		
+	</header>
+	<!-- /header -->
+
+	<!-- content-->
+	<div id="content">
+		<div class="content-container">
+			<!-- 文章区 -->
+			<article class="text-container">
+				<header class="text-header">
+					<h1>[RHEL]-20-使用bind服务实现域名解析</h1>	
+				</header><!-- /header -->
+				<section class="text-body">
+					<h2>引言</h2>
+					<p>这篇文章将实例演示如何使用bind来配置DNS域名解析服务。</p>
+					<!-- 目录 -->
+					<h2>文章目录</h2>
+					<ul class="contents">	
+						 <li><a href="#rhel-bind-1">0×1.DNS解析服务介绍</a></li>
+						 <li><a href="#rhel-bind-2">0×2.DNS主服务器正反向解析配置实例</a></li>
+						 <li><a href="#rhel-bind-3">0×3.DNS从服务器配置实例</a></li>
+						 <li><a href="#rhel-bind-4">0×4.DNS主从服务器间实现加密通信</a></li>
+					 </ul>
+					<!-- /目录 -->
+
+					<!-- 正文 -->
+					<h2 id="rhel-bind-1">0×1.DNS解析服务介绍</h2>
+
+					<p>DNS（Domain Name System）是互联网上的一个基础服务，其功能上可以实现"正向解析"与"反向解析"，"正向解析"实现从主机域名到IP地址的解析查询，而"反向解析"实现从IP到主机域名的查询。</p>
+					<p>DNS协议采用了树型数据结构，由上往下形成了一个分布式的数据库系统，全球共有13台根服务器，往下再细分成每个国家，每个国家的不同地区，每个地区的不同互联网接入商等等。</p>
+					<p>在实际的DNS查询过程中，很少会触及根服务器，而是在网络供应商提供的DNS服务器的数据库中就能够查到DNS记录，客户机在发起一个DNS查询时，查询步骤如下，由上往下只要查找到就返回不再往下查找：</p>
+					<p class="indent-p">
+					1.查询本地HOSTS文件；<br>
+					2.查询本地缓存；<br>
+					3.查询本地指定的互联网DNS服务器（大多数为接入商提供的DNS）；<br>
+					4.检查DNS服务器缓存；<br>
+					5.向其他指定的DNS服务器发起迭代查询；<br>
+					6.查询根域；<br>
+					7.根据根域的返回信息，查询子域；
+					</p>
+					<p>大多数的查询都会在第5步中被找到，而无需请求根服务器。</p>
+					<p>BIND全名叫做Berkeley Internet Name Daemon（伯克利互联网域名服务）最早出现在伯克利大学，而如今是互联网中使用最广泛的域名解析服务程序，如何在RHEL7中安装bind：</p>
+					<pre class="brush: bash;">
+					[root@qingsword.com ~]# yum install -y bind-chroot
+
+					#安装完成后，主要的三个文件地址如下
+					# 主程序 /usr/sbin/named
+					# 主配置文件 /etc/named.conf
+					# 区域配置文件 	/etc/named.rfc1912.zones
+					</pre>
+
+					<h2 id="rhel-bind-2">0×2.DNS主服务器正反向解析配置实例</h2>
+
+					<p>实验环境：</p>
+					<pre class="brush: bash;">
+					RHEL7，安装了bind-chroot程序，IP 192.168.1.233/24；<br>
+					客户端CentOS7，IP 192.168.1.23/24 DNS服务器设置成192.168.1.233；<br>
+					两者处于同一局域网，且能够互相ping通；
+					</pre>
+					
+					<p>1）首先设置服务端iptables</p>
+					<pre class="brush: bash;">
+					#可以添加允许DNS规则，或直接清空保存，本例选择直接清空iptables
+					[root@qingsword.com ~]# iptables -F
+					[root@qingsword.com ~]# service iptables save
+					</pre>
+					
+					<p>2）修改服务端bind主配置文件</p>
+					<pre class="brush: bash;">
+					#使用vim编辑bind主配置文件
+					[root@qingsword.com ~]# vim /etc/named.conf
+
+					#其他的地方不需要修改，主要修改下面any两处
+					options {
+						#中括号中可以用逗号隔开，设置本机由哪几块网卡接收响应客户端的DNS查询，本例设置为any，即从所有网卡接收客户端的DNS查询
+						listen-on port 53 { any; };
+						#如果服务端配置有IPv6地址，则将下面中括号改成any或对应接收DNS查询的网卡IP
+						listen-on-v6 port 53 { ::1; };
+						#工作目录，这个目录下存放了域名解析记录文件
+						directory       "/var/named";
+						#DNS缓存转储位置
+						dump-file       "/var/named/data/cache_dump.db";
+						#记录统计信息的文件
+						statistics-file "/var/named/data/named_stats.txt";
+						#记录内存使用的统计文件
+						memstatistics-file "/var/named/data/named_mem_stats.txt";
+						#将localhost改成any或对应目标地址（网段或单个ip），表示接收任何源地址发起的DNS查询，如果仅指定某个IP（或网段），那么服务器只响应对应IP（或网段）的DNS查询，默认只允许本机查询
+						allow-query  { any; };
+						
+						#允许递归查询
+						recursion yes; 
+					};
+
+					...省略部分输出..
+
+					zone "." IN {
+						type hint;
+						#全球13台根服务器的IP地址保存文件（保存在/var/named/named.ca，大家可以使用vim查看下这个文件）
+						file "named.ca";
+					};
+					
+					#named.rfc1912.zones文件中保存着正反向解析的区域信息列表，稍后会编辑到
+					include "/etc/named.rfc1912.zones";
+
+					include "/etc/named.root.key";
+					</pre>
+
+					<p>3）编辑区域信息文件named.rfc1912.zones</p>
+					<pre class="brush: bash;">
+					[root@qingsword.com ~]# vim /etc/named.rfc1912.zones
+
+					#在文件的末尾添加下面两条记录
+
+					#正向解析
+					# zone "顶级域名" IN {
+					# 	type master; 代表这是主服务器
+					# 	file "对应域名的解析文件，名称可自定义"
+					# 	allow-update { none; }; 禁止来自客户端的更新与修改 
+					# };
+					zone "qingsword.com" IN {
+						type master;
+						file "qingsword.com.zone";
+						allow-update { none; };
+					};
+
+					#对某个网段的反向解析
+					# zone "网段ip前三段反写.in-addr.arpa" IN {
+					# 	type master;
+					# 	file "对应域名的解析文件，可自定义"
+					# 	allow-update { none; };  
+					# };
+					zone "1.186.192.in-addr.arpa" IN {
+						type master;
+						file "192.168.1.arpa";
+						allow-update { none; };
+					};
+					</pre>
+
+					<p>4）创建区域信息文件中解析记录对应的解析文件</p>
+					<pre class="brush: bash;">
+					#首先将已有的正向解析与反向解析文件复制创建新的解析文件（也可以手动创建，复制会有一个参考格式，比较方便而已，-a参数会连同权限一起复制）
+					[root@qingsword.com ~]# cp -a /var/named/named.localhost /var/named/qingsword.com.zone
+					[root@qingsword.com ~]# cp -a /var/named/named.loopback /var/named/192.168.1.arpa
+
+					#然后逐个编辑这两个文件（注意，每个域名后面都要带"."）
+					[root@qingsword ~]# vim /var/named/qingsword.com.zone
+					# $TTL 1D
+					# @  IN SOA  主域名. 邮箱地址（用"."代替@符号）. (
+					# 		0 ; serial 更新序列号
+					# 		1D ; refresh 刷新时间，默认每天
+					# 		1H ; retry 重试延时，默认一小时
+					# 		1W ; expire 失效时间，默认一周
+					# 		3H;minimum 无效解析记录缓存时间，默认3小时
+					#
+					# 域名服务器记录
+					# 		NS		ns.qingsword.com.  
+					# ns	IN A	192.168.1.233
+					# 因为主域是qingsword.com，所以下面这句的意思就是将www.qingsword.com解析到192.168.1.233，这是一条A记录（A记录，即域名到IP的解析记录）
+					# www	IN A	192.168.1.233
+
+					$TTL 1D
+					@  IN SOA  qingsword.com. admin.qingsword.com. (
+								0 ; serial
+								1D ; refresh
+								1H ; retry
+								1W ; expire
+								3H ) ; minimum
+
+						NS		ns.qingsword.com.
+					ns	IN A	192.168.1.233
+					www	IN A	192.168.1.233
+					#如果想让N.qingsword.com（N代表任何字母数字组合）都解析到192.168.1.233可以写一条泛解析如下
+					*	IN A	192.168.1.233
+
+					[root@qingsword.com ~]# vim /var/named/192.168.1.arpa
+
+					#反向解析使用的是PTR记录
+					$TTL 1D
+					@  IN SOA  qingsword.com. admin.qingsword.com. (
+								0 ; serial
+								1D ; refresh
+								1H ; retry
+								1W ; expire
+								3H ) ; minimum
+
+							NS		ns.qingsword.com.
+					ns		IN A	192.168.1.233
+					xxx		PTR		192.168.1.233
+					bbs		PTR		192.168.1.234
+					blog	PTR		192.168.1.235
+					</pre>
+
+					<p>5）重启named服务</p>
+
+					<pre class="brush: bash;">
+					[root@qingsword.com ~]# systemctl restart named 
+					
+					#若有必要，设置成开机启动
+					[root@qingsword.com ~]# systemctl enable named 
+					</pre>
+
+					<p>6）客户端测试</p>
+					<pre class="brush: bash;">
+					#客户端上将DNS解析指向192.168.1.233后，使用nslookup测试，配置正确的话，结果应该如下
+					[root@qingsword.com ~]# nslookup 
+					&gt; 192.168.1.233
+					Server:		192.168.1.233
+					Address:	192.168.1.233#53
+					233.1.168.192.in-addr.arpa	name = xxx.qingsword.com.
+
+					&gt; 192.168.1.234
+					Server:		192.168.1.233
+					Address:	192.168.1.233#53
+					234.1.168.192.in-addr.arpa	name = bbs.qingsword.com.
+
+					&gt; 192.168.1.235
+					Server:		192.168.1.233
+					Address:	192.168.1.233#53
+					235.1.168.192.in-addr.arpa	name = blog.qingsword.com.
+
+					&gt; www.qingsword.com
+					Server:		192.168.1.233
+					Address:	192.168.1.233#53
+					Name:	www.qingsword.com
+					Address: 192.168.1.233
+					
+					#因为添加了泛解析，所以
+					&gt; abcde.qingsword.com
+					Server:		192.168.1.233
+					Address:	192.168.1.233#53
+					Name:	abcde.qingsword.com
+					Address: 192.168.1.233
+					</pre>
+
+					<h2 id="rhel-bind-3">0×3.DNS从服务器配置实例</h2>
+
+					<p>我们上面配置的服务器就像是一台地区根服务器，保存了所有主要的DNS信息，但一个地区少则几万人，多则几千万，不可能让所有人都直接在根服务器上查询信息，那样根服务器早就宕机了，科学的做法是，配制出一定数量的从服务器，让从服务器缓存根服务器的DNS数据，客户端可以直接在从服务器上得到对应的DNS信息，接着上面的实验，将CentOS7那台原本的客户机配成从服务器，并且再开启一台Ubuntu客户机，DNS指向从服务器的IP地址，测试客户机能否查询到正确的DNS信息。</p>
+
+					<p>1）从服务器上也需要安装bind-chroot</p>
+					<pre class="brush: bash;">
+					[root@qingsword.com ~]# yum -y install bind-chroot
+					</pre>
+					<p>2）修改主配置文件（两处any，其他配置不变）</p>
+					<pre class="brush: bash;">
+					[root@qingsword.com ~]# vim /etc/named.conf 
+					options {
+						listen-on port 53 { any; };
+						..省略部分输出..
+						allow-query     { any; };
+					</pre>
+					<p>3）修改从服务器named.rfc1912.zones文件，添加从属关系记录</p>
+					<pre class="brush: bash;">
+					[root@qingsword.com ~]# vim /etc/named.rfc1912.zones
+					
+					#添加要从主服务器上获取哪些记录
+
+					#要缓存的正向解析条目
+					zone "qingsword.com" IN {
+						#服务类型为从服务
+						type slave;
+						#named服务重新启动后，会自动去主服务器获取对应条目的解析文件下载到本地的/var/named/slaves目录中，file后面指定的文件名要和主服务器下载下来的文件一致
+						file "slaves/qingsword.com.zone";
+						#指定主服务器的IP地址，可以用逗号隔开多个主服务器IP地址
+						masters { 192.168.1.233; };
+					};
+					
+					#要缓存的反向解析条目
+					zone "1.168.192.in-addr.arpa" IN {
+						type slave;
+						file "slaves/192.168.1.arpa";
+						masters { 192.168.1.233; };
+					};
+					</pre>
+
+					<p>4）重启从服务器的named服务</p>
+					<pre class="brush: bash;">
+					[root@qingsword.com ~]# systemctl restart named
+
+					#重启后，就能够在slaves文件夹下看到从主服务器获取到的解析记录了
+					[root@qingsword.com ~]# ls /var/named/slaves/
+					192.168.1.arpa  qingsword.com.zone
+					</pre>
+
+					<p>5）清空iptables列表</p>
+					<pre class="brush: bash;">
+					[root@qingsword.com ~]# iptables -F
+					</pre>
+					
+					<p>现在，使用ubuntu客户端网卡配置DNS指向从服务器的IP地址（192.168.1.23），配置无误的话，就能够顺利的在从服务器上查询到DNS信息了。</p>
+
+
+					<h2 id="rhel-bind-4">0×4.DNS主从服务器间实现加密通信</h2>
+					<p></p>
+					<pre class="brush: bash;">
+					
+					</pre>
+
+					<p></p>
+					<pre class="brush: bash;">
+					
+					</pre>
+
+					<p></p>
+					<pre class="brush: bash;">
+					
+					</pre>
+
+					<p class="indent-p">
+						
+					</p>
+					<img src="images/" alt="" title="">
+						
+				<!-- /正文 -->
+
+				<footer class="text-footer">
+					<p>
+						*转载请注明来自:<a title="晴刃-自由、互助、分享、专注计算机技术。" href="http://www.qingsword.com" target="_blank">晴刃(QingSword.COM)</a>
+					</p>
+					<p>*原文连接:<a title="[RHEL]-20-使用bind服务实现域名解析" href="http://www.qingsword.com/qing/rhel-20.html" target="_blank">http://www.qingsword.com/qing/rhel-20.html</a></p>
+				</footer>
+			</article>
+			<!-- /文章区 -->	
+		</div>
+	</div>
+	<!-- /content -->
+	
+	<!-- footer -->
+	<footer id="footer">
+		<div class="footer-container">
+			QingSword.COM &nbsp;<img src="../logo/by-nc-sa.png" alt="Creative Commons" title="Creative Commons">
+		</div>
+	</footer>
+	<!-- /footer -->
+</body>
+</html>
