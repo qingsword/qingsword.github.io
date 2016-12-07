@@ -239,7 +239,7 @@
 					#静态IP添加语法
 					# nmcli connection add con-name 配置文件名称 type 网络类型 autoconnect 是否自动连接 ifname 可以应用到哪块网卡设备 ip4 ipv4地址 gw4 ipv4网关地址
 					#如果autoconnect yes那么这个配置在下次开机时会自动启用
-					[root@qingsword.com ~]# nmcli connection add con-name qingsword type ethernet autoconnect yes ifname eno16777736 ip4 192.168.1.233 gw4 192.168.1.1
+					[root@qingsword.com ~]# nmcli connection add con-name qingsword type ethernet autoconnect yes ifname eno16777736 ip4 192.168.1.233/24 gw4 192.168.1.1
 					Connection 'qingsword'  successfully added.
 
 					#然后再给这个配置文件设置dns，语法如下
