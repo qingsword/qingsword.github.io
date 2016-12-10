@@ -128,21 +128,21 @@
 						qing@qingsword.com:~$ vim svm.sh
 						#输入下面的内容
 						#!/bin/bash
-						sudo service vmware start
-						sudo service vmware-workstation-server start
-						sudo service vmware-USBArbitrator start
+						sudo systemctl start vmware
+						sudo systemctl start vmware-workstation-server
+						sudo systemctl start vmware-USBArbitrator
 						qing@qingsword.com:~$ vim dvm.sh
 						#输入下面的内容
 						#!/bin/bash
-						sudo service vmware-USBArbitrator stop
-						sudo service vmware-workstation-server stop
-						sudo service vmware stop
+						sudo systemctl stop vmware-USBArbitrator
+						sudo systemctl stop vmware-workstation-server
+						sudo systemctl stop vmware
 						
 						#3.在需要启动vmware时运行svm.sh脚本启动服务,确保sh脚本在终端当前路径下，否则请在文件名前添加路径
-						qing@qingsword.com:~$ sh svm.sh
+						qing@qingsword.com:~$ bash svm.sh
 
 						#4.在使用完后关闭这些服务
-						qing@qingsword.com:~$ sh dvm.sh
+						qing@qingsword.com:~$ bash dvm.sh
 					</pre>
 				<!-- /正文 -->
 
