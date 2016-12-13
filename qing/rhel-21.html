@@ -89,40 +89,390 @@
 					<!-- 正文 -->
 					<h2 id="rhel-iptables-1">0×1.iptables实例详解</h2>
 
-					<p></p>
-					<pre class="brush: bash;">
+					<p>在RHEL7以后的红帽系统中（包括CentOS7），官方已经采用了Firewalld作为内核防火墙管理工具，但在RHEL7中iptables保留并能够继续使用，实际上不论是iptables还是Firewalld，它们都只是内核netfilter模块的一个管理工具，netfilter会读取iptables（或Firewalld）的设置来实现防火墙过滤的功能。</p>
+
+					<p>在iptables中，一共有4个表，5条过滤链：</p>
 					
-					</pre>
-					<p></p>
-					<pre class="brush: bash;">
+					<p>4个表如下：</p>
+					<p class="indent-p">
+					raw表：对该数据包进行状态跟踪；<br>
+					mangle表：为数据包设置标记；<br>
+					nat表：修改数据包中的源、目标IP地址或端口；<br>
+					filter表：确定是否放行该数据包（默认过滤表）；
+					</p>
+					<p>5条过滤链如下：</p>
+					<p class="indent-p">
+					PREROUTING：路由前处理数据包；<br>
+					INPUT：入站数据包处理；<br>
+					OUTPUT：出站数据包处理；<br>
+					FORWARD：转发数据包处理；<br>
+					POSTROUTING：路由后处理数据包；
+					</p>
+					<p>每个表包含了一条或多条过滤链，系统默认使用的表为filter表，这个表包含三条关键过滤链：INPUT、OUTPUT、FORWARD。</p>
+					<p>过滤链的先后顺序：</p>
+					<p class="indent-p">
+					入站出站：PREROUTING→INPUT→OUTPUT→POSTROUTING；<br>
+					转发：PREROUTING→FORWARD→POSTROUTING；<br>
+					注意：每条过滤链都保存了我们设定的规则条目，从上往下匹配，只要匹配到一条就不再继续（LOG规则例外）匹配下面的内容（这有点类似if语句，只要一个分之匹配，就执行分之，然后跳出if语句块），如果过滤链中没有任何规则条目匹配，则按规则链默认方式处理；	
+					</p>
 					
+					<p>iptables命令格式：iptables [-t 表名] 选项 [链名] [条件] [-j 控制类型]；</p>
+					<p>iptables常用参数列表：</p>
+					<p class="indent-p">
+					-P 设置默认策略，例如 iptables -P INPUT (DROP|ACCEPT)；<br>
+					-F 清空规则链；<br>
+					-L 查看规则链；<br>
+					-A 在规则链的末尾加入新规则；<br>
+					-I num 在规则链的头部加入新规则，或设置插入规则的位置num；<br>
+					-D num 	删除某一条规则；<br>
+					-s 匹配来源地址IP/MASK，加叹号"!"表示除这个IP外；<br>
+					-d 匹配目标地址；<br>
+					-i 网卡名称 匹配从这块网卡流入的数据；<br>
+					-o 网卡名称 匹配从这块网卡流出的数据；<br>
+					-p 匹配协议，如TCP、UDP、ICMP等；<br>
+					--dport num 匹配目标端口号；<br>
+					--sport num 匹配来源端口号；
+					</p>
+					<p>控制类型如下：</p>
+					<p class="indent-p">
+					ACCEPT：允许通过；<br>
+					LOG：记录日志，然后传给下一条规则继续匹配；<br>
+					REJECT：拒绝通过但提示；<br>
+					DROP：直接丢弃，不给出任何回应；
+					</p>
+
+					<p>下面来看几个实例：</p>
+					<pre class="brush: bash;">
+					#系统在安装好后，iptables里面会有一些默认的规则，可以使用下面的命令查看
+					[root@qingsword.com ~]# iptables -L
+					
+					#使用-F参数可以清空这些规则
+					[root@qingsword.com ~]# iptables -F
+					
+					#在filter表的最上面是最常用的三条链，括号中的ACCEPT表示这条规则链的默认规则为允许（即所有条目都无法匹配时放行）
+					[root@qingsword.com ~]# iptables -L
+					Chain INPUT (policy ACCEPT)
+					target   prot opt source   destination
+
+					Chain FORWARD (policy ACCEPT)
+					target   prot opt source   destination
+
+					Chain OUTPUT (policy ACCEPT)
+					target   prot opt source   destination
+
+					#可以使用-P（大写）参数来修改某条规则链的默认规则，下面的实例将INPUT链的默认规则改成阻止，这个时候，所有外部发往服务器的流量都会被默认拒绝
+					[root@qingsword.com ~]# iptables -P INPUT DROP
+					[root@qingsword.com ~]# iptables -L
+					Chain INPUT (policy DROP)
+					target   prot opt source   destination 
+
+					#允许外部任何主机ping通服务器，-I参数会将这条规则添加到INPUT链所有现有规则的最上方，-p（小写）参数指定协议，-j参数指定控制类型
+					[root@qingsword.com ~]# iptables -I INPUT -p icmp -j ACCEPT
+
+					[root@qingsword.com ~]# iptables -L
+					Chain INPUT (policy DROP)
+					target   prot opt source     destination         
+					ACCEPT   icmp --  anywhere   anywhere
+
+					#允许192.168.1.0/24网段使用TCP协议访问服务器192.168.1.233这个IP的22号端口，源和目标地址可以是一个网段或者单独的IP，-A参数指定将这条规则添加到INPUT链的末尾
+					[root@qingsword.com ~]# iptables -A INPUT -p tcp -s 192.168.1.0/24 -d 192.168.1.233 --dport 22 -j ACCEPT
+					[root@qingsword.com ~]# iptables -L
+					Chain INPUT (policy DROP)
+					target   prot opt source   		   destination         
+					ACCEPT   cmp  --  anywhere   	   anywhere            
+					ACCEPT   tcp  --  192.168.1.0/24   192.168.1.233   tcp dpt:ssh
+
+					#现在INPUT链中已经有两条规则了，使用下面的命令可以在条目1和2之间插入一条规则，比如，不允许192.168.1.105这个IP访问服务器的TCP 22号端口，因为这条规则插入到了上面这条规则的上面，所以当192.168.1.105使用ssh访问服务器时，会被这条规则拒绝，从而不会再执行第三条规则
+					[root@qingsword.com ~]# iptables -I INPUT 2 -p tcp -s 192.168.1.105 -d 192.168.1.233 --dport 22 -j REJECT
+
+					#注意：ssh除了tcp端口外，还有一个udp端口也是22，如果想要更加完整，应该将udp的22号端口也同时禁止
+
+					[root@qingsword.com ~]# iptables -L
+					Chain INPUT (policy DROP)
+					target prot opt source         destination         
+					ACCEPT icmp --  anywhere       anywhere            
+					REJECT tcp  --  192.168.1.105  192.168.1.233  tcp dpt:ssh reject-with...
+					ACCEPT tcp  --  192.168.1.0/24 192.168.1.233  tcp dpt:ssh
+
+					#此时使用192.168.1.105来连接，会得到下面的提示，REJECT与DROP都是阻止，前者会将拒绝的消息告诉连接者，而后者不会给出提示，直到连接方超时
+					ssh: connect to host 192.168.1.233 port 22: Connection refused
+
+					#删除INPUT链的第二条，然后添加一条DROP规则
+					[root@qingsword.com ~]# iptables -D INPUT 2
+					[root@qingsword.com ~]# iptables -I INPUT 2 -p tcp -s 192.168.1.105 -d 192.168.1.233 --dport 22 -j DROP
+
+					#再次使用192.168.1.105来连接，就会得到超时的提示
+					ssh: connect to host 192.168.1.233 port 22: Connection timed out
+
+					#如果对ICMP配置，访问者使用ping时，REJECT会提示主机不可达，而DROP会提示请求超时
+
+					#上面的所有实例都在使用INPUT链，那如果是服务器往外发送的数据，就需要配置OUTPUT链，默认-F清空后，OUTPUT链的默认规则是ACCEPT，可以使用同样的方法更改其默认规则
+					[root@qingsword.com ~]# iptables -P OUTPUT DROP
+					[root@qingsword.com ~]# iptables -L
+					Chain OUTPUT (policy DROP)
+					target  prot opt source  destination
+
+					#允许服务器访问除192.168.1.105:80端口外的其他任何IP的80端口
+					[root@qingsword.com ~]# iptables -I OUTPUT -p tcp -d 192.168.1.105 --dport 80 -j REJECT
+					[root@qingsword.com ~]# iptables -A OUTPUT -p tcp --dport 80 -j ACCEPT
+
+					#在所有操作完成后，可以使用下面的命令将修改保存，下次开机启动后不清空配置（如果不保存，下次重启就会清空配置）
+					[root@qingsword.com ~]# service iptables save
 					</pre>
+					<p>Ps：服务对应的端口号都保存在/etc/services文件中，可以使用grep去过滤查找，例如查找ssh的默认端口：grep ssh /etc/services，就能查找出ssh服务对应的默认端口了；</p>
 
 					<h2 id="rhel-firewalld-2">0×2.Firewalld实例详解</h2>
 
-					<p></p>
+					<p>Firewalld提供了两种配置方法，图形界面的firewall-config（终端输入这个命令就能够打开图形界面配置工具）和终端界面的firewall-cmd，本文重点介绍终端界面下的配置方法。</p>
+
+					<p>根据不同的网络环境，Firewalld提供了下面几种可信等级，每种等级都有不同的默认规则：</p>
+					<p class="indent-p">
+					trusted 允许所有的数据包；<br>
+					home 拒绝流入的数据包，除非与输出流量数据包相关（反转流量，即服务器主动发送的数据包到达目标后，目标返回给服务器的这些数据包）或是ssh、mdns、ipp-client、samba-client与dhcpv6-client服务则允许
+					internal 同home；<br>
+					work 拒绝流入的数据包，除非与输出流量数据包相关或是ssh、ipp-client与dhcpv6-client服务则允许；<br>
+					public 拒绝流入的数据包，除非与输出流量数据包相关或是ssh、dhcpv6-client服务则允许；<br>
+					external 拒绝流入的数据包，除非与输出流量数据包相关或是ssh服务则允许；<br>
+					dmz 同external；<br>
+					block 拒绝流入的数据包，除非与输出流量数据包相关；<br>
+					drop 同block；
+					</p>
+					<p>默认情况所有网卡都在public环境中工作，可以使用下面的命令查看和切换环境：</p>
 					<pre class="brush: bash;">
-					
+					#查看默认环境
+					[root@qingsword.com ~]# firewall-cmd --get-default-zone 
+					public
+
+					#将默认环境切换成work
+					[root@qingsword.com ~]# firewall-cmd --set-default-zone=work
+					success
+
+					[root@qingsword.com ~]# firewall-cmd --get-default-zone 
+					work
 					</pre>
-					<p></p>
+					<p>firewall-cmd常用参数列表如下：</p>
+					<p class="indent-p">
+					--get-default-zone 查询默认的环境名称；<br>
+					--set-default-zone=[环境名称] 设置默认的环境，永久生效；<br>
+					--get-zones 显示可用的环境；<br>
+					--get-services 显示预先定义的服务；<br>
+					--get-active-zones 显示服务器上的网卡都在哪个环境下工作；<br>
+					--add-source= 将来源于此IP或子网的流量导向指定的环境；<br>
+					--remove-source= 不再将此IP或子网的流量导向某个指定环境；<br>
+					--add-interface=[网卡名称] 	将来自于该网卡的所有流量都导向某个指定环境；<br>
+					--change-interface=[网卡名称] 将网卡切换到指定环境下；<br>
+					--list-all 	显示当前环境的网卡配置参数，资源，端口以及服务等信息；<br>
+					--list-all-zones 显示所有环境的网卡配置参数，资源，端口以及服务等信息；<br>
+					--add-service=[服务名] 设置默认环境允许该服务的流量；<br>
+					--add-port=[端口号/协议] 允许默认环境允许该端口的流量；<br>
+					--remove-service=[服务名] 设置默认环境不再允许该服务的流量；<br>
+					--remove-port=[端口号/协议]允许默认环境不再允许该端口的流量；<br>
+					--reload 让"永久生效"的配置规则立即生效，覆盖当前；
+					</p>
+
+					<p>请看下面几个实例：</p>
 					<pre class="brush: bash;">
-					
+					#查询有哪些可用的环境
+					[root@qingsword.com ~]# firewall-cmd --get-zones 
+					block dmz drop external home internal public trusted work
+
+					#将环境切换回public
+					[root@qingsword.com ~]# firewall-cmd --set-default-zone=public
+
+					#查询当前环境下，是否允许ftp和ssh服务
+					[root@qingsword.com ~]# firewall-cmd --zone=public --query-service=ftp
+					no
+					[root@qingsword.com ~]# firewall-cmd --zone=public --query-service=ssh
+					yes
+
+					#如果想要允许ftp连接，可以使用下面的方法
+
+					#1.设置public环境允许ftp连接，永久生效（--permanent ）
+					[root@qingsword.com ~]# firewall-cmd --permanent --zone=public --add-service=ftp
+					success
+
+					#2.如果添加了--permanent 参数，那么上面这条规则需要重启后才会生效（换言之，如果不添加这个参数，就是立刻生效，但是重启后就会失效），但可以使用--reload命令让设置的所有的永久规则立即生效并且覆盖当前规则
+					[root@qingsword.com ~]# firewall-cmd --reload
+					success
+
+					#3.在第2步之前使用下面的命令查询，还会是no，第2步已经解释了原因，大家可以试一下
+					[root@qingsword.com ~]# firewall-cmd --zone=public --query-service=ftp
+					yes
+
+					#对于永久生效和当前生效的理解请看下面这个实例
+
+					#1.首先，查看下public环境，永久列表和当前列表都不允许http服务
+					[root@qingsword.com ~]# firewall-cmd --permanent --query-service=http
+					no
+					[root@qingsword.com ~]# firewall-cmd --query-service=http
+					no
+
+					#2.将http服务添加到永久生效列表
+					[root@qingsword.com ~]# firewall-cmd --permanent --zone=public --add-service=http
+					success
+
+					#3.再次查看，永久生效列表就变成了yes，但当前生效列表还是no，此时这条配置并未生效，必须要重启后才会生效（只有当前生效列表中的条目才是有作用的）
+					[root@qingsword.com ~]# firewall-cmd --permanent --query-service=http
+					yes
+					[root@qingsword.com ~]# firewall-cmd --query-service=http
+					no
+
+					#4.使用--reload命令后，就将刚才那条命令覆盖到了当前生效列表，当前生效列表就变成了yes
+					[root@qingsword.com ~]# firewall-cmd --reload
+					success
+					[root@qingsword.com ~]# firewall-cmd --query-service=http
+					yes
+
+					#查看当前环境所有规则，可以看到services列表里面有我们前面添加的ftp和http规则
+					[root@qingsword.com ~]# firewall-cmd --list-all
+					public (default, active)
+					  interfaces: eno16777736
+					  sources: 
+					  services: dhcpv6-client ftp http ssh
+					  ports: 
+					  masquerade: no
+					  forward-ports: 
+					  icmp-blocks: 
+					  rich rules:
+
+					#如果想查看所有环境的规则可以使用下面的命令
+					[root@qingsword.com ~]# firewall-cmd --list-all-zones
+
+					#添加允许tcp的22至80端口
+					[root@qingsword.com ~]# firewall-cmd --permanent --zone=public --add-port=22-80/tcp
+					success
+					[root@qingsword.com ~]# firewall-cmd --reload
+					success
+					[root@qingsword.com ~]# firewall-cmd --list-all | grep ports
+					  ports: 22-80/tcp
+
+					#删除允许的ftp服务以及刚才添加的端口，删除操作是立即生效的
+					[root@qingsword.com ~]# firewall-cmd --zone=public --remove-service=ftp
+					success
+					[root@qingsword.com ~]# firewall-cmd --zone=public --remove-port=22-80/tcp
 					</pre>
+
+					<p>默认情况下，所有网卡都在public环境下，可以使用下面的方法更改网卡环境：</p>
+					<pre class="brush: bash;">
+					#将网卡更改到work环境下，必须重新启动才能生效
+					[root@qingsword.com ~]# firewall-cmd --permanent --zone=work --change-interface=eno16777736
+
+					#有两条命令可以查看网卡所处环境
+
+					#查看指定网卡所处环境
+					[root@qingsword.com ~]# firewall-cmd --get-zone-of-interface=eno16777736 
+					work
+
+					#查看所有网卡所处环境
+					[root@qingsword.com ~]# firewall-cmd --get-active-zones 
+					work
+					  interfaces: eno16777736
+					</pre>
+
+					<p>注意，这些环境就像一个个目录一样，当前firewall-cmd所在环境可以使用--set-default-zone更改，类似于切换目录操作，而我们服务器上的网卡被设置在哪个环境，就会按照那个环境的规则管理网卡的流量，不会受默认所在环境的影响，换言之，上面我们将eno16777736更改到work环境中，那么这块网卡现在就将遵循work环境的配置收发数据；而所有没有手动配置环境的网卡才会跟随默认环境的变化而变化，这就意味着，假如现在还有一块网卡，并没有指定它的环境，它处在默认环境下，现在使用--set-default-zone更改了默认环境，那么它也会随即被分配到这个新的环境中，下面的实例证明了这一点：</p>
+
+					<pre class="brush: bash;">
+					#两块网卡，eno16777736被手动指定到了work区域，而eno33554984并没有指定，在默认的public区域下
+					[root@qingsword.com ~]# firewall-cmd --get-active-zones 
+					work
+					  interfaces: eno16777736
+					public
+					  interfaces: eno33554984
+
+					#现在将默认区域修改成home
+					[root@qingsword.com ~]# firewall-cmd --set-default-zone=home
+					success
+
+					#eno33554984自动被划分到home区域下了
+					[root@qingsword.com ~]# firewall-cmd --get-active-zones 
+					home
+					  interfaces: eno33554984
+					work
+					  interfaces: eno16777736	
+					</pre>
+					
+					<p>使用firewall-cmd配置端口转发实例：</p>
+					<pre class="brush: bash;">
+					#下面这条命令，将在服务器上监听6666端口，在这个端口上收到ssh连接请求时转发到22号端口，连接192.168.1.233的6666端口，就等于连接了它的22端口
+					#--add-forward-port=port=转发端口:proto=协议:toport=转发给哪个端口:toaddr=在服务器哪个IP上接收请求
+					[root@qingsword.com ~]# firewall-cmd --permanent --zone=public --add-forward-port=port=6666:proto=tcp:toport=22:toaddr=192.168.1.233
+					success
+					[root@qingsword.com ~]# firewall-cmd --reload
+					</pre>
+
+					<p>配置多规则结构：</p>
+					<pre class="brush: bash;">
+					#配置一条富规则o，规则系列为ipv4，源地址为192.168.1.0/24网段，目标ip为192.168.1.233，服务类型为ssh，最后的reject将阻止所有从源地址过来的ssh连接
+					[root@qingsword.com ~]# firewall-cmd --permanent --zone=public --add-rich-rule="rule family="ipv4" source address="192.168.1.0/24" destination address="192.168.1.233" service name="ssh" reject"
+					[root@qingsword.com ~]# firewall-cmd --reload
+
+					#删除富规则只需要将add替换成remove即可
+					[root@qingsword.com ~]# firewall-cmd --permanent --zone=public --remove-rich-rule="rule family="ipv4" source address="192.168.1.0/24" destination address="192.168.1.233" service name="ssh" reject"
+
+					#阻止105使用tcp协议访问233的23端口
+					[root@qingsword.com ~]# firewall-cmd --permanent --zone=public --add-rich-rule="rule family="ipv4" source address="192.168.1.105" destination address="192.168.1.233" port port=23 protocol=tcp reject"
+					
+					#允许192.168.1.0/24网段，访问233主机的3000至4000端口
+					[root@qingsword.com ~]# firewall-cmd --permanent --zone=public --add-rich-rule="rule family="ipv4" source address="192.168.1.0/24" destination address="192.168.1.233" port port=3000-4000 protocol=tcp accept"
+
+					#别忘记最后将永久生效配置覆盖到当前生效（runtime）
+					[root@qingsword.com ~]# firewall-cmd --reload
+
+					#reject方式阻止192.168.1.0/24网段到服务器233的ICMP请求（禁ping）
+					[root@qingsword.com ~]# firewall-cmd --permanent --zone=public --add-rich-rule="rule family="ipv4" source address="192.168.1.0/24" destination address="192.168.1.233" icmp-block name=echo-request"
+					success
+					[root@qingsword.com ~]# firewall-cmd --reload
+					success
+
+					#drop方式阻止192.168.1.0/24网段到服务器233的ICMP请求（禁ping）
+					[root@qingsword.com ~]# firewall-cmd --permanent --zone=public --add-rich-rule="rule family="ipv4" source address="192.168.1.0/24" destination address="192.168.1.233" icmp-block name=echo-request drop"
+					success
+					[root@qingsword.com ~]# firewall-cmd --reload
+
+					#可以使用下面的命令查询icmp-block name=后可设置的ICMP类型
+					[root@qingsword ~]# firewall-cmd --get-icmptypes 
+					destination-unreachable echo-reply echo-request parameter-problem redirect router-advertisement router-solicitation source-quench time-exceeded
+					</pre>
+
+
+					<p>遇到紧急情况时，可以使用--panic-on命令，切断一切与外界的网络连接，可以使用panic-off命令来恢复连接：</p>
+					<pre class="brush: bash;">
+					[root@qingsword.com ~]# firewall-cmd --panic-on
+					success
+					[root@qingsword.com ~]# firewall-cmd --panic-off
+					success
+					</pre>
+					
 
 					<h2 id="rhel-TCP_wrappers-3">0×3.TCP_wrappers实例详解</h2>
-					<p></p>
-					<pre class="brush: bash;">
-					
-					</pre>
-					<p></p>
-					<pre class="brush: bash;">
-					
-					</pre>
-
+					<p>通过TCP_wrappers可以实现对系统中提供的某些服务的开放与关闭、允许和禁止，如果说iptables或firewalld是流量进入服务器的第一道屏障，那么TCP_wrappers就是系统的第二道屏障，通过firewalld的流量还需要通过TCP_wrappers的过滤才能放行，TCP_wrappers的配置十分简单，一共两个文件：</p>
 					<p class="indent-p">
-						
+					/etc/hosts.allow 保存了允许的服务列表；<br>	
+					/etc/hosts.deny 保存了拒绝的服务列表；
 					</p>
-					<img src="images/" alt="" title="">
+
+					<p>TCP_wrappers在实际应用中使用的并不多，请看下面的实例：</p>
+					<pre class="brush: bash;">
+					#分别编辑两个文件
+
+					#允许列表
+					[root@qingsword Desktop]# vim /etc/hosts.allow
+					#允许192.168.1.0/24网段的IP访问本机ssh服务
+					sshd:192.168.1.0/255.255.255.0
+					#仅允许192.168.1.105访问本机vsftpd服务
+					vsftpd:192.168.1.105
+
+					#阻止列表
+					[root@qingsword Desktop]# vim /etc/hosts.deny
+					#阻止所有的ssh连接，在允许列表中的除外
+					sshd:*
+					#阻止所有192.168.1.0/24网段的IP连接本机的vsftpd服务，在允许列表中的除外
+					vsftpd:192.168.1.
+
+					#没有写在deny列表中的服务默认操作是放行，这就意味着，除了192.168.1.0/24网段，其他IP（包括允许列表中的192.168.1.105）都能够正常访问本机的vsftpd服务
+					</pre>
+					<p>Ps：允许列表的优先级高于拒绝列表。</p>
+
 						
 				<!-- /正文 -->
 
