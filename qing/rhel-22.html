@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<!--Copyright©QingSword.COM︻☼1010D>-->
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
+	<meta name="description" content="晴刃,是一个致力推广实用计算机技术的个人博客;我们分享计算机知识;为计算机系统以及网络安全防范做出一份贡献。【专注技术 创造价值 共同进步】">
+	<meta name="keywords" content="晴刃,晴,qing,qingsword,ccna图文笔记,ubuntu,linux,ubuntu server,mysql,node.js,javascript,python,计算机技术博客">
+	<meta name="author" content="www.qingsword.com">
+	<title>[RHEL]-22-配置DHCP服务 - QingSword.COM</title>
+	<link rel="shortcut icon" type="image/x-icon" href="../logo/favicon.ico">
+	<link rel="stylesheet" type="text/css" href="../css/basic.css">
+	<link rel="stylesheet" type="text/css" href="../css/text.css">
+	<!-- 代码块高亮js -->
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shCore.css"/>
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shThemeRDark.css"/>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shCore.js"></script>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shBrushBash.js"></script>
+	<script type="text/javascript">
+	SyntaxHighlighter.all();
+	</script>
+</head>
+<body>
+	<!--header -->
+	<header id="nav">
+			<div class="nav-container"> 
+				<!-- 根大纲-->
+				<a href="http://www.qingsword.com" title="晴刃">
+					<h1 class="nav-logo">晴刃</h1>
+				</a>
+				<h2 class="nav-site-description desc-hidden">
+					自由、互助、分享、专注计算机技术
+				</h2>
+				<nav class="nav-links"> 
+					<!-- nav连接大纲-->
+					<h1 style="display:none;">网站导航</h1> 
+					<ul>
+						<li  class="li-hidden">
+							<a href="../index.html" title="home">
+								<span class="link-word"><img src="../logo/home.png" alt="home" class="link-img">首页</span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../web.html" title="web">
+								<span class="link-word"><img src="../logo/web.png" alt="web" class="link-img">前端<span class="word-hidden">设计</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../system.html" title="system">
+								<span class="link-word"><img src="../logo/linux.png" alt="linux" class="link-img">系统<span class="word-hidden">应用</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../net.html" title="net">
+								<span class="link-word"><img src="../logo/net.png" alt="net" class="link-img">网络<span class="word-hidden">技术</span></span>
+							</a>
+						</li>
+						<li>
+							<a href="../sitemap.html" title="sitemap">
+								<span class="link-word"><img src="../logo/archives.png" alt="archives" class="link-img"><span class="word-hidden">文章</span>归档</span>
+							</a>
+						</li>
+					</ul>
+				</nav>
+			</div>		
+	</header>
+	<!-- /header -->
+
+	<!-- content-->
+	<div id="content">
+		<div class="content-container">
+			<!-- 文章区 -->
+			<article class="text-container">
+				<header class="text-header">
+					<h1>[RHEL]-22-配置DHCP服务</h1>	
+				</header><!-- /header -->
+				<section class="text-body">
+					<h2>引言</h2>
+					<p>这篇文章将实例详解如何在RHEL系统中配置DHCP服务。</p>
+					<!-- 目录 -->
+					<h2>文章目录</h2>
+					<ul class="contents">	
+						 <li><a href="#rhel-dhcp-1">0×1.安装DHCP服务</a></li>
+						 <li><a href="#rhel-dhcp-2">0×2.DHCP服务配置实例</a></li>
+					 </ul>
+					<!-- /目录 -->
+
+					<!-- 正文 -->
+					<h2 id="rhel-dhcp-1">0×1.安装DHCP服务</h2>
+
+					<p>RHEL系统中默认并没有安装DHCP服务，使用yum安装：</p>
+					<pre class="brush: bash;">
+					[root@qingsword.com ~]# yum install -y hdcp
+					</pre>
+					<p>安装完成后，有下面几个重要文件：</p>
+					<p class="indent-p">
+					主配置文件 /etc/dhcp/dhcpd.conf；<br>
+					执行程序 /usr/sbin/dhcpd 以及 /usr/sbin/dhcrelay；
+					</p>
+					<p>主配置文件支持的参数：</p>
+					<p class="indent-p">
+					ddns-update-style [类型]，定义DNS服务动态更新的类型，类型包括：none（不支持动态更新），interim（互动更新模式）与ad-hoc(特殊更新模式)；<br>
+					allow/ignore client-updates，允许/忽略客户机更新DNS记录；<br>
+					default-lease-time 21600，默认超时时间；<br>
+					max-lease-time 43200，最大超时时间；<br>
+					option domain-name-servers 8.8.8.8，定义DNS服务器地址；<br>
+					option domain-name "qingsword.com"定义DNS域名；<br>
+					range [起始地址] [结束地址]，定义用于分配的IP地址池；<br>
+					option subnet-mask，定义客户机的子网掩码；<br>
+					option routers，定义客户机的网关地址；<br>
+					broadcase-address [广播地址]，定义客户机的广播地址；<br>
+					ntp-server [IP地址]，定义客户机的网络时间服务器（NTP）；<br>
+					nis-servers [IP地址]，定义客户机的NIS域服务器的地址；<br>
+					hardware [硬件类型] [MAC地址]，指定网卡接口的类型与MAC地址；<br>
+					server-name [主机名]，通知DHCP客户机服务器的主机名；<br>
+					fixed-address [IP地址]，将某个固定IP地址分配给指定主机；<br>
+					time-offset [偏移差]，指定客户机与格林尼治时间的偏移差；
+					</p>
+
+					<h2 id="rhel-dhcp-2">0×2.DHCP服务配置实例</h2>
+
+					<p>实验环境：</p>
+					<p class="indent-p">
+					安装了两款网卡的RHEL7系统（第一块网卡IP 192.168.60.1/24，第二块网卡IP 192.168.80.1/24），DHCP服务端；<br>
+					DHCP服务端从这两块网卡接收DHCP请求，并根据不同的接收网卡，提供不同的IP地址；
+					</p>
+					
+					<p>1）修改DHCP主配置文件：</p>
+					<pre class="brush: bash;">
+					[root@qingsword.com ~]# vim /etc/dhcp/dhcpd.conf 
+					#
+					# DHCP Server Configuration file.
+					#  see /usr/share/doc/dhcp*/dhcpd.conf.example
+					#  see dhcpd.conf(5) man page
+					#
+		
+					#子网段配置文件结构
+					# subnet 网段地址 netmask 子网掩码{
+					#  host 自定义绑定名 { 
+					#    hardware ethernet 目标机器MAC地址;
+					#    fixed-address 将目标MAC绑定到固定的IP;
+					#  }
+					#  range 地址池范围;
+					#  option routers 网关地址;
+					#  option subnet-mask 子网掩码长度;
+					#  option domain-name-servers DNS地址;
+					#  option domain-name 域名;
+					#  default-lease-time 租约失效时间(秒)
+					#  max-lease-time 当提供给某个客户机IP后，超过了default-lease-time，但还在max-lease-time时间范围内，将保留这个IP不提供给其它客户机，如果同一台客户机在这个时间范围内再次发送DHCP请求，将这个保留的IP再次提供给客户机
+					# }
+
+					#全局配置，设置成不自动更新DNS和忽略客户端DNS更新即可
+					ddns-update-style none;
+					ignore client-updates;
+
+					#192.168.60.0/24子网段配置，所有从192.168.60.1网卡接收到的DHCP请求，都由这一块配置提供
+					subnet 192.168.60.0 netmask 255.255.255.0{
+					 #MAC为00:0c:29:03:c6:90的主机请求IP时将提供一个固定IP（192.168.60.88），这个IP不会提供给其它PC，相当于保留地址，并且在这个host区块内部还能单独定义租约时间，域名，DNS地址等参数，没有在host区块内部定义的参数将使用subnet区块的参数，在host区块内部定义的参数将覆盖subnet区块的参数
+					 host boss {
+					  hardware ethernet 00:0c:29:03:c6:90;
+					  fixed-address 192.168.60.88;
+					  option domain-name "qingsword.com";
+					  default-lease-time 9000;
+					  max-lease-time 10000;
+					 }
+					 range 192.168.60.2 192.168.60.254;
+					 option routers 192.168.60.1;
+					 option subnet-mask 255.255.255.0;
+					 option domain-name-servers 114.114.114.114;
+					 option domain-name "www.qingsword.com";
+					 default-lease-time 3600;
+					 max-lease-time 7200;
+					}
+
+					#192.168.80.0/24子网段配置，所有从192.168.80.1网卡接收到的DHCP请求，都由这一块配置提供
+					subnet 192.168.80.0 netmask 255.255.255.0{
+					 host boss2 {
+					  hardware ethernet 00:0c:29:78:30:67;
+					  fixed-address 192.168.80.88;
+					 }
+					 range 192.168.80.2 192.168.80.254;
+					 option routers 192.168.80.1;
+					 option subnet-mask 255.255.255.0;
+					 option domain-name-servers 8.8.8.8;
+					 option domain-name "qingsword.com";
+					 default-lease-time 1800;
+					 max-lease-time 3600;
+					}
+					</pre>
+
+					<p>2）重启DHCP服务使配置生效，并设置成开机启动</p>
+
+					<pre class="brush: bash;">
+					[root@qingsword.com ~]# systemctl restart dhcpd
+
+					#如有必要，设置成开机自启动
+					[root@qingsword.com ~]# systemctl enable dhcpd
+					</pre>
+
+					<p>配置完成后，从服务器的两块网卡分别接收到的DHCP请求会分配不同的IP地址，这种方法可以推广到N块网卡的情况，给不同的网卡设置不同的IP地址（不在同一个网段），然后修改DHCP主配置文件，对每块网卡所在子网都配置一块subnet区域来提供IP租约信息即可。</p>
+
+						
+				<!-- /正文 -->
+
+				<footer class="text-footer">
+					<p>
+						*转载请注明来自:<a title="晴刃-自由、互助、分享、专注计算机技术。" href="http://www.qingsword.com" target="_blank">晴刃(QingSword.COM)</a>
+					</p>
+					<p>*原文连接:<a title="[RHEL]-22-配置DHCP服务" href="http://www.qingsword.com/qing/rhel-22.html" target="_blank">http://www.qingsword.com/qing/rhel-22.html</a></p>
+				</footer>
+			</article>
+			<!-- /文章区 -->	
+		</div>
+	</div>
+	<!-- /content -->
+	
+	<!-- footer -->
+	<footer id="footer">
+		<div class="footer-container">
+			QingSword.COM &nbsp;<img src="../logo/by-nc-sa.png" alt="Creative Commons" title="Creative Commons">
+		</div>
+	</footer>
+	<!-- /footer -->
+</body>
+</html>
