@@ -134,7 +134,7 @@
 					#  see dhcpd.conf(5) man page
 					#
 		
-					#子网段配置文件结构
+					#子网区域配置结构
 					# subnet 网段地址 netmask 子网掩码{
 					#  host 自定义绑定名 { 
 					#    hardware ethernet 目标机器MAC地址;
@@ -145,8 +145,8 @@
 					#  option subnet-mask 子网掩码长度;
 					#  option domain-name-servers DNS地址;
 					#  option domain-name 域名;
-					#  default-lease-time 租约失效时间(秒)
-					#  max-lease-time 当提供给某个客户机IP后，超过了default-lease-time，但还在max-lease-time时间范围内，将保留这个IP不提供给其它客户机，如果同一台客户机在这个时间范围内再次发送DHCP请求，将这个保留的IP再次提供给客户机
+					#  default-lease-time [秒]; 租约失效时间
+					#  max-lease-time [秒]; 当提供给某个客户机IP后，超过了default-lease-time，但还在max-lease-time时间范围内，将保留这个IP不提供给其它客户机，如果同一台客户机在这个时间范围内再次发送DHCP请求，将这个保留的IP再次提供给客户机;
 					# }
 
 					#全局配置，设置成不自动更新DNS和忽略客户端DNS更新即可
