@@ -265,7 +265,7 @@
 
 					<p>别名邮箱定义在/etc/aliases文件中，意思是给这个文件中左侧的用户发邮件时，全部转发给右侧的用户，文件信息如下：</p>
 					<pre class="brush: bash;">
-					[root@qingsword ~]# more /etc/aliases
+					[root@qingsword.com ~]# more /etc/aliases
 					# General redirections for pseudo accounts.
 					bin:	root
 					daemon:	root
@@ -273,15 +273,23 @@
 					lp:	root
 					sync:	root
 					....
+
+					#我们可以自定义一个转发用户
+					qingsword:	root
+
+					#然后使用下面的命令刷新aliases文件
+					[root@qingsword.com ~]# newaliases
+
+					#这个qingsword完全可以是系统中不存在的一个用户，这样当给qingsword@qingsword.com发送邮件时，同样会转发给root用户
 					</pre>
 
 					<p>使用Windows尝试给bin发送一封邮件：</p>
 					<img src="images/rhel-portfix-dovecot-8.jpg" alt="rhel-portfix-dovecot-8.jpg" title="rhel-portfix-dovecot-8.jpg">
 
-					<p>虽然服务器的bin用户是一个不允许登录系统的用户，但只要是在/etc/aliases列表左侧的转发用户（这个用户必须在系统中存在），那么就会转发给右侧对应的用户，本例这个邮件将会转发给root，验证如下：</p>
+					<p>虽然服务器的bin用户是一个不允许登录系统的用户，但只要是在/etc/aliases列表左侧的转发用户（左侧的用户名可以是系统中并不存在的用户），那么就会转发给右侧对应的用户，本例这个邮件将会转发给root，验证如下：</p>
 					<pre class="brush: bash;">
 					#服务器上root使用mail查看邮件列表时，可以看到winuser发来的一封邮件，这个邮件的收件地址是bin，但却被root收到了，这就是"用户别名邮箱"的作用
-					[root@qingsword ~]# mail
+					[root@qingsword.com ~]# mail
 					Heirloom Mail version 12.5 7/5/10.  Type ? for help.
 					"/var/spool/mail/root": 3 messages 1 new
 					    1 ubuser                Thu Dec 15 01:08  21/704   "11"
