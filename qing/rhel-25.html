@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<!--Copyright©QingSword.COM︻☼1010D>-->
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
+	<meta name="description" content="晴刃,是一个致力推广实用计算机技术的个人博客;我们分享计算机知识;为计算机系统以及网络安全防范做出一份贡献。【专注技术 创造价值 共同进步】">
+	<meta name="keywords" content="晴刃,晴,qing,qingsword,ccna图文笔记,ubuntu,linux,ubuntu server,mysql,node.js,javascript,python,计算机技术博客">
+	<meta name="author" content="www.qingsword.com">
+	<title>[RHEL]-25-使用iSCSI部署网络储存 - QingSword.COM</title>
+	<link rel="shortcut icon" type="image/x-icon" href="../logo/favicon.ico">
+	<link rel="stylesheet" type="text/css" href="../css/basic.css">
+	<link rel="stylesheet" type="text/css" href="../css/text.css">
+	<!-- 代码块高亮js -->
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shCore.css"/>
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shThemeRDark.css"/>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shCore.js"></script>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shBrushBash.js"></script>
+	<script type="text/javascript">
+	SyntaxHighlighter.all();
+	</script>
+</head>
+<body>
+	<!--header -->
+	<header id="nav">
+			<div class="nav-container"> 
+				<!-- 根大纲-->
+				<a href="http://www.qingsword.com" title="晴刃">
+					<h1 class="nav-logo">晴刃</h1>
+				</a>
+				<h2 class="nav-site-description desc-hidden">
+					自由、互助、分享、专注计算机技术
+				</h2>
+				<nav class="nav-links"> 
+					<!-- nav连接大纲-->
+					<h1 style="display:none;">网站导航</h1> 
+					<ul>
+						<li  class="li-hidden">
+							<a href="../index.html" title="home">
+								<span class="link-word"><img src="../logo/home.png" alt="home" class="link-img">首页</span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../web.html" title="web">
+								<span class="link-word"><img src="../logo/web.png" alt="web" class="link-img">前端<span class="word-hidden">设计</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../system.html" title="system">
+								<span class="link-word"><img src="../logo/linux.png" alt="linux" class="link-img">系统<span class="word-hidden">应用</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../net.html" title="net">
+								<span class="link-word"><img src="../logo/net.png" alt="net" class="link-img">网络<span class="word-hidden">技术</span></span>
+							</a>
+						</li>
+						<li>
+							<a href="../sitemap.html" title="sitemap">
+								<span class="link-word"><img src="../logo/archives.png" alt="archives" class="link-img"><span class="word-hidden">文章</span>归档</span>
+							</a>
+						</li>
+					</ul>
+				</nav>
+			</div>		
+	</header>
+	<!-- /header -->
+
+	<!-- content-->
+	<div id="content">
+		<div class="content-container">
+			<!-- 文章区 -->
+			<article class="text-container">
+				<header class="text-header">
+					<h1>[RHEL]-25-使用iSCSI部署网络储存</h1>	
+				</header><!-- /header -->
+				<section class="text-body">
+					<h2>引言</h2>
+					<p>这篇文章将介绍如何使用iSCSI技术，将一台服务器上的硬盘部署到网络上，在网络上的其他服务器可以挂载共享这块硬盘的数据。</p>
+					<!-- 目录 -->
+					<h2>文章目录</h2>
+					<ul class="contents">	
+						 <li><a href="#rhel-iSCSI-1">0×1.iSCSI简介</a></li>
+						 <li><a href="#rhel-iSCSI-2">0×2.使用iSCSI部署网络储存实例</a></li>
+						 <li class="subli"><a href="#rhel-iSCSI-3">a.iSCSI服务端配置</a></li>
+						 <li class="subli"><a href="#rhel-iSCSI-4">b.iSCSI客户端配置</a></li>
+						 <li class="subli"><a href="#rhel-iSCSI-5">c.iSCSI追加删除设备</a></li>
+						 <li class="subli"><a href="#rhel-iSCSI-6">d.客户端彻底移除iSCSI</a></li>
+						 
+					 </ul>
+					<!-- /目录 -->
+
+					<!-- 正文 -->
+					<h2 id="rhel-iSCSI-1">0×1.iSCSI简介</h2>
+
+					<p>在传统环境中使用的SCSI(Small Computer System Interface)技术，通常需要SCSI总线链接不同的储存设备，因此受到了物理环境和SCSI总线长度的限制，为了解决这一局限性，IBM公司研究并开发了用于实现在IP网络上运行SCSI协议的新存储技术，即iSCSI（Internet Small Computer System Interface）。</p>
+
+					<p>iSCSI能让SCSI接口与以太网技术结合，使iSCSI协议在以太网上传送SCSI命令与数据，从而克服了SCSI的局限性，但与此同时又产生了一个新的问题，硬盘的数据处理速度要远大于网络传输速率，在不同客户服务器之间存取数据时，往往受到网络传输速率的限制，所以通常的做法是，在客户服务器与iSCSI服务器之间使用SAN存储区域网络技术(Storage Area Network)，SAN是基于iSCSI存储协议，并采用高速光钎传输数据的服务程序，SAN能使得网络传输延迟尽可能的小，但延迟仍然不可避免，这也是如今影响iSCSI性能最大的问题。</p>
+
+					<h2 id="rhel-iSCSI-2">0×2.使用iSCSI部署网络储存实例</h2>
+
+					<p>实验环境：</p>
+					<p class="indent-p">
+					RHEL7，IP 192.168.1.233/24，iSCSI服务端，新增了四块大小都为20G的硬盘/dev/sd[b-e]；<br>	
+					Centos7，IP 192.168.1.123/24，iSCSI客户端；<br>
+					我们可以想象成这两台服务器之间使用SAN网络相连，并且能够互相访问；
+					</p>
+
+					<h3 id="rhel-iSCSI-3">a.iSCSI服务端配置</h3>
+
+					<p>1）确保服务端硬盘储存的安全，在iSCSI服务端启用磁盘阵列技术raid10，将/dev/sd[b-e]四块硬盘加入阵列中（可选步骤，也可以直接将硬盘号加入iSCSI环境中）：</p>
+					<pre class="brush: bash;">
+					#安装mdadm
+					[root@qingsword.com ~]# yum -y install mdadm
+
+					#将四块硬盘配置成raid10
+					[root@qingsword.com ~]# mdadm -Cv /dev/md0 -a yes -n 4 -l 10 /dev/sd[b-e]
+
+					#查看进度文件，等文件中的进度到达100%，再继续下一步
+					[root@qingsword.com ~]# cat /proc/mdstat
+
+					#生成配置文件（实际上RHEL7系统中这个配置文件不生成也没关系），会将/dev/md0的UUID写入到这个文件中
+					[root@qingsword.com ~]# mdadm -D --scan &gt; /etc/mdadm.conf
+
+					#修改配置文件，UUID保持不变，DEVICE后面写mdadm所包含的硬件名称，ARRAY后面是mdadm设备名称，然后是UUID（请注意，你的UUID是上面这一步生成的，不要照抄我的）
+					[root@qingsword.com ~]# vim /etc/mdadm.conf
+					DEVICE /dev/sdb /dev/sdc /dev/sdd /dev/sde
+					ARRAY /dev/md0 UUID=b304f0ec:981dfc1f:63160956:6a3b2faf
+					</pre>
+
+					<p>2）安装并启动iSCSI服务端程序</p>
+
+					<pre class="brush: bash;">
+					#targetd是iSCSI服务程序，targetcli是服务端配置程序
+					[root@qingsword.com ~]# yum install -y targetd targetcli
+
+					#启动targetd，并设置为开机自启动
+					[root@qingsword.com ~]# systemctl start targetd
+					[root@qingsword.com ~]# systemctl enable targetd
+					</pre>
+
+					<p>3）配置iSCSI</p>
+					<pre class="brush: bash;">
+					#进入targetcli命令行
+					[root@qingsword.com ~]# targetcli
+					targetcli shell version 2.1.fb41
+					Copyright 2011-2013 by Datera, Inc and others.
+					For help on commands, type 'help'.
+					
+					#查看下目录结构
+					/&gt; ls
+					o- / .......... [...]
+					  o- backstores .......... [...]
+					  | o- block .......... [Storage Objects: 0]
+					  | o- fileio .......... [Storage Objects: 0]
+					  | o- pscsi .......... [Storage Objects: 0]
+					  | o- ramdisk .......... [Storage Objects: 0]
+					  o- iscsi .......... [Targets: 0]
+					  o- loopback .......... [Targets: 0]
+
+					#进入backstores/block目录中
+					/&gt; cd backstores/block
+
+					#将/dev/md0这块储存设备加入iSCSI设备块（如果没有创建磁盘阵列，也可以直接单独添加某块硬盘设备），disk_001是自定义的iSCSI设备号，仅用于识别
+					/backstores/block&gt; create disk_001 /dev/md0
+					Created block storage object disk_001 using /dev/md0.
+					
+					#创建成功后，可以查看到block下多了一块disk_001设备，原始设备名称是/dev/md0，大小是40G
+					/backstores/block&gt; ls
+					o- block .......... [Storage Objects: 1]
+					  o- disk_001 .......... [/dev/md0 (40.0GiB) write-thru deactivated]
+
+					#进入iSCSI环境根目录的iscsi目录中
+					/backstores/block&gt; cd /iscsi
+
+					#直接使用create命令，创建iqn目录，这会在这个目录下生成一个iqn开头的文件夹，而" iqn.2003-01.org.linux-iscsi.qingsword.x8664:sn.924b22230dad"这一串标识符很重要，客户端检测时会显示这串标识符，在iscsi目录中每次使用create命令都会自动生成一个iqn目录，我们可以将/backstores/block中的不同设备加入这些目录中，提供给客户端连接与使用
+					/iscsi&gt; create
+					Created target iqn.2003-01.org.linux-iscsi.qingsword.x8664:sn.924b22230dad.
+
+					#在iqn目录中，会自动生成一个目录结构
+					/iscsi&gt; ls
+					o- iscsi .......... [Targets: 1]
+					  o- iqn.2003-01.org.linux-iscsi.qingsword.x8664:sn.924b22230dad .......... [TPGs: 1]
+					    o- tpg1 .......... [no-gen-acls, no-auth]
+					      o- acls ..................... [ACLs: 0]
+					      o- luns ..................... [LUNs: 0]
+					      o- portals ............... [Portals: 1]
+					        o- 0.0.0.0:3260 ................ [OK]
+
+					#首先进入luns目录
+					/iscsi&gt; cd iqn.2003-01.org.linux-iscsi.qingsword.x8664:sn.924b22230dad/tpg1/luns 
+
+					#创建LUN设备，将/backstores/block/disk_001这块设备加入到当前的iqn目标中（这意味着，客户端连接上这个LUN设备，对应的磁盘大小就是下面加入的这块desk_001的大小）
+					/iscsi/iqn.20...dad/tpg1/luns&gt; create /backstores/block/disk_001
+
+					#进入acls目录，创建访问控制列表
+					/iscsi/iqn.20...dad/tpg1/luns&gt; cd ../acls 
+					
+					#这个访问控制列表名称是自定义的，推荐使用格式为"iqn的全名:自定义的字符串"
+					/iscsi/iqn.20...dad/tpg1/acls&gt; create iqn.2003-01.org.linux-iscsi.qingsword.x8664:sn.924b22230dad:qingsword.com
+
+					#进入portals目录，首先删除默认的访问IP（这个IP允许从服务端所有网卡接口访问到这个LUN设备）
+					/iscsi/iqn.20...dad/tpg1/acls&gt; cd ../portals/
+					/iscsi/iqn.20.../tpg1/portals&gt; delete 0.0.0.0 3260
+
+					#创建一个新的规则，仅允许从192.168.1.233这块网卡的3260接口访问
+					/iscsi/iqn.20.../tpg1/portals&gt; create 192.168.1.233
+
+					#全部配置完毕后，完整的结构如下
+					/iscsi/iqn.20.../tpg1/portals&gt; cd /
+					/&gt; ls
+					o- / ..................... [...]
+					  o- backstores .......... [...]
+					  | o- block ........... [Storage Objects: 1]
+					  | | o- disk_001 .......... [/dev/md0 (40.0GiB) write-thru activated]
+					  | o- fileio .......... [Storage Objects: 0]
+					  | o- pscsi ........... [Storage Objects: 0]
+					  | o- ramdisk ........... [Storage Objects: 0]
+					  o- iscsi ..................... [Targets: 1]
+					  | o- iqn.2003-01.org.linux-iscsi.qingsword.x8664:sn.924b22230dad .......... [TPGs: 1]
+					  |   o- tpg1 .......... [no-gen-acls, no-auth]
+					  |     o- acls ................... [ACLs: 1]
+					  |     | o- iqn.2003-01.org.linux-iscsi.qingsword.x8664:sn.924b22230dad:qingsword.com ........... [Mapped LUNs: 1]
+					  |     |   o- mapped_lun0 .......... [lun0 block/disk_001 (rw)]
+					  |     o- luns ................... [LUNs: 1]
+					  |     | o- lun0 .................. [block/disk_001 (/dev/md0)]
+					  |     o- portals ............. [Portals: 1]
+					  |       o- 192.168.1.233:3260 .......... [OK]
+					  o- loopback .................. [Targets: 0]
+
+					#最后一定不要忘记使用exit退出，这样才能自动将上面的修改保存到配置文件中
+					/&gt; exit
+					</pre>
+
+					<p>3）配置防火墙</p>
+					<pre class="brush: bash;">
+					#首先清空iptables并保存
+					[root@qingsword.com ~]# iptables -F
+					[root@qingsword.com ~]# service iptables save
+					
+					#如果遇到连接不上的情况，请将3260端口添加到防火墙允许列表中
+					[root@qingsword.com ~]# firewall-cmd --permanent --zone=public --add-port=3260/tcp
+					[root@qingsword.com ~]# firewall-cmd --reload
+					</pre>
+
+					<p>客户端配置完成。</p>
+
+					<h3 id="rhel-iSCSI-4">b.iSCSI客户端配置</h3>
+
+					<p>在CentOS7或RHEL7环境中默认已经安装了iSCSI客户端，只需要简单配置就能够使用：</p>
+
+					<p>1）修改客户端配置文件，重启客户端iscsi服务</p>
+					<pre class="brush: bash;">
+					[root@qingsword.com ~]# vim /etc/iscsi/initiatorname.iscsi
+
+					#将InitiatorName后面的名称改成服务端acls目录中我们使用create命令自定义的访问控制列表的名称
+					InitiatorName=iqn.2003-01.org.linux-iscsi.qingsword.x8664:sn.924b22230dad:qingsword.com
+					
+					#重启服务，将服务设置成开机自启动
+					[root@qingsword.com ~]# systemctl restart iscsid
+					[root@qingsword.com ~]# systemctl enable iscsid
+					</pre>
+
+					<p>2）检测iSCSI服务端有哪些可用的iqn目标设备</p>
+					<pre class="brush: bash;">
+					#-m参数指定一个动作，discovery参数会去探测服务器上有哪些可以连接的iqn目标，-p参数指定iSCSI服务端IP
+					[root@qingsword.com ~]# iscsiadm -m discovery -t st -p 192.168.1.233
+
+					#检测到一个可以连接的iqn目标
+					192.168.1.233:3260,1 iqn.2003-01.org.linux-iscsi.qingsword.x8664:sn.924b22230dad
+					</pre>
+
+					<p>3）连接目标并挂载到本地使用</p>
+					<pre class="brush: bash;">
+					#在连接之前，看看本地的都有哪些磁盘设备
+					[root@qingsword.com ~]# ls /dev/sd*
+					/dev/sda  /dev/sda1  /dev/sda2  /dev/sda3
+
+					#使用node结点模式登录，-T参数后面指定第2步中探测到的iqn全名，-p后面是iSCSI服务端的IP，-l代表--login
+					[root@qingsword.com ~]# iscsiadm -m node -T iqn.2003-01.org.linux-iscsi.qingsword.x8664:sn.924b22230dad -p 192.168.1.233 -l
+
+					#连接后，再次查看本地磁盘设备，发现多了一块/dev/sdb
+					[root@qingsword.com ~]# ls /dev/sd*
+					/dev/sda  /dev/sda1  /dev/sda2  /dev/sda3  /dev/sdb
+
+					#格式化这块硬盘，挂载到本地使用（注意！注意！注意！如果这块设备已经被其他客户端格式化过了，就不需要这一步的操作，直接挂载使用即可，一定不要再去格式化了，否则会丢失所有数据，那么如何判断是否已经格式化？直接挂载一下，如果成功了说明已经格式化）
+					[root@qingsword.com ~]# mkfs.xfs /dev/sdb
+					
+					#查看设备UUID值，将设备写入fstab中开机自动挂载
+					[root@qingsword.com ~]# blkid /dev/sdb
+					/dev/sdb: UUID="d663a07a-7963-48da-af8a-25ac03a3cfa6" TYPE="xfs"
+
+					[root@qingsword.com ~]# vim /etc/fstab
+
+					#将设备挂载到/mnt目录下，_netdev参数告诉系统，这是一块网络设备，当网络连通后再挂载
+					UUID=d663a07a-7963-48da-af8a-25ac03a3cfa6 /mnt  xfs defaults,_netdev 0 0
+					</pre>
+					<p>Ps：多个客户端可以同时将这块设备挂载到本地使用，但多个客户端对硬盘的写入不是同步的，只有重新挂载后才能看到其它客户端写入的信息。</p>
+
+					<h3 id="rhel-iSCSI-5">c.iSCSI追加删除设备</h3>
+
+					<p>接着上面的实验，在iSCSI服务端再添加一块20G的硬盘/dev/sdf，将这块硬盘添加到现有的iSCSI中的iqn文件夹中。</p>
+
+					<p>追加设备，iSCSI服务端配置：</p>
+					<pre class="brush: bash;">
+					#进入配置工具命令行
+					[root@qingsword.com ~]# targetcli
+
+					/&gt; cd /backstores/block
+
+					#比较规范的写法，简写时省略name=与dev=也是可以的，另外还有一个readonly=yes/no(默认不写为no)参数，指定这块硬盘是否只读
+					/backstores/block&gt; create name=disk_002 dev=/dev/sdf
+
+					#进入对应iqn文件夹的luns目录
+					/backstores/block&gt; cd /
+					/&gt; cd iscsi/iqn.2003-01.org.linux-iscsi.qingsword.x8664:sn.924b22230dad/tpg1/luns/
+
+					#给这个目录追加一块新的LUN设备/backstores/block/disk_002    
+					/iscsi/iqn.20...dad/tpg1/luns&gt; create /backstores/block/disk_002
+
+					#保存并退出
+					/iscsi/iqn.20...dad/tpg1/luns&gt; exit
+					</pre>
+					
+					<p>客户端需要重新断开再连接，才能够识别出这块新的设备：</p>
+					<pre class="brush: bash;">
+					#断开之前，设备列表，/dev/sdb是iSCSI服务端的/dev/md0
+					[root@qingsword.com ~]# ls /dev/sd*
+					/dev/sda  /dev/sda1  /dev/sda2  /dev/sda3  /dev/sdb
+					
+					#重新断开再连接
+					[root@qingsword.com ~]# iscsiadm -m node -T iqn.2003-01.org.linux-iscsi.qingsword.x8664:sn.924b22230dad -p 192.168.1.233 -u
+					[root@qingsword.com ~]# iscsiadm -m node -T iqn.2003-01.org.linux-iscsi.qingsword.x8664:sn.924b22230dad -p 192.168.1.233 -l
+					
+					#发现多了一块/dev/sdc，这块硬盘就是iSCSI服务端上面新增的/dev/sdf
+					[root@qingsword.com ~]# ls /dev/sd*
+					/dev/sda  /dev/sda1  /dev/sda2  /dev/sda3  /dev/sdb  /dev/sdc
+					</pre>
+
+					<p>iSCSI服务端删除设备：</p>
+
+					<pre class="brush: bash;">
+					[root@qingsword.com ~]# targetcli
+
+					#首先查看下目录信息
+					/&gt; ls
+					o- / ................... [...]
+					  o- backstores ................... [...]
+					  | o- block ................... [Storage Objects: 2]
+					  | | o- disk_001 ................... [/dev/md0 (40.0GiB) write-thru activated]
+					  | | o- disk_002 ................... [/dev/sdf (20.0GiB) write-thru activated]
+					  | o- fileio ................... [Storage Objects: 0]
+					  | o- pscsi ................... [Storage Objects: 0]
+					  | o- ramdisk ................... [Storage Objects: 0]
+					  o- iscsi ................... [Targets: 1]
+					  | o- iqn.2003-01.org.linux-iscsi.qingsword.x8664:sn.924b22230dad ................... [TPGs: 1]
+					  |   o- tpg1 ................... [no-gen-acls, no-auth]
+					  |     o- acls ................... [ACLs: 1]
+					  |     | o- iqn.2003-01.org.linux-iscsi.qingsword.x8664:sn.924b22230dad:qingsword.com ................... [Mapped LUNs: 2]
+					  |     |   o- mapped_lun0 ................... [lun0 block/disk_001 (rw)]
+					  |     |   o- mapped_lun1 ................... [lun1 block/disk_002 (rw)]
+					  |     o- luns ................... [LUNs: 2]
+					  |     | o- lun0 ................... [block/disk_001 (/dev/md0)]
+					  |     | o- lun1 ................... [block/disk_002 (/dev/sdf)]
+					  |     o- portals ................... [Portals: 1]
+					  |       o- 192.168.1.233:3260 ................... [OK]
+					  o- loopback ................... [Targets: 0]
+
+					#加入我们要删除iqn目录中的LUN1（这块设备就是block中的disk_002，即/dev/sdf）
+					/> cd /iscsi/iqn.2003-01.org.linux-iscsi.qingsword.x8664:sn.924b22230dad/tpg1/luns/
+
+					#可简写成 delete 1
+					/iscsi/iqn.20...dad/tpg1/luns> delete lun=1
+
+					#此时可以将disk_002分配给其他iqn目标使用了，如果完全不需要使用了，将其从设备中移除
+					/iscsi/iqn.20...dad/tpg1/luns> cd /backstores/block/
+
+					#可简成delete disk_002     
+					/backstores/block> delete name=disk_002
+
+					#保存退出
+					/backstores/block> exit
+					</pre>
+
+					<p>客户端只需要卸载对应的设备即可（如果加入了fstab，请将配置移除）。</p>
+
+					<p>将设备移出iSCSI前，设备无法被iSCSI服务端本地挂载（因为被iSCSI服务占用）。</p>
+
+					<h3 id="rhel-iSCSI-6">d.客户端彻底移除iSCSI</h3>
+					
+					<p>如果客户端不再使用服务端的设备，可以使用下面的方法彻底移除残留的配置：</p>
+					<pre class="brush: bash;">
+					#除了删除fstab中的配置外，首先断开与服务端的连接
+					[root@qingsword.com ~]# iscsiadm -m node -T iqn.2003-01.org.linux-iscsi.qingsword.x8664:sn.924b22230dad -p 192.168.1.233 -u
+
+					#删除残留配置
+					[root@qingsword.com ~]# cd /var/lib/iscsi
+					[root@qingsword.com iscsi]# ls
+					ifaces  isns  nodes  send_targets  slp  static
+
+					[root@qingsword.com iscsi]# ls nodes send_targets/
+					nodes:
+					iqn.2003-01.org.linux-iscsi.qingsword.x8664:sn.924b22230dad
+
+					send_targets/:
+					192.168.1.233,3260
+
+					[root@qingsword.com iscsi]# rm -rf nodes/iqn.2003-01.org.linux-iscsi.qingsword.x8664\:sn.924b22230dad/
+					[root@qingsword.com iscsi]# rm -rf send_targets/192.168.1.233,3260/
+					</pre>
+						
+				<!-- /正文 -->
+
+				<footer class="text-footer">
+					<p>
+						*转载请注明来自:<a title="晴刃-自由、互助、分享、专注计算机技术。" href="http://www.qingsword.com" target="_blank">晴刃(QingSword.COM)</a>
+					</p>
+					<p>*原文连接:<a title="[RHEL]-25-使用iSCSI部署网络储存" href="http://www.qingsword.com/qing/rhel-25.html" target="_blank">http://www.qingsword.com/qing/rhel-25.html</a></p>
+				</footer>
+			</article>
+			<!-- /文章区 -->	
+		</div>
+	</div>
+	<!-- /content -->
+	
+	<!-- footer -->
+	<footer id="footer">
+		<div class="footer-container">
+			QingSword.COM &nbsp;<img src="../logo/by-nc-sa.png" alt="Creative Commons" title="Creative Commons">
+		</div>
+	</footer>
+	<!-- /footer -->
+</body>
+</html>
