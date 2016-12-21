@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<!--Copyright©QingSword.COM︻☼1010D>-->
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
+	<meta name="description" content="晴刃,是一个致力推广实用计算机技术的个人博客;我们分享计算机知识;为计算机系统以及网络安全防范做出一份贡献。【专注技术 创造价值 共同进步】">
+	<meta name="keywords" content="晴刃,晴,qing,qingsword,ccna图文笔记,ubuntu,linux,ubuntu server,mysql,node.js,javascript,python,计算机技术博客">
+	<meta name="author" content="www.qingsword.com">
+	<title>[RHEL]-26-使用MariaDB代替MySQL - QingSword.COM</title>
+	<link rel="shortcut icon" type="image/x-icon" href="../logo/favicon.ico">
+	<link rel="stylesheet" type="text/css" href="../css/basic.css">
+	<link rel="stylesheet" type="text/css" href="../css/text.css">
+	<!-- 代码块高亮js -->
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shCore.css"/>
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shThemeRDark.css"/>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shCore.js"></script>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shBrushBash.js"></script>
+	<script type="text/javascript">
+	SyntaxHighlighter.all();
+	</script>
+</head>
+<body>
+	<!--header -->
+	<header id="nav">
+			<div class="nav-container"> 
+				<!-- 根大纲-->
+				<a href="http://www.qingsword.com" title="晴刃">
+					<h1 class="nav-logo">晴刃</h1>
+				</a>
+				<h2 class="nav-site-description desc-hidden">
+					自由、互助、分享、专注计算机技术
+				</h2>
+				<nav class="nav-links"> 
+					<!-- nav连接大纲-->
+					<h1 style="display:none;">网站导航</h1> 
+					<ul>
+						<li  class="li-hidden">
+							<a href="../index.html" title="home">
+								<span class="link-word"><img src="../logo/home.png" alt="home" class="link-img">首页</span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../web.html" title="web">
+								<span class="link-word"><img src="../logo/web.png" alt="web" class="link-img">前端<span class="word-hidden">设计</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../system.html" title="system">
+								<span class="link-word"><img src="../logo/linux.png" alt="linux" class="link-img">系统<span class="word-hidden">应用</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../net.html" title="net">
+								<span class="link-word"><img src="../logo/net.png" alt="net" class="link-img">网络<span class="word-hidden">技术</span></span>
+							</a>
+						</li>
+						<li>
+							<a href="../sitemap.html" title="sitemap">
+								<span class="link-word"><img src="../logo/archives.png" alt="archives" class="link-img"><span class="word-hidden">文章</span>归档</span>
+							</a>
+						</li>
+					</ul>
+				</nav>
+			</div>		
+	</header>
+	<!-- /header -->
+
+	<!-- content-->
+	<div id="content">
+		<div class="content-container">
+			<!-- 文章区 -->
+			<article class="text-container">
+				<header class="text-header">
+					<h1>[RHEL]-26-使用MariaDB代替MySQL</h1>	
+				</header><!-- /header -->
+				<section class="text-body">
+					<h2>引言</h2>
+					<p>这篇文章将介绍一款开源的数据库管理工具MariaDB。</p>
+					<!-- 目录 -->
+					<h2>文章目录</h2>
+					<ul class="contents">	
+						 <li><a href="#rhel-MariaDB-1">0×1.安装与初始化MariaDB</a></li>
+						 <li><a href="#rhel-MariaDB-2">0×2.MariaDB实例</a></li>
+					 </ul>
+					<!-- /目录 -->
+
+					<!-- 正文 -->
+					<h2 id="rhel-MariaDB-1">0×1.安装与初始化MariaDB</h2>
+
+					<p>MariaDB是由MySQL之父Michael Widenius开发的完全免费开源的一款数据库管理系统，在MySQL卖给SUN公司后，MySQL就一直存在必源的风险，为了规避这一风险，Michael Widenius在MySQL项目的基础上创建了MariaDB这一开源项目分之， 如今，许多大型互联网用户以及Linux发行商纷纷抛弃MySQL，转投MariaDB阵营，这也让MariaDB成为最受关注的MySQL数据库衍生版，也被视MySQL的替代品。</p>
+
+					<p>因为MariaDB是MySQL项目的一个分之，所以在MariaDB中能够支持大部分的MySQL命令，MariaDB跟MySQL在绝大多数方面是兼容的。</p>
+
+					<p>在RHEL7中使用yum安装与初始化MariaDB：</p>
+					<pre class="brush: bash;">
+					#1.安装
+					[root@qingsword.com ~]# yum install -y mariadb mariadb-server
+					
+					#2.启动MariaDB，并将其加入开机自启动
+					[root@qingsword.com ~]# systemctl start mariadb
+					[root@qingsword.com ~]# systemctl enable mariadb
+
+
+					#3.初始化
+					[root@qingsword.com ~]# mysql_secure_installation
+
+					#第一次初始化，root没有密码，直接回车即可
+					Enter current password for root (enter for none):
+					
+					#是否设置root密码
+					Set root password? [Y/n] y
+
+					#输入两遍root密码
+					New password: 
+					Re-enter new password: 
+
+					#是否移除匿名用户，为了安全，移除
+					Remove anonymous users? [Y/n] y
+
+					#不允许远程root登录，考虑到安全性，选择y
+					Disallow root login remotely? [Y/n] y
+
+					#移除测试数据库
+					Remove test database and access to it? [Y/n] y
+
+					#使上面的配置立即生效
+					Reload privilege tables now? [Y/n] y
+
+					#4.本地使用root登录
+					[root@qingsword.com ~]# mysql -u root -p
+					Enter password:  #输入初始化时设置的root密码
+					Server version: 5.5.52-MariaDB MariaDB Server
+
+					MariaDB [(none)]&gt;
+					</pre>
+
+					<h2 id="rhel-MariaDB-2">0×2.MariaDB实例</h2>
+
+					<p>实例一：修改当前用户密码</p>
+					<pre class="brush: bash;">
+					#将root密码设置成12345678
+					MariaDB [(none)]&gt; set password = password ('12345678');
+					</pre>
+
+					<p>实例二：创建用户并授权</p>
+					<pre class="brush: bash;">
+					#创建数据库用户命令
+					# create user 用户名@主机名 identified by '密码';
+					MariaDB [(none)]&gt; create user qingsword@localhost identified by '123456';
+					MariaDB [(none)]&gt; exit
+
+					#使用新用户登录
+					[root@qingsword.com ~]# mysql -u qingsword -p
+
+					#新用户并没有什么权限
+					MariaDB [(none)]&gt; show databases;
+					+--------------------+
+					| Database           |
+					+--------------------+
+					| information_schema |
+					+--------------------+
+
+					#权限语法如下：
+
+					# grant 权限 on 数据库.表单名称 to 用户名@主机名
+					# 对某个特定数据库中的特定表单给予授权
+
+					# grant 权限 on 数据库.* to 用户名@主机名
+					# 对某个特定数据库中的所有表单给予授权
+
+					# grant 权限 on *.* to 用户名@主机名
+					# 对所有数据库及所有表单给予授权
+
+					# grant 权限1,权限2 on 数据库.* to 用户名@主机名
+					# 对某个数据库中的所有表单给予多个授权
+
+					# grant all privileges on *.* to 用户名@主机名
+					# 对所有数据库及所有表单给予全部授权
+
+					#切换到root用户，给qingsword用户分配权限
+					MariaDB [(none)]&gt; exit
+					[root@qingsword.com ~]# mysql -u root -p
+
+					#给qingsword用户对mysql这个数据库中所有表，查询，更新，插入，删除权限
+					MariaDB [(none)]&gt; grant select,update,insert,delete on mysql.* to qingsword@localhost;
+
+					#再次使用qingsword用户登录，就能够查看到mysql这个数据库了
+					MariaDB [(none)]&gt; exit
+					[root@qingsword.com ~]# mysql -u qingsword -p
+					MariaDB [(none)]&gt; show databases;
+					+--------------------+
+					| Database           |
+					+--------------------+
+					| information_schema |
+					| mysql              |
+					+--------------------+
+
+					#如果想删除qingsword用户的权限
+					MariaDB [(none)]&gt; exit
+					[root@qingsword.com ~]# mysql -u root -p
+					
+					#只留下qingsword用户对mysql这个数据库中所有表的select权限
+					MariaDB [(none)]&gt; revoke update,delete,insert on mysql.* from qingsword@localhost;
+
+					#使用下面的命令可以查看用户拥有的权限
+					MariaDB [(none)]&gt; show grants for qingsword@localhost;
+					</pre>
+					
+					<p>更多的数据库使用方法，参考本站[<a title="MySql基础文档。" href="../sitemap.html#mysql" target="_blank">MySql基础文档</a>]系列文章。</p>
+						
+				<!-- /正文 -->
+
+				<footer class="text-footer">
+					<p>
+						*转载请注明来自:<a title="晴刃-自由、互助、分享、专注计算机技术。" href="http://www.qingsword.com" target="_blank">晴刃(QingSword.COM)</a>
+					</p>
+					<p>*原文连接:<a title="[RHEL]-26-使用MariaDB代替MySQL" href="http://www.qingsword.com/qing/rhel-26.html" target="_blank">http://www.qingsword.com/qing/rhel-26.html</a></p>
+				</footer>
+			</article>
+			<!-- /文章区 -->	
+		</div>
+	</div>
+	<!-- /content -->
+	
+	<!-- footer -->
+	<footer id="footer">
+		<div class="footer-container">
+			QingSword.COM &nbsp;<img src="../logo/by-nc-sa.png" alt="Creative Commons" title="Creative Commons">
+		</div>
+	</footer>
+	<!-- /footer -->
+</body>
+</html>
