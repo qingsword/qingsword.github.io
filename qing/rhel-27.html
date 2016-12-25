@@ -176,7 +176,7 @@
 					[root@qingsword.com ~]# firewall-cmd --reload
 					</pre>
 
-					<h3 id="rhel-kickstart-3">c.配置syslinux</h3>
+					<h3 id="rhel-kickstart-5">c.配置syslinux</h3>
 					
 					<pre class="brush: bash;">
 					#1.下载syslinux，这个软件包中就包含了我们所需要的PXE引导文件
@@ -209,7 +209,7 @@
 					  append initrd=initrd.img inst.stage2=ftp://192.168.100.233 ks=ftp://192.168.100.233/pub/ks.cfg quiet
 					</pre>
 
-					<h3 id="rhel-kickstart-4">d.配置Vsftpd</h3>
+					<h3 id="rhel-kickstart-6">d.配置Vsftpd</h3>
 					
 					<p>安装Vsftpd，并将光盘中所有数据全部拷贝到ftp根目录中：</p>
 					<pre class="brush: bash;">
@@ -231,7 +231,7 @@
 					[root@qingsword.com ~]# firewall-cmd --reload
 					</pre>
 
-					<h3 id="rhel-kickstart-3">e.配置Kickstart</h3>
+					<h3 id="rhel-kickstart-7">e.配置Kickstart</h3>
 
 					<p>通过上面的配置之后，现在只差一个kickstart自动化配置文件了，在RHEL系统中有一个十分好用的工具system-config-kickstart（这是一个图形化的ks.cfg文件生成工具，据说在RHEL7的光盘中没有提供，但可以通过CentOS的网络源获取到），有兴趣的朋友可以尝试去使用它生成一个ks文件，然后再添加一些我们自定义的内容：</p>
 					<pre class="brush: bash;">
