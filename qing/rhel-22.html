@@ -149,7 +149,7 @@
 					#  max-lease-time [秒]; 当提供给某个客户机IP后，超过了default-lease-time，但还在max-lease-time时间范围内，将保留这个IP不提供给其它客户机，如果同一台客户机在这个时间范围内再次发送DHCP请求，将这个保留的IP再次提供给客户机;
 					# }
 
-					#全局配置，设置成不自动更新DNS和忽略客户端DNS更新即可
+					#全局配置，设置成不动态更新DNS和忽略客户端DNS更新即可
 					ddns-update-style none;
 					ignore client-updates;
 
