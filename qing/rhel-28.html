@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<!--Copyright©QingSword.COM︻☼1010D>-->
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
+	<meta name="description" content="晴刃,是一个致力推广实用计算机技术的个人博客;我们分享计算机知识;为计算机系统以及网络安全防范做出一份贡献。【专注技术 创造价值 共同进步】">
+	<meta name="keywords" content="晴刃,晴,qing,qingsword,ccna图文笔记,ubuntu,linux,ubuntu server,mysql,node.js,javascript,python,计算机技术博客">
+	<meta name="author" content="www.qingsword.com">
+	<title>[RHEL]-28-使用Nginx服务部署网站 - QingSword.COM</title>
+	<link rel="shortcut icon" type="image/x-icon" href="../logo/favicon.ico">
+	<link rel="stylesheet" type="text/css" href="../css/basic.css">
+	<link rel="stylesheet" type="text/css" href="../css/text.css">
+	<!-- 代码块高亮js -->
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shCore.css"/>
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shThemeRDark.css"/>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shCore.js"></script>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shBrushBash.js"></script>
+	<script type="text/javascript">
+	SyntaxHighlighter.all();
+	</script>
+</head>
+<body>
+	<!--header -->
+	<header id="nav">
+			<div class="nav-container"> 
+				<!-- 根大纲-->
+				<a href="http://www.qingsword.com" title="晴刃">
+					<h1 class="nav-logo">晴刃</h1>
+				</a>
+				<h2 class="nav-site-description desc-hidden">
+					自由、互助、分享、专注计算机技术
+				</h2>
+				<nav class="nav-links"> 
+					<!-- nav连接大纲-->
+					<h1 style="display:none;">网站导航</h1> 
+					<ul>
+						<li  class="li-hidden">
+							<a href="../index.html" title="home">
+								<span class="link-word"><img src="../logo/home.png" alt="home" class="link-img">首页</span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../web.html" title="web">
+								<span class="link-word"><img src="../logo/web.png" alt="web" class="link-img">前端<span class="word-hidden">设计</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../system.html" title="system">
+								<span class="link-word"><img src="../logo/linux.png" alt="linux" class="link-img">系统<span class="word-hidden">应用</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../net.html" title="net">
+								<span class="link-word"><img src="../logo/net.png" alt="net" class="link-img">网络<span class="word-hidden">技术</span></span>
+							</a>
+						</li>
+						<li>
+							<a href="../sitemap.html" title="sitemap">
+								<span class="link-word"><img src="../logo/archives.png" alt="archives" class="link-img"><span class="word-hidden">文章</span>归档</span>
+							</a>
+						</li>
+					</ul>
+				</nav>
+			</div>		
+	</header>
+	<!-- /header -->
+
+	<!-- content-->
+	<div id="content">
+		<div class="content-container">
+			<!-- 文章区 -->
+			<article class="text-container">
+				<header class="text-header">
+					<h1>[RHEL]-28-使用Nginx服务部署网站</h1>	
+				</header><!-- /header -->
+				<section class="text-body">
+					<h2>引言</h2>
+					<p>这篇文章将介绍Nginx环境的搭建，包括安装Nginx，配置Nginx，安装PHP-FPM以及Mysql环境。</p>
+					<!-- 目录 -->
+					<h2>文章目录</h2>
+					<ul class="contents">	
+						 <li><a href="#rhel-nginx-1">0×1.如何安装Nginx</a></li>
+						 <li><a href="#rhel-nginx-2">0×2.如何配置Nginx</a></li>
+						 <li><a href="#rhel-nginx-3">0×3.如何配置PHP-FPM服务</a></li>
+						 <li><a href="#rhel-nginx-4">0×4.如何配置Mysql服务</a></li>
+					 </ul>
+					<!-- /目录 -->
+
+					<!-- 正文 -->
+					<h2 id="rhel-nginx-1">0×1.如何安装Nginx</h2>
+
+					<p>Nginx可以直接使用yum来安装，本文介绍使用源码来安装Nginx，源码编译需要两个必要组件pcre和zlib，pcre用来rewrite匹配规则，zlib用来进行gzip压缩。</p>
+
+					<p>1）安装编译Nginx所需的编译组件</p>
+					<pre class="brush: bash;">
+					[root@qingsword.com ~]# yum -y install gcc gcc-c++ automake autoconf libtool make
+					</pre>
+					
+					<p>2）下载安装pcre</p>
+					<p class="indent-p">
+						使用wget下载pcre前，请先到"ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre"去确认下最新的pcre版本号（如果上面的ftp服务器地址失效，请到pcre官方网站"http://www.pcre.org/"查看最新的ftp下载地址），本文采用了pcre-8.38这个版本来演示
+					</p>
+					<pre class="brush: bash;">
+					#本文中所有源码都下载到/usr/local/src目录下
+					[root@qingsword.com ~]# cd /usr/local/src/
+
+					#使用wget下载pcre
+					[root@qingsword.com src]# wget ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-8.38.tar.bz2
+
+					#解压缩
+					[root@qingsword.com src]# ls
+					pcre-8.38.tar.bz2
+					[root@qingsword.com src]# tar -vxjf pcre-8.38.tar.bz2
+
+					#安装（--prefix=参数可以指定安装路径）
+					[root@qingsword.com pcre-8.38]# ./configure --prefix=/usr/local/pcre
+					[root@qingsword.com pcre-8.38]# make &amp;&amp; make install 
+					</pre>
+
+					<p>3）下载安装zlib</p>
+
+					<p class="indent-p">本文完成时，最新的zlib版本为1.2.10，请前往zlib官方网站"http://zlib.net"获取最新版本的下载连接，然后使用wget下载到服务器上：</p>
+
+					<pre class="brush: bash;">
+					#下载zlib
+					[root@qingsword.com pcre-8.38]# cd ..
+					[root@qingsword.com src]# wget http://zlib.net/zlib-1.2.10.tar.gz
+					
+					#解压缩与安装
+					[root@qingsword.com src]# tar -vxzf zlib-1.2.10.tar.gz
+					[root@qingsword.com src]# cd zlib-1.2.10/
+					[root@qingsword.com zlib-1.2.10]# ./configure --prefix=/usr/local/zlib
+					[root@qingsword.com zlib-1.2.10]# make &amp;&amp; make install
+					</pre>
+
+					<p>4）下载安装Openssl</p>
+
+					<p class="indent-p">这是一个可选组件（一般服务器上都会安装这个组建，如果没有安装，使用下面两种方法中的任意一种安装即可），可用于管理服务器上的https证书：</p>
+					<pre class="brush: bash;">
+					#安装方法一，使用yum
+					[root@qingsword.com zlib-1.2.10]# cd ..
+					[root@qingsword.com src]# yum -y install openssl
+
+					#安装方法二，使用源码编译
+					#请先前往openssl官方网站www.openssl.org/source，查看并下载最新版本，本文完成时最新版为openssl-1.1.0c
+					[root@qingsword.com src]# wget https://www.openssl.org/source/openssl-1.1.0c.tar.gz
+					
+					#解压缩与安装
+					[root@qingsword.com src]# tar -vxzf openssl-1.1.0c.tar.gz 
+					[root@qingsword.com openssl-1.1.0c]# ./config --prefix=/usr/local/openssl
+					[root@qingsword.com openssl-1.1.0c]# make &amp;&amp; make install
+
+					#将openssl目录添加到系统环境变量中
+					[root@qingsword.com openssl-1.1.0c]# vim /etc/profile
+					#在文件内容末尾添加
+					export PATH=$PATH:/usr/local/openssl
+
+					#使更改生效
+					[root@qingsword.com openssl-1.1.0c]# source /etc/profile
+
+					#在环境变量中能够看到我们添加的目录，成功
+					[root@qingsword.com openssl-1.1.0c]# echo $PATH
+					/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin:/usr/local/openssl
+					</pre>
+
+					<p>5）安装Nginx</p>
+					
+					<p class="indent-p">首先去Nginx官方下载页面"http://nginx.org/en/download.html"查看下最新版本 ，在官方下载页面有三个版本"Mainline version、Stable version、Legacy version"，其中"Mainline version"为开发板，"Stable version"为稳定版，"Legacy version"则为一些历史稳定版本，本文完成时，最新稳定版为nginx-1.10.2：</p>
+					<pre class="brush: bash;">
+					#创建一个用来启动nginx服务的用户www
+					[root@qingsword.com src]# useradd www -s /sbin/nologin
+
+					#下载nginx
+					[root@qingsword.com openssl-1.1.0c]# cd ..
+					[root@qingsword.com src]# wget http://nginx.org/download/nginx-1.10.2.tar.gz
+
+					#解压缩与编译安装
+					[root@qingsword.com src]# tar -vxzf nginx-1.10.2.tar.gz
+					[root@qingsword.com src]# cd nginx-1.10.2/
+
+					#请注意安装检查的时候携带的参数解释如下
+					# --with-pcre=路径要与我们下载并解压的pcre源码路径一致
+					# --with-zlib=与我们下载并解压的zlib源码路径一致
+					# --with-openssl=与我们下载并解压的openssl源码路径一致
+					# --user=执行nginx服务的用户
+					# --group=执行nginx服务的用户组
+					# --with-http_stub_status_module 开启NginxStatus 功能，此功能可用于监控Nginx当前状态
+					# --with-http_ssl_module 开启https协议模块
+					# --with-http_gzip_static_module 开启静态压缩模块
+					[root@qingsword nginx-1.10.2]# ./configure --prefix=/usr/local/nginx --user=www --group=www --with-http_ssl_module --with-pcre=/usr/local/src/pcre-8.38 --with-zlib=/usr/local/src/zlib-1.2.10 --with-http_stub_status_module --with-http_ssl_module --with-http_gzip_static_module --with-openssl=/usr/local/src/openssl-1.1.0c
+
+					[root@qingsword.com nginx-1.10.2]# make &amp;&amp; make install
+
+					#创建启动脚本
+					[root@qingsword.com nginx-1.10.2]# vim /etc/rc.d/init.d/nginx
+
+					#输入下面的内容
+					#!/bin/bash
+					# nginx - this script starts and stops the nginx daemon
+					# chkconfig: - 85 15
+					# description: Nginx is an HTTP(S) server, HTTP(S) reverse \
+					# proxy and IMAP/POP3 proxy server
+					# processname: nginx
+					# config: /etc/nginx/nginx.conf
+					# config: /usr/local/nginx/conf/nginx.conf
+					# pidfile: /usr/local/nginx/logs/nginx.pid
+					# Source function library.
+					. /etc/rc.d/init.d/functions
+					# Source networking configuration.
+					. /etc/sysconfig/network
+					# Check that networking is up.
+					[ "$NETWORKING" = "no" ] &amp;&amp; exit 0
+					nginx="/usr/local/nginx/sbin/nginx"
+					prog=$(basename $nginx)
+					NGINX_CONF_FILE="/usr/local/nginx/conf/nginx.conf"
+					[ -f /etc/sysconfig/nginx ] &amp;&amp; . /etc/sysconfig/nginx
+					lockfile=/var/lock/subsys/nginx
+					make_dirs() {
+					# make required directories
+					user=`$nginx -V 2&gt;&amp;1 | grep "configure arguments:" | sed 's/[^*]*--user=\([^ ]*\).*/\1/g' -`
+					        if [ -z "`grep $user /etc/passwd`" ]; then
+					                useradd -M -s /bin/nologin $user
+					        fi
+					options=`$nginx -V 2&gt;&amp;1 | grep 'configure arguments:'`
+					for opt in $options; do
+					        if [ `echo $opt | grep '.*-temp-path'` ]; then
+					                value=`echo $opt | cut -d "=" -f 2`
+					                if [ ! -d "$value" ]; then
+					                        # echo "creating" $value
+					                        mkdir -p $value &amp;&amp; chown -R $user $value
+					                fi
+					        fi
+					done
+					}
+					start() {
+					[ -x $nginx ] || exit 5
+					[ -f $NGINX_CONF_FILE ] || exit 6
+					make_dirs
+					echo -n $"Starting $prog: "
+					daemon $nginx -c $NGINX_CONF_FILE
+					retval=$?
+					echo
+					[ $retval -eq 0 ] &amp;&amp; touch $lockfile
+					return $retval
+					}
+					stop() {
+					echo -n $"Stopping $prog: "
+					killproc $prog -QUIT
+					retval=$?
+					echo
+					[ $retval -eq 0 ] &amp;&amp; rm -f $lockfile
+					return $retval
+					}
+					restart() {
+					#configtest || return $?
+					stop
+					sleep 1
+					start
+					}
+					reload() {
+					#configtest || return $?
+					echo -n $"Reloading $prog: "
+					killproc $nginx -HUP
+					RETVAL=$?
+					echo
+					}
+					force_reload() {
+					restart
+					}
+					configtest() {
+					$nginx -t -c $NGINX_CONF_FILE
+					}
+					rh_status() {
+					status $prog
+					}
+					rh_status_q() {
+					rh_status >/dev/null 2&gt;&amp;1
+					}
+					case "$1" in
+					start)
+					        rh_status_q &amp;&amp; exit 0
+					        $1
+					        ;;
+					stop)
+					        rh_status_q || exit 0
+					        $1
+					        ;;
+					restart|configtest)
+					$1
+					;;
+					reload)
+					        rh_status_q || exit 7
+					        $1
+					        ;;
+					force-reload)
+					        force_reload
+					        ;;
+					status)
+					        rh_status
+					        ;;
+					condrestart|try-restart)
+					        rh_status_q || exit 0
+					        ;;
+					*)
+					echo $"Usage: $0 {start|stop|status|restart|condrestart|try-restart|reload|force-reload|configtest}"
+					exit 2
+					esac
+
+					#给启动脚本权限
+					[root@qingsword.com nginx-1.10.2]# chmod 755 /etc/rc.d/init.d/nginx
+					
+					#启动nginx
+					[root@qingsword.com nginx-1.10.2]# /etc/rc.d/init.d/nginx start
+
+					#将nginx设置成开机自启动
+					[root@qingsword.com nginx-1.10.2]# chkconfig nginx on
+					</pre>
+
+					<p>6）如果有防火墙</p>
+					<pre class="brush: bash;">
+					#如果开启了防火墙（比如iptables），添加允许规则，192.168.1.233为服务器网卡IP
+					[root@qingsword.com nginx-1.10.2]# iptables -I INPUT -p tcp -d 192.168.1.233 --dport 80 -j ACCEPT
+					[root@qingsword.com nginx-1.10.2]# service iptables save
+
+					#或直接清空防火墙
+					[root@qingsword.com nginx-1.10.2]# iptables -F
+					[root@qingsword.com nginx-1.10.2]# service iptables save
+					</pre>
+					
+					<p>现在可以尝试着在浏览器输入服务器的IP地址，就能够看到默认的Nginx的欢迎界面了，如果是搭建一个纯静态网站，只需要将静态页面文件放置到nginx安装目录的html子目录中，无需配置即可访问。</p>
+
+					<h2 id="rhel-nginx-2">0×2.如何配置Nginx</h2>
+
+					<p>在安装好Nginx后，不用配置就已经能使用静态网站服务了，下面介绍一下Nginx的主配置文件各参数的内容：</p>
+					<pre class="brush: bash;">
+					
+					</pre>
+
+					<h2 id="rhel-nginx-3">0×3.如何配置PHP-FPM服务</h2>
+					<h2 id="rhel-nginx-4">0×4.如何配置Mysql服务</h2>
+					<p></p>
+					<pre class="brush: bash;">
+					
+					</pre>
+
+					<p class="indent-p">
+						
+					</p>
+					<img src="images/" alt="" title="">
+						
+				<!-- /正文 -->
+
+				<footer class="text-footer">
+					<p>
+						*转载请注明来自:<a title="晴刃-自由、互助、分享、专注计算机技术。" href="http://www.qingsword.com" target="_blank">晴刃(QingSword.COM)</a>
+					</p>
+					<p>*原文连接:<a title="[RHEL]-28-使用Nginx服务部署网站" href="http://www.qingsword.com/qing/rhel-28.html" target="_blank">http://www.qingsword.com/qing/rhel-28.html</a></p>
+				</footer>
+			</article>
+			<!-- /文章区 -->	
+		</div>
+	</div>
+	<!-- /content -->
+	
+	<!-- footer -->
+	<footer id="footer">
+		<div class="footer-container">
+			QingSword.COM &nbsp;<img src="../logo/by-nc-sa.png" alt="Creative Commons" title="Creative Commons">
+		</div>
+	</footer>
+	<!-- /footer -->
+</body>
+</html>
