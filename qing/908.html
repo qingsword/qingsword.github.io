@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <!--Copyright©QingSword.COM︻☼1010D>-->
-<html lang="zh-ch">
+<html lang="zh-cn">
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
 	<meta name="description" content="晴刃,是一个致力推广实用计算机技术的个人博客;我们分享计算机知识;为计算机系统以及网络安全防范做出一份贡献。【专注技术 创造价值 共同进步】">
 	<meta name="keywords" content="晴刃,晴,qing,qingsword,ccna图文笔记,ubuntu,linux,ubuntu server,mysql,node.js,javascript,python,计算机技术博客">
-	<title>[Linux实用命令]-7-软件的安装与管理| QingSword.COM </title>
+	<title>[Linux实用命令]-7-软件的安装与管理 - QingSword.COM </title>
 	<link rel="shortcut icon" type="image/x-icon" href="../logo/favicon.ico">
 	<link rel="stylesheet" type="text/css" href="../css/basic.css">
 	<link rel="stylesheet" type="text/css" href="../css/text.css">
 	<!-- 代码块高亮js -->
 	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shCore.css"/>
 	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shThemeRDark.css"/>
-	 <script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shCore.js"></script>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shCore.js"></script>
 	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shBrushBash.js"></script>
 	<script type="text/javascript">
 	SyntaxHighlighter.all();
@@ -164,11 +164,15 @@
 					#单独更新一个软件，只需要在上面的命令后面加上需要更新的软件名称即可
 					[qingos@qingsword.com~]$ sudo yum update openssh-server
 					</pre>
-					<p>列出是否已安装某个软件包：</p>
+					<p>列出是否已安装某个软件包以及这个软件包是否有可用更新：</p>
 					<pre class="brush: bash;">
 					[qingos@qingsword.com~]$ yum list openssh-server
-					已安装的软件包
-					openssh-server.x86_64 
+					
+					#如果这个软件包已经安装，会在输出列表的最后一列的关键字前添加一个"@"符号，如果没有"@"符号，说明这个软件包未安装，如果已经安装的软件包有更新，会在下面出现一个新版本的文件名，并且最后一列提示"updates"
+					Installed Packages
+					openssh-server.x86_64    6.4p1-8.el7    @anaconda/7.0
+					Available Packages
+					openssh-server.x86_64    6.6.1p1-33.el7_3    updates 
 					</pre>
 					<p>列出云服务器上是否存在某个软件包：</p>
 					<pre class="brush: bash;">

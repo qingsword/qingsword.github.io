@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <!--Copyright©QingSword.COM︻☼1010D>-->
-<html lang="zh-ch">
+<html lang="zh-cn">
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
 	<meta name="description" content="晴刃,是一个致力推广实用计算机技术的个人博客;我们分享计算机知识;为计算机系统以及网络安全防范做出一份贡献。【专注技术 创造价值 共同进步】">
 	<meta name="keywords" content="晴刃,晴,qing,qingsword,ccna图文笔记,ubuntu,linux,ubuntu server,mysql,node.js,javascript,python,计算机技术博客">
-	<title>[Linux实用命令]-9-磁盘阵列(RAID)实例详解| QingSword.COM </title>
+	<title>[Linux实用命令]-9-磁盘阵列(RAID)实例详解 - QingSword.COM </title>
 	<link rel="shortcut icon" type="image/x-icon" href="../logo/favicon.ico">
 	<link rel="stylesheet" type="text/css" href="../css/basic.css">
 	<link rel="stylesheet" type="text/css" href="../css/text.css">
 	<!-- 代码块高亮js -->
 	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shCore.css"/>
 	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shThemeRDark.css"/>
-	 <script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shCore.js"></script>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shCore.js"></script>
 	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shBrushBash.js"></script>
 	<script type="text/javascript">
 	SyntaxHighlighter.all();
@@ -380,11 +380,14 @@
 						  1  8  32  -  faulty  /dev/sdc
 						  4  8  80  -  spare  /dev/sdf
 					</pre>
-					<p>假如/dev/sdc经过测试后发现没有问题，想要重新加入md0使用，可以在系统重启后，使用"mdadm /dev/md0 -a /dev/sdc"命令将它重新启用。</p>
+					<p>假如/dev/sdc经过测试后发现没有问题，想要重新加入md0使用，可以在系统重启后，使用"mdadm /dev/md0 -a /dev/sdc"命令将它重新（添加）启用。</p>
 					<p>如果以后，想要加入一块新硬盘到这个raid10里作为备份盘，这块新硬盘需要和其他硬盘（或分区）保持相同的大小，然后使用下面的命令添加：</p>
 					<pre class="brush: bash;">
 					#添加后，就会在备份列表中看到/dev/sdh这块硬盘了
 					qing@qingsword.com:~$ sudo mdadm /dev/md0 --add /dev/sdh
+
+					#或简写命令如下，效果同上
+					qing@qingsword.com:~$ sudo mdadm /dev/md0 -a /dev/sdh
 					</pre>
 
 					<h2 id="Linux-mdadm-14">0×4.删除磁盘阵列</h2>
