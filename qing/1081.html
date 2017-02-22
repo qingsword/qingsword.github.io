@@ -87,14 +87,14 @@
 					<h2 id="Linux-ip-subinterface-1">0×1.创建临时网卡子接口</h2>
 
 					<p>如果是在图形界面下配置，默认CentOS的网络是由NetworkManager这个服务来管理的，它提供了一个方便的图形界面管理方式，但是这个服务不支持物理网卡的子接口设置，所以在配置前，我们需要先关闭这个服务：</p>
+
+					<p>注：经过测试发现CentOS7不需要关闭这个服务，可以直接配置子接口！</p>
 					<pre class="brush: bash;">
 					#使用root权限执行下面的命令关闭NetworkManager服务
-					qing@qingsword.com:~$ sudo service NetworkManager stop
+					qing@qingsword.com:~$ sudo systemctl stop NetworkManager
 
 					#如果不想让这个服务随机启动，可以将它从启动服务列表移除，如下
 					qing@qingsword.com:~$ sudo systemctl disable NetworkManager
-					#下面这条命令和上面这条命令的效果是相同的
-					qing@qingsword.com:~$ sudo chkconfig NetworkManager off
 					</pre>
 
 					<p>使用ip命令创建临时网卡子接口：</p>
@@ -112,13 +112,7 @@
 					#简写形式，使用ifconfig命令，比ip命令更加简洁，效果相同，如果想创建多个子接口可以递增eno16777736:后面的数字
 					qing@qingsword.com:~$ sudo ifconfig eno16777736:0 192.168.1.249/24
 
-					#3.如果是在图形界面环境，关闭NetworkManager服务后，有线网卡也随之关闭了，使用下面的命令来启用它
-					qing@qingsword.com:~$ sudo ifconfig eno16777736 up
-
-					#4.配置主接口IP地址，或从DHCP服务器获取地址（取决于机器所处实际环境），本例直接使用DHCP获取地址
-					qing@qingsword.com:~$ sudo dhclient eno16777736
-
-					#5.最后查看eno16777736接口如下，父接口IP是DHCP服务器分配的，子接口IP是我们手动配置的，这两个IP都能访问到这块网卡
+					#3.最后查看eno16777736接口如下
 					qing@qingsword.com:~$ ifconfig
 					eno16777736: 
 					 inet 192.168.1.113  netmask 255.255.255.0  broadcast 255.255.255.255
