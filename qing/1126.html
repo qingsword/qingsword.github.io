@@ -99,7 +99,7 @@
 						 #更改成
 						 PermitRootLogin yes
 						 #重启ssh服务即可用root登陆ssh
-						 qing@qingsword.com:~$ sudo service ssh restart
+						 qing@qingsword.com:~$ sudo systemctl restart sshd
 						
 						#3.如果想改变ssh默认监听端口，在/etc/ssh/sshd_config文件中将port后面的端口改成另外的端口即可，但不要和现有端口冲突。
 					</pre>

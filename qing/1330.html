@@ -173,7 +173,8 @@
 					read name #读取键盘输入保存到name变量中
 					#上面这两句可以用下面这一句代替，效果是相同的，read的-p参数用于打印一段需要显示在屏幕的文字，随后的name变量接收用户从键盘输入的值
 					# read -p "Please keyin your name then press Enter:" name
-					echo "Hello $name\nWelcome!" #输出
+					# -e参数告诉解释器，启用反斜杠的转义，那么\n就会被解释成一个换行符，如果不想echo命令输出的最后执行换行，可以再添加参数-n（每个echo语句的末尾都会自动换行）
+					echo -e "Hello $name\nWelcome!" #输出
 
 					qing@qingsword.com:~$ sh sh03.sh 
 					Please keyin your name then press Enter:
