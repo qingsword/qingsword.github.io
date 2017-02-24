@@ -425,8 +425,10 @@
 					#by www.qingsword.com
 					declare -i total  #定义一个整数
 					for ((i=1;i&lt;=100;i=i+1)) #满足条件i&lt;=100时继续循环
+					#或for ((i=1;i&lt;=100;i++)) 
 					do
 					       total=total+i  #递增
+					       #或total+=i
 					done
 					echo "The count is $total"
 
