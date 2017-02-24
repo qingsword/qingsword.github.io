@@ -7,7 +7,7 @@
 	<meta name="description" content="晴刃,是一个致力推广实用计算机技术的个人博客;我们分享计算机知识;为计算机系统以及网络安全防范做出一份贡献。【专注技术 创造价值 共同进步】">
 	<meta name="keywords" content="晴刃,晴,qing,qingsword,ccna图文笔记,ubuntu,linux,ubuntu server,mysql,node.js,javascript,python,计算机技术博客">
 	<meta name="author" content="www.qingsword.com">
-	<title>[RHEL]-28-使用Nginx服务部署网站 - QingSword.COM</title>
+	<title>[RHEL]-28-配置VNC远程访问 - QingSword.COM</title>
 	<link rel="shortcut icon" type="image/x-icon" href="../logo/favicon.ico">
 	<link rel="stylesheet" type="text/css" href="../css/basic.css">
 	<link rel="stylesheet" type="text/css" href="../css/text.css">
@@ -72,282 +72,66 @@
 			<!-- 文章区 -->
 			<article class="text-container">
 				<header class="text-header">
-					<h1>[RHEL]-28-使用Nginx服务部署网站</h1>	
+					<h1>[RHEL]-28-配置VNC远程访问</h1>	
 				</header><!-- /header -->
 				<section class="text-body">
 					<h2>引言</h2>
-					<p>这篇文章将介绍Nginx环境的搭建，包括安装Nginx，配置Nginx，安装PHP-FPM以及Mysql环境。</p>
+					<p>这篇文章使用RHEL7（CentOS7）演示如何安装与配置tigervnc远程访问，tigervnc是一款类似Windows远程桌面的应用程序，适用于安装了桌面的RHEL系统，可以让管理员通过VNC客户端远程连接并打开服务端的远程桌面进行配置与管理。</p>
 					<!-- 目录 -->
 					<h2>文章目录</h2>
 					<ul class="contents">	
-						 <li><a href="#rhel-nginx-1">0×1.如何安装Nginx</a></li>
-						 <li><a href="#rhel-nginx-2">0×2.如何配置Nginx</a></li>
-						 <li><a href="#rhel-nginx-3">0×3.如何配置PHP-FPM服务</a></li>
-						 <li><a href="#rhel-nginx-4">0×4.如何配置Mysql服务</a></li>
+						 <li><a href="#rhel-tigervnc-1">0×1.安装tigervnc</a></li>
+						 <li><a href="#rhel-tigervnc-2">0×2.创建并修改vnc配置文件</a></li>
 					 </ul>
 					<!-- /目录 -->
 
 					<!-- 正文 -->
-					<h2 id="rhel-nginx-1">0×1.如何安装Nginx</h2>
+					<h2 id="rhel-tigervnc-1">0×1.安装tigervnc</h2>
 
-					<p>Nginx可以直接使用yum来安装，本文介绍使用源码来安装Nginx，源码编译需要两个必要组件pcre和zlib，pcre用来rewrite匹配规则，zlib用来进行gzip压缩。</p>
-
-					<p>1）安装编译Nginx所需的编译组件</p>
+					<p>本文将采用yum在线安装的方式，如果有必要也可以下载vnc源码编译安装，确保yum配置正确，且服务器能够连接到网络，使用下面的命令安装vnc：</p>
 					<pre class="brush: bash;">
-					[root@qingsword.com ~]# yum -y install gcc gcc-c++ automake autoconf libtool make
-					</pre>
-					
-					<p>2）下载安装pcre</p>
-					<p class="indent-p">
-						使用wget下载pcre前，请先到"ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre"去确认下最新的pcre版本号（如果上面的ftp服务器地址失效，请到pcre官方网站"http://www.pcre.org/"查看最新的ftp下载地址），本文采用了pcre-8.38这个版本来演示
-					</p>
-					<pre class="brush: bash;">
-					#本文中所有源码都下载到/usr/local/src目录下
-					[root@qingsword.com ~]# cd /usr/local/src/
+					[root@qingsword ~]# yum install -y tigervnc-server
 
-					#使用wget下载pcre
-					[root@qingsword.com src]# wget ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-8.38.tar.bz2
-
-					#解压缩
-					[root@qingsword.com src]# ls
-					pcre-8.38.tar.bz2
-					[root@qingsword.com src]# tar -vxjf pcre-8.38.tar.bz2
-
-					#安装（--prefix=参数可以指定安装路径）
-					[root@qingsword.com pcre-8.38]# ./configure --prefix=/usr/local/pcre
-					[root@qingsword.com pcre-8.38]# make &amp;&amp; make install 
+					#安装完成后查询一下，tigervnc-server已经被安装到系统中，版本是1.3.1
+					[root@qingsword ~]# rpm -qa | grep vnc
+					tigervnc-server-1.3.1-9.el7.x86_64
 					</pre>
 
-					<p>3）下载安装zlib</p>
-
-					<p class="indent-p">本文完成时，最新的zlib版本为1.2.10，请前往zlib官方网站"http://zlib.net"获取最新版本的下载连接，然后使用wget下载到服务器上：</p>
-
-					<pre class="brush: bash;">
-					#下载zlib
-					[root@qingsword.com pcre-8.38]# cd ..
-					[root@qingsword.com src]# wget http://zlib.net/zlib-1.2.10.tar.gz
+					<h2 id="rhel-tigervnc-2">0×2.创建并修改vnc配置文件</h2>
 					
-					#解压缩与安装
-					[root@qingsword.com src]# tar -vxzf zlib-1.2.10.tar.gz
-					[root@qingsword.com src]# cd zlib-1.2.10/
-					[root@qingsword.com zlib-1.2.10]# ./configure --prefix=/usr/local/zlib
-					[root@qingsword.com zlib-1.2.10]# make &amp;&amp; make install
+					<p>安装好后，软件默认会提供一个配置模板，我们只需要稍加修改这个模板文件就能够完成配置：</p>
+					<pre class="brush: bash;">
+					#1.复制一份模板文件，并重命名为1号桌面配置
+					[root@qingsword ~]# cp /lib/systemd/system/vncserver@.service /lib/systemd/system/vncserver@1.service
+
+					#编辑1号桌面配置 
+					[root@qingsword ~]# vim /lib/systemd/system/vncserver@1.service
+
+					#2.在配置文件的42和43行
+					ExecStart=/usr/sbin/runuser -l &lt;USER&gt; -c "/usr/bin/vncserver %i"
+					PIDFile=/home/&lt;USER&gt;/.vnc/%H%i.pid
+
+					#将这两行中的&lt;USER&gt;替换成允许连接到服务器的用户名称，本文替换成root用户，当远程用户使用vnc登录到1号桌面的时候，就会使用root权限登录，所以建议最好是新建一个普通用户
+					ExecStart=/usr/sbin/runuser -l root -c "/usr/bin/vncserver %i"
+					PIDFile=/home/root/.vnc/%H%i.pid
+
+					#3.保存后，使刚才的配置生效
+					[root@qingsword ~]# systemctl daemon-reload
+
+					#4.使用1号桌面启动vnc
+					[root@qingsword ~]# vncserver :1
+
+					You will require a password to access your desktops.
+
+					Password: #输入连接vnc时需要提供的密码
+					Verify:
+
+					#5.将vnc添加到iptables允许列表，或者直接清空iptables
+					[root@qingsword ~]# iptables -F
+					[root@qingsword ~]# service iptables save
 					</pre>
 
-					<p>4）下载安装Openssl</p>
-
-					<p class="indent-p">这是一个可选组件（一般服务器上都会安装这个组建，如果没有安装，使用下面两种方法中的任意一种安装即可），可用于管理服务器上的https证书：</p>
-					<pre class="brush: bash;">
-					#安装方法一，使用yum
-					[root@qingsword.com zlib-1.2.10]# cd ..
-					[root@qingsword.com src]# yum -y install openssl
-
-					#安装方法二，使用源码编译
-					#请先前往openssl官方网站www.openssl.org/source，查看并下载最新版本，本文完成时最新版为openssl-1.1.0c
-					[root@qingsword.com src]# wget https://www.openssl.org/source/openssl-1.1.0c.tar.gz
-					
-					#解压缩与安装
-					[root@qingsword.com src]# tar -vxzf openssl-1.1.0c.tar.gz 
-					[root@qingsword.com openssl-1.1.0c]# ./config --prefix=/usr/local/openssl
-					[root@qingsword.com openssl-1.1.0c]# make &amp;&amp; make install
-
-					#将openssl目录添加到系统环境变量中
-					[root@qingsword.com openssl-1.1.0c]# vim /etc/profile
-					#在文件内容末尾添加
-					export PATH=$PATH:/usr/local/openssl
-
-					#使更改生效
-					[root@qingsword.com openssl-1.1.0c]# source /etc/profile
-
-					#在环境变量中能够看到我们添加的目录，成功
-					[root@qingsword.com openssl-1.1.0c]# echo $PATH
-					/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin:/usr/local/openssl
-					</pre>
-
-					<p>5）安装Nginx</p>
-					
-					<p class="indent-p">首先去Nginx官方下载页面"http://nginx.org/en/download.html"查看下最新版本 ，在官方下载页面有三个版本"Mainline version、Stable version、Legacy version"，其中"Mainline version"为开发板，"Stable version"为稳定版，"Legacy version"则为一些历史稳定版本，本文完成时，最新稳定版为nginx-1.10.2：</p>
-					<pre class="brush: bash;">
-					#创建一个用来启动nginx服务的用户www
-					[root@qingsword.com src]# useradd www -s /sbin/nologin
-
-					#下载nginx
-					[root@qingsword.com openssl-1.1.0c]# cd ..
-					[root@qingsword.com src]# wget http://nginx.org/download/nginx-1.10.2.tar.gz
-
-					#解压缩与编译安装
-					[root@qingsword.com src]# tar -vxzf nginx-1.10.2.tar.gz
-					[root@qingsword.com src]# cd nginx-1.10.2/
-
-					#请注意安装检查的时候携带的参数解释如下
-					# --with-pcre=路径要与我们下载并解压的pcre源码路径一致
-					# --with-zlib=与我们下载并解压的zlib源码路径一致
-					# --with-openssl=与我们下载并解压的openssl源码路径一致
-					# --user=执行nginx服务的用户
-					# --group=执行nginx服务的用户组
-					# --with-http_stub_status_module 开启NginxStatus 功能，此功能可用于监控Nginx当前状态
-					# --with-http_ssl_module 开启https协议模块
-					# --with-http_gzip_static_module 开启静态压缩模块
-					[root@qingsword nginx-1.10.2]# ./configure --prefix=/usr/local/nginx --user=www --group=www --with-http_ssl_module --with-pcre=/usr/local/src/pcre-8.38 --with-zlib=/usr/local/src/zlib-1.2.10 --with-http_stub_status_module --with-http_ssl_module --with-http_gzip_static_module --with-openssl=/usr/local/src/openssl-1.1.0c
-
-					[root@qingsword.com nginx-1.10.2]# make &amp;&amp; make install
-
-					#创建启动脚本
-					[root@qingsword.com nginx-1.10.2]# vim /etc/rc.d/init.d/nginx
-
-					#输入下面的内容
-					#!/bin/bash
-					# nginx - this script starts and stops the nginx daemon
-					# chkconfig: - 85 15
-					# description: Nginx is an HTTP(S) server, HTTP(S) reverse \
-					# proxy and IMAP/POP3 proxy server
-					# processname: nginx
-					# config: /etc/nginx/nginx.conf
-					# config: /usr/local/nginx/conf/nginx.conf
-					# pidfile: /usr/local/nginx/logs/nginx.pid
-					# Source function library.
-					. /etc/rc.d/init.d/functions
-					# Source networking configuration.
-					. /etc/sysconfig/network
-					# Check that networking is up.
-					[ "$NETWORKING" = "no" ] &amp;&amp; exit 0
-					nginx="/usr/local/nginx/sbin/nginx"
-					prog=$(basename $nginx)
-					NGINX_CONF_FILE="/usr/local/nginx/conf/nginx.conf"
-					[ -f /etc/sysconfig/nginx ] &amp;&amp; . /etc/sysconfig/nginx
-					lockfile=/var/lock/subsys/nginx
-					make_dirs() {
-					# make required directories
-					user=`$nginx -V 2&gt;&amp;1 | grep "configure arguments:" | sed 's/[^*]*--user=\([^ ]*\).*/\1/g' -`
-					        if [ -z "`grep $user /etc/passwd`" ]; then
-					                useradd -M -s /bin/nologin $user
-					        fi
-					options=`$nginx -V 2&gt;&amp;1 | grep 'configure arguments:'`
-					for opt in $options; do
-					        if [ `echo $opt | grep '.*-temp-path'` ]; then
-					                value=`echo $opt | cut -d "=" -f 2`
-					                if [ ! -d "$value" ]; then
-					                        # echo "creating" $value
-					                        mkdir -p $value &amp;&amp; chown -R $user $value
-					                fi
-					        fi
-					done
-					}
-					start() {
-					[ -x $nginx ] || exit 5
-					[ -f $NGINX_CONF_FILE ] || exit 6
-					make_dirs
-					echo -n $"Starting $prog: "
-					daemon $nginx -c $NGINX_CONF_FILE
-					retval=$?
-					echo
-					[ $retval -eq 0 ] &amp;&amp; touch $lockfile
-					return $retval
-					}
-					stop() {
-					echo -n $"Stopping $prog: "
-					killproc $prog -QUIT
-					retval=$?
-					echo
-					[ $retval -eq 0 ] &amp;&amp; rm -f $lockfile
-					return $retval
-					}
-					restart() {
-					#configtest || return $?
-					stop
-					sleep 1
-					start
-					}
-					reload() {
-					#configtest || return $?
-					echo -n $"Reloading $prog: "
-					killproc $nginx -HUP
-					RETVAL=$?
-					echo
-					}
-					force_reload() {
-					restart
-					}
-					configtest() {
-					$nginx -t -c $NGINX_CONF_FILE
-					}
-					rh_status() {
-					status $prog
-					}
-					rh_status_q() {
-					rh_status >/dev/null 2&gt;&amp;1
-					}
-					case "$1" in
-					start)
-					        rh_status_q &amp;&amp; exit 0
-					        $1
-					        ;;
-					stop)
-					        rh_status_q || exit 0
-					        $1
-					        ;;
-					restart|configtest)
-					$1
-					;;
-					reload)
-					        rh_status_q || exit 7
-					        $1
-					        ;;
-					force-reload)
-					        force_reload
-					        ;;
-					status)
-					        rh_status
-					        ;;
-					condrestart|try-restart)
-					        rh_status_q || exit 0
-					        ;;
-					*)
-					echo $"Usage: $0 {start|stop|status|restart|condrestart|try-restart|reload|force-reload|configtest}"
-					exit 2
-					esac
-
-					#给启动脚本权限
-					[root@qingsword.com nginx-1.10.2]# chmod 755 /etc/rc.d/init.d/nginx
-					
-					#启动nginx
-					[root@qingsword.com nginx-1.10.2]# /etc/rc.d/init.d/nginx start
-
-					#将nginx设置成开机自启动
-					[root@qingsword.com nginx-1.10.2]# chkconfig nginx on
-					</pre>
-
-					<p>6）如果有防火墙</p>
-					<pre class="brush: bash;">
-					#如果开启了防火墙（比如iptables），添加允许规则，192.168.1.233为服务器网卡IP
-					[root@qingsword.com nginx-1.10.2]# iptables -I INPUT -p tcp -d 192.168.1.233 --dport 80 -j ACCEPT
-					[root@qingsword.com nginx-1.10.2]# service iptables save
-
-					#或直接清空防火墙
-					[root@qingsword.com nginx-1.10.2]# iptables -F
-					[root@qingsword.com nginx-1.10.2]# service iptables save
-					</pre>
-					
-					<p>现在可以尝试着在浏览器输入服务器的IP地址，就能够看到默认的Nginx的欢迎界面了，如果是搭建一个纯静态网站，只需要将静态页面文件放置到nginx安装目录的html子目录中，无需配置即可访问。</p>
-
-					<h2 id="rhel-nginx-2">0×2.如何配置Nginx</h2>
-
-					<p>在安装好Nginx后，不用配置就已经能使用静态网站服务了，下面介绍一下Nginx的主配置文件各参数的内容：</p>
-					<pre class="brush: bash;">
-					
-					</pre>
-
-					<h2 id="rhel-nginx-3">0×3.如何配置PHP-FPM服务</h2>
-					<h2 id="rhel-nginx-4">0×4.如何配置Mysql服务</h2>
-					<p></p>
-					<pre class="brush: bash;">
-					
-					</pre>
-
-					<p class="indent-p">
-						
-					</p>
-					<img src="images/" alt="" title="">
+					<p>配置完后，在windows或ubuntu系统中使用vnc客户端输入"服务端ip:桌面号"，就能够连接到服务器的1号远程桌面了，可以按照上面的方法配置多个远程桌面（复制多个配置文件vncserver@N.service，N的位置替换成需要开启的远程桌面数字，然后修改配置文件中的用户名字段即可，用户登录哪个桌面就使用的是哪个用户的权限）。</p>
 						
 				<!-- /正文 -->
 
@@ -355,7 +139,7 @@
 					<p>
 						*转载请注明来自:<a title="晴刃-自由、互助、分享、专注计算机技术。" href="http://www.qingsword.com" target="_blank">晴刃(QingSword.COM)</a>
 					</p>
-					<p>*原文连接:<a title="[RHEL]-28-使用Nginx服务部署网站" href="http://www.qingsword.com/qing/rhel-28.html" target="_blank">http://www.qingsword.com/qing/rhel-28.html</a></p>
+					<p>*原文连接:<a title="[RHEL]-28-配置VNC远程访问" href="http://www.qingsword.com/qing/rhel-28.html" target="_blank">http://www.qingsword.com/qing/rhel-28.html</a></p>
 				</footer>
 			</article>
 			<!-- /文章区 -->	
