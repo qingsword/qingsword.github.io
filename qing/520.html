@@ -125,6 +125,18 @@
 					</pre>
 					<p>不仅仅操作系统中存在默认路由这个概念，路由器本身也有默认路由，路由器将不知道往哪发的IP分组发给默认路由。</p>
 
+					<p>Ps：补充Linux下删除和添加默认路由方法如下：</p>
+					<pre class="brush: cisco;">
+					/*查看路由表*/
+					qing@qingsword.com:~$ route
+
+					/*删除默认路由（需要管理员权限，这里假设默认路由是192.168.1.1）*/
+					qing@qingsword.com:~$ sudo route del default gw 192.168.1.1
+
+					/*添加默认路由（需要管理员权限）*/
+					qing@qingsword.com:~$ sudo route add default gw 192.168.1.1
+					</pre>
+
 					<h2 id="CCNA-static-routing-5">0×3.路由协议</h2>
 
 					<p>路由协议分类如下图所示：</p>
