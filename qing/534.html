@@ -560,8 +560,12 @@
 					R1(config)#int s 0/0
 					R1(config-if)#ip add 12.1.1.1 255.255.255.0
 					R1(config-if)#no shut
+					R1(config)#int lo 0
+					R1(config-if)#ip add 1.1.1.1 255.255.255.0
+					R1(config-if)#no shut
 					R1(config-if)#exit
 					R1(config)#router rip
+					R1(config-router)#net 1.0.0.0
 					R1(config-router)#net 12.0.0.0
 					R1(config-router)#end
 					</pre>
@@ -600,6 +604,8 @@
 
 					     12.0.0.0/24 is subnetted, 1 subnets
 					C       12.1.1.0 is directly connected, Serial0/0
+					     1.0.0.0/24 is subnetted, 1 subnets
+					C       1.1.1.0 is directly connected, Loopback0
 					R*   0.0.0.0/0 [120/1] via 12.1.1.2, 00:00:25, Serial0/0
 					</pre>
 					<p>此时R1上虽然没有去往R3回环接口的路由，但是R1 ping 3.3.3.3仍然能够ping通，就是因为这条从RIP学习到的默认路由，但如果使用高级ping命令，让R1使用IP1.1.1.1作为源去ping R3，就ping不通了，为什么呢？因为R3上只有一条去往12.1.1.0/24网段的静态路由，它并不知道发往1.1.1.1的数据应该怎么发送，所以丢弃。</p>
