@@ -239,6 +239,20 @@
 					 #再次查看状态，现在git状态为空，这表示，"Repository"中的最新历史版本与"Staying Area"中的版本，以及"Working Directory"中的版本保持一致
 					qing@qingsword.com:~/myblog$ git status -s
 					</pre>
+					<p>如果我们同时修改了仓库中的多个文件，但我们现在只想将其中的一个或几个文件提交到"Repository"中，可以这样做：</p>
+					<pre class="brush: bash;">
+					#同时修改了两个文件，添加两段文本
+					qing@qingsword.com:~/myblog$ echo www.qingsword.com >> index.html
+					qing@qingsword.com:~/myblog$ echo www.qingsword.com >> readme.md
+
+					#文件以及被修改，git标识低位红色"M"
+					qing@qingsword.com:~/myblog$ git status -s
+					 M index.html
+					 M readme.md
+
+					 #仅提交其中的index.html文件(当然，如果要提交多个文件，可以将文件名罗列到index.html那个位置，用空格分隔每个文件名)
+					 qing@qingsword.com:~/myblog$ git commit  index.html -m "update index.html"
+					</pre>
 					<p>最后，补充一个小技巧，当仓库中的文件被修改后，如果想一步完成从"Working Directory"到"Staying Area"再到"Repository"的提交，可以使用下面的命令：</p>
 					<pre class="brush: bash;">
 					#修改文件，添加两段文本
