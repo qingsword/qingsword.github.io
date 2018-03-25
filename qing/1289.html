@@ -82,6 +82,7 @@
 						 <li><a href="#ubuntu-tar-1">0×1.使用gzip/bzip2进行tar归档</a></li>
 						 <li><a href="#ubuntu-zip-2">0×2.使用zip压缩与解压缩</a></li>
 						 <li><a href="#ubuntu-rar-3">0×3.使用rar压缩与解压缩</a></li>
+						 <li><a href="#ubuntu-7z-4">0×4.使用7z压缩与解压缩</a></li>
 					 </ul>
 					<!-- /目录 -->
 
@@ -139,7 +140,39 @@
 						Enter password (will not be echoed) for splitfileac: &lt;-输入正确的密码
 						use current password ? [Y]es, [N]o, [A]ll A &lt;-对后面的文件都使用这个密码解压缩
 					</pre>
-					<p>Ps：实际上在解压缩的时候大可不必这么麻烦，Ubuntu系统自带了一个叫做"归档管理器"的工具，对于本文介绍的五种压缩方式的解压缩，只需要双击压缩文件，在归档管理器中点击"提取"，就能将压缩文件轻松的解压缩提取出来了。</p>	
+
+					<h2 id="ubuntu-7z-4">0×4.使用7z压缩与解压缩</h2>
+					<p>7z也是目前比较常见的主流压缩工具之一，虽然国内大多数使用rar，但有时也会遇到，这里也简单介绍一下：</p>
+					<pre class="brush: bash;">
+						#首先需要安装7z压缩解压缩组件
+						qing@qingsword.com:~$ sudo apt-get install p7zip-full 
+
+						#假设现在家目录中存在一个file2文件夹，目录结构如下
+						qing@qingsword.com:~/file2$ tree
+						.
+						└── file2
+						  ├── dir1
+						  │└── filedir1
+						  ├── dir2
+						  │└── filedir2
+						  ├── file1
+						  ├── file2
+						  └── file3
+
+						#使用7z压缩这个文件夹文件夹，参数a代表添加文件或文件夹到压缩包，如果没有指定文件名，压缩后的文件名称为file2.7z
+						qing@qingsword.com:~$ 7z a file2
+
+						#使用7z解压缩这个压缩包
+						qing@qingsword.com:~$ 7z x file2.7z
+
+						#如果需要指定压缩后的文件名，请使用参数-r
+						qing@qingsword.com:~$ 7z a -r qingsword.7z file2
+
+						#如果需要指定解压缩后的文件路径，请使用参数-o，参数o后面直接接需要解压缩到的路径，注意o和路径之间没有空格
+						qing@qingsword.com:~$ 7z x -o/home/qingsword/test qingsword.7z
+					</pre>
+
+					<p>Ps：实际上在解压缩的时候大可不必这么麻烦，Ubuntu系统自带了一个叫做"归档管理器"的工具，对于本文介绍的几种压缩方式的解压缩，只需要双击压缩文件，在归档管理器中点击"提取"，就能将压缩文件轻松的解压缩提取出来了，前提是系统使用apt-get安装了对应的压缩解压缩组件。</p>	
 				<!-- /正文 -->
 
 				<footer class="text-footer">
