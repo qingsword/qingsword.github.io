@@ -136,6 +136,17 @@
 						117.18.237.29 ocsp.digicert.com<br>
 					</p>
 
+					<p>2018年更新，在新版的firefox中，无法使用flashgot了，所以更新一个替代的方法。</p>
+
+					<p>首先按照上面的方法安装uget后，在终端中安装"uget-integrator"：</p>
+					<pre class="brush: bash;">
+					qing@qingsword.com:~$ sudo add-apt-repository ppa:uget-team/ppa
+					qing@qingsword.com:~$ sudo apt update 
+					qing@qingsword.com:~$ sudo apt install uget-integrator 
+					</pre>
+					<p>然后在firefox浏览器插件中搜索"uGet Integration"安装，安装后，在firefox中点击任何下载链接时，在弹出的对话框中选择"打开,通过"-"uGet"，确定后，即可启动uget下载。</p>
+
+
 					<h2 id="ubuntu-install-uget-and-aria2-3">0×3.使用纯终端aria2下载</h2>
 					<p>　Aria2 是一个轻量级多协议多源命令行下载工具；支持 HTTP,  HTTPS, FTP, SFTP, BT, Metalink等协议；下面是Aria2的常用实例：</p>
 					<p>1）下载单个文件</p>
