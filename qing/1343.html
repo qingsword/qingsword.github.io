@@ -144,7 +144,7 @@
 						84174B79 7C467714 641A9013 94CA7162<br>
 						------ END LICENSE ------
 					</p>
-					<p class="indent-p">如果遇到输入注册码后，提示注册码失效，在hosts文件中添加下面的信息，再注册即可：</p>
+					<p class="indent-p">tips：如果遇到输入注册码后，提示注册码失效，在hosts文件中添加下面的信息，再注册即可：</p>
 					<pre class="brush: bash;">
 					qing@qingsword.com:~$ sudo vim /etc/hosts
 					#添加下面的信息
@@ -210,19 +210,54 @@
 					</pre>
 					<p>至此，无论是命令行输入subl启动，还是通过ubuntu按钮搜索到sublime桌面图标启动，都能正常使用中文输入法了，唯一的bug就是，中文输入法只能定格在sublime的下方无法跟随光标，暂无解决方法，不过并不影响使用。</p>
 
-					<p>Ps：在ubuntu16.04中sublime的中文和英文输入看起来很奇怪，在一行内，中文总是低于英文显示，这是sublime默认字体导致的，解决方法是，在菜单中打开sublime的"Preferences"&gt;"Settings-User"，在中括号中添加一行"font_face": "文泉驿微米黑",下面是我的配置：</p>
+					<p>tips：在ubuntu16.04中sublime的中文和英文输入看起来很奇怪，在一行内，中文总是低于英文显示，这是sublime默认字体导致的，解决方法是，在菜单中打开sublime的"Preferences"&gt;"Settings-User"，在中括号中添加一行"font_face": "文泉驿微米黑"，而且在很多时候，我们不需要更新软件，这会导致我们的注册信息丢失，可以同样在这个配置中添加一行“"update_check": false,”来禁用更新，下面是我的配置：</p>
 					<pre class="brush: bash;">
 					{
 						"detect_slow_plugins": false,
 						"font_size": 16,
 						"font_face": "文泉驿微米黑",
+						"update_check": false,
 						"ignored_packages":
 						[
 							"Vintage"
 						]
 					}
 					</pre>
-					<p>如果打开"Settings-User"没有内容，请自己添加一个中括号，并在其中输入font_face这一行，注意末尾是有逗号的，设置完成后字体马上就变得正常了。</p>
+					<p>tips：如果打开"Settings-User"没有内容，请自己添加一个中括号，并在其中输入font_face这一行，注意末尾是有逗号的，设置完成后字体马上就变得正常了。</p>
+
+					<p>2018年更新（方法中包含如何在ubuntu18.04中安装微软雅黑字体）：在最新的ubuntu18.04中，没有文泉驿微米黑字体了，我们可以从windows下拷贝微软雅黑字体过来，在ubuntu中安装微软雅黑字体，然后在菜单中打开sublime的"Preferences"&gt;"Settings-User"，将"font_face"字段更新成"微软雅黑"，请看下面的演示：</p>
+					<p>用windows10举例，字体文件保存在C:\windows\fonts\目录中，在文件的地址栏输入"C:\Windows\Fonts\Microsoft YaHei UI"就能查找到微软雅黑的常规字体，将这个字体复制出来备用。</p>
+					<p>然后在ubuntu保存字体的目录下，创建一个保存这个字体的文件夹，并且更改权限：</p>
+					<pre class="brush: bash;">
+					qing@qingsword.com:~$ sudo mkdir /usr/share/fonts/truetype/windows-font
+					qing@qingsword.com:~$ sudo chmod 755 /usr/share/fonts/truetype/windows-font
+					</pre>
+					<p>将刚才拷贝的微软雅黑常规字体拷贝到这个目录中后，执行下面的命令：</p>
+					<pre class="brush: bash;">
+					# 更改字体权限
+					qing@qingsword.com:~$ sudo chmod 755 /usr/share/fonts/truetype/windows-font/*
+					# 进入字体目录，安装字体
+					qing@qingsword.com:~$ cd /usr/share/fonts/truetype/windows-font/
+					# 创建fonts.scale文件，可用来控制字体旋转缩放等
+					qing@qingsword.com:/usr/share/fonts/truetype/windows-font$ sudo mkfontscale
+					# 创建fonts.dir文件，可用来控制字体粗斜体产生等
+					qing@qingsword.com:/usr/share/fonts/truetype/windows-font$ sudo mkfontdir
+					# 重新刷新字体缓存，使系统能识别
+					qing@qingsword.com:/usr/share/fonts/truetype/windows-font$ sudo fc-cache -fv
+					</pre>
+					<p>重新启动系统后，直接将sublime的"Preferences"&gt;"Settings-User"配置中的字体更改成微软雅黑即可：</p>
+					<pre class="brush: bash;">
+					{
+						"detect_slow_plugins": false,
+						"font_size": 16,
+						"font_face": "微软雅黑",
+						"update_check": false,
+						"ignored_packages":
+						[
+							"Vintage"
+						]
+					}
+					</pre>
 				<!-- /正文 -->
 
 				<footer class="text-footer">
