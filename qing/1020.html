@@ -86,6 +86,8 @@
 
 					<!-- 正文 -->
 					<h2 id="ubuntu-nvidia-prime">0×1.使用Nvidia Prime</h2>
+					<p>注：2018年更新，最新的ubuntu18.04已经在内核中内置了第三方的开源N卡驱动"Nouveau"，所以不需要自行安装了。</p>
+
 					<p>首先，确保网络连接畅通，打开终端（ctrl+t），按照下面的步骤</p>
 					<pre class="brush: bash;">
 					#1.编辑blacklist.conf将默认的驱动添加到禁用黑名单
@@ -99,15 +101,25 @@
 					#3.使用下面的命令查看都有哪些可用的驱动,末尾的[Tab]表示在这个位置按下键盘的[Tab]键
 					qing@qingsword.com:~$ sudo apt-get install nvidia-[Tab]
 
-					#4.选择你看到的最大的那个后缀数字安装，本例使用当前最新的驱动nvidia-361，然后安装几个必要组件，命令如下
-					 qing@qingsword.com:~$ sudo apt-get install nvidia-settings nvidia-361 nvidia-prime
+					#4.使用下面的命令查看系统推荐安装哪个版本的N卡驱动
+					qing@qingsword.com:~$ ubuntu-drivers devices
+					== /sys/devices/pci0000:00/0000:00:1c.0/0000:01:00.0 ==
+					modalias : pci:v000010DEd0000134Dsv00001043sd0000138Ebc03sc02i00
+					vendor   : NVIDIA Corporation
+					model    : GM108M [GeForce 940MX]
+					driver   : nvidia-driver-390 - distro non-free recommended
+					driver   : xserver-xorg-video-nouveau - distro free builtin
+					#在上面这些输出中可以看到recommended关键词，说明系统推荐安装的N卡驱动是"nvidia-driver-390"
+
+					#5.选择你看到推荐版本安装，本例使用nvidia-driver-390，然后安装几个必要组件，命令如下
+					 qing@qingsword.com:~$ sudo apt-get install nvidia-settings nvidia-driver-390 nvidia-prime
 					
-					#5.安装双显卡切换指示器
+					#6.安装双显卡切换指示器
 					 qing@qingsword.com:~$ sudo add-apt-repository ppa:nilarimogard/webupd8
 					 qing@qingsword.com:~$ sudo apt-get update
 					 qing@qingsword.com:~$ sudo apt-get install prime-indicator
 
-					 #6.重新启动
+					 #7.重新启动
 					 qing@qingsword.com:~$ sudo reboot	
 					</pre>
 					<p>重新启动后会在右上角看到一个显卡指示器，默认情况下是Nvidia图标，说明现在使用的是N卡，点击这个图标选择"Quick switch graphics...",按下确认后会自动重启桌面，此时就会切换到Intel显卡了，图标也变成了Intel。</p>
@@ -118,6 +130,10 @@
 					qing@qingsword.com:~$ lspci | grep VGA
 					00:02.0 VGA compatible controller: Intel Corporation .... (rev 09)
 					01:00.0 VGA compatible controller: NVIDIA Corporation .... (rev ff)
+
+					#如果上面的命令没有看到NVIDIA卡，可以直接使用下面的命令来查看N卡状态
+					qing@qingsword.com:~$ lspci | grep NVI
+
 					
 					#使用下面的命令来测试显卡的性能，数字越大代表显卡性能越好，这条命令可以明显看到N卡的性能强于I卡
 					qing@qingsword.com:~$ glxspheres64 
