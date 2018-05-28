@@ -87,12 +87,17 @@
 					<!-- 正文 -->
 					<h2 id="ubuntu-install-flashplayer-1">0×1.Firefox火狐浏览器安装Flashplayer</h2>
 
-					<p>注：2018年更新，对ubuntu18.04的flashplayer安装方法，首先去adobe官方网站"https://get.adobe.com/flashplayer/"下载"tar.gz for linux"版本的压缩包，解压缩，然后按照下面的方法：</p>
+					<p>注：2018年更新，对ubuntu18.04的flashplayer安装方法，首先去adobe官方网站"https://get.adobe.com/flashplayer/"在下拉菜单中选中下载"tar.gz for linux"版本的压缩包，然后按照下面的方法：</p>
 
 					<pre class="brush: bash;">
+					#解压缩下载的压缩包（本例我这个gz压缩包下载到了我的家目录中，如果不在这个目录，请自行cd切换到下载目录中，例外，大家下载的压缩包的名称可能与我不同，本例是"flash_player_npapi_linux.x86_64.tar.gz"）
+					qing@qingsword.com:~$ tar -vxzf flash_player_npapi_linux.x86_64.tar.gz
+					#解压后使用ls可以查看到下面几个文件
+					qing@qingsword.com:~$ ls
+					libflashplayer.so  readme.txt  LGPL  license.pdf  usr
 					#将解压缩后的压缩包中usr目录下的所有文件，复制到系统usr目录中
 					qing@qingsword.com:~$ sudo cp -r usr/* /usr
-					#将so插件文件，复制到firefox插件目录中，重启firefox，即可使用
+					#将libflashplayer.so插件文件，复制到firefox插件目录中，重启firefox，即可使用
 					qing@qingsword.com:~$ sudo cp libflashplayer.so /usr/lib/firefox-addons/plugins/
 					</pre>	
 

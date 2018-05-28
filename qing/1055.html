@@ -113,8 +113,11 @@
 					<br>VMware-Workstation-10序列号：5F29M-48312-8ZDF9-A8A5K-2AM0Z
 					<br>VMware-Workstation-11序列号：1F04Z-6D111-7Z029-AV0Q4-3AEH8
 					<br>VMware-Workstation-12序列号：5A02H-AU243-TZJ49-GTC7K-3C61N
+					<br>VMware-Workstation-14序列号：CG54H-D8D0H-H8DHY-C6X7X-N2KG6
 					</p>
 					<h2 id="ubuntu-install-vmware-3">0×3.优化VMware启动服务</h2>
+
+					<p>注：这一步是可选操作，在/etc目录中删除文件请谨慎。</p>
 					<p>VMware在安装好之后，有几个服务是随机启动的，但我们并非每次启动都需要使用VMware，这些随机启动的服务在我们没有使用的时候白占着系统资源，我们并不希望这样，我们希望在使用VMware时手动启动这些服务，而不让他们随机启动，笔者给出了一个可行方案，使用两个sh脚本来控制vmware全部服务的启动和关闭。</p>
 					<pre class="brush: bash;">
 						#1.删除所有开机启动服务

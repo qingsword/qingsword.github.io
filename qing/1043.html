@@ -98,13 +98,14 @@
 					<h2 id="ubuntu-sogoupinying-2">0×2.安装实例</h2>
 					<p>在Ubuntu14.04以上版本，安装步骤（本例在ubuntu16.04、18.04下测试安装成功）：</p>
 					<pre class="brush: bash;">
-						#1.打开终端切换到deb安装包所在目录安装
-						qing@qingsword.com:~$ sudo dpkg -i sogoupinyin_2.0.0.0072_amd64.deb
+						#1.打开终端切换到deb安装包所在目录安装(大家安装的时候，deb文件的名称肯定与我这里不一样，可以使用ls查看下载到的文件名称，替换下面命令中的"sogoupinyin_2.2.0.0108_amd64.deb")
+						qing@qingsword.com:~$ sudo dpkg -i sogoupinyin_2.2.0.0108_amd64.deb
 
 						#2.解决软件依赖
 						qing@qingsword.com:~$ sudo apt-get -f install
 
 						#3.完成后重启计算机
+						qing@qingsword.com:~$ sudo reboot
 					</pre>	
 					<p>出于历史的原因，这里简单介绍一下Ubuntu12.04版本使用终端安装搜狗输入法的方法，此方法同样适用于12.04往后的高版本。</p>
 					<pre class="brush: bash;">
