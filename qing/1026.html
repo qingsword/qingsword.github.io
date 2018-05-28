@@ -120,7 +120,9 @@
 						#1.首先进入intel_backlight目录
 						qing@qingsword.com:~$ cd /sys/class/backlight/intel_backlight
 						
-						#此目录中有如下两个重要文件，其中brightness是当前屏幕亮度值，max_brightness保存了屏幕可以设置的最大值
+						#此目录中有如下两个重要文件，其中brightness是当前屏幕亮度值，max_brightness保存了屏幕可以设置的最大值，可以通过ls命令查看到
+						qing@qingsword.com:/..../intel_backlight$ ls
+						#在输出的结果中包含下面两个文件
 						brightness  max_brightness 
 
 						#2.切换到root权限
@@ -129,20 +131,26 @@
 						#如果在安装ubuntu后还没有配置root用户密码，可以使用下面的命令设置root密码，否则无法切换root权限
 						qing@qingsword.com:/..../intel_backlight$ sudo passwd root
 
-						#3.尝试写入一个值到brightness文件，看看屏幕亮度是不是变化了？
+						#3.尝试写入一个值到brightness文件，看看屏幕亮度是不是变化了？（注意，在大于号前后要添加空格，不然修改会失败）
 						qing@qingsword.com:/..../intel_backlight# echo 300 > brightness
 
 						#4.理论的取值范围是0～max_brightness中的最大值，0是完全黑屏，请使用上面的方法写入一个适合自己的亮度，记下这个数字
 
-						#5.将自己调节好的数字写入开机启动文件中，比如本例使用100的亮度
+						#5.将自己调节好的数字写入开机启动文件rc.local中，比如本例使用100的亮度，如下
 						qing@qingsword.com:/..../intel_backlight#vim /etc/rc.local
-						#在exit 0前面添加一句echo如下，这样每次启动就能自动将亮度调节到100了
-						....
-						# By default this script does nothing.
+						#在文件中添加下面的语句
 						echo 100 > /sys/class/backlight/intel_backlight/brightness
-						exit 0
+						exit 0  #如果有这一句就不需要添加
+
+						#注意，ubuntu16.04以前的版本，到上面这一步就行了，但ubuntu18.04需要继续执行下面的操作（因为ubuntu18.04系统中，不再使用initd管理系统，改用systemd管理）
+
+						#6.给rc.local添加执行权限
+						qing@qingsword.com:/..../intel_backlight# chmod 755 /etc/rc.local
+
+						#7.创建连接文件，将lib目录下的rc-local.service文件连接到/etc/systemd/system"目录中，因为systemd默认会读取"/etc/systemd/system"目录中的文件内容，加载内容中指定位置的文件执行，而"rc-local.service"文件中的"ExecStart="字段就指向了"/etc/rc.local"文件
+						qing@qingsword.com:/..../intel_backlight# ln -fs /lib/systemd/system/rc-local.service /etc/systemd/system/rc-local.service 
 					</pre>
-					<p>笔者在这里遇到一个小bug，上面写入开机启动的方法不是每次重启都有效，所以下面提供了另外一种方法写入亮度</p>
+					<p>（注意：Ubuntu18.04不需要再进行这一步操作了，请忽略）笔者在这里遇到一个小bug，上面写入开机启动的方法不是每次重启都有效，所以下面提供了另外一种方法写入亮度</p>
 					<pre class="brush: bash;">
 						#1.首先用vim在自己家目录创建一个脚本文件
 						qing@qingsword.com:~$ vim ～/.constbrightness.sh
