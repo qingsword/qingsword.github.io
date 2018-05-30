@@ -99,6 +99,15 @@
 					<h2 id="ubuntu-install-vmware-2">0×2.Ubuntu安装VMware-Workstation</h2>
 					<p>现在最新的linux版本全名叫"VMware-Workstation-Full-12.1.0-3272444.x86_64.bundle"，我将它下载到了我的家目录中，使用下面的命令安装它</p>
 					<pre class="brush: bash;">
+					#首先安装编译环境，vmware14版本，需要使用gcc去编译安装，而gcc包含在build-essential软件包中（当然也可以只安装gcc）
+					qing@QingSword.COM:~$ sudo apt update 
+					qing@QingSword.COM:~$ sudo apt upgrade
+					#如果这一步出现无法找到软件包，请在ubuntu的软件更新器中，将"ubuntu软件"选项卡中的下载自后面的下拉菜单选择成"主服务器"保存
+					qing@QingSword.COM:~$ sudo apt install build-essential
+
+					#解决安装软件包中出现的依存关系
+					qing@QingSword.COM:~$ sudo apt install -f
+
 					#给软件添加可执行权限
 					qing@QingSword.COM:~$ sudo chmod +x VMware-Workstation-Full-12.1.0-3272444.x86_64.bundle
 					

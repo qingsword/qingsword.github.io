@@ -101,7 +101,7 @@
 
 						#解压缩zip文件
 						#eplace提示，是否覆盖现有文件spshell.sh
-						#A 覆盖所有， N全部不覆盖，r为解压缩的文件输入一个新文件名
+						#A 覆盖所有，n不覆盖单个文件（即遇到一个文件会提示你是否覆盖），N全部不覆盖，r为解压缩的文件输入一个新文件名
 						qing@qingsword.com:~$ unzip filename.zip 
 						replace spshell.sh? [y]es, [n]o, [A]ll, [N]one, [r]ename: A
 					</pre>
@@ -159,7 +159,7 @@
 						  ├── file2
 						  └── file3
 
-						#使用7z压缩这个文件夹文件夹，参数a代表添加文件或文件夹到压缩包，如果没有指定文件名，压缩后的文件名称为file2.7z
+						#使用7z压缩这个文件夹，参数a代表添加文件或文件夹到压缩包，如果没有指定文件名，压缩后的文件名称为file2.7z
 						qing@qingsword.com:~$ 7z a file2
 
 						#使用7z解压缩这个压缩包

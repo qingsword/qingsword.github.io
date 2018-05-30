@@ -80,7 +80,7 @@
 					<h2>文章目录</h2>
 					<ul class="contents">	
 						 <li><a href="#ubuntu-install-uget-and-aria2-1">0×1.安装uGet和aria2</a></li>
-						 <li><a href="#ubuntu-install-uget-and-aria2-2">0×2.在火狐浏览器中安装FlashGot插件</a></li>
+						 <li><a href="#ubuntu-install-uget-and-aria2-2">0×2.在火狐浏览器中安装uGet Integration插件</a></li>
 						 <li><a href="#ubuntu-install-uget-and-aria2-3">0×3.使用纯终端aria2下载</a></li>
 						 <li><a href="#ubuntu-install-uget-and-aria2-4">0×4.使用纯终端wget下载</a></li>
 					 </ul>
@@ -103,7 +103,20 @@
 					<img src="images/install-uget-and-aria-1.jpg" alt="install-uget-and-aria-1">
 					<p>开启aria2插件后，关闭uGet并重新打开，配置下载目录和服务器连接数，如果aria2插件没有开启成功，服务器连接数是不能配置的；</p>
 					<img src="images/install-uget-and-aria-2.jpg" alt="images/install-uget-and-aria-2">
-					<h2 id="ubuntu-install-uget-and-aria2-2">0×2.在火狐浏览器中安装FlashGot组件</h2>
+					<h2 id="ubuntu-install-uget-and-aria2-2">0×2.在火狐浏览器中安装uGet Integration插件</h2>
+
+					<p>2018年更新，在新版的firefox中，无法使用flashgot来关联uget下载了，所以更新一个替代的方法——使用"uGet Integration"插件，安装这个插件可以让uget下载器与firefox浏览器关联，当我们点击下载按钮时，就可以选择使用uget下载器来下载连接内容。</p>
+
+					<p>首先按照上面的方法安装uget后，在终端中安装"uget-integrator"：</p>
+					<pre class="brush: bash;">
+					qing@qingsword.com:~$ sudo add-apt-repository ppa:uget-team/ppa
+					qing@qingsword.com:~$ sudo apt update 
+					qing@qingsword.com:~$ sudo apt install uget-integrator 
+					</pre>
+					<p>然后在firefox浏览器"附加组件"-&gt;"插件"中搜索"uGet Integration"-&gt;"添加到firefox"，重启firefox，重启后在firefox中点击下载链接时，在弹出的对话框中选择"打开,通过"方式下载，确定后，可启动uget，在uget中确认后，即可开始下载。</p>
+					
+					<p>在这一小节中，分割线下使用flashgot的方法在最新的火狐浏览器中已经失效了，但老版本火狐仍然可以使用，安装了上面"uGet Integration"的朋友，就不需要看这一小节分割线下面的内容了。</p>
+					<p>===我是分割线===</p>
 					<p>启动火狐浏览器,在菜单栏中点击”工具”>“附加组件”,然后搜索FlashGot，安装它；</p>
 					<img src="images/install-uget-and-aria-3.jpg" alt="images/install-uget-and-aria-3">
 					<img src="images/install-uget-and-aria-4.jpg" alt="images/install-uget-and-aria-4">
@@ -135,16 +148,6 @@
 						68.232.45.109 df6a.https.cdn.softlayer.net<br>
 						117.18.237.29 ocsp.digicert.com<br>
 					</p>
-
-					<p>2018年更新，在新版的firefox中，无法使用flashgot了，所以更新一个替代的方法。</p>
-
-					<p>首先按照上面的方法安装uget后，在终端中安装"uget-integrator"：</p>
-					<pre class="brush: bash;">
-					qing@qingsword.com:~$ sudo add-apt-repository ppa:uget-team/ppa
-					qing@qingsword.com:~$ sudo apt update 
-					qing@qingsword.com:~$ sudo apt install uget-integrator 
-					</pre>
-					<p>然后在firefox浏览器插件中搜索"uGet Integration"安装，安装后，在firefox中点击任何下载链接时，在弹出的对话框中选择"打开,通过"-"uGet"，确定后，即可启动uget下载。</p>
 
 
 					<h2 id="ubuntu-install-uget-and-aria2-3">0×3.使用纯终端aria2下载</h2>

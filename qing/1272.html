@@ -87,18 +87,40 @@
 					<!-- 正文 -->
 					<h2 id="ubuntu-install-flashplayer-1">0×1.Firefox火狐浏览器安装Flashplayer</h2>
 
-					<p>注：2018年更新，对ubuntu18.04的flashplayer安装方法，首先去adobe官方网站"https://get.adobe.com/flashplayer/"在下拉菜单中选中下载"tar.gz for linux"版本的压缩包，然后按照下面的方法：</p>
+					<p>注：2018年更新，对ubuntu18.04的flashplayer安装方法，首先去[<a href="https://get.adobe.com/flashplayer/" target="_black" rel="nofollow">adobe官方网站</a>]在下拉菜单中选中下载"tar.gz for linux"版本的压缩包，然后按照下面的方法：</p>
 
 					<pre class="brush: bash;">
-					#解压缩下载的压缩包（本例我这个gz压缩包下载到了我的家目录中，如果不在这个目录，请自行cd切换到下载目录中，例外，大家下载的压缩包的名称可能与我不同，本例是"flash_player_npapi_linux.x86_64.tar.gz"）
-					qing@qingsword.com:~$ tar -vxzf flash_player_npapi_linux.x86_64.tar.gz
-					#解压后使用ls可以查看到下面几个文件
+					#本例我这个gz压缩包下载到了我的家目录中，如果不在这个目录，请自行cd切换到下载目录中，另外，大家下载的压缩包的名称可能与我不同，本例是"flash_player_npapi_linux.x86_64.tar.gz"
 					qing@qingsword.com:~$ ls
+					flash_player_npapi_linux.x86_64.tar.gz
+
+					#在下载目录中新建一个临时文件夹，用于存放解压缩后的flashplayer插件文件
+					qing@qingsword.com:~$ mkdir flash
+
+					#将家目录中的flash插件压缩包移动到flash临时目录中
+					qing@qingsword.com:~$ mv flash_player_npapi_linux.x86_64.tar.gz flash
+
+					#切换到flash临时目录下
+					qing@qingsword.com:~$ cd flash/
+
+					#ls查看下，确保文件成功被移动到了这个目录中
+					qing@qingsword.com:~/flash$ ls
+					flash_player_npapi_linux.x86_64.tar.gz
+
+					#解压缩文件（注意，大家下载的文件名称可能和我不同，请自己替换下面的"flash_player_npapi_linux.x86_64.tar.gz"文件名为你自己下载的压缩包名称）
+					qing@qingsword.com:~/flash$ tar -vxzf flash_player_npapi_linux.x86_64.tar.gz
+
+					#解压后使用ls可以查看到下面几个文件
+					qing@qingsword.com:~/flash$ ls
 					libflashplayer.so  readme.txt  LGPL  license.pdf  usr
+
 					#将解压缩后的压缩包中usr目录下的所有文件，复制到系统usr目录中
-					qing@qingsword.com:~$ sudo cp -r usr/* /usr
+					qing@qingsword.com:~/flash$ sudo cp -r usr/* /usr
+
 					#将libflashplayer.so插件文件，复制到firefox插件目录中，重启firefox，即可使用
-					qing@qingsword.com:~$ sudo cp libflashplayer.so /usr/lib/firefox-addons/plugins/
+					qing@qingsword.com:~/flash$ sudo cp libflashplayer.so /usr/lib/firefox-addons/plugins/
+
+					#复制完成后，重新打开firefox浏览器，看看是不是视频都能够加载这个flash插件了（需要关闭firefox浏览器重新打开）
 					</pre>	
 
 					<p>注：（2017年对ubuntu16.04的方法）2017年Flashplayer重新开始支持Linux各浏览器，现在最新的Flashplayer for linux可以前往Adobe官方网站下载安装最新版本，火狐浏览器直接打开（https://get.adobe.com/flashplayer/），版本下拉列表选择“ATP for Debian/Ubuntu”，然后点击“Download Now”，就会自动弹出软件管理器界面，根据提示下载安装即可，但下面的方法依然有效。</p>
