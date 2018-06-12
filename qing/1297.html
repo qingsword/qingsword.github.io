@@ -90,7 +90,7 @@
 					<h2 id="ubuntu-get-software-1">0×1.使用apt-get安装软件</h2>
 					<p>在实例演示之前，先简单的介绍一下apt-get:</p>
 					<p class="indent-p">
-						a）apt-get是ubuntu终端下的一个指令，它可以让系统连接到互联网的软件仓库搜索、安装、升级、卸载软件，并且可以通过它来更新操作系统版本，我们可以将它看做终端模式的软件中心；我们可以通过：系统设置-&gt;软件和更新-&gt;下载自，在下拉列表中选择我们通过哪个软件仓库来下载软件。
+						a）apt-get是ubuntu终端下的一个指令，它可以让系统连接到互联网的软件仓库搜索、安装、升级、卸载软件，并且可以通过它来更新操作系统版本，我们可以将它看做终端模式的软件中心；我们可以通过：系统应用查找-&gt;软件更新器-&gt;设置-&gt;Ubuntu软件选项中的"下载自"，在下拉列表中选择我们通过哪个软件仓库来下载软件。
 						<br>
 						b）除软件仓库外，我们还可以通过PPA（Personal Package Archives个人软件包档案），既第三方源下载安装软件，第三方源是Ubuntu Launchpad网站提供的一项源服务，允许个人或企业上传软件源代码，通过Launchpad发布为软件包，作为apt-get源供其他用户下载和更新。
 						<br>
@@ -109,35 +109,35 @@
 					#查看uget安装到了哪些目录（任何软件都可以使用这种方法查看安装到了哪些目录）
 					qing@qingsword.com:~$ dpkg -L uget
 
-					#apt-get下载的软件deb安装包所保存的目录为"/var/cache/apt/archives",如果系统目录空间紧张，可以使用下面的命令清除所有下载的安装包，这不会影响系统安装的这些软件
+					#通过apt-get下载过的软件deb安装包所保存的目录为"/var/cache/apt/archives"（感兴趣的朋友可以通过ls命令查看下这个目录，其中包含了系统从安装到现在，你通过apt安装过的所有软件包deb文件）,如果系统目录空间紧张，可以使用下面的命令清除所有下载的安装包，这不会影响系统已经安装的这些软件
 					qing@qingsword.com:~$ sudo apt-get clean
 
-					#update更新了软件仓库列表后，可以使用下面的命令更新系统中所有安装的软件到最新版
+					#update更新了软件仓库列表后，可以使用下面的命令更新系统中所有安装的软件到最新版，这条命令会去读取最新的软件包列表，比对系统当前安装的这些软件包的版本是否为最新版，如果不是，就执行覆盖更新操作
 					qing@qingsword.com:~$ sudo apt-get upgrade
 
-					#删除我们刚才安装的uget
+					#如果我们需要删除安装过的软件，使用命令"sudo apt-get remove [要删除的软件包名称]"，使用uget为例，命令如下（如果大家还需要使用uget去下载软件，请不要执行这条命令）
 					qing@qingsword.com:~$ sudo apt-get remove uget
 
-					#删除aria2并且不保留配置文件
+					#删除安装过的软件并且不保留配置文件的命令是"sudo apt-get --purge remove [要删除的软件包名称]"，使用aria2为例，命令如下（同上，aria2作为uget的后端程序，如果大家需要使用uget下载，请不要执行这条命令）
 					qing@qingsword.com:~$ sudo apt-get --purge remove aria2
 
-					#清除已经删除了的软件的依赖包
+					#自动清除已经删除了的软件的依赖包，当我们删除一些软件包的时候，软件包安装过程中自动下载的一些依赖包不会被自动删除，可以使用下面的命令让系统自动的去清除这些已经用不到的依赖包
 					qing@qingsword.com:~$ sudo apt-get autoremove
 					</pre>
 					<p>第三方PPA安装演示：</p>
 					<pre class="brush: bash;">
-					#所有第三方PPA在加入到官方源以前，都会提供如下这种安装方式，标准的三条命令
+					#所有第三方PPA在加入到官方源以前，都会提供如下这种安装方式，标准的三条命令，以安装uget-integrator插件为例（Ps：下面三条命令只是为了演示PPA第三方安装的方法，如果不需要安装这些软件，就不要去执行它们）
 
-					#1.将第三方PPA源加入软件源列表
-					qing@qingsword.com:~$ sudo apt-add-repository ppa:fcitx-team/nightly
+					#1.将第三方PPA源加入软件源列表，这样我们就能通过apt去自动找到这些软件
+					qing@qingsword.com:~$ sudo add-apt-repository ppa:uget-team/ppa
 					#2.更新软件源列表
 					qing@qingsword.com:~$ sudo apt-get update
 					#3.安装此PPA源提供的软件
-					qing@qingsword.com:~$ sudo apt-get install fcitx
+					qing@qingsword.com:~$ sudo apt install uget-integrator
 					</pre>
 
 					<h2 id="ubuntu-get-software-2">0×2.使用deb包安装软件</h2>
-					<p>目前，Ubuntu中使用的最多的软件打包方式就是deb，它相当于Windows下的exe，apt-get实际是在软件源仓库中下载了deb安装包并自动安装，而如果直接提供给我们一个deb安装包，可以使用dpkg命令来查看、安装和卸载。</p>
+					<p>目前，Ubuntu中使用的最多的软件打包方式就是deb，它类似Windows下的exe，apt-get实际是在软件源仓库中下载了deb安装包并自动安装，并且自动安装依赖软件包，而如果直接提供给我们一个deb安装包，可以使用dpkg命令来查看、安装和卸载。</p>
 					<pre class="brush: bash;">
 					##使用搜狗输入法for linux举例
 					#列出deb会释放到系统的哪些位置（deb包含的内容）
@@ -148,15 +148,20 @@
 					....#有几个比较重要的信息如下
 					Version: 2.0.0.0068 #版本
 					Architecture: amd64 #架构 
-					Installed-Size: 41350 #安装后大小
+					Installed-Size: 41350 #安装后大小（KB）
 					Depends: #依赖包列表
 
 					#安装
-					qing@qingsword.com:~$ dpkg -i sogoupinyin_2.0.0.0068_amd64.deb
+					qing@qingsword.com:~$ sudo dpkg -i sogoupinyin_2.0.0.0068_amd64.deb
+
+					#使用apt去自动安装依赖包列表中的软件包
+					qing@qingsword.com:~$ sudo apt install -f
 
 					#安装后查看此软件都释放到了系统的哪些目录
 					qing@qingsword.com:~$ dpkg -L sogoupinyin 
 
+					##注意：下面两个步骤是删除操作，如果我们还在使用搜狗拼音输入法，请不要执行它们，这里只是教大家如何删除dpkg安装的软件包的方法
+					
 					#仅卸载，不删除配置文件
 					qing@qingsword.com:~$ dpkg -r sogoupinyin
 

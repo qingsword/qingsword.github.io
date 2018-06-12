@@ -86,7 +86,7 @@
 
 					<!-- 正文 -->
 					<h2 id="ubuntu-nvidia-prime">0×1.使用Nvidia Prime</h2>
-					<p>注：2018年更新，最新的ubuntu18.04已经在内核中内置了第三方的开源N卡驱动"Nouveau"，所以不需要自行安装了。</p>
+					<p>注：2018年更新，最新的ubuntu18.04已经在内核中内置了第三方的开源N卡驱动"Nouveau"，所以不需要自行安装了，如果觉得发热量不大，也不影响使用，就不需要按照下面的方法折腾了。</p>
 
 					<p>首先，确保网络连接畅通，打开终端（ctrl+t），按照下面的步骤</p>
 					<pre class="brush: bash;">
@@ -141,6 +141,14 @@
 					<p>总结：此方法适用于Ubuntu14.04以上版本，能使用鼠标方便的切换I卡和N卡，需要重启桌面。</p>
 					
 					<h2 id="ubuntu-bumblebee">0×2.使用Bumblebee</h2>
+
+					<p>此方法在部分版本中已失效，新方法请参考第一部分的内容。</p>
+
+					<p>Ubuntu14.04以上版本，使用Bumblebee项目只需要输入下面的命令：</p>
+					<pre class="brush: bash;">
+					qing@qingsword.com:~$ sudo apt-get install bumblebee bumblebee-nvidia primus linux-headers-generic
+					</pre>
+					<p>PS：下面的方法只适用于Ubuntu12.04以下版本，如果是Ubuntu14.04以上版本，请按照上面的方法安装配置。</p>
 					<p>早在nvidia-prime项目还没有出现之前，Bumblebee是使用的最多的I+N双显卡方案，其作用和nvidia-prime一样，在不必要的时候关闭N卡，减小系统的发热量和功耗，在需要的时候调用它，下面是安装步骤</p>
 					<pre class="brush: bash;">
 					#Ubuntu12.04安装方法
@@ -160,7 +168,7 @@
 					 #例如，打开测试软件
 					 qing@qingsword.com:~$ optirun glxspheres64
 					</pre>
-					<p>总结：此方法适用于Ubuntu12.04以上版本，需要使用命令指定程序名来调用，无需重启桌面。</p>
+					
 					
 					<!-- /正文 -->
 
