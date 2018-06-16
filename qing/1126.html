@@ -98,10 +98,13 @@
 						 PermitRootLogin without-password
 						 #更改成
 						 PermitRootLogin yes
-						 #重启ssh服务即可用root登陆ssh
+						 #重启ssh服务即可用root登陆ssh（注意：ubuntu系列里面服务的名称是ssh不是sshd，请注意替换）
 						 qing@qingsword.com:~$ sudo systemctl restart sshd
 						
 						#3.如果想改变ssh默认监听端口，在/etc/ssh/sshd_config文件中将port后面的端口改成另外的端口即可，但不要和现有端口冲突。
+
+						#4.如果需要在重启后ssh自动跟随系统启动，可以使用下面的命令将ssh加入系统启动项（仅限于使用systemd启动的系统）
+						qing@qingsword.com:~$ sudo systemctl enable sshd
 					</pre>
 					<h2 id="using-scp">0×2.使用scp传输文件</h2>
 					<p>安装好openssh-server后，就可以直接使用scp传输文件了：</p>
