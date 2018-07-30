@@ -81,7 +81,7 @@
 					<h2>文章目录</h2>
 					<ul class="contents">	
 						 <li><a href="#rhel-tigervnc-1">0×1.安装tigervnc</a></li>
-						 <li><a href="#rhel-tigervnc-2">0×2.创建并修改vnc配置文件</a></li>
+						 <li><a href="#rhel-tigervnc-2">0×2.配置vnc远程连接密码</a></li>
 					 </ul>
 					<!-- /目录 -->
 
@@ -97,32 +97,22 @@
 					tigervnc-server-1.3.1-9.el7.x86_64
 					</pre>
 
-					<h2 id="rhel-tigervnc-2">0×2.创建并修改vnc配置文件</h2>
+					<h2 id="rhel-tigervnc-2">0×2.配置vnc远程连接密码</h2>
 					
-					<p>安装好后，软件默认会提供一个配置模板，我们只需要稍加修改这个模板文件就能够完成配置：</p>
+					<p>安装好后，只需要配置一下远程连接密码即可：</p>
 					<pre class="brush: bash;">
-					#1.复制一份模板文件，并重命名为1号桌面配置
-					[root@qingsword ~]# cp /lib/systemd/system/vncserver@.service /lib/systemd/system/vncserver@1.service
+					#1.配置vnc远程连接密码
+					[root@qingsword ~]# vncpasswd
+					Password:  #输入远程连接密码
+					Verify: #确认密码
+					#是否创建一个仅能够查看桌面的密码（用这个密码登录，只能看到桌面，无法进行任何操作），本例不创建这样的密码，选择了n
+					Would you like to enter a view-only password (y/n)? n
 
-					#编辑1号桌面配置 
-					[root@qingsword ~]# vim /lib/systemd/system/vncserver@1.service
-
-					#2.在配置文件的42和43行
-					ExecStart=/usr/sbin/runuser -l &lt;USER&gt; -c "/usr/bin/vncserver %i"
-					PIDFile=/home/&lt;USER&gt;/.vnc/%H%i.pid
-
-					#将这两行中的&lt;USER&gt;替换成允许连接到服务器的用户名称，本文替换成root用户，当远程用户使用vnc登录到1号桌面的时候，就会使用root权限登录，所以建议最好是新建一个普通用户
-					ExecStart=/usr/sbin/runuser -l root -c "/usr/bin/vncserver %i"
-					PIDFile=/home/root/.vnc/%H%i.pid
-
-					#3.保存后，使刚才的配置生效
-					[root@qingsword ~]# systemctl daemon-reload
-
-					#4.使用1号桌面启动vnc
-					[root@qingsword ~]# vncserver :1
+					#2.启动vnc的1号桌面（vncserver后有一个空格），可以使用这种方法创建:1～N个vnc远程桌面，具体上限是多少个，笔者没有去探究，如果vncserver后面不携带桌面号，那么vnc会从1开始自动递增桌面号
+					[root@qingsword ~]# vncserver  :1
 
 					You will require a password to access your desktops.
-
+					#如果在第一步中没有配置密码，那么vnc会提示你需要创建一个密码，如果配置了vnc密码，这里就不会有下面的提示了
 					Password: #输入连接vnc时需要提供的密码
 					Verify:
 
@@ -131,7 +121,7 @@
 					[root@qingsword ~]# service iptables save
 					</pre>
 
-					<p>配置完后，在windows或ubuntu系统中使用vnc客户端输入"服务端ip:桌面号"，就能够连接到服务器的1号远程桌面了，可以按照上面的方法配置多个远程桌面（复制多个配置文件vncserver@N.service，N的位置替换成需要开启的远程桌面数字，然后修改配置文件中的用户名字段即可，用户登录哪个桌面就使用的是哪个用户的权限）。</p>
+					<p>配置完后，在windows或ubuntu系统中使用vnc客户端输入"服务端ip:桌面号"，输入配置的密码，就能够连接到指定的远程桌面了。</p>
 						
 				<!-- /正文 -->
 

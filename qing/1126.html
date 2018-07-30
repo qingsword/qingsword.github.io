@@ -151,13 +151,15 @@
 
 						#可以通过ls查看远程目录文件，通过lls查看本地目录文件，更多命令请输入help查阅
 
-						#4.传输本地目录test/到sword，最好的方法就是在sword创建一个test目录，然后进入这个目录，再将本地的test下所有文件传输到这个目录中
+						#4.传输本地目录test/到sword，可以在sword创建一个test目录，然后进入这个目录，再将本地的test下所有文件传输到这个目录中，如下
 						sftp> mkdir test
 						sftp> cd test/
 						sftp> pwd
 						Remote working directory: /home/sword/test
 						sftp> put test/* .
 
+						#但这样的传输方式如果遇到在test目录下还存在子目录的话，传输就会失败，提示要传输的目标不是文件，最好的方法是添加-r参数，如下
+						sftp> put -r test/ .
 
 						#5.从sword下载filetest文件到本地当前目录
 						sftp> get filetest ./
