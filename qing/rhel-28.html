@@ -82,6 +82,7 @@
 					<ul class="contents">	
 						 <li><a href="#rhel-tigervnc-1">0×1.安装tigervnc</a></li>
 						 <li><a href="#rhel-tigervnc-2">0×2.配置vnc远程连接密码</a></li>
+						 <li><a href="#rhel-tigervnc-3">0×3.关闭vnc远程桌面</a></li>
 					 </ul>
 					<!-- /目录 -->
 
@@ -122,7 +123,14 @@
 					</pre>
 
 					<p>配置完后，在windows或ubuntu系统中使用vnc客户端输入"服务端ip:桌面号"，输入配置的密码，就能够连接到指定的远程桌面了。</p>
-						
+
+					<h2 id="rhel-tigervnc-3">0×3.关闭vnc远程桌面</h2>
+					<p>如果现在需要停用某个远程桌面，可以使用下面的命令关闭它：</p>
+					<pre class="brush: bash;">
+					#命令格式：vncserver -kill  :远程桌面号
+					#在-kill后面有一个空格
+					[root@qingsword ~]# vncserver -kill  :1
+					</pre>
 				<!-- /正文 -->
 
 				<footer class="text-footer">

@@ -187,10 +187,23 @@
 					#添加下面这一句到文件中,意思是，使用qing用户的.vnc配置登陆vnc1号桌面；如果有多个用户开启了vnc，可以按照下面的格式添加，例如VNCSERVERS="2:qingsword",意思是，使用qingsword用户的.vnc配置登陆vnc2号桌面，以此类推
 					VNCSERVERS="1:qing"
 
-					#5.在rc.local中添加这个启动脚本（或者将这个启动脚本放在任何你需要的启动等级和启动目录里面）
+					#5.在rc.local中添加这个启动脚本（或者将这个启动脚本放在任何你需要的启动等级和启动目录里面）(ubuntu17以上系统，如果没有rc.local文件，说明系统使用了systemd启动方式，请忽略这一步，直接看第6步)
 					root@qingsword.com:~# vim /etc/rc.local
 					#在文件的exit 0前面输入下面这一行
 					bash /etc/init.d/vncserver.sh
+
+					#6.ubuntu改成systemd启动方式后，在/etc下没有rc.local这个文件了，需按照下面的方法来创建
+					#首先创建service文件连接
+					root@qingsword.com:~# ln -fs /lib/systemd/system/rc-local.service /etc/systemd/system/rc-local.service
+					#查看新建的文件连接内容
+					root@qingsword.com:~# cat /etc/systemd/system/rc-local.service
+					#会发现"ExecStart="后面有一个文件路径，一般为"/etc/rc.local"，根据这个文件路径，创建文件，并写入启动vncserver.sh脚本的命令
+					root@qingsword.com:~# vim /etc/rc.local
+					#在文件中写入下面的内容，保存退出
+					##!/bin/bash
+					bash /etc/init.d/vncserver.sh
+					#添加可执行权限
+					root@qingsword.com:~# chmod 755 /etc/rc.local
 					</pre>
 					<p>设置完成后，每次重启，都会自动启动vncserver并且使用用户qing的.vnc文件夹中的配置开启1号桌面等待连接，如果不需要自动启动了，移除启动文件命令即可。</p>
 					<h2 id="ubuntu-vnc-4">0×4.安装openssh-server实现远程终端ssh登陆</h2>
