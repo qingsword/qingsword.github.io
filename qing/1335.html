@@ -204,6 +204,10 @@
 					bash /etc/init.d/vncserver.sh
 					#添加可执行权限
 					root@qingsword.com:~# chmod 755 /etc/rc.local
+					#重新加载配置
+					root@qingsword.com:~# systemctl daemon-reload
+					#重新加载rc.local服务
+					root@qingsword.com:~# systemctl restart rc.local.service
 					</pre>
 					<p>设置完成后，每次重启，都会自动启动vncserver并且使用用户qing的.vnc文件夹中的配置开启1号桌面等待连接，如果不需要自动启动了，移除启动文件命令即可。</p>
 					<h2 id="ubuntu-vnc-4">0×4.安装openssh-server实现远程终端ssh登陆</h2>
