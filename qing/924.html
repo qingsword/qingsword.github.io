@@ -201,6 +201,7 @@
 					vg0 2   1   0  wz--n- 39.99g 29.99g
 
 					#给lv0增加5G的大小
+					#lvextend还有一个-l参数，这个参数允许我们输入一个PE值来扩充LV大小，这个PE值可以通过vgdisplay命令来查看到，在vgdisplay命令输出中"Free PE"后面的大小就是这个vg剩余的PE大小，如果想一次性将剩余的空间全部划分给当前vg，可以使用命令"lvextend -l +8900 /dev/vg0/lv0"，其中8900就是在vgdisplay命令输出中"Free PE"后面看到的值
 					qing@qingsword.com:~$ sudo lvextend -L +5G /dev/vg0/lv0
 
 					#更新lv0大小（必须）
