@@ -125,18 +125,18 @@
 
 					<pre class="brush: bash;">
 					#使用"ps --forest"查看进程树，可以看到输出中，ps命令是bash的子进程
-					qing@qingsword.com.com.com.com:~$ ps --forest
+					qing@qingsword.com:~$ ps --forest
 					  PID TTY          TIME CMD
 					 3315 pts/3    00:00:00 bash
 					 5815 pts/3    00:00:00  \_ ps
 
 					 #在当前Bash中执行三次bash命令
-					qing@qingsword.com.com.com.com:~$ bash
-					qing@qingsword.com.com.com.com:~$ bash
-					qing@qingsword.com.com.com.com:~$ bash
+					qing@qingsword.com:~$ bash
+					qing@qingsword.com:~$ bash
+					qing@qingsword.com:~$ bash
 
 					#再次使用"ps --forest"查看进程树，可以看到在父bash进程下面存在三个子bash进程，ps执行在最后那个子bash下面
-					qing@qingsword.com.com.com.com:~$ ps --forest
+					qing@qingsword.com:~$ ps --forest
 					  PID TTY          TIME CMD
 					 3315 pts/3    00:00:00 bash
 					 5816 pts/3    00:00:00  \_ bash
@@ -145,7 +145,7 @@
 					 5840 pts/3    00:00:00              \_ ps
 
 					 #通过"ps -f"命令，可以查看到进程"父子"之间的关系，父进程3315（PID）的子进程是5816，以此类推（PPID指向这个进程的父进程PID，表示进程是这个父PID的子进程）
-					qing@qingsword.com.com.com.com:~$ ps -f
+					qing@qingsword.com:~$ ps -f
 					UID        PID  PPID  C STIME TTY          TIME CMD
 					qing      3315  2442  0 20:45 pts/3    00:00:00 bash
 					qing      5816  3315  0 22:12 pts/3    00:00:00 bash
@@ -160,13 +160,13 @@
 
 					<pre class="brush: bash;">
 					#下面这个"命令列表"包含三条命令，pwd和两个echo，执行结果如下所示
-					qing@qingsword.com.com.com:~$ pwd;echo www.qingsword.com;echo qingsword
+					qing@qingsword.com:~$ pwd;echo www.qingsword.com;echo qingsword
 					/home/qing
 					www.qingsword.com
 					qingsword
 
 					#通过上面实例可以看到，"命令列表"是从左往右依次执行的，那么如果"命令列表"中包含错误不存在的命令，接下来的命令还会继续执行吗？下面的实例验证了如果不小心输入了一个不存在的命令，Bash会在执行到这个"命令列表"中这条指令的时候报错，并且会继续执行接下来的命令
-					qing@qingsword.com.com.com:~$ pwd;echo www.qingsword.com;echo qingsword;ssxs;echo qing
+					qing@qingsword.com:~$ pwd;echo www.qingsword.com;echo qingsword;ssxs;echo qing
 					/home/qing
 					www.qingsword.com
 					qingsword
@@ -178,7 +178,7 @@
 
 					<pre class="brush: bash;">
 					#pwd命令在最外层Bash中执行，然后这个父Bash会创建一个子Bash，执行echo www.qingsword.com命令，紧接着的ps --forest命令能够让我们更加清晰的看到ps命令执行在一个子Bash进程下，然后这个子Bash会再创建一个子Bash，执行echo qingsword命令，通过ps --forest命令命令能够很清楚的看到创建的第二个子Bash，“进程列表”的执行也是从左往右，遇到命令执行错误继续执行下一条命令
-					qing@qingsword.com.com:~$ pwd;(echo www.qingsword.com;ps --forest;(echo qingsword;ps --forest))
+					qing@qingsword.com:~$ pwd;(echo www.qingsword.com;ps --forest;(echo qingsword;ps --forest))
 					/home/qing
 					www.qingsword.com
 					  PID TTY          TIME CMD
@@ -198,27 +198,27 @@
 
 					<pre class="brush: bash;">
 					#没有创建子Bash，输出0
-					qing@qingsword.com.com:~$ pwd;echo www.qingsword.com;echo $BASH_SUBSHELL
+					qing@qingsword.com:~$ pwd;echo www.qingsword.com;echo $BASH_SUBSHELL
 					/home/qing
 					www.qingsword.com
 					0
 
 					#创建了两个子Bash，输出2
-					qing@qingsword.com.com:~$ (pwd;echo www.qingsword.com;(echo qingsword;echo $BASH_SUBSHELL))
+					qing@qingsword.com:~$ (pwd;echo www.qingsword.com;(echo qingsword;echo $BASH_SUBSHELL))
 					/home/qing
 					www.qingsword.com
 					qingsword
 					2
 
 					#创建了三个子Bash，输出3
-					qing@qingsword.com.com:~$ (pwd;echo www.qingsword.com;(echo qingsword;(echo $BASH_SUBSHELL)))
+					qing@qingsword.com:~$ (pwd;echo www.qingsword.com;(echo qingsword;(echo $BASH_SUBSHELL)))
 					/home/qing
 					www.qingsword.com
 					qingsword
 					3
 					
 					#那么下面的这种写法为什么输出的是1？Bash不应该创建了两个子Bash吗？这是因为$BASH_SUBSHELL输出的位置是在第一个括号中，此时父Bash才创建了第一个子Bash，这个被创建的Bash执行了这条echo指令，所以输出的是1
-					qing@qingsword.com.com:~$ pwd;(echo www.qingsword.com;echo $BASH_SUBSHELL;(echo qingsword))
+					qing@qingsword.com:~$ pwd;(echo www.qingsword.com;echo $BASH_SUBSHELL;(echo qingsword))
 					/home/qing
 					www.qingsword.com
 					1
@@ -231,29 +231,29 @@
 
 					<pre class="brush: bash;">
 					#创建一个“协程”，将创建的子进程在后台休眠20秒然后退出
-					qing@qingsword.com.com:~$ coproc sleep 20
+					qing@qingsword.com:~$ coproc sleep 20
 					[1] 6400 #创建的子Bash进程号
 
 					#通过“ps --forest”命令能够清晰的看到，当前Bash下创建了一个子sleep进程
-					qing@qingsword.com.com:~$ ps --forest
+					qing@qingsword.com:~$ ps --forest
 					  PID TTY          TIME CMD
 					 3152 pts/6    00:00:00 bash
 					 6400 pts/6    00:00:00  \_ sleep
 					 6401 pts/6    00:00:00  \_ ps
 
 					#实际上协程命令与在命令后添加一个符号"&amp;"效果相同
-					qing@qingsword.com.com:~$ sleep 20 &amp;
+					qing@qingsword.com:~$ sleep 20 &amp;
 					[1] 3993
-					qing@qingsword.com.com:~$ jobs
+					qing@qingsword.com:~$ jobs
 					[1]+  运行中               sleep 20 &amp;
-					qing@qingsword.com.com:~$ ps --forest
+					qing@qingsword.com:~$ ps --forest
 					  PID TTY          TIME CMD
 					 2942 pts/8    00:00:00 bash
 					 3993 pts/8    00:00:00  \_ sleep
 					 3996 pts/8    00:00:00  \_ ps
-					qing@qingsword.com.com:~$ coproc sleep 20
+					qing@qingsword.com:~$ coproc sleep 20
 					[2] 4129
-					qing@qingsword.com.com:~$ jobs
+					qing@qingsword.com:~$ jobs
 					[1]-  已完成               sleep 20
 					[2]+  运行中               coproc COPROC sleep 20 &amp;
 					</pre>
@@ -265,7 +265,7 @@
 					<p>ps就是一个外部命令，当它执行时，会在当前Bash下创建一个子进程，例如：</p>
 
 					<pre class="brush: bash;">
-					qing@qingsword.com.com:~$ ps --forest
+					qing@qingsword.com:~$ ps --forest
 					  PID TTY          TIME CMD
 					 2942 pts/8    00:00:00 bash
 					 5447 pts/8    00:00:00  \_ ps
