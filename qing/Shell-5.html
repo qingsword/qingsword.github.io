@@ -110,7 +110,7 @@
 					<p>实例：</p>
 					<pre class="brush: bash;">
 					#在本例中，for循环会使用str_x变量去循环遍历in后面的列表中的每个值，这个列表使用空格分隔每个值，关于列表中的分隔符，会在后面"内部字段分隔符"小节中介绍到，这里只需要了解空格也是内部字段分隔符中的一种即可
-					root@qingsword-v:~# vim a.sh
+					root@qingsword.com:~# vim a.sh
 					#!/bin/bash
 
 					for str_x in qing qingsword qingsword.com www.qingsword.com ; do
@@ -118,7 +118,7 @@
 					done
 
 					#执行结果如下
-					root@qingsword-v:~# bash a.sh 
+					root@qingsword.com:~# bash a.sh 
 					qing
 					qingsword
 					qingsword.com
@@ -132,14 +132,14 @@
 					<p>在循环的列表部分包含单/双引号时，循环读取时可能会遇到一些问题，请看下面的实例：</p>
 
 					<pre class="brush: bash;">
-					root@qingsword-v:~# vim b.sh
+					root@qingsword.com:~# vim b.sh
 					#!/bin/bash
 					#这一个list中有两个单引号，for会认为这两个双引号包含的部分是一个整体
 					for str_a in I'm sorry but I don't think I know you ; do
 						echo "$str_a"
 					done
 
-					root@qingsword-v:~# bash b.sh 
+					root@qingsword.com:~# bash b.sh 
 					Im sorry but I dont
 					think
 					I
@@ -149,14 +149,14 @@
 
 					<p>当遇到这种包含成对单/双引号的列表结构时，可以使用转义字符\来忽略这些符号，例如，修改上面的脚本如下：</p>
 					<pre class="brush: bash;">
-					root@qingsword-v:~# vim b.sh
+					root@qingsword.com:~# vim b.sh
 					#!/bin/bash
 					#添加转义字符
 					for str_a in I\'m sorry but I don\'t think I know you ; do
 						echo "$str_a"
 					done
 
-					root@qingsword-v:~# bash b.sh 
+					root@qingsword.com:~# bash b.sh 
 					I'm
 					sorry
 					but
@@ -170,15 +170,15 @@
 
 					<p>如果list列表的参数包含空格，但我们又想让它们作为一个整体读取，可以使用双引号或单引号包含，例如：</p>
 					<pre class="brush: bash;">
-					root@qingsword-v:~# vim b.sh 
-					root@qingsword-v:~# more b.sh 
+					root@qingsword.com:~# vim b.sh 
+					root@qingsword.com:~# more b.sh 
 					#!/bin/bash
 					#我们想将"New York"作为一个整体被for循环读取，可以使用双/单引号包含它们
 					for str_a in "New York" BeiJing ; do
 						echo "$str_a"
 					done
 
-					root@qingsword-v:~# bash b.sh 
+					root@qingsword.com:~# bash b.sh 
 					New York
 					BeiJing
 					</pre>
@@ -188,8 +188,8 @@
 					<p>列表不仅仅可以直接放在for循环结构中，还能存储在变量中，请看下面的实例：</p>
 
 					<pre class="brush: bash;">
-					root@qingsword-v:~# vim c.sh
-					root@qingsword-v:~# more c.sh 
+					root@qingsword.com:~# vim c.sh
+					root@qingsword.com:~# more c.sh 
 					#!/bin/bash
 
 					#存储一组列表数据
@@ -203,7 +203,7 @@
 					done
 
 					#执行结果
-					root@qingsword-v:~# bash c.sh 
+					root@qingsword.com:~# bash c.sh 
 					aa
 					bb
 					cc
@@ -220,11 +220,11 @@
 
 					<pre class="brush: bash;">
 					#创建一个filea文件，并写入三行数据
-					root@qingsword-v:~# echo aaa &gt; filea
-					root@qingsword-v:~# echo bbb &gt;&gt; filea
-					root@qingsword-v:~# echo ccc &gt;&gt; filea
+					root@qingsword.com:~# echo aaa &gt; filea
+					root@qingsword.com:~# echo bbb &gt;&gt; filea
+					root@qingsword.com:~# echo ccc &gt;&gt; filea
 
-					root@qingsword-v:~# vim d.sh 
+					root@qingsword.com:~# vim d.sh 
 					#!/bin/bash
 
 					str_file="filea"
@@ -232,7 +232,7 @@
 					for str_a in $(cat $str_file) ; do
 						echo $str_a
 					done
-					root@qingsword-v:~# bash d.sh 
+					root@qingsword.com:~# bash d.sh 
 					aaa
 					bbb
 					ccc
@@ -249,14 +249,14 @@
 					<p>在这种情况下，如果IFS不能修改，我们在执行循环时，有时会产生我们不希望看到的结果，例如：</p>
 					<pre class="brush: bash;">
 					#创建文件fileb，每一行两个单词之间有一个空格
-					root@qingsword-v:~# echo New York &gt; fileb
-					root@qingsword-v:~# echo Qing Sword &gt;&gt; fileb
-					root@qingsword-v:~# more fileb 
+					root@qingsword.com:~# echo New York &gt; fileb
+					root@qingsword.com:~# echo Qing Sword &gt;&gt; fileb
+					root@qingsword.com:~# more fileb 
 					New York
 					Qing Sword
 
 					#使用for循环读取文件fileb内容
-					root@qingsword-v:~# vim e.sh
+					root@qingsword.com:~# vim e.sh
 					#!/bin/bash
 
 					str_fileb="fileb"
@@ -268,14 +268,14 @@
 					fi
 
 					#执行结果如下，输出的结果被空格分隔了，for读取文件内容的过程中遇到空格、制表符、换行符，就会终止读取，它将这些内部字段分隔符当做一个字段读取的结束
-					root@qingsword-v:~# bash e.sh 
+					root@qingsword.com:~# bash e.sh 
 					New
 					York
 					Qing
 					Sword
 
 					#解决这个问题的最好方法是，在脚本中重定义IFS变量值，让它只包含我们想要的字段分隔符
-					root@qingsword-v:~# vim e.sh 
+					root@qingsword.com:~# vim e.sh 
 					#!/bin/bash
 
 					str_fileb="fileb"
@@ -289,7 +289,7 @@
 					fi
 
 					#执行结果得到了我们想要的样子，for循环仅用换行符作为每次循环读取的结束，遇到空格不会终止读取
-					root@qingsword-v:~# bash e.sh 
+					root@qingsword.com:~# bash e.sh 
 					New York
 					Qing Sword
 					</pre>
@@ -298,11 +298,11 @@
 
 					<pre class="brush: bash;">
 					#创建一个filec和filed
-					root@qingsword-v:~# echo aa:bb:cc:dd:ee:ff &gt; filec
-					root@qingsword-v:~# echo "www;qing\"sword:com" &gt; filed
+					root@qingsword.com:~# echo aa:bb:cc:dd:ee:ff &gt; filec
+					root@qingsword.com:~# echo "www;qing\"sword:com" &gt; filed
 
 					#创建脚本
-					root@qingsword-v:~# vim f.sh
+					root@qingsword.com:~# vim f.sh
 					#!/bin/bash
 
 					str_filec="filec"
@@ -327,7 +327,7 @@
 					fi 
 
 					#执行
-					root@qingsword-v:~# bash f.sh 
+					root@qingsword.com:~# bash f.sh 
 					aa
 					bb
 					cc
@@ -346,7 +346,7 @@
 					<p>可以在 for 命令列表部分中列出多个目录，for将依次读取列举出每个目录中的文件或文件夹，请看下面的实例：</p>
 
 					<pre class="brush: bash;">
-					root@qingsword-v:~# vim g.sh
+					root@qingsword.com:~# vim g.sh
 					#!/bin/bash
 					#定义两个目录（在目录的末尾一定要使用通配符，这样就可以使用for来遍历目录中每个文件和文件夹了）
 					str_dir_a="$HOME/*"
@@ -361,7 +361,7 @@
 					done
 
 					#执行
-					root@qingsword-v:~# bash g.sh 
+					root@qingsword.com:~# bash g.sh 
 					/root/a.sh is a file
 					/root/b.sh is a file
 					.....省略部分输出
@@ -373,14 +373,14 @@
 
 					
 					<pre class="brush: bash;">
-					root@qingsword-v:~# vim h.sh
+					root@qingsword.com:~# vim h.sh
 					#!/bin/bash
 
 					for (( i=1;i<=6;i++ )) ; do
 						echo "$i"
 					done
 
-					root@qingsword-v:~# bash h.sh 
+					root@qingsword.com:~# bash h.sh 
 					1
 					2
 					3
@@ -389,13 +389,13 @@
 					6
 
 					#多个初始化变量
-					root@qingsword-v:~# vim i.sh
+					root@qingsword.com:~# vim i.sh
 					#!/bin/bash
 
 					for (( x=1,y=6;x<=6;x++,y-- )) ; do
 						echo "$x - $y"
 					done
-					root@qingsword-v:~# bash i.sh 
+					root@qingsword.com:~# bash i.sh 
 					1 - 6
 					2 - 5
 					3 - 4
