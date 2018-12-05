@@ -196,7 +196,7 @@
 					# 	file "对应域名的解析文件，可自定义"
 					# 	allow-update { none; };  
 					# };
-					zone "1.186.192.in-addr.arpa" IN {
+					zone "1.168.192.in-addr.arpa" IN {
 						type master;
 						file "192.168.1.arpa";
 						allow-update { none; };
@@ -252,9 +252,10 @@
 
 							NS		ns.qingsword.com.
 					ns		IN A	192.168.1.233
-					xxx		PTR		192.168.1.233
-					bbs		PTR		192.168.1.234
-					blog	PTR		192.168.1.235
+					#反向解析的IP前缀已经在"1.168.192.in-addr.arpa"中定义，所以反向解析只需要写IP地址最后一段，下面的233就表示"192.168.1.233"，意思是将这个IP解析成"xxx.qingsword.com"，以此类推
+					233		PTR		xxx.qingsword.com.
+					234		PTR		bbs.qingsword.com.
+					235		PTR		blog.qingsword.com.
 					</pre>
 
 					<p>5）重启named服务</p>
