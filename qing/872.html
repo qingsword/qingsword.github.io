@@ -340,6 +340,54 @@
 					g2:x:1004:u2
 					</pre>
 
+					<p>再来看另一个实例：</p>
+					<pre class="brush: bash;">
+					#首先创建一个组g1，一个用户u1
+					root@qingsword.com:~# groupadd g1
+					root@qingsword.com:~# useradd u1
+					root@qingsword.com:~# passwd u1 
+					输入新的 UNIX 密码： 
+					重新输入新的 UNIX 密码： 
+					passwd：已成功更新密码
+
+					#查看u1的ID，它默认属于u1组
+					root@qingsword.com:~# id u1
+					uid=1014(u1) gid=1016(u1) 组=1016(u1)
+
+					#将u1放到g1组里面
+					root@qingsword.com:~# usermod -G g1 u1
+					root@qingsword.com:~# id u1
+					uid=1014(u1) gid=1016(u1) 组=1016(u1),1015(g1)
+
+					#使用root权限创建一个测试文件
+					root@qingsword.com:~# touch rootfile
+
+					#将这个测试文件的属组改成g1
+					root@qingsword.com:~# chgrp g1 rootfile 
+					root@qingsword.com:~# ls -al rootfile 
+					-rw-r--r-- 1 root g1 0 12月  6 11:40 rootfile
+
+					#对rootfile写入数据
+					root@qingsword.com:~# echo www.qingsword.com &gt; rootfile 
+
+					#将rootfile复制到/home目录
+					root@qingsword.com:~# cp rootfile /home
+					#切换到u1用户，尝试读取文件内容
+					root@qingsword.com:~# su u1
+					u1@qingsword.com:/root$ cd /home
+					u1@qingsword.com:/home$ more rootfile 
+					www.qingsword.com
+
+					#虽然文件所有者是root但是因为u1属于g1组，并且文件属组对文件有可读权限，所以上面能够使用u1来读取文件内容
+					u1@qingsword.com:/home$ ls -al rootfile 
+					-rw-r--r-- 1 root share 18 12月  6 11:41 rootfile
+
+					#但是不可写
+					u1@qingsword.com:/home$ echo qingsword.com &gt;&gt; rootfile 
+					bash: rootfile: 权限不够
+					</pre>
+					<p>从上面这个实例可以看到，对文件而言，如果文件所有者不是u1，只要文件的属组是g1，u1又属于g1组，不管用户的默认组是不是g1，用户对这个文件的权限就等于g1组对这个文件的权限。</p>
+
 						
 				<!-- /正文 -->
 
