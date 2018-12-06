@@ -291,12 +291,12 @@
 					qing@qingsword.com:~$ sudo useradd u2
 
 					#查看新建用户
-					[root@qingsword home]# tail -n 2 /etc/passwd
+					qing@qingsword.com:~$ tail -n 2 /etc/passwd
 					u1:x:1001:1001::/home/u1:/bin/bash
 					u2:x:1002:1002::/home/u2:/bin/bash
 
 					#新建用户默认属组，从下面输出可以看到，系统自动创建了两个与用户同名的组
-					[root@qingsword home]# tail -n 2 /etc/group
+					qing@qingsword.com:~$ tail -n 2 /etc/group
 					u1:x:1001:
 					u2:x:1002:
 
@@ -304,38 +304,38 @@
 					qing@qingsword.com:~$ sudo groupadd g1
 					qing@qingsword.com:~$ sudo groupadd g2
 
-					[root@qingsword home]# tail -n 2 /etc/group
+					qing@qingsword.com:~$ tail -n 2 /etc/group
 					g1:x:1003:
 					g2:x:1004:
 
 					#使用"usermod -g 组名 用户名"更改u1的默认属组为g1
-					[root@qingsword home]# usermod -g g1 u1
+					qing@qingsword.com:~$ sudo usermod -g g1 u1
 
 					#查看u1的组ID为1003也就是g1的组ID
-					[root@qingsword home]# tail -n 2 /etc/passwd
+					qing@qingsword.com:~$ tail -n 2 /etc/passwd
 					u1:x:1001:1003::/home/u1:/bin/bash
 					u2:x:1002:1002::/home/u2:/bin/bash
 
 					#将u2添加到g1与g2组，语法
 					#usermod -G 组名,组名 用户名
-					[root@qingsword home]# usermod -G g1,g2 u2
+					qing@qingsword.com:~$ sudo usermod -G g1,g2 u2
 
 					#查看u2的组ID仍然为1002，说明它的默认组仍然是u2
-					[root@qingsword home]# tail -n 2 /etc/passwd
+					qing@qingsword.com:~$ tail -n 2 /etc/passwd
 					u1:x:1001:1003::/home/u1:/bin/bash
 					u2:x:1002:1002::/home/u2:/bin/bash
 
 					#如果用户默认组是g1，就不会显示在冒号后面，所以下面的输出中，u2显示在冒号后面，因为它的默认组是u2，不是g1和g2，但它属于g1和g2组中的一员
-					[root@qingsword home]# tail -n 2 /etc/group
+					qing@qingsword.com:~$ tail -n 2 /etc/group
 					g1:x:1003:u2
 					g2:x:1004:u2
 
 					#将用户u1的默认组改回u1组，然后将u1放到g1组中
-					[root@qingsword home]# usermod -g u1 u1
-					[root@qingsword home]# usermod -G g1 u1
+					qing@qingsword.com:~$ sudo usermod -g u1 u1
+					qing@qingsword.com:~$ sudo usermod -G g1 u1
 
 					#这次可以看到g1后面出现了u1这个用户
-					[root@qingsword home]# tail -n 2 /etc/group
+					qing@qingsword.com:~$ tail -n 2 /etc/group
 					g1:x:1003:u2,u1
 					g2:x:1004:u2
 					</pre>
