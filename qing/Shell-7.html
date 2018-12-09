@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<!--Copyright©QingSword.COM︻☼1010D>-->
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
+	<meta name="description" content="晴刃,是一个致力推广实用计算机技术的个人博客;我们分享计算机知识;为计算机系统以及网络安全防范做出一份贡献。【专注技术 创造价值 共同进步】">
+	<meta name="keywords" content="晴刃,晴,qing,qingsword,ccna图文笔记,ubuntu,linux,ubuntu server,mysql,node.js,javascript,python,计算机技术博客">
+	<meta name="author" content="www.qingsword.com">
+	<title>[Shell]-7-处理用户输入 - QingSword.COM</title>
+	<link rel="shortcut icon" type="image/x-icon" href="../logo/favicon.ico">
+	<link rel="stylesheet" type="text/css" href="../css/basic.css">
+	<link rel="stylesheet" type="text/css" href="../css/text.css">
+	<!-- 代码块高亮js -->
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shCore.css"/>
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shThemeRDark.css"/>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shCore.js"></script>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shBrushBash.js"></script>
+	<script type="text/javascript">
+	SyntaxHighlighter.all();
+	</script>
+</head>
+<body>
+	<!--header -->
+	<header id="nav">
+			<div class="nav-container"> 
+				<!-- 根大纲-->
+				<a href="http://www.qingsword.com" title="晴刃">
+					<h1 class="nav-logo">晴刃</h1>
+				</a>
+				<h2 class="nav-site-description desc-hidden">
+					自由、互助、分享、专注计算机技术
+				</h2>
+				<nav class="nav-links"> 
+					<!-- nav连接大纲-->
+					<h1 style="display:none;">网站导航</h1> 
+					<ul>
+						<li  class="li-hidden">
+							<a href="../index.html" title="home">
+								<span class="link-word"><img src="../logo/home.png" alt="home" class="link-img">首页</span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../web.html" title="web">
+								<span class="link-word"><img src="../logo/web.png" alt="web" class="link-img">程序<span class="word-hidden">设计</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../system.html" title="system">
+								<span class="link-word"><img src="../logo/linux.png" alt="linux" class="link-img">系统<span class="word-hidden">应用</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../net.html" title="net">
+								<span class="link-word"><img src="../logo/net.png" alt="net" class="link-img">网络<span class="word-hidden">技术</span></span>
+							</a>
+						</li>
+						<li>
+							<a href="../sitemap.html" title="sitemap">
+								<span class="link-word"><img src="../logo/archives.png" alt="archives" class="link-img"><span class="word-hidden">文章</span>归档</span>
+							</a>
+						</li>
+					</ul>
+				</nav>
+			</div>		
+	</header>
+	<!-- /header -->
+
+	<!-- content-->
+	<div id="content">
+		<div class="content-container">
+			<!-- 文章区 -->
+			<article class="text-container">
+				<header class="text-header">
+					<h1>[Shell]-7-处理用户输入</h1>	
+				</header><!-- /header -->
+				<section class="text-body">
+					<h2>引言</h2>
+					<p>这篇文章主要讲解如何让Bash Shell用不同的方法从用户获取输入并传入脚本进行处理。</p>
+					<!-- 目录 -->
+					<h2>文章目录</h2>
+					<ul class="contents">	
+						 <li><a href="#Shell-User-Inputs-1">0×1.位置参数变量</a></li>
+						 <li><a href="#Shell-User-Inputs-2">0×2.位置参数相关特殊变量</a></li>
+						 <li><a href="#Shell-User-Inputs-3">0×3.使用Shift命令遍历参数</a></li>
+						 <li><a href="#Shell-User-Inputs-4">0×4.使用getopt命令识别组合参数</a></li>
+						 <li class="subli"><a href="#Shell-User-Inputs-5">a.getopt与set</a></li>
+						 <li class="subli"><a href="#Shell-User-Inputs-6">b.实例</a></li>
+						 <li><a href="#Shell-User-Inputs-7">0×5.使用getopts识别组合参数</a></li>
+						 <li><a href="#Shell-User-Inputs-8">0×6.用户基本输入</a></li>
+						 <li class="subli"><a href="#Shell-User-Inputs-9">a.使用echo与read组合</a></li>
+						 <li class="subli"><a href="#Shell-User-Inputs-10">b.使用read读取数据</a></li>
+						 <li class="subli"><a href="#Shell-User-Inputs-11">c.输入超时</a></li>
+						 <li class="subli"><a href="#Shell-User-Inputs-12">d.隐藏输入</a></li>
+						 <li class="subli"><a href="#Shell-User-Inputs-13">e.自动退出</a></li>
+						 <li class="subli"><a href="#Shell-User-Inputs-14">f.使用read从文件中读取数据</a></li>
+					 </ul>
+					<!-- /目录 -->
+
+					<!-- 正文 -->
+					<h2 id="Shell-User-Inputs-1">0×1.位置参数变量</h2>
+
+					<p>"位置参数"是跟在脚本文件名后面的一串参数列表，用户可以输入N个参数传入脚本，而脚本可以通过以"$"开头的特殊变量名来读取这些传入的参数，请看下面的实例：</p>
+
+					<pre class="brush: bash;">
+					#创建一个脚本，这个脚本会依次读取跟随在脚本名后面的12个参数
+					#这就相当于我们在执行脚本的时候输入下面的命令
+					# bash b.sh a b c d e f...
+					#对应位置参数就是
+					# bash b.sh $1 $2 $3 $4 $5 $6....
+					#$1的值等于a
+					#$2的值等于b，在脚本中调用了$1，就会输出值a，以此类推
+					#位置参数有几个特殊变量，$0表示脚本文件名
+					#从9以后的位置需要使用大括号括起来
+					#这样的特性提供了一个用户到脚本的数据传递接口，我们可以通过在脚本后面携带数据传入脚本，通过$n（n是大于等于0的整数）的形式来调用这些数据
+					root@qingsword.com:~# vim b.sh 
+					#!/bin/bash
+
+					echo "$0"
+					echo "$1"
+					echo "$2"
+					echo "$3"
+					echo "$4"
+					echo "$5"
+					echo "$6"
+					echo "$7"
+					echo "$8"
+					echo "$9"
+					echo "${10}"
+					echo "${11}"
+					echo "${12}"
+
+					#尝试携带数据传入脚本，并且用对应的位置参数来输出这些值
+					root@qingsword.com:~# bash b.sh 1 2 3 4 5 6 7 8 9 10 11 www.qingsword.com
+					b.sh  #使用$0输出脚本名称
+					1 #随后是我们传递给脚本的数据，用空格分割
+					2
+					3
+					4
+					5
+					6
+					7
+					8
+					9
+					10
+					11
+					www.qingsword.com
+					</pre>
+
+					<p class="indent-p">
+					记住，每个参数都是用空格分隔的，所以Bash Shell会将空格当成两个值的分隔符，要在参数值中
+					包含空格，必须要用引号（单引号或双引号均可）。
+					</p>
+					<pre class="brush: bash;">
+					root@qingsword.com:~# vim c.sh
+					#!/bin/bash
+
+					echo "Hello $1"
+					root@qingsword.com:~# bash c.sh qing sword
+					Hello qing
+					root@qingsword.com:~# bash c.sh "qing sword"
+					Hello qing sword
+					</pre>
+	
+					<h2 id="Shell-User-Inputs-2">0×2.位置参数相关特殊变量</h2>
+
+					<p>除了上面那些正常的位置参数外，Bash Shell中还提供了下面这些特殊的变量：</p>
+
+					<p>Bash Shell特殊变量：$0, $#, $*, $@, $?, $$</p>
+
+					<p class="indent-p">
+					特殊变量列表与含义：<br>
+					$0   当前脚本的文件名；<br>
+					$#   传递给脚本或函数的参数个数；<br>
+					$*   传递给脚本或函数的所有参数；<br>
+					$@ 传递给脚本或函数的所有参数，被双引号(" ")包含时，与 $* 稍有不同，下面会实例演示；<br>
+					$?   上个命令的退出状态，或函数的返回值；<br>
+					$$   当前Shell进程ID，对于Bash Shell，就是这些脚本所在的进程ID；<br>
+					$n   传递给脚本或函数的参数，n 是一个大于0的整数，表示第几个参数，例如，第一个参数是$1，第二个参数是$2；<br>
+					</p>
+
+					<p>1，$0实例</p>
+					<p class="indent-p">
+					我们执行脚本时如果是直接使用程序名来执行，那么$0中就显示的是程序名，如果执行过程中携带了完整绝对路径，那么$0就会包含绝度路径，很多时候，我们不想包含绝对路径，想让程序在执行时不管是否使用绝对路径来执行，都只返回文件名，这时就可以使用basename命令返回不包含路径的脚本名。
+					</p>
+					<pre class="brush: bash;">
+					root@qingsword.com:~# vim d.sh 
+					#!/bin/bash
+
+					echo "$(basename $0)"
+					echo "$0"
+
+					#执行脚本，不使用绝对路径，两者返回相同的值
+					root@qingsword.com:~# bash d.sh 
+					d.sh
+					d.sh
+
+					#携带绝对路径，basename命令只返回文件名，而第二条echo中的$0返回了绝对路径
+					root@qingsword.com:~# bash /root/d.sh 
+					d.sh
+					/root/d.sh
+					</pre>
+
+					<p>2，$#实例</p>
+					<p class="indent-p">
+					Bash Shell中$#变量存储了脚本携带的参数个数，如果这个值是0表示脚本没有带参数，如果大于0，则表示带有参数。
+					</p>
+					<pre class="brush: bash;">
+					root@qingsword.com:~# vim a.sh 
+					#!/bin/bash
+
+					echo "Shell脚本后携带了$#个参数"
+
+					root@qingsword.com:~# bash a.sh
+					hell脚本后携带了0个参数
+
+					root@qingsword.com:~# bash a.sh qingsword.com qing sword
+					Shell脚本后携带了3个参数
+					</pre>
+
+					<p class="indent-p">
+					下面这个实例判断用户有没有携带一个整数参数，如果有，就从1乘到这个数，将结果输出，程序没有做字符串以及浮点数输入判断，如果携带的参数是一个字符串或浮点数，程序会报错。
+					</p>
+					<pre class="brush: bash;">
+					root@qingsword.com:~# vim aa.sh 
+					#!/bin/bash
+
+					int_a=1
+					if [ $# -ne 1 ] ; then
+						echo "请在程序调用时携带一个整数，例如：bash aa.sh 3"
+					else
+						echo -n "从$int_a乘到$1的结果为："
+						for (( int_b=1;int_b<=$1;int_b++ )) ; do
+							int_a=$[ $int_a*$int_b ]
+						done
+						echo "$int_a"
+					fi
+
+					root@qingsword.com:~# bash aa.sh 
+					请在程序调用时携带一个整数，例如：bash aa.sh 3
+					root@qingsword.com:~# bash aa.sh 3 2
+					请在程序调用时携带一个整数，例如：bash aa.sh 3
+					root@qingsword.com:~# bash aa.sh 3 
+					从1乘到3的结果为：6
+					root@qingsword.com:~# bash aa.sh 6
+					从1乘到6的结果为：720
+					</pre>
+
+					<p class="indent-p">
+					Bash Shell提供了一个特性，能够让我们直接显示最后一个携带的参数值，使用一个特殊的格式${!#}，请看下面的实例：
+					</p>
+					<pre class="brush: bash;">
+					root@qingsword.com:~# vim f.sh
+					#!/bin/bash
+					#显示脚本携带了几个参数
+					echo "$#"
+					#显示最后一个参数的值
+					echo "${!#}"
+
+					#执行脚本，携带4个参数
+					root@qingsword.com:~# bash f.sh 1 2 3 qingsword.com
+					4
+					qingsword.com  #最后一个参数值
+
+					#如果不带参数，${!#}显示的就是文件名本身，因为最后一个参数就是$0
+					root@qingsword.com:~# bash f.sh 
+					0
+					f.sh
+					</pre>
+					
+					<p>3，$*与$@实例</p>
+					<p class="indent-p">
+					$*和 $@都表示传递给脚本的所有参数集合，不被双引号(" ")包含时，都以"$1" "$2" … "$n" 的形式输出所有参数；<br>
+
+					当它们被双引号(" ")包含时，"$*" 会将所有的参数作为一个整体，以"$1 $2 … $n"的形式输出所有参数；"$@" 会将各个参数分开，以"$1" "$2" … "$n" 的形式输出所有参数，请看下面的实例：
+					</p>
+					<pre class="brush: bash;">
+					root@qingsword.com:~# vim 82.sh 
+					#!/bin/bash
+
+					echo "不使用引号的\$*"
+					for n in $* ; do
+						echo "$n"
+					done
+
+					echo "不使用引号的\$@"
+					for n in $@ ; do
+						echo "$n"
+					done
+
+					echo "使用引号的\$*"
+					for n in "$*" ; do
+						echo "$n"
+					done
+
+					echo "使用引号的\$@"
+					for n in "$@" ; do
+						echo "$n"
+					done
+
+					#不使用引号的时候，$*和$@输出相同，for会使用IFS分隔符去取$*和$@包含的每个值，而将$*包含在双引号中，会让$*将所有参数当做一个整体输出
+					root@qingsword.com:~# bash 82.sh aa bb cc dd
+					不使用引号的$*
+					aa
+					bb
+					cc
+					dd
+					不使用引号的$@
+					aa
+					bb
+					cc
+					dd
+					使用引号的$*
+					aa bb cc dd
+					使用引号的$@
+					aa
+					bb
+					cc
+					dd
+					</pre>
+
+					<p>4，$?实例</p>
+					<p class="indent-p">
+					$?会返回上个命令的退出状态，如果上一个命令正常执行，$?会返回0，否则会返回非零值，请看下面的实例：
+					</p>
+					<pre class="brush: bash;">
+					root@qingsword.com:~# vim 7.sh
+					#!/bin/bash
+
+					echo "www.qingsword.com"
+					echo "上一条命令的返回值$?"
+					#在脚本中加入一条不存在的命令，本站网址
+					qingsword.com
+					echo "上一条命令的返回值$?"
+
+					#执行脚本，qingsword.com这条命令不存在，$?就会被写入一个非0值，代表上一条命令执行不成功（$?的退出状态码127表示命令不存在，更多退出状态码详见本系列文章第3篇第7小节）
+					root@qingsword.com:~# bash 7.sh 
+					www.qingsword.com
+					上一条命令的返回值0
+					7.sh: 行 6: qingsword.com: 未找到命令
+					上一条命令的返回值127
+					</pre>
+
+					<p>5，$$实例</p>
+					<p class="indent-p">
+					$$能够显示执行脚本的Bash的PID值，请看下面的实例：
+					</p>
+					<pre class="brush: bash;">
+					root@qingsword.com:~# vim 55.sh
+					#!/bin/bash
+
+					echo "当前Bash Shell PID=$$"
+
+					#执行脚本，得到PID
+					root@qingsword.com:~# bash 55.sh 
+					当前Bash Shell PID=3290
+					</pre>
+
+					<h2 id="Shell-User-Inputs-3">0×3.使用Shift命令遍历参数</h2>
+
+					<p>Shift命令可以用来移动脚本后面所携带参数的值的位置，在使用Shift命令时，默认情况下它会将每个参数变量向左移动一个位置，所以，变量$3的值会移到$2中，变量$2的值会移到$1中，而变量$1的值则会被删除（注意，变量$0的值，也就是程序名，不会改变），请看下面的实例：</p>
+					<pre class="brush: bash;">
+					#创建脚本，逐个读取脚本后面携带的变量值，每次循环都使用shift命令，将参数向左移动一位
+					root@qingsword.com:~# vim h.sh
+					#!/bin/bash
+
+					count=1
+					#当$1没有值时结束循环
+					while [ -n "$1" ] ; do
+						echo "Count $count:=$1"
+						count=$[++count]
+						shift
+					done
+
+					#执行脚本，这个脚本通过测试第一个参数值的长度执行了一个while循环，当第一个参数的长度为零时，循环结束，测试完第一个参数后，shift命令会将所有参数的位置移动一个位置，使用shift命令的时候要小心，如果$1参数被移出，它的值就被丢弃了，无法再恢复
+					root@qingsword.com:~# bash h.sh www qing sword com
+					Count 1:=www
+					Count 2:=qing
+					Count 3:=sword
+					Count 4:=com
+					</pre>
+
+					<p>默认Shift命令的值为1，shell遇到这个命令时将所有脚本携带的参数往前移动一位，可以指定一个移动值，请看下面的实例：</p>
+					<pre class="brush: bash;">
+					root@qingsword.com:~# vim i.sh
+					#!/bin/bash 
+
+					echo "所有参数:$*"
+					shift 3 #使用shift将参数列表往左移动三次
+					echo "$1"
+
+					#本来$1位置是a，使用shift 3后，a、b、c三个参数被往左移掉了，所以$1位置变成了d
+					root@qingsword.com:~# bash i.sh a b c d e f g
+					所有参数:a b c d e f g
+					d
+					</pre>
+
+					<p>我们经常看到linux在执行某些命令的时候会携带一些参数，例如ls -l，那么linux是如何读取-l这个参数并处理的呢，请看下面的实例：</p>
+					<pre class="brush: bash;">
+					root@qingsword.com:~# vim j.sh
+					#!/bin/bash
+
+					while [ -n "$1" ] ; do
+						case "$1" in
+							-x) echo "读取到-x参数";;
+							-y) echo "读取到-y参数，参数携带值$2"
+								shift;;
+							-z) echo "读取到-z参数";;
+							--) shift #遇到--就退出循环
+								break;;
+							*) echo "未知参数$1";;
+						esac
+						shift
+					done
+
+					#读取--后面的参数
+					int_count=1
+					for x in "$@" ; do
+						echo "值$int_count:$x"
+						int_count=$[++int_count]
+					done
+
+					#执行脚本测试
+					root@qingsword.com:~# bash j.sh -x -y www.qingsword.com -z -- aaa bbb ccc
+					读取到-x参数
+					读取到-y参数，参数携带值www.qingsword.com
+					读取到-z参数
+					值1:aaa
+					值2:bbb
+					值3:ccc
+
+					#使用未定义的选项-q测试
+					root@qingsword.com:~# bash j.sh -q -y www.qingsword.com
+					未知参数-q
+					读取到-y参数，参数携带值www.qingsword.com
+					</pre>
+
+					<h2 id="Shell-User-Inputs-4">0×4.使用getopt命令识别组合参数</h2>
+
+					<h3 id="Shell-User-Inputs-5">a.getopt与set</h3>
+
+					<p>1、getopt</p>
+					<p class="indent-p">在我们使用linux命令行时通常会遇到类似于“ls -al ”这样的命令格式，命令中两个参数-a和-l，可以使用-al的形式写在一起，在我们编写的脚本中，可以通过getopt命令来实现这种格式，请看下面的实例：</p>
+					<pre class="brush: bash;">
+					#getopt命令格式
+					#getopts optstring variable
+					# optstring定义了getopts能够包含的选项， variable包含了用户输入的选项表达式
+					# getopt可以定义多个有效参数选项，例如本例下文的abcde，这些选项中插入冒号的位置表示前面的参数需要携带一个参数值，例如b与c后面就需要携带一个参数值
+					root@qingsword.com:~# getopt ab:c:de -ab test -c test -de
+					 -a -b test -c test -d -e --
+					root@qingsword.com:~# getopt ab:c:de -ab test -c test -de hehe hehe
+					 -a -b test -c test -d -e -- hehe hehe
+					root@qingsword.com:~# getopt abc: -abc test aaa bbb ccc
+					 -a -b -c test -- aaa bbb ccc
+					</pre>
+
+					<p>2、set</p>
+					<p class="indent-p">在Bash Shell中，"set --"命令能够根据IFS分隔符，依次将其后跟的数据值赋给$1,$2,$3...$N，请看下面的实例：</p>
+					<pre class="brush: bash;">
+					root@qingsword.com:~# vim test.sh 
+					#!/bin/bash
+
+					set -- a b c
+					echo "$1 $2 $3"
+
+					#虽然test.sh后面没有携带参数，但脚本中的set将a、b、c分别放入了"$1 $2 $3"三个位置变量中
+					root@qingsword.com:~# bash test.sh 
+					a b c
+					</pre>
+
+					<h3 id="Shell-User-Inputs-6">b.实例</h3>
+
+					<pre class="brush: bash;">
+					root@qingsword.com:~# vim k.sh
+					#!/bin/bash
+					#set命令将getopt执行的命令结果返回给"$1 $2 $3...$N"位置参数
+					set -- $(getopt abc:d:ef "$@")
+
+					while [ -n "$1" ] ; do
+						case "$1" in
+							-a) echo "-a OK";;
+							-b) echo "-b OK";;
+							-c) echo "-c OK parameter $2 OK"
+								shift;;
+							-d) echo "-d OK parameter $2 OK"
+								shift;;
+							-e) echo "-e OK";;
+							-f) echo "-f OK";;
+							--) shift
+								break;;
+							*) echo "$1 Error";;
+						esac
+						shift
+					done
+
+					count=1
+					for x in "$@" ; do
+						echo "DATA$count:$x"
+						count=$[++count]
+					done
+					root@qingsword.com:~# bash k.sh -abc www.qingsword.com -d qingsword.com -ef data1 data2 data3
+					-a OK
+					-b OK
+					-c OK parameter www.qingsword.com OK
+					-d OK parameter qingsword.com OK
+					-e OK
+					-f OK
+					DATA1:data1
+					DATA2:data2
+					DATA3:data3
+					</pre>
+
+					<h2 id="Shell-User-Inputs-7">0×5.使用getopts识别组合参数</h2>
+
+					<p>getopts是高级getopt命令，在getopt基础上添加了不少新特性，getopts语法格式如下：</p>
+					<p class="indent-p">
+					getopts [option[:]] [DESCPRITION] VARIABLE <br>
+					 [option[:]] 表示为某个脚本可以使用的选项，如果选项后面出现了冒号（":"），则表示这个选项后面可以接参数[DESCPRITION]；<br>
+					 VARIABLE 表示将某个选项保存在变量VARIABLE中；<br>
+					 getopts对找到的所有未定义的选项统一输出成问号；
+					</p>
+					<p class="indent-p">
+					getopts是linux系统中的一个内置变量，一般用在循环中，每当执行循环，getopts都会检查下一个命令选项，如果这些选项出现在option中，则表示是合法选项，否则不是合法选项，脚本会将这些合法选项保存在VARIABLE这个变量中；<br><br>
+					除此之外，getopts还包含两个内置变量，及OPTARG和OPTIND；<br>
+					OPTARG 会保存当前迭代的选项后面的参数；<br>
+					OPTIND 会保存下一个选项或参数的索引；<br>
+					</p>
+ 					
+ 					<p>getopts实例：</p>
+					<pre class="brush: bash;">
+					root@qingsword.com:~# vim l.sh
+					#!/bin/bash
+					#[option[:]]中最前面的冒号用于去掉错误消息，简而言之，想去掉错误消息的话，可以在选项参数之前加一个冒号
+					#每次循环从用户输入读取的单个选项值都会被保存到opt变量
+					while getopts :ab:d:ef opt ; do
+						case "$opt" in
+							a) echo "-a OK";;
+							#当前选项是-b，OPTARG变量就会保存-b后面的值，以此类推
+							b) echo "-b OK value $OPTARG";;
+							d) echo "-d OK value $OPTARG";;
+							e) echo "-e OK";;
+							f) echo "-f OK";;
+							#如果读取到一个未定义的选项，getopts默认会输出一个?号
+							*) echo "Unknow Option:$opt"
+						esac
+					done
+					#OPTIND保存了参数列表下一个选项或参数的索引，所以当getopts读取完所有的选项后，如果需要处理接下来的数据部分，就需要使用shift将前面所有处理完的选项全部向左移动清除掉
+					shift $[--OPTIND]
+
+					count=1
+					for x in "$@" ; do
+						echo "Parameter $count=$x"
+						count=$[++count]
+					done
+						
+					root@qingsword.com:~# bash l.sh -ab qingsword -cd www.qingsword.com -ef aaa bbb ccc
+					-a OK
+					-b OK value qingsword
+					Unknow Option:?
+					-d OK value www.qingsword.com
+					-e OK
+					-f OK
+					Parameter 1=aaa
+					Parameter 2=bbb
+					Parameter 3=ccc
+					</pre>
+
+					<p>在Linux中，尽量使用下面这样的标准输入选项参数，方便让其他人理解参数作用：</p>
+					<p class="indent-p">
+					-a 显示所有对象；<br>
+					-c 生成一个计数；<br>
+					-d 指定一个目录；<br>
+					-e 扩展一个对象；<br>
+					-f 指定读入数据的文件；<br>
+					-h 显示命令的帮助信息；<br>
+					-i 忽略文本大小写；<br>
+					-l 产生输出的长格式版本；<br>
+					-n 使用非交互模式(批处理)；<br>
+					-o 将所有输出重定向到的指定的输出文件；<br>
+					-q 以安静模式运行；<br>
+					-r 递归地处理目录和文件；<br>
+					-s 以安静模式运行；<br>
+					-v 生成详细输出；<br>
+					-x 排除某个对象；<br>
+					-y 对所有问题回答yes；
+					</p>
+
+					<h2 id="Shell-User-Inputs-8">0×6.用户基本输入</h2>
+					<h3 id="Shell-User-Inputs-9">a.使用echo与read组合</h3>
+
+					<p>read命令从标准输入中读取一行，用IFS（内部字段分隔符）变量中的字符作为分隔符分割出每个字段，并把输入行的每个字段的值赋予给指定的变量，请看下面的实例：</p>
+					<pre class="brush: bash;">
+					root@qingsword.com:~# vim m.sh
+					#!/bin/bash
+
+					echo -n "Enter your Website:"
+					#将用户输入的值赋予给website变量
+					read website
+					echo "Website:$website"
+
+					#执行
+					root@qingsword.com:~# bash m.sh 
+					Enter your Website:www.qingsword.com
+					Website:www.qingsword.com
+					</pre>
+
+					<h3 id="Shell-User-Inputs-10">b.使用read读取数据</h3>
+
+					<p>read命令可以使用-p参数直接输出提示数据，不需要使用echo，请看下面的实例：</p>
+
+					<pre class="brush: bash;">
+					root@qingsword.com:~# vim o.sh
+					#!/bin/bash
+					#"Name:"会直接显示在屏幕上等待用户输入，并将用户的输入保存到str_a变量中
+					read -p "Name:" str_a
+					echo "Hello $str_a"
+
+					#执行
+					root@qingsword.com:~# bash o.sh 
+					Name:qing sword
+					Hello qing sword
+					</pre>
+
+					<p>如果在read后面跟多个变量，那么read会分割用户输入内容分别存入后面的变量中，如果变量不够，那么剩下的数据就会都存入最后那个变量中，请看下面的实例：</p>
+					<pre class="brush: bash;">
+					root@qingsword.com:~# vim o.sh 
+					root@qingsword.com:~# more o.sh 
+					#!/bin/bash
+
+					read -p "Name:" str_a str_b
+					echo "Hello $str_a"
+					echo "Hello $str_b"
+
+					#执行测试
+					root@qingsword.com:~# bash o.sh 
+					Name:qing sword
+					Hello qing
+					Hello sword
+
+					#当输入的字段大于接收的变量数量，最后那个变量将接收完所有的用户输入
+					root@qingsword.com:~# bash o.sh 
+					Name:www qing sword com
+					Hello www
+					Hello qing sword com
+					</pre>
+
+					<p>另一个实例，输入年，计算天数（按标准一年365天计算）：</p>
+					<pre class="brush: bash;">
+					root@qingsword.com:~# vim n.sh
+					#!/bin/bash
+
+					read -p "Enter your age:" age
+					#将age变量乘以365，发送给bc计算机处理
+					days=$(echo "scale=3;$age*365" |bc)
+					echo "$age years $days days"
+
+					#执行
+					root@qingsword.com:~# bash n.sh 
+					Enter your age:18
+					18 years 6570 days
+					</pre>
+
+					<p>如果在read命令行中不指定接收值的变量，read命令会将它收到的任何数据都放进特殊环境变量REPLY，这是Bash Shell预设的环境变量，请看下面的实例：</p>
+					<pre class="brush: bash;">
+					root@qingsword.com:~# vim p.sh
+					#!/bin/bash
+					#在read后没有指定任何变量名称
+					read -p "Enter your name:"
+					#用户输入的数据被保存到REPLY变量中
+					echo "Hello $REPLY"
+
+					#执行
+					root@qingsword.com:~# bash p.sh 
+					Enter your name:www.qingsword.com qingsword
+					Hello www.qingsword.com qingsword
+					</pre>
+
+					<h3 id="Shell-User-Inputs-11">c.输入超时</h3>
+					
+					<p>可以使用read命令的-t参数指定一个用户输入时间（单位秒），如果超过这个时间用户未输入，那么脚本将自动退出read命令的读取，继续执行接下来的指令，请看下面的实例：</p>
+					<pre class="brush: bash;">
+					root@qingsword.com:~# vim q.sh
+					#!/bin/bash
+					#当计时器过期后，read命令会返回一个非零退出状态码
+					if read -t 6 -p "Enter your name:" ; then
+						echo "Hello $REPLY"
+					else
+						echo "Too slow"
+					fi
+
+					#执行测试，故意不输入内容，经过6秒，程序返回"Too slow"
+					root@qingsword.com:~# bash q.sh 
+					Enter your name:Too slow
+
+					#第二次测试，输入数据
+					root@qingsword.com:~# bash q.sh 
+					Enter your name:www.qingsword.com
+					Hello www.qingsword.com
+					</pre>
+
+					<h3 id="Shell-User-Inputs-12">d.隐藏输入</h3>
+					
+					<p>read命令中的-s参数可用于隐藏输入，-s选项可以避免在read命令中输入的数据出现在屏幕上（实际上，数据会被显示，只是read命令会将文本颜色设成跟背景色一样），请看下面的实例：</p>
+					<pre class="brush: bash;">
+					root@qingsword.com:~# vim s.sh
+					#!/bin/bash
+					read -s -p "Enter Your Password:"
+					echo "" #用于换行
+					echo "Password $REPLY Changed"
+
+					#执行
+					root@qingsword.com:~# bash s.sh 
+					Enter Your Password:
+					Password www.qingsword.com Changed
+					</pre>
+
+					<h3 id="Shell-User-Inputs-13">e.自动退出</h3>
+					
+					<pre class="brush: bash;">
+					#本例将-n选项的值设置成1，告诉read命令在接受单个字符输入后退出，只要按下单个字符，read 命令就会将输入的单个字符传给变量，无需按回车键
+					root@qingsword.com:~# vim r.sh
+					#!/bin/bash
+
+					read -n 1 -p "Countinue[Y/N]?" answer
+					case $answer in
+						Y | y) echo ""
+							echo "continue...";;
+						N | n) echo ""
+							echo "Bye...";;
+					esac
+					echo "End..."
+
+					#执行脚本
+					root@qingsword.com:~# bash r.sh 
+					Countinue[Y/N]?n
+					Bye...
+					End...
+					root@qingsword.com:~# bash r.sh 
+					Countinue[Y/N]?Y
+					continue...
+					End...
+					</pre>
+
+					<h3 id="Shell-User-Inputs-14">f.使用read从文件中读取数据</h3>
+					<p>read除了能够从键盘读取输入外，还能用来逐行读取文件内容，请看下面的实例：</p>
+					<pre class="brush: bash;">
+					root@qingsword.com:~# vim v.sh
+					#!/bin/bash
+
+					count=1
+					echo "Start..."
+					#使用管道命令将cat输出传入while循环，循环使用read逐行读取cat文件流
+					cat "test.txt" | while read ; do
+					#另一种写法，使用line变量接收每行数据，本例直接使用默认的REPLY变量
+					#cat "test.txt" | while read line ; do
+						echo "Line $count:$REPLY"
+						#echo "Line $count:$line"
+					        count=$[++count]
+					done
+					echo "End..."
+
+					#test.txt文件内容如下
+					root@qingsword.com:~# more test.txt 
+					www.qingsword.com
+					qingsword.com
+					qingsword
+
+					#执行脚本测试
+					root@qingsword.com:~# bash v.sh 
+					Start...
+					Line 1:www.qingsword.com
+					Line 2:qingsword.com
+					Line 3:qingsword
+					End…
+					</pre>
+
+				<!-- /正文 -->
+
+				<footer class="text-footer">
+					<p>
+						*转载请注明来自:<a title="晴刃-自由、互助、分享、专注计算机技术。" href="http://www.qingsword.com" target="_blank">晴刃(QingSword.COM)</a>
+					</p>
+					<p>*原文连接:<a title="[Shell]-7-处理用户输入" href="http://www.qingsword.com/qing/Shell-7.html" target="_blank">http://www.qingsword.com/qing/Shell-7.html</a></p>
+				</footer>
+			</article>
+			<!-- /文章区 -->	
+		</div>
+	</div>
+	<!-- /content -->
+	
+	<!-- footer -->
+	<footer id="footer">
+		<div class="footer-container">
+			QingSword.COM &nbsp;<img src="../logo/by-nc-sa.png" alt="Creative Commons" title="Creative Commons">
+		</div>
+	</footer>
+	<!-- /footer -->
+</body>
+</html>
