@@ -498,6 +498,8 @@
 						echo "DATA$count:$x"
 						count=$[++count]
 					done
+
+					#在脚本后面携带位置参数传入脚本，脚本再通过"set --"命令将getopt处理后的位置参数格式返回给$1 $2 $3...$N对应的位置
 					root@qingsword.com:~# bash k.sh -abc www.qingsword.com -d qingsword.com -ef data1 data2 data3
 					-a OK
 					-b OK
