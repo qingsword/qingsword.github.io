@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<!--Copyright©QingSword.COM︻☼1010D>-->
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
+	<meta name="description" content="晴刃,是一个致力推广实用计算机技术的个人博客;我们分享计算机知识;为计算机系统以及网络安全防范做出一份贡献。【专注技术 创造价值 共同进步】">
+	<meta name="keywords" content="晴刃,晴,qing,qingsword,ccna图文笔记,ubuntu,linux,ubuntu server,mysql,node.js,javascript,python,计算机技术博客">
+	<meta name="author" content="www.qingsword.com">
+	<title>[Shell]-8-数据输出与重定向 - QingSword.COM</title>
+	<link rel="shortcut icon" type="image/x-icon" href="../logo/favicon.ico">
+	<link rel="stylesheet" type="text/css" href="../css/basic.css">
+	<link rel="stylesheet" type="text/css" href="../css/text.css">
+	<!-- 代码块高亮js -->
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shCore.css"/>
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shThemeRDark.css"/>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shCore.js"></script>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shBrushBash.js"></script>
+	<script type="text/javascript">
+	SyntaxHighlighter.all();
+	</script>
+</head>
+<body>
+	<!--header -->
+	<header id="nav">
+			<div class="nav-container"> 
+				<!-- 根大纲-->
+				<a href="http://www.qingsword.com" title="晴刃">
+					<h1 class="nav-logo">晴刃</h1>
+				</a>
+				<h2 class="nav-site-description desc-hidden">
+					自由、互助、分享、专注计算机技术
+				</h2>
+				<nav class="nav-links"> 
+					<!-- nav连接大纲-->
+					<h1 style="display:none;">网站导航</h1> 
+					<ul>
+						<li  class="li-hidden">
+							<a href="../index.html" title="home">
+								<span class="link-word"><img src="../logo/home.png" alt="home" class="link-img">首页</span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../web.html" title="web">
+								<span class="link-word"><img src="../logo/web.png" alt="web" class="link-img">程序<span class="word-hidden">设计</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../system.html" title="system">
+								<span class="link-word"><img src="../logo/linux.png" alt="linux" class="link-img">系统<span class="word-hidden">应用</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../net.html" title="net">
+								<span class="link-word"><img src="../logo/net.png" alt="net" class="link-img">网络<span class="word-hidden">技术</span></span>
+							</a>
+						</li>
+						<li>
+							<a href="../sitemap.html" title="sitemap">
+								<span class="link-word"><img src="../logo/archives.png" alt="archives" class="link-img"><span class="word-hidden">文章</span>归档</span>
+							</a>
+						</li>
+					</ul>
+				</nav>
+			</div>		
+	</header>
+	<!-- /header -->
+
+	<!-- content-->
+	<div id="content">
+		<div class="content-container">
+			<!-- 文章区 -->
+			<article class="text-container">
+				<header class="text-header">
+					<h1>[Shell]-8-数据输出与重定向</h1>	
+				</header><!-- /header -->
+				<section class="text-body">
+					<h2>引言</h2>
+					<p>这篇文章主要讲解如何在Bash Shell中处理用户输入输出与重定向输入输出。</p>
+					<!-- 目录 -->
+					<h2>文章目录</h2>
+					<ul class="contents">	
+						 <li><a href="#Shell-STDIN-STDOUT-STDERR-0">0×0.文件描述符</a></li>
+						 <li><a href="#Shell-STDIN-STDOUT-STDERR-1">0×1.标准输入输出与错误</a></li>
+						 <li class="subli"><a href="#Shell-STDIN-STDOUT-STDERR-2">a.标准输入STDIN</a></li>
+						 <li class="subli"><a href="#Shell-STDIN-STDOUT-STDERR-3">b.标准输出STDOUT</a></li>
+						 <li class="subli"><a href="#Shell-STDIN-STDOUT-STDERR-4">c.错误输出STDERR</a></li>
+						 <li><a href="#Shell-STDIN-STDOUT-STDERR-5">0×2.永久重定向</a></li>
+						 <li><a href="#Shell-STDIN-STDOUT-STDERR-6">0×3.自定义文件描述符</a></li>
+						 <li class="subli"><a href="#Shell-STDIN-STDOUT-STDERR-7">a.STDOUT重定向保存与恢复</a></li>
+						 <li><a href="#Shell-STDIN-STDOUT-STDERR-8">0×4.创建可读写文件描述符</a></li>
+						 <li><a href="#Shell-STDIN-STDOUT-STDERR-9">0×5.关闭文件描述符</a></li>
+						 <li><a href="#Shell-STDIN-STDOUT-STDERR-10">0×6.列出打开的文件描述符</a></li>
+						 <li><a href="#Shell-STDIN-STDOUT-STDERR-11">0×7.数据垃圾桶</a></li>
+						 <li><a href="#Shell-STDIN-STDOUT-STDERR-12">0×8.创建临时文件和文件夹</a></li>
+						 <li><a href="#Shell-STDIN-STDOUT-STDERR-13">0×9.利用重定向实现日志记录</a></li>
+						 <li><a href="#Shell-STDIN-STDOUT-STDERR-14">0×10.利用重定向生成SQL文件</a></li>
+				
+					 </ul>
+					<!-- /目录 -->
+
+					<!-- 正文 -->
+					<h2 id="Shell-STDIN-STDOUT-STDERR-0">0×0.文件描述符</h2>
+
+					<p>首先来看一段百度百科对文件描述符的描述：</p>
+					<p>在类Linux操作系统中，文件描述符在形式上是一个非负整数，实际上，它是一个索引值，指向内核为每一个进程所维护的该进程打开文件的记录表，当程序打开一个现有文件或者创建一个新文件时，内核向进程返回一个文件描述符。</p>
+					<p>简单的讲，文件描述符能够理解成被Linux系统进程调用所打开的每个文件的标识符，我们可以直接使用文件名来访问这些文件，也能能够通过文件描述符来访问这些文件。</p>
+					<p>在所有的文件描述符中，有三个比较特殊的文件描述符，POSIX（可移植操作系统接口，Portable Operating System Interface of UNIX，缩写为 POSIX ）约定，使用0、1、2这三个数字来表示系统标准输入、输出与错误，如下所示：</p>
+					<p class="indent-p">
+					标准输入 STDIN=0<br>
+					标准输出 STDOUT=1<br>
+					错误信息 STDERR=2<br>
+					</p>
+
+					<h2 id="Shell-STDIN-STDOUT-STDERR-1">0×1.标准输入输出与错误</h2>
+					
+					<h3 id="Shell-STDIN-STDOUT-STDERR-2">a.标准输入STDIN</h3>
+
+					<p>对终端界面来说，STDIN文件描述符，就代表用户从键盘的输入，shell从STDIN文件描述符对应的键盘获得输入。</p>
+					<p>下面是使用cat命令读取STDIN标准输入的实例：</p>
+					<pre class="brush: bash;">
+					root@qingsword-v:~# cat
+					qingsword.com
+					qingsword.com
+					www.qingsword.com
+					www.qingsword.com
+					qingsword
+					qingsword
+					^C
+					</pre>
+
+					<p>除了能够读取来自键盘的标准输入外，我们还能够通过小于号"&lt;"来重定向STDIN输入，例如，使用标准输入重定向"&lt;"符号，将STDIN输入重定向成文件，让qingsword.com文件作为标准输入源（而不是键盘），将数据输入到cat命令，请看下面的实例：</p>
+					<pre class="brush: bash;">
+					#创建qingsword.com文件，写入数据
+					root@qingsword-v:~# echo "qingsword" &gt; qingsword.com
+					root@qingsword-v:~# echo "qingsword.com" &gt;&gt; qingsword.com
+					root@qingsword-v:~# echo "www.qingsword.com" &gt;&gt; qingsword.com
+					root@qingsword-v:~# more qingsword.com
+					qingsword
+					qingsword.com
+					www.qingsword.com
+
+					#使用标准输入重定向，将qingsword.com文件内容发送给cat命令
+					root@qingsword-v:~# cat &lt; qingsword.com
+					qingsword
+					qingsword.com
+					www.qingsword.com
+					</pre>
+
+					<h3 id="Shell-STDIN-STDOUT-STDERR-3">b.标准输出STDOUT</h3>
+
+					<p>对终端界面来说，标准输出就是终端显示器，即shell中运行的程序和脚本默认情况下，都会将显示内容输出到显示器上，我们可以通过标准输出重定向符号（一个"&gt;"代表覆盖，或者两个"&gt;&gt;"代表内容追加），将shell输出重定向到指定的文件中，请看下面的实例：</p>
+
+					<pre class="brush: bash;">
+					#不使用重定向，仅使用echo将内容输出到终端显示器上
+					root@qingsword-v:~# echo "I'm so tired,Can't I just rest for a minutes?"
+					I'm so tired,Can't I just rest for a minutes?
+
+					#使用重定向，将内容重定向输出覆盖到qingsword.com文件中
+					root@qingsword-v:~# echo "I'm so tired,Can't I just rest for a minutes?" &gt; qingsword.com
+					root@qingsword-v:~# more qingsword.com
+					I'm so tired,Can't I just rest for a minutes?
+					#使用新的内容输出覆盖到文件中
+					root@qingsword-v:~# echo "It's time for work" &gt; qingsword.com
+					root@qingsword-v:~# more qingsword.com 
+					It's time for work
+
+					#使用追加输出重定向，将内容追加输出到qingsword.com文件中
+					root@qingsword-v:~# echo "OK" &gt;&gt; qingsword.com
+					root@qingsword-v:~# more qingsword.com
+					It's time for work
+					OK
+					</pre>
+
+					<p>在输出重定向中，如果命令报错，重定向的目标文件仍然会被创建或覆盖，请看下面的实例：</p>
+
+					<pre class="brush: bash;">
+					#本例中，nothing文件不存在，所以ls报错了，但是qingsword.com文件仍然被覆盖（因为前面创建过，如果前面没有创建这个文件，那么下面的语句会自动创建这个文件），并不会将错误信息重定向到文件中
+					root@qingsword-v:~# ls -al nothing &gt; qingsword.com
+					ls: 无法访问'nothing': 没有那个文件或目录
+
+					#在上面这个实例中，如果使用两个&gt;&gt;代替一个&gt;，那么如果文件存在并且有内容，内容不会被清空，因为ls执行报错了，也不会有内容被追加到文件末尾
+					</pre>
+
+					<h3 id="Shell-STDIN-STDOUT-STDERR-4">c.错误输出STDERR</h3>
+					<p>STDERR文件描述符代表shell的标准错误输出，shell中运行的程序和脚本出错时生成的错误消息都会发送到这个位置，默认情况下，STDERR文件描述符会和STDOUT文件描述符指向同样的地方（尽管分配给它们的文件描述符值不同），即输出到显示器，STDERR文件描述符被设成2 ，可以选择只重定向错误消息，将该文件描述符值放在重定向符号前，该值必须紧紧地放在重定向符号前（无空格），否则不会工作，请看下面的实例：</p>
+
+					<pre class="brush: bash;">
+					##实例1##
+					#如果不使用重定向，所有STDERR输出都会直接显示
+					root@qingsword-v:~# ls -al nothing 
+					ls: 无法访问'nothing': 没有那个文件或目录
+
+					#使用STDERR重定向，将错误消息重定向到qingsword.com文件中
+					root@qingsword-v:~# ls -al nothing 2&gt; qingsword.com
+
+					#显示文件内容
+					root@qingsword-v:~# more qingsword.com 
+					ls: 无法访问'nothing': 没有那个文件或目录
+
+					##实例2##
+					#如果ls命令中包含了存在的文件和不存在的文件，可以使用重定向将错误日志发送到指定文件，而存在的文件正常显示
+					#qingfile被创建，是存在的文件，nofile这个文件不存在
+					root@qingsword-v:~# touch qingfile
+
+					#将报错信息发送到qingsword.com文件中
+					root@qingsword-v:~# ls -al qingfile nofile 2&gt;qingsword.com
+					-rw-r--r-- 1 root share 0 12月 26 10:22 qingfile
+
+					root@qingsword-v:~# more qingsword.com
+					ls: 无法访问'nofile': 没有那个文件或目录
+
+					##实例3##
+					#重定向正常输出和错误输出，使用1&gt;发送STDOUT输出到qingsword.com，使用2&gt;将STDERR信息发送到errfile.log文件
+					root@qingsword-v:~# ls -al qingfile nofile 1&gt;qingsword.com 2&gt;errfile.log
+
+					#查看文件内容
+					root@qingsword-v:~# more qingsword.com errfile.log 
+					::::::::::::::
+					qingsword.com
+					::::::::::::::
+					-rw-r--r-- 1 root share 0 12月 26 10:22 qingfile
+					::::::::::::::
+					errfile.log
+					::::::::::::::
+					ls: 无法访问'nofile': 没有那个文件或目录
+
+					##实例4##
+					#将STDOUT和STDERR全部输出重定向到同一个文件中
+					#当使用&amp;&gt;重定向输出时，命令生成的所有输出都会发送到同一位置，shell自动赋予了错误消息更高的优先级，如果命令中有多个报错消息，报错消息会依次出现在输出的最前面，这就是为什么，ls命令中存在的文件输出会出现在最后面的原因
+					root@qingsword-v:~# ls -al qingfile nofile1 nofile2 &amp;&gt; qingsword.com
+					root@qingsword-v:~# more qingsword.com 
+					ls: 无法访问'nofile1': 没有那个文件或目录
+					ls: 无法访问'nofile2': 没有那个文件或目录
+					-rw-r--r-- 1 root share 0 12月 26 10:22 qingfile
+					</pre>
+
+					<p>除了正常的命令错误输出外，我们能够通过重定向自定义错误输出，请看下面的实例：</p>
+					<pre class="brush: bash;">
+					#在a.sh中，自定义一段错误消息，输出重定向到STDERR
+					root@qingsword-v:~# vim a.sh 
+					#!/bin/bash
+
+					echo "Error INFO:www.qingsword.com" &gt;&amp;2
+					echo "Do you like your job here?"
+
+					#在正常执行a.sh过程中，错误消息会被显示出来（因为STDERR也是输出到显示器，除非重定向到其他位置）
+					root@qingsword-v:~# bash a.sh 
+					Error INFO:www.qingsword.com
+					Do you like your job here?
+
+					#将错误消息重定向到qingsword.com文件中，显示器上就只会显示正常输出了
+					root@qingsword-v:~# bash a.sh 2&gt; qingsword.com
+					Do you like your job here?
+					root@qingsword-v:~# more qingsword.com 
+					Error INFO:www.qingsword.com
+					</pre>
+
+					<h2 id="Shell-STDIN-STDOUT-STDERR-5">0×2.永久重定向</h2>
+					<p>可以用exec命令告诉shell在脚本执行期间重定向某个特定文件描述符，请看下面的实例：</p>
+
+					<pre class="brush: bash;">
+					#使用exec将STDERR消息重定向到stderr.txt文件中（追加模式），在STDOUT正常输出到显示器后，将STDOUT重定向到stdout.txt文件中（覆盖模式）
+					root@qingsword-v:~# more b.sh 
+					#!/bin/bash
+
+					exec 2&gt;&gt;stderr.txt
+
+					echo "He doesn't want to eat Italian food tonight."
+					echo "So what?" &gt;&amp;2
+					echo "He doesn't have to come with us to dinner." &gt;&amp;2
+					exec 1&gt;stdout.txt
+					echo "We can meet up him later at the bar."
+
+					#执行b.sh只能看到一行输出，即没有使用STDOUT重定向之前，第一个echo语句内容被输出到屏幕上
+					root@qingsword-v:~# bash b.sh 
+					He doesn't want to eat Italian food tonight.
+
+					#显示文件内容
+					root@qingsword-v:~# more std*
+					::::::::::::::
+					stderr.txt
+					::::::::::::::
+					So what?
+					He doesn't have to come with us to dinner.
+					::::::::::::::
+					stdout.txt
+					::::::::::::::
+					We can meet up him later at the bar.
+					</pre>
+					<p>从这个实例不难看出，重定向命令出现的位置会影响到程序的输出，在没有使用STDOUT永久重定向前，echo内容被输出到屏幕上，当执行"exec 1&gt;stdout.txt"之后，所有STDOUT都被输出到了stdout.txt文件中。</p>
+
+					<p>除了重定向输出与错误消息外，还能够使用永久重定向从文件中读取数据作为STDIN输入数据，请看下面的实例：</p>
+					<pre class="brush: bash;">
+					root@qingsword-v:~# vim c.sh 
+					#!/bin/bash
+					#创建qingsword.txt文件，写入部分数据
+					echo "www.qingsword.com"&gt;qingsword.txt
+					echo "qingsword.com"&gt;&gt;qingsword.txt
+					echo "qingsword"&gt;&gt;qingsword.txt
+					echo "qing"&gt;&gt;qingsword.txt
+
+					#重定向STDIN，将qingsword.txt文件作为标准输入
+					exec 0< qingsword.txt
+
+					#使用循环读取输入的文件内容（以行为单位），如果read后面没有指定变量，REPLY是read接收数据的默认变量
+					count=1
+					while read ; do
+						echo "#$count:$REPLY"
+						count=$[++count]
+					done
+
+					#执行
+					root@qingsword-v:~# bash c.sh 
+					#1:www.qingsword.com
+					#2:qingsword.com
+					#3:qingsword
+					#4:qing
+					</pre>
+
+					<h2 id="Shell-STDIN-STDOUT-STDERR-6">0×3.自定义文件描述符</h2>
+					<p>除了POSIX约定的三个文件描述符（0、1、2）外，我们可以自定义其他的文件描述符来代表不同的文件输入输出，请看下面的实例：</p>
+
+					<pre class="brush: bash;">
+					#用exec命令将文件描述符3重定向到qingsword.com文件，脚本执行echo语句时，输出内容会像预想中那样显示在STDOUT上，但当我们重定向到文件描述符3的那行echo语句执行时，内容就会被重定向到指定的qingsword.com文件中，这种模式的好处是，可以在显示器上保持正常的输出，而将特定信息重定向到文件中，比如日志文件
+					root@qingsword-v:~# vim d.sh 
+					#!/bin/bash
+					#如果文件存在，清空qingsword.com中的内容，如果文件不存在则创建
+					cat /dev/null&gt;qingsword.com
+					#将自定义的文件描述符3，指向qingsword.com文件，追加模式，所有发送给描述符3的数据，都会被重定向追加到qingsword.com文件中
+					exec 3&gt;&gt;qingsword.com
+
+					echo "Shall we just all have lunch together" &gt;&amp;3
+					echo "That sounds like fun"
+					echo "Where do you want to eat?"&gt;&amp;3
+
+					#执行d.sh，只有没有被重定向的标准STDOUT被输出到屏幕上
+					root@qingsword-v:~# bash d.sh 
+					That sounds like fun
+
+					#所有重定向到文件描述符3的内容，都被追加写入到qingsword.com
+					root@qingsword-v:~# more qingsword.com 
+					Shall we just all have lunch together
+					Where do you want to eat?
+					</pre>
+					<p>在这个实例中，我们自定义了文件描述符3，在实际应用中，大于等于3的整数，都可以被用作文件描述符使用，文件描述符能够创建的多少取决于系统内存以及当前系统制定的标准上限。</p>
+
+					<h3 id="Shell-STDIN-STDOUT-STDERR-7">a.STDOUT重定向保存与恢复</h3>
+					<p>在我们编写程序的时候，会遇到需要将标准输入输出文件描述符的输入源重定向成文件或其它来源的情况，但会遇到一个问题，在程序结束前，我想恢复这些标准重定向本来的功能，例如，STDIN被重定向到qingsword.com文件，从qingsword.com文件读取数据，但现在我不想从qingsword.com读取数据了，想直接从键盘读取标准STDIN输入，这个时候就能够用到本节中的内容，将原本STDIN存储到一个自定义文件描述符中，请看下面的实例：</p>
+
+					<pre class="brush: bash;">
+					root@qingsword-v:~# vim e.sh  
+					#!/bin/bash
+					#创建文件写入数据
+					echo "qing" &gt; qingsword.com
+					echo "qingsword" &gt;&gt; qingsword.com
+					echo "qingsword.com" &gt;&gt; qingsword.com
+					echo "www.qingsword.com" &gt;&gt; qingsword.com
+
+					#将STDIN标准输入功能（即从键盘读取输入这个功能）保存到自定义的文件标识符3中
+					exec 3&lt;&amp;0
+					#重定向STDIN功能，让它从qingsword.com文件读取输入
+					exec 0&lt;qingsword.com
+
+					#循环遍历输出文件内容
+					count=1
+					while read ; do
+						echo "$count#:$REPLY"
+						count=$[++count]
+					done
+
+					#将保存在自定义的文件标识符3中的STDIN标准输入功能重新覆盖到文件标识符0，相当于将键盘读取输入这个功能重新赋给0这个文件标识符
+					exec 0&lt;&amp;3
+
+					#测试从键盘读取输入
+					while read -n 1 -p "Quit[y/Y]" ; do
+						case $REPLY in
+							y|Y) echo "" &amp;&amp; echo "bye" &amp;&amp; break;;
+							*) echo "" &amp;&amp; continue;;
+						esac
+					done
+
+					#执行
+					root@qingsword-v:~# bash e.sh 
+					1#:qing
+					2#:qingsword
+					3#:qingsword.com
+					4#:www.qingsword.com
+					Quit[y/Y]n
+					Quit[y/Y]q
+					Quit[y/Y]i
+					Quit[y/Y]n
+					Quit[y/Y]y
+					bye
+					</pre>
+
+					<h2 id="Shell-STDIN-STDOUT-STDERR-8">0×4.创建可读写文件描述符</h2>
+
+					<p>可以用同一个文件描述符对同一个文件进行读写，请看下面的实例：</p>
+
+					<pre class="brush: bash;">
+					root@qingsword-v:~# more f.sh 
+					#!/bin/bash
+					#创建文件写入数据
+					echo "#1:qing" &gt; qingsword.com
+					echo "#2:qingsword" &gt;&gt; qingsword.com
+					echo "#3:qingsword.com" &gt;&gt; qingsword.com
+					echo "#4:www.qingsword.com" &gt;&gt; qingsword.com
+
+					#使用自定义文件描述符3，对qingsword.com进行读写操作
+					exec 3&lt;&gt;qingsword.com
+
+					#读取文件中的第一行，输出到屏幕
+					read &lt;&amp;3
+					echo "read:$REPLY"
+
+					#读取文件中的第二行，输出到屏幕
+					read &lt;&amp;3
+					echo "read:$REPLY"
+
+					#向文件的第三行插入数据
+					echo -n "input"&gt;&amp;3
+
+					more qingsword.com
+
+					#执行
+					root@qingsword-v:~# bash f.sh 
+					read:#1:qing
+					read:#2:qingsword
+					#1:qing
+					#2:qingsword
+					inputngsword.com
+					#4:www.qingsword.com
+					</pre>
+					<p>在上面的实例中，由于我们是对同一个文件进行数据读写，shell会维护一个内部指针，指明当前读取或写入的位置，任何读或写都会从文件指针上次记录的位置开始，在本例中，我们使用read命令两次对文件进行读取，在两次读取后，文件指针指向了qingsword.com文件第三行的第一个字符（#）的位置，再使用echo向文件写入一行，就会覆盖文件这个位置原有的字符（覆盖模式），如果写入的字符并未完全覆盖原有行的数据，那么原有行的数据剩余部分将保留，如果不添加-n参数，echo会在写入末尾执行换行，那么剩余的第三行原有数据就会换行输出。</p>
+
+					<h2 id="Shell-STDIN-STDOUT-STDERR-9">0×5.关闭文件描述符</h2>
+					<p>如果我们创建了新的输入或输出文件描述符，shell会在脚本退出时自动关闭它们，而在有些情况下，需要在脚本结束前手动关闭文件描述符，要提前关闭文件描述符，就需要将它重定向到特殊符号"&amp;-" ，请看下面的实例：</p>
+
+					<pre class="brush: bash;">
+					root@qingsword-v:~# vim g.sh 
+					root@qingsword-v:~# more g.sh 
+					#!/bin/bash
+					#自定义文件描述符，将所有发往3的输出，发送到qingsword.com文件
+					exec 3&gt;qingsword.com
+
+					echo "I really like my work." &gt;&amp;3
+
+					#注销文件描述符3，关闭了qingsword.com文件的写入
+					exec 3&gt;&amp;-
+					#再次调用，就会报错
+					echo "error" &gt;&amp;3
+
+					#执行程序，验证
+					root@qingsword-v:~# bash g.sh 
+					g.sh: 行 7: 3: 错误的文件描述符
+
+					#报错之前，自定义的文件描述符3重定向正常执行
+					root@qingsword-v:~# more qingsword.com
+					I really like my work.
+					</pre>
+
+					<p>在上面这个实例中，有时候我们需要在关闭自定义的文件描述符后再次打开，再次打开的过程中，需要注意，必须使用（追加模式打开&gt;&gt;），否则将会覆盖原有文件，请看下面的实例：</p>
+
+					<pre class="brush: bash;">
+					root@qingsword-v:~# vim h.sh 
+					#!/bin/bash
+					#自定义文件描述符3，做为qingsword.com的标准输入
+					exec 3&gt;qingsword.com
+
+					echo "Go ahead,we're all listening."&gt;&amp;3
+					#关闭文件描述符3
+					exec 3&gt;&amp;-
+					more qingsword.com
+					#再次创建文件描述符做为qingsword.com文件的追加输入（如果不追加，内容就会被覆盖掉）
+					exec 3&gt;&gt;qingsword.com
+					echo "Count to ten!" &gt;&amp;3
+					more qingsword.com
+
+					#执行
+					root@qingsword-v:~# bash h.sh 
+					Go ahead,we're all listening.
+					Go ahead,we're all listening.
+					Count to ten!
+					</pre>
+
+					<h2 id="Shell-STDIN-STDOUT-STDERR-10">0×6.列出打开的文件描述符</h2>
+					<p>使用lsof命令会列出整个Linux系统打开的所有文件描述符（部分linux需要使用全路径来执行这个命令/usr/sbin/lsof或者/usr/bin/lsof）有大量的命令行选项和参数可以用来帮助过滤lsof的输出，最常用的有-p和-d ，前者允许指定进程PID，后者允许指定要显示的文件描述符编号，要想知道进程的当前PID，可以用特殊环境变量 $$ （shell会将它设为当前PID），-a选项用来对其他两个选项的结果执行布尔AND运算，请看下面的实例：</p>
+
+					<pre class="brush: bash;">
+					root@qingsword-v:~# lsof -a -p $$ -d 0,1,2
+					COMMAND  PID USER   FD   TYPE DEVICE SIZE/OFF NODE NAME
+					bash    2558 root    0u   CHR  136,1      0t0    4 /dev/pts/1
+					bash    2558 root    1u   CHR  136,1      0t0    4 /dev/pts/1
+					bash    2558 root    2u   CHR  136,1      0t0    4 /dev/pts/1
+
+					#上例显示了当前进程（bash shell）的默认文件描述符（ 0 、1和2）， lsof 的默认输出中有7列信息，如下：
+					COMMAND 正在运行的命令名的前9个字符
+					PID 进程的PID
+					USER 进程属主的登录名
+					FD 文件描述符号以及访问类型（r 代表读, w 代表写, u 代表读写）
+					TYPE 文件的类型（CHR 代表字符型, BLK 代表块型, DIR 代表目录, REG 代表常规文件）
+					DEVICE 设备的设备号（主设备号和从设备号）
+					SIZE 如果有的话,表示文件的大小
+					NODE 本地文件的节点号
+					NAME 文件名
+					</pre>
+					<p>来看一个实例，通过sh自定义文件描述符，通过上面的命令查看这些文件描述符的FD状态：</p>
+					<pre class="brush: bash;">
+					root@qingsword-v:~# more i.sh 
+					#!/bin/bash
+					#创建文件写入数据
+					echo "init"&gt;qingsword.com
+					#创建三个自定义文件描述符，分别对应输出、输入与输入输出
+					exec 33&gt; qingsword.com
+					exec 55&lt; qingsword.com
+					exec 555&lt;&gt; qingsword.com
+					#查看对应文件描述符
+					lsof -a -p $$ -d 0,1,2,33,55,555
+
+					#运行，从输出结果中可以看到33的FD标识是w（写入）权限，55是读取权限，555是读取写入权限
+					root@qingsword-v:~# bash i.sh 
+					COMMAND  PID USER   FD   TYPE DEVICE SIZE/OFF    NODE NAME
+					bash    2972 root    0u   CHR  136,1      0t0       4 /dev/pts/1
+					bash    2972 root    1u   CHR  136,1      0t0       4 /dev/pts/1
+					bash    2972 root    2u   CHR  136,1      0t0       4 /dev/pts/1
+					bash    2972 root   33w   REG    8,1        0 1573766 /root/qingsword.com
+					bash    2972 root   55r   REG    8,1        0 1573766 /root/qingsword.com
+					bash    2972 root  555u   REG    8,1        0 1573766 /root/qingsword.com
+					</pre>
+
+					<h2 id="Shell-STDIN-STDOUT-STDERR-11">0×7.数据垃圾桶</h2>
+					<p>linux上有一个特殊的数据垃圾桶/dev/null这个文件什么内容都没有，所有命令如果输出指向这个文件，那么这些输出将会被丢弃，同样可以使用这个文件来清空某个文件的内容，而不是删除重建它，请看下面的实例：</p>
+
+					<pre class="brush: bash;">
+					root@qingsword-v:~# vim k.sh
+					root@qingsword-v:~# more k.sh 
+					#!/bin/bash
+
+					echo "www.qingsword.com"&gt;qingsword.com
+					echo "qingsword.com"&gt;&gt;qingsword.com
+					echo "qingsword"&gt;&gt;qingsword.com
+					#输出文件内容
+					cat qingsword.com
+					#将ls输出指向垃圾桶，所以屏幕上不会有任何输出
+					ls -al qingsword.com&gt;/dev/null
+					#使用这种特殊的方法能够清空文件内容，等效于删除文件再重新创建
+					cat /dev/null&gt;qingsword.com
+					cat qingsword.com
+
+					#执行脚本，qingsword.com中的内容被输出了一次，然后使用cat命令将/dev/null中的内容覆盖了qingsword.com文件，因为/dev/null文件内容为空，所以被覆盖后qingsword.com文件内容被清空了，这是一种不删除文件清空文件内容的好方法
+					root@qingsword-v:~# bash k.sh 
+					www.qingsword.com
+					qingsword.com
+					qingsword
+					</pre>
+
+					<h2 id="Shell-STDIN-STDOUT-STDERR-12">0×8.创建临时文件和文件夹</h2>
+					<p>Linux使用/tmp目录来存放不需要永久保留的文件，大多数Linux发行版配置了系统在启动时自动删除/tmp目录中内容的功能，创建临时文件或文件夹时，shell会将文件的读和写权限分配给文件的属主，一旦创建了临时文件，创建者具有完整的读写权限，但其他人没法访问它（root用户除外），请看下面的实例：</p>
+
+					<pre class="brush: bash;">
+					#可以使用mktemp命令创建临时文件或文件夹
+					#在当前目录创建临时文件，创建命令的格式是
+					#“mktemp 自定义的文件名.XXXXXX”
+					#mktemp命令会用6个字符码替换这6个 X ，从而保证文件名在目录中是唯一的
+					#mktemp会在创建后，返回创建的临时文件名称，方便脚本使用变量接收和调用
+					root@qingsword-v:~# mktemp qingsword.XXXXXX
+					qingsword.WIIXVH
+
+					#-t参数，会强制让shell将文件创建到/tmp目录中，命令会返回创建的临时文件的完整路径
+					root@qingsword-v:~# mktemp -t qingsword.XXXXXX
+					/tmp/qingsword.5CDFv7
+
+					#-d参数，在当前目录创建临时目录
+					root@qingsword-v:~# mktemp -d qingsword.XXXXXX
+					qingsword.azbr0h
+
+					#-t -d在/tmp目录创建临时目录
+					root@qingsword-v:~# mktemp -t -d qingsword.XXXXXX
+					/tmp/qingsword.g7WHSA
+					</pre>
+					<p>再来看一个实例：</p>
+
+					<pre class="brush: bash;">
+					root@qingsword-v:~# vim l.sh 
+					#!/bin/bash
+
+					#创建两个temp文件和一个temp文件夹在/tmp目录
+					tmpfile_1=$(mktemp -t qingsword.XXXXXX)
+					tmpfile_2=$(mktemp -t qingsword.XXXXXX)
+					tmpdir=$(mktemp -t -d qingsword.XXXXXX)
+
+					#自定义文件标识符，指向两个临时文件
+					exec 3&gt;$tmpfile_1
+					exec 4&gt;$tmpfile_2
+
+					#写入数据
+					echo "www.qingsword.com"&gt;&amp;3
+					echo "qingsword.com"&gt;&amp;4
+
+					#将临时文件移动到临时文件夹，并且显示其数据
+					mv $tmpfile_1 $tmpfile_2 $tmpdir
+					more $tmpdir/$(basename $tmpfile_1)
+					more $tmpdir/$(basename $tmpfile_2)
+					#删除临时文件夹
+					rm -rf $tmpdir
+
+					#执行
+					root@qingsword-v:~# bash l.sh 
+					www.qingsword.com
+					qingsword.com
+					</pre>
+					<p>这种方式很适合我们在Linux /tmp中创建一些临时文件，在程序运行时调用它们，当我们使用完之后，可以手动删除，也可以等到系统在下次重启时删除它们。</p>
+					
+					<h2 id="Shell-STDIN-STDOUT-STDERR-13">0×9.利用重定向实现日志记录</h2>
+					<p>可以使用tee命令，将输出同时发送到显示器和日志文件，这种做法有时候十分有用，我们不用将输出重定向两次，tee 命令相当于管道的一个T型接头，它将从STDIN接收的数据同时发往两处，一处是STDOUT ，另一处是 tee命令行所指定的文件名，tee -a追加写入，不添加此参数就是覆盖创建文件，请看下面的实例：</p>
+
+					<pre class="brush: bash;">
+					root@qingsword-v:~# vim m.sh 
+					#!/bin/bash
+					#创建临时日志文件
+					logfile=$(mktemp -t qingsword.log.XXXXXX)
+
+					#输出一些信息，并将它们发往临时日志文件
+					echo "www.qingsword.com"|tee $logfile 
+					#追加写入
+					echo "qingsword.com"|tee -a $logfile
+					echo $logfile
+					more $logfile
+
+					#执行，可以看到echo正常输出，并且这些输出被tee写入到了临时日志文件中
+					root@qingsword-v:~# bash m.sh 
+					www.qingsword.com
+					qingsword.com
+					/tmp/qingsword.log.KVz4hG
+					www.qingsword.com
+					qingsword.com
+					</pre>
+
+					<h2 id="Shell-STDIN-STDOUT-STDERR-14">0×10.利用重定向生成SQL文件</h2>
+					<p>最后，来看一个实例，这个实例，通过重定向命令实现从datafile文本中读取字段值，写入到qingsword.sql文件中，生成SQL语句：</p>
+
+					<pre class="brush: bash;">
+					root@qingsword-v:~# vim n.sh 
+					#!/bin/bash
+
+					outfile="qingsword.sql"
+					IFS=',' #自定义IFS分隔符
+					while read id name address ; do
+						#将循环读取到的字段值写入文件，直到遇到qingsword结束写入
+						cat &gt;&gt; $outfile &lt;&lt; qingsword
+						INSERT INTO qingsword_table (id,name,address) VALUES ('$id','$name','$ad
+					dress');
+					qingsword
+					done &lt; ${1} #将脚本名称后面定义的文件内容传入循环
+
+					#datafile.txt文件内容
+					root@qingsword-v:~# more datafile.txt 
+					001,qingsword,Beijing
+					002,qingsword.com,Shanghai
+					003,www.qingsword.com,New York
+
+					#执行脚本，得到sql文件
+					root@qingsword-v:~# bash n.sh  datafile.txt 
+					root@qingsword-v:~# more qingsword.sql 
+						INSERT INTO qingsword_table (id,name,address) VALUES ('001','qingsword',
+					'Beijing');
+						INSERT INTO qingsword_table (id,name,address) VALUES ('002','qingsword.c
+					om','Shanghai');
+						INSERT INTO qingsword_table (id,name,address) VALUES ('003','www.qingswo
+					rd.com','New York');
+					</pre>
+			
+
+				<!-- /正文 -->
+
+				<footer class="text-footer">
+					<p>
+						*转载请注明来自:<a title="晴刃-自由、互助、分享、专注计算机技术。" href="http://www.qingsword.com" target="_blank">晴刃(QingSword.COM)</a>
+					</p>
+					<p>*原文连接:<a title="[Shell]-8-数据输出与重定向" href="http://www.qingsword.com/qing/Shell-8.html" target="_blank">http://www.qingsword.com/qing/Shell-8.html</a></p>
+				</footer>
+			</article>
+			<!-- /文章区 -->	
+		</div>
+	</div>
+	<!-- /content -->
+	
+	<!-- footer -->
+	<footer id="footer">
+		<div class="footer-container">
+			QingSword.COM &nbsp;<img src="../logo/by-nc-sa.png" alt="Creative Commons" title="Creative Commons">
+		</div>
+	</footer>
+	<!-- /footer -->
+</body>
+</html>
