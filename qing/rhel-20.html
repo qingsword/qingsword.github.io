@@ -86,6 +86,7 @@
 						 <li><a href="#rhel-bind-4">0×4.DNS主从服务器间实现加密通信</a></li>
 						 <li><a href="#rhel-bind-5">0×5.DNS缓存服务器配置</a></li>
 						 <li><a href="#rhel-bind-6">0×6.配置DNS分离解析</a></li>
+						 <li><a href="#rhel-bind-7">0×7.配置DNS转发</a></li>
 
 					 </ul>
 					<!-- /目录 -->
@@ -636,6 +637,22 @@
 					Address: 192.168.100.233
 					</pre>
 
+					<h2 id="rhel-bind-7">0×7.配置DNS转发</h2>
+
+					<p>在工作中可能遇到这种情况，我们内网DNS服务器配置了内部解析的域名IP，但没有公网的域名解析服务，如果一台主机DNS设置成我们自己的DNS服务器，就只能解析我们配置好的域名，想要让这台主机能够通过我们自己的DNS服务器去解析外网域名，可以使用转发功能，指定上层DNS服务器，请看下面的实例：</p>
+					<pre class="brush: bash;">
+					#编辑主配置文件，在options段中，任意位置插入两行数据
+					[root@qingsword.com ~]# vim /etc/named.conf
+					options {
+						#..省略部分输出..
+						forward first;
+						#括号中填写公网DNS服务器地址
+ 						forwarders { 8.8.8.8; };
+ 						#..省略部分输出..
+ 					}
+
+ 					#配置完成后重启DNS服务，主机就能通过我们的DNS查询公网域名了
+					</pre>
 						
 				<!-- /正文 -->
 
