@@ -639,11 +639,13 @@
 					while IFS=\: read -r username pw ; do
 						echo "添加用户 $username"
 						useradd -m $username
-						#centos修改密码的方法
-						#echo $pwd | passwd --stdin $username
+						#centos修改密码的方法（可以使用下面的命令逐一添加，本例没有使用这个方法）
+						#echo $pw | passwd --stdin $username
+						#ubuntu修改密码的方法（可以使用下面的命令逐一添加，本例没有使用这个方法）
+						#echo "$username:$pw" | chpasswd
 					done &lt; "$str_upfile" #将up.txt文件内容重定向给while循环，作为循环的输入数据
 
-					#ubuntu批量修改密码的方法
+					#ubuntu使用chpasswd命令批量修改密码
 					chpasswd &lt; $str_upfile
 
 					#在ubuntu上测试，创建用户并且修改密码成功
@@ -671,8 +673,10 @@
 					while IFS=\: read -r username pw ; do
 						echo "添加用户 $username"
 						useradd -m $username
-						#centos修改密码的方法
-						#echo $pwd | passwd --stdin $username
+						#centos修改密码的方法（可以使用下面的命令逐一添加，本例没有使用这个方法）
+						#echo $pw | passwd --stdin $username
+						#ubuntu修改密码的方法（可以使用下面的命令逐一添加，本例没有使用这个方法）
+						#echo "$username:$pw" | chpasswd
 					#注意这一行的输入格式，第一个小于号贴着done，然后空格（两个小于号之间有一个空格），第二个小于号贴着括号
 					#-e参数在本实例的后面介绍，简单的讲echo会向循环输入三行数据，每行包含用户名与密码并用:号分割
 					done&lt; &lt;(echo -e 'u_1:Passw0rd\nu_2:Passw0rd\nu_3:Passw0rd')
