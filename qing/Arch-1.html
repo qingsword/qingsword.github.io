@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<!--Copyright©QingSword.COM︻☼1010D>-->
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
+	<meta name="description" content="晴刃,是一个致力推广实用计算机技术的个人博客;我们分享计算机知识;为计算机系统以及网络安全防范做出一份贡献。【专注技术 创造价值 共同进步】">
+	<meta name="keywords" content="晴刃,晴,qing,qingsword,ccna图文笔记,ubuntu,linux,ubuntu server,mysql,node.js,javascript,python,计算机技术博客">
+	<title>[Arch]-1-如何将Arch安装到磁盘 - QingSword.COM</title>
+	<link rel="shortcut icon" type="image/x-icon" href="../logo/favicon.ico">
+	<link rel="stylesheet" type="text/css" href="../css/basic.css">
+	<link rel="stylesheet" type="text/css" href="../css/text.css">
+	<!-- 代码块高亮js -->
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shCore.css"/>
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shThemeRDark.css"/>
+	 <script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shCore.js"></script>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shBrushBash.js"></script>
+	<script type="text/javascript">
+	SyntaxHighlighter.all();
+	</script>
+</head>
+<body>
+	<!--header -->
+	<header id="nav">
+			<div class="nav-container"> 
+				<!-- 根大纲-->
+				<a href="http://www.qingsword.com" title="晴刃">
+					<h1 class="nav-logo">晴刃</h1>
+				</a>
+				<h2 class="nav-site-description desc-hidden">
+					自由、互助、分享、专注计算机技术
+				</h2>
+				<nav class="nav-links"> 
+					<!-- nav连接大纲-->
+					<h1 style="display:none;">网站导航</h1> 
+					<ul>
+						<li  class="li-hidden">
+							<a href="../index.html" title="home">
+								<span class="link-word"><img src="../logo/home.png" alt="home" class="link-img">首页</span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../web.html" title="web">
+								<span class="link-word"><img src="../logo/web.png" alt="web" class="link-img">程序<span class="word-hidden">设计</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../system.html" title="system">
+								<span class="link-word"><img src="../logo/linux.png" alt="linux" class="link-img">系统<span class="word-hidden">应用</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../net.html" title="net">
+								<span class="link-word"><img src="../logo/net.png" alt="net" class="link-img">网络<span class="word-hidden">技术</span></span>
+							</a>
+						</li>
+						<li>
+							<a href="../sitemap.html" title="sitemap">
+								<span class="link-word"><img src="../logo/archives.png" alt="archives" class="link-img"><span class="word-hidden">文章</span>归档</span>
+							</a>
+						</li>
+					</ul>
+				</nav>
+			</div>		
+	</header>
+	<!-- /header -->
+
+	<!-- content-->
+	<div id="content">
+		<div class="content-container">
+			<!-- 文章区 -->
+			<article class="text-container">
+				<header class="text-header">
+					<h1>[Arch]-1-如何将Arch安装到磁盘</h1>	
+				</header><!-- /header -->
+				<section class="text-body">
+					<h2>引言</h2>
+					<p>这篇文章记录Arch2020.03.01版本，从USB启动到安装到磁盘的过程，文章不会过多的描述基本命令，尽可能用精简的语言描述整个过程，希望对大家有所帮助。</p>
+					<!-- 目录 -->
+					<h2>文章目录</h2>
+					<ul class="contents">	
+						 <li><a href="#Arch-1">0×1.安装Arch</a></li>
+						 <li class="subli"><a href="#Arch-2">a.检测主板是否支持UEFI</a></li>
+						 <li class="subli"><a href="#Arch-3">b.链接到互联网</a></li>
+						 <li class="subli"><a href="#Arch-4">c.使用fdisk分区</a></li>
+						 <li class="subli"><a href="#Arch-5">d.安装Grub</a></li>
+						 <li class="subli"><a href="#Arch-6">e.收尾工作</a></li>
+					 </ul>
+					<!-- /目录 -->
+
+					<!-- 正文 -->
+					<h2 id="Arch-1">0×1.安装Arch</h2>
+
+					<p>首先准备一个U盘（2G以上），下载Arch的ISO镜像（下载网址 https://www.archlinux.org/download/），将U盘制作成Arch镜像的启动盘，引导进入Grub界面后，选第一个Boot Arch Linux进到字符界面。</p>
+
+					<p>注：如果是VMware虚拟机测试安装，需要UEFI支持，需要编辑虚拟机系统所在文件夹下".vmx"后缀的文件，在文件末尾添加一行，让虚拟机支持UEFI模式</p>
+					<pre class="brush: bash;">
+					firmware="efi"
+					</pre>
+
+					<h3 id="Arch-2">a.检测主板是否支持UEFI</h3>
+					<pre class="brush: bash;">
+					 #如果下面的文件不存在，说明主板不支持UEFI，后面会提供UEFI和非UEFI两种grub安装方式，这里只需要知道自己的主板支持还是不支持就行
+					 root@archiso:~$ ls /sys/firmware/efi/efivars
+					</pre>
+					<h3 id="Arch-3">b.链接到互联网</h3>
+					<pre class="brush: bash;">
+					#查看存在哪些网卡，记住需要链接互联网的网卡号
+					 root@archiso:~$  ip link
+					 1: lo: 
+					 2: enp3s0: 
+					 3: wlo1:
+
+					 #[分之-1]如果使用无线网卡（本例无线网卡为wlo1）去链接wifi按照下面的方法 
+					 #开启无线网卡
+					 root@archiso:~$ ip link set wlo1 up
+					 #[可选]扫描可以链接的无线网卡SSID名称，如果你知道自己要链接的网卡SSID名称，就不需要扫描
+					 root@archiso:~$ iwlist wlo1 scan | grep ESSID
+					 #将需要链接的wifi名称（本例是WodeWifi，请替换成自己的）与连接密码（本例是WodeMiMa，请替换成自己的）写入到wifi.conf配置文件中
+					 root@archiso:~$ wpa_passphrase WodeWifi WodeMiMa > wifi.conf 
+					 #后台运行链接到WIFI
+					 root@archiso:~$ wpa_supplicant -c wifi.conf -i wlo1 &
+					 #获取IP地址
+					 root@archiso:~$ dhcpcd & 
+					 #同步时间
+					 root@archiso:~$ timedatectl set-ntp true
+					 #能够ping通百度配置无误
+					 root@archiso:~$ ping baidu.com -c 3
+
+					 #[分之-2]如果使用有线（本例网卡号为enp3s0）路由提供DHCP功能，只需要获取地址即可
+					 root@archiso:~$ dhcpcd &
+					 #同步时间
+					 root@archiso:~$ timedatectl set-ntp true
+					 #能够ping通百度配置无误
+					 root@archiso:~$ ping baidu.com -c 3
+					</pre>
+
+					<h3 id="Arch-4">c.使用fdisk分区</h3>
+					<p>本例假设用/dev/sda这块磁盘来安装</p>
+					<pre class="brush: bash;">
+					 #查看磁盘分区列表
+					 root@archiso:~$ fdisk -l
+
+					 #进入fdisk分区
+					 root@archiso:~$ fdisk /dev/sda
+
+					 #先输入G创建GPT分区模式
+					 Command (m for help)：g
+					</pre>
+					<p>[分之-1]如果主板支持UEFI模式：</p>
+					<pre class="brush: bash;">
+					 #创建一个EFI分区（/dev/sda1）
+					 Command (m for help)：n
+					 大小+512M
+					 #调整分区类型
+					 Command (m for help)：t
+					 #输入1，即为EFI System
+					 Command (m for help)：1
+					 #再创建一个分区
+					 Command (m for help)：n
+					 #本例划分了第二个分区(/dev/sda2)30G作为等会要装系统的/目录，其他分区请随意
+					 #保存
+					 Command (m for help)：w
+
+					 #格式化EFI分区
+					 root@archiso:~$ mkfs.fat -F32 /dev/sda1
+					 #格式化第二个分区
+					 root@archiso:~$ mkfs.ext4 /dev/sda2
+					</pre>
+					<p>[分之-2]如果主板不支持UEFI模式：</p>
+					<pre class="brush: bash;">
+					 #创建一个大小为2M的分区(/dev/sda1)
+					 Command (m for help)：n
+					 +2M
+					 #调整分区类型
+					 Command (m for help)：t
+					 #输入4，即为BIOS boot类型
+					 Command (m for help)：4
+					 #再创建一个分区
+					 Command (m for help)：n
+					 #本例划分了第二个分区(/dev/sda2)30G作为等会要装系统的/目录，其他分区请随意
+					 #保存
+					 Command (m for help)：w
+
+					 #第一个2M的分区不要动，格式化第二个分区
+					 root@archiso:~$ mkfs.ext4 /dev/sda2
+					</pre>
+
+					<h3 id="Arch-5">d.安装Grub</h3>
+					<pre class="brush: bash;">
+					#将需要制作成/目录的分区挂载到/mnt
+					 root@archiso:~$ mount /dev/sda2 /mnt
+					#建立启动目录
+					 root@archiso:~$ mkdir /mnt/boot
+
+					 #[分之-1]UEFI模式，挂载EFI分区到boot目录
+					 root@archiso:~$ mount /dev/sda1 /mnt/boot
+
+					 #[分之-2]不支持UEFI模式，不需要挂载BIOS boot，无需操作
+					</pre>
+					<p>替换软件源：</p>
+					<pre class="brush: bash;">
+					 root@archiso:~$ vim /etc/pacman.d/mirrorlist
+
+					 #在最前面，加入aliyun和163源
+					 Server = http://mirrors.aliyun.com/archlinux/$repo/os/$arch
+					 Server = http://mirrors.163.com/archlinux/$repo/os/$arch
+
+					 #更新源缓存列表
+					 root@archiso:~$ pacman -Sy
+					</pre>
+					<p>安装必要软件：</p>
+					<pre class="brush: bash;">
+					#安装Linux内核等模块
+					 root@archiso:~$ pacstrap  /mnt base linux linux-firmware base-devel vi vim
+					</pre>
+					<p>挂载信息写入fstab：</p>
+					<pre class="brush: bash;">
+					 root@archiso:~$ genfstab -U /mnt >> /mnt/etc/fstab
+					</pre>
+					<p>安装grub，创建引导：</p>
+					<pre class="brush: bash;">
+					#[分之-1]UEFI，安装grub组件和UEFI引导组件efibootmgr，与必要组件
+					#切换到刚才挂载的分区
+					 root@archiso:~$ arch-root /mnt
+					 root@localhost:~$ pacman -S  grub  efibootmgr  intel-ucode  os-prober
+					#创建引导目录
+					 root@localhost:~$ mkdir /boot/grub
+					#生成grub配置文件
+					 root@localhost:~$ grub-mkconfig > /boot/grub/grub.cfg
+					#用UEFI方式安装grub到/boot目录
+					 root@localhost:~$ grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=ArchLinux
+					#输出grub配置
+					 root@localhost:~$ grub-mkconfig -o /boot/grub/grub.cfg
+
+					#[分之-2]非UEFI模式
+					#切换到刚才挂载的分区，安装必要组件
+					 root@archiso:~$ arch-root /mnt
+					 root@localhost:~$ pacman -S  grub  intel-ucode  os-prober
+					#创建引导目录
+					 root@localhost:~$ mkdir /boot/grub
+					#生成grub配置文件
+					 root@localhost:~$ grub-mkconfig > /boot/grub/grub.cfg
+					#写入主引导记录，注意这个指定的磁盘是刚才划分了2M BIOS boot的磁盘，不需要带分区号
+					 root@localhost:~$ grub-install --target=i386-pc /dev/sda
+					#输出grub配置
+					 root@localhost:~$ grub-mkconfig -o /boot/grub/grub.cfg
+					</pre>
+
+					<h3 id="Arch-6">e.收尾工作</h3>
+
+					<p>图形界面在下一篇文章中会讲，这里最后修改一些文件的信息：</p>
+					<pre class="brush: bash;">
+					#更改root密码
+					 root@localhost:~$ passwd
+
+					#创建hostname
+					 root@localhost:~$ echo "qingsword" > /etc/hostname
+
+					#添加hosts文件信息
+					 root@localhost:~$ vim /etc/hosts
+					 127.0.0.1 localhost
+					 ::1 localhost
+					 127.0.1.1 qingsword.localdomain qingsword   #这一行qingsword替换成你的hostname
+
+					#设置时区
+					 root@localhost:~$ ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+					 root@localhost:~$ hwclock --systohc
+
+					#添加普通用户
+					 root@localhost:~$ useradd -m qing
+					 root@localhost:~$ passwd qing
+
+					#编辑sudo文件，在"root ALL=(ALL) ALL"下面加一行，将刚才添加的用户加入其中
+					 root@localhost:~$ visudo
+					 qing ALL=(ALL) ALL
+					</pre>
+
+					<p>做完这些操作之后，重启就能引导进入字符界面的Arch了，下一篇文章，安装图形化界面。</p>
+				<!-- /正文 -->
+
+				<footer class="text-footer">
+					<p>
+						*转载请注明来自:<a title="晴刃-自由、互助、分享、专注计算机技术。" href="http://www.qingsword.com" target="_blank">晴刃(QingSword.COM)</a>
+					</p>
+					<p>*原文连接:<a title="[Arch]-1-如何将Arch安装到磁盘" href="http://www.qingsword.com/qing/Arch-1.html" target="_blank">http://www.qingsword.com/qing/Arch-1.html</a></p>
+				</footer>
+			</article>
+			<!-- /文章区 -->	
+		</div>
+	</div>
+	<!-- /content -->
+	
+	<!-- footer -->
+	<footer id="footer">
+		<div class="footer-container">
+			QingSword.COM &nbsp;<img src="../logo/by-nc-sa.png" alt="Creative Commons" title="Creative Commons">
+		</div>
+	</footer>
+	<!-- /footer -->
+</body>
+</html>

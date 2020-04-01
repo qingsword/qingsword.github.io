@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<!--Copyright©QingSword.COM︻☼1010D>-->
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
+	<meta name="description" content="晴刃,是一个致力推广实用计算机技术的个人博客;我们分享计算机知识;为计算机系统以及网络安全防范做出一份贡献。【专注技术 创造价值 共同进步】">
+	<meta name="keywords" content="晴刃,晴,qing,qingsword,ccna图文笔记,ubuntu,linux,ubuntu server,mysql,node.js,javascript,python,计算机技术博客">
+	<title>[Arch]-2-如何给Arch安装图形界面 - QingSword.COM</title>
+	<link rel="shortcut icon" type="image/x-icon" href="../logo/favicon.ico">
+	<link rel="stylesheet" type="text/css" href="../css/basic.css">
+	<link rel="stylesheet" type="text/css" href="../css/text.css">
+	<!-- 代码块高亮js -->
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shCore.css"/>
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shThemeRDark.css"/>
+	 <script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shCore.js"></script>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shBrushBash.js"></script>
+	<script type="text/javascript">
+	SyntaxHighlighter.all();
+	</script>
+</head>
+<body>
+	<!--header -->
+	<header id="nav">
+			<div class="nav-container"> 
+				<!-- 根大纲-->
+				<a href="http://www.qingsword.com" title="晴刃">
+					<h1 class="nav-logo">晴刃</h1>
+				</a>
+				<h2 class="nav-site-description desc-hidden">
+					自由、互助、分享、专注计算机技术
+				</h2>
+				<nav class="nav-links"> 
+					<!-- nav连接大纲-->
+					<h1 style="display:none;">网站导航</h1> 
+					<ul>
+						<li  class="li-hidden">
+							<a href="../index.html" title="home">
+								<span class="link-word"><img src="../logo/home.png" alt="home" class="link-img">首页</span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../web.html" title="web">
+								<span class="link-word"><img src="../logo/web.png" alt="web" class="link-img">程序<span class="word-hidden">设计</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../system.html" title="system">
+								<span class="link-word"><img src="../logo/linux.png" alt="linux" class="link-img">系统<span class="word-hidden">应用</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../net.html" title="net">
+								<span class="link-word"><img src="../logo/net.png" alt="net" class="link-img">网络<span class="word-hidden">技术</span></span>
+							</a>
+						</li>
+						<li>
+							<a href="../sitemap.html" title="sitemap">
+								<span class="link-word"><img src="../logo/archives.png" alt="archives" class="link-img"><span class="word-hidden">文章</span>归档</span>
+							</a>
+						</li>
+					</ul>
+				</nav>
+			</div>		
+	</header>
+	<!-- /header -->
+
+	<!-- content-->
+	<div id="content">
+		<div class="content-container">
+			<!-- 文章区 -->
+			<article class="text-container">
+				<header class="text-header">
+					<h1>[[Arch]-2-如何给Arch安装图形界面 </h1>	
+				</header><!-- /header -->
+				<section class="text-body">
+					<h2>引言</h2>
+					<p>这篇文章给大家介绍使用Arch安装Deepin桌面环境，网络组件的配置，字体优化等。</p>
+					<!-- 目录 -->
+					<h2>文章目录</h2>
+					<ul class="contents">	
+						 <li><a href="#Arch-1">0×1.安装Deepin桌面环境</a></li>
+						 <li><a href="#Arch-2">0×2.安装网络管理组件</a></li>
+						 <li><a href="#Arch-3">0×3.安装微软雅黑字体</a></li>
+						 <li><a href="#Arch-4">0×4.本地界面中文化配置</a></li>
+					 </ul>
+					<!-- /目录 -->
+
+					<!-- 正文 -->
+					<h2 id="Arch-1">0×1.安装Deepin桌面环境</h2>
+					<p>这一部分选择Deepin是因为深度的桌面优化的还不错，平时做桌面使用开箱即用，省去了很多界面优化的时间：</p>
+					<pre class="brush: bash;">
+					#安装xorg桌面基础架构
+					 qing@qingsword.com:~$ sudo pacman -S xorg xorg-apps xorg-server xorg-xinit
+					#安装deepin桌面环境，以及deepin-extra桌面环境组件
+					 qing@qingsword.com:~$ sudo pacman -S deepin deepin-extra
+					#编辑lightdm.conf文件
+					#将"greeter-session=example-gtk-gnome"去掉前面的#注释符号
+					#改成"greeter-session=lightdm-deepin-greeter"
+					 qing@qingsword.com:~$ sudo vim /etc/lightdm/lightdm.conf
+					#随机启动lightdm
+					 qing@qingsword.com:~$ sudo systemctl enable lightdm
+					#双网卡笔记本，或者intel芯片组网卡，安装intel显卡驱动支持
+					 qing@qingsword.com:~$ sudo pacman -S  xf86-video-intel mesa mesa-libgl
+					#如果有Nvidia卡必须安装bumblebee（不然deepin有可能进不去桌面，卡登录）这里暂时不折腾N卡驱动
+					 qing@qingsword.com:~$ sudo pacman -S bumblebee
+					</pre>
+					<h2 id="Arch-2">0×2.安装网络管理组件</h2>
+					<p>安装网络组件NetworkManager(deepin桌面不需要安装network-manager-applet 自带了有线和wifi前端)：</p>
+					<pre class="brush: bash;">
+					#安装NetworkManager与配套组件
+					 qing@qingsword.com:~$ sudo pacman -S networkmanager nm-connection-editor network-manager-applet
+					#随机启动，启动服务
+					 qing@qingsword.com:~$ systemctl enable NetworkManager
+					 qing@qingsword.com:~$ systemctl start NetworkManager
+					</pre>
+
+					<h2 id="Arch-3">0×3.安装微软雅黑字体</h2>
+
+					<p>基于一些兼容性的考虑，在安装微软雅黑字体前，一般会去装一些开源中文字体，个人总结出下面这些比较好用的字体，先安装上：</p>
+					<pre class="brush: bash;">
+					#安装开源中文字体
+					 qing@qingsword.com:~$ sudo pacman -S wqy-microhei wqy-microhei-lite wqy-zenhei noto-fonts noto-fonts-cjk noto-fonts-emoji ttf-dejavu ttf-liberation ttf-fireflysung
+					</pre>
+					<p>安装微软雅黑字体，先找台Windows机器，在文件夹地址栏输入"C:\Windows\Fonts\Microsoft YaHei UI"就能查找到微软雅黑的常规字体，将这个字体复制出来备用。</p>
+					<p>在Arch下创建Windows字体存放目录：</p>
+					<pre class="brush: bash;">
+					#创建目录，将刚才拷贝的微软雅黑字体文件复制到这个目录下面
+					 qing@qingsword.com:~$ sudo mkdir /usr/share/fonts/WindowsFonts
+					#更改权限
+					 qing@qingsword.com:~$ sudo chmod 755 /usr/share/fonts/WindowsFonts
+					#切换到目录中，创建刷新字体缓存
+					 qing@qingsword.com:~$ cd /usr/share/fonts/WindowsFonts
+					 qing@qingsword.com:~$ sudo mkfontscale &amp;&amp; sudo mkfontdir &amp;&amp; sudo fc-cache -fv
+					</pre>
+
+					<h2 id="Arch-4">0×4.本地界面中文化配置</h2>
+					<p>到目前为止，图形界面还是英文的语言环境，可以使用下面的方法替换成中文环境，为了防止乱码，请先参考文章第三部分安装中文字体，中文字体如果没有安装，会出现乱码：</p>
+					<pre class="brush: bash;">
+					#编辑本地语言环境配置文件
+					 qing@qingsword.com:~$ sudo vim /etc/locale.gen
+					#搜索"zh_CN.UTF-8"和"en_US.UTF-8"两行都去掉前面的#号
+					#让语言生效输入下面的命令
+					 qing@qingsword.com:~$ sudo locale-gen
+					#配置本地语言环境为中文
+					 qing@qingsword.com:~$ sudo echo "LANG=zh_CN.UTF-8"&gt;/etc/locale.conf
+					</pre>
+					<p>通过这四步操作，重启之后进入Deepin桌面环境，在配置中就能修改系统语言为微软雅黑，界面字体看起来也相对比较舒服了。</p>
+				<!-- /正文 -->
+
+				<footer class="text-footer">
+					<p>
+						*转载请注明来自:<a title="晴刃-自由、互助、分享、专注计算机技术。" href="http://www.qingsword.com" target="_blank">晴刃(QingSword.COM)</a>
+					</p>
+					<p>*原文连接:<a title="[Arch]-2-如何给Arch安装图形界面" href="http://www.qingsword.com/qing/Arch-2.html" target="_blank">http://www.qingsword.com/qing/Arch-2.html</a></p>
+				</footer>
+			</article>
+			<!-- /文章区 -->	
+		</div>
+	</div>
+	<!-- /content -->
+	
+	<!-- footer -->
+	<footer id="footer">
+		<div class="footer-container">
+			QingSword.COM &nbsp;<img src="../logo/by-nc-sa.png" alt="Creative Commons" title="Creative Commons">
+		</div>
+	</footer>
+	<!-- /footer -->
+</body>
+</html>
