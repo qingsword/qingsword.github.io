@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<!--Copyright©QingSword.COM︻☼1010D>-->
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
+	<meta name="description" content="晴刃,是一个致力推广实用计算机技术的个人博客;我们分享计算机知识;为计算机系统以及网络安全防范做出一份贡献。【专注技术 创造价值 共同进步】">
+	<meta name="keywords" content="晴刃,晴,qing,qingsword,ccna图文笔记,ubuntu,linux,ubuntu server,mysql,node.js,javascript,python,计算机技术博客">
+	<title>[Arch]-3-Arch如何安装软件 - QingSword.COM</title>
+	<link rel="shortcut icon" type="image/x-icon" href="../logo/favicon.ico">
+	<link rel="stylesheet" type="text/css" href="../css/basic.css">
+	<link rel="stylesheet" type="text/css" href="../css/text.css">
+	<!-- 代码块高亮js -->
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shCore.css"/>
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shThemeRDark.css"/>
+	 <script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shCore.js"></script>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shBrushBash.js"></script>
+	<script type="text/javascript">
+	SyntaxHighlighter.all();
+	</script>
+</head>
+<body>
+	<!--header -->
+	<header id="nav">
+			<div class="nav-container"> 
+				<!-- 根大纲-->
+				<a href="http://www.qingsword.com" title="晴刃">
+					<h1 class="nav-logo">晴刃</h1>
+				</a>
+				<h2 class="nav-site-description desc-hidden">
+					自由、互助、分享、专注计算机技术
+				</h2>
+				<nav class="nav-links"> 
+					<!-- nav连接大纲-->
+					<h1 style="display:none;">网站导航</h1> 
+					<ul>
+						<li  class="li-hidden">
+							<a href="../index.html" title="home">
+								<span class="link-word"><img src="../logo/home.png" alt="home" class="link-img">首页</span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../web.html" title="web">
+								<span class="link-word"><img src="../logo/web.png" alt="web" class="link-img">程序<span class="word-hidden">设计</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../system.html" title="system">
+								<span class="link-word"><img src="../logo/linux.png" alt="linux" class="link-img">系统<span class="word-hidden">应用</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../net.html" title="net">
+								<span class="link-word"><img src="../logo/net.png" alt="net" class="link-img">网络<span class="word-hidden">技术</span></span>
+							</a>
+						</li>
+						<li>
+							<a href="../sitemap.html" title="sitemap">
+								<span class="link-word"><img src="../logo/archives.png" alt="archives" class="link-img"><span class="word-hidden">文章</span>归档</span>
+							</a>
+						</li>
+					</ul>
+				</nav>
+			</div>		
+	</header>
+	<!-- /header -->
+
+	<!-- content-->
+	<div id="content">
+		<div class="content-container">
+			<!-- 文章区 -->
+			<article class="text-container">
+				<header class="text-header">
+					<h1>[Arch]-3-Arch如何安装软件</h1>	
+				</header><!-- /header -->
+				<section class="text-body">
+					<h2>引言</h2>
+					<p>这边文章介绍Arch几种软件安装方式，包管理软件Pacman以及Arch的灵魂AUR。</p>
+					<!-- 目录 -->
+					<h2>文章目录</h2>
+					<ul class="contents">	
+						 <li><a href="#Arch-1">0×1.如何使用Pacman</a></li>
+						 <li><a href="#Arch-2">0×2.如何使用AUR</a></li>
+					 </ul>
+					<!-- /目录 -->
+
+					<!-- 正文 -->
+					<h2 id="Arch-1">0×1.如何使用Pacman</h2>
+					<p>Pacman是Arch下非常好用的包管理软件，官方使用wiki文档请参考：<a title="Arch pacman wiki" href="https://wiki.archlinux.org/index.php/Pacman_(%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87)" target="_blank">Arch Pacman wiki</a></p>
+					<p>所有能够通过pacman下载安装，被纳入官方软件包列表的软件，都可以通过这个页面查找到：<a title="Arch Packages" href="https://www.archlinux.org/packages/" target="_blank">Arch Packages</a></p>
+					<p>所以，Arch上我们只需要知道要安装的软件包名称，然后通过pacman命令安装即可，下面总结出个人使用中最常用的4条命令：</p>
+					<pre class="brush: bash;">
+					#安装或者升级单个软件，例如安装火狐浏览器，如果已安装并且版本比较新则会被升级，如果已安装版本相同，在得到你的同意后，会重新安装
+					 qing@qingsword.com:~$ sudo pacman -S firefox
+					#安装或升级多个软件（用看空格分开每个软件包名称即可），例如火狐浏览器，火狐浏览器中文支持，Google浏览器
+					 qing@qingsword.com:~$ sudo pacman -S firefox firefox-i18n-zh-cn chromium
+					
+					#升级整个系统，将会更新所有系统中安装的软件（这就是Arch强大的地方，基本上不需要重装系统）
+					 qing@qingsword.com:~$ sudo pacman -Syu
+
+					#查找系统中安装过的软件包，例如uGet，会列出所有名称包含uget的软件包
+					 qing@qingsword.com:~$ sudo pacman -Qs uget
+
+					#删除指定软件包，及其所有没有被其他已安装软件包使用的依赖关系，例如uget，如果有多个软件，用空格分隔
+					 qing@qingsword.com:~$ sudo pacman -Rs  uget
+					</pre>
+
+					<h2 id="Arch-2">0×2.如何使用AUR</h2>
+					<p>AUR是指Archlinux User-community Repository，也就是,Archlinux用户社区的软件库，他的由来是因为很多软件从git到编译到安装基本上都是相同的步骤，所以一部分十(xian)分(de)聪(dan)明(teng)的人，将这个过程打包成了一个脚本，我们只需要git下来这个脚本，即可完成软件的自(wu)动(nao)化安装。</p>
+					<p>AUR官方网址是：<a title="Arch AUR" href="https://aur.archlinux.org/" target="_blank">AUR</a></p>
+					<p>这里有一篇很详细的文章介绍什么是AUR以及其中的原理：<a title="Arch AUR" href="https://www.jianshu.com/p/1b48ef4bc2ba" target="_blank">Archlinux的灵魂-PKGBUILD、AUR和ABS</a></p>
+					<p>所以，所有可以通过AUR官方链接查到的软件包，都可以使用下面这种方式来安装：</p>
+					<p>首先，从AUR页面搜索到需要安装的软件包的git链接，例如WingIDE，找到你要安装的版本，复制红框里面的git链接：</p>
+					<img src="images/Arch3-1.png" alt="Arch AUR">
+					<img src="images/Arch3-2.png" alt="Arch AUR">
+					<img src="images/Arch3-3.png" alt="Arch AUR">
+					<pre class="brush: bash;">
+					#使用git克隆到本地
+					 qing@qingsword.com:~$ git clone https://aur.archlinux.org/wingide.git 
+					#进入刚才克隆的目录
+					 qing@qingsword.com:~$ cd wingide
+					#使用makepkg命令，执行PKGBUILD脚本中的内容，生成一个文件名".xz"结尾的二进制安装文件
+					#也可以直接makepkg -si会自动安装上，不需要pacman了
+					 qing@qingsword.com:~/wingide $ makepkg 
+					#使用pacman安装刚才生成的安装包
+					 qing@qingsword.com:~/wingide $ sudo pacman -U wingide-7.2.1.0.1-1-x86_64.pkg.tar.xz
+					</pre>
+					<p>上面就是Arch安装软件的常规操作，基本上官方源配合AUR能够满足日常需求。</p>
+					
+				<!-- /正文 -->
+
+				<footer class="text-footer">
+					<p>
+						*转载请注明来自:<a title="晴刃-自由、互助、分享、专注计算机技术。" href="http://www.qingsword.com" target="_blank">晴刃(QingSword.COM)</a>
+					</p>
+					<p>*原文连接:<a title="[Arch]-3-Arch如何安装软件" href="http://www.qingsword.com/qing/Arch-3.html" target="_blank">http://www.qingsword.com/qing/Arch-3.html</a></p>
+				</footer>
+			</article>
+			<!-- /文章区 -->	
+		</div>
+	</div>
+	<!-- /content -->
+	
+	<!-- footer -->
+	<footer id="footer">
+		<div class="footer-container">
+			QingSword.COM &nbsp;<img src="../logo/by-nc-sa.png" alt="Creative Commons" title="Creative Commons">
+		</div>
+	</footer>
+	<!-- /footer -->
+</body>
+</html>
