@@ -351,15 +351,16 @@
 					str1="www.qingsword.com"
 					str2=""
 
-					if [ -n $str1 ] ; then
+					#建议将所有变量都放在引号中进行判断
+					if [ -n "$str1" ] ; then
 						echo "str1 $str1 is not empty"
 					fi
 
-					if [ -z $str2 ] ; then
+					if [ -z "$str2" ] ; then
 					        echo "str2 $str2 is empty"
 					fi
 					#str3不存在，Bash对未定义的变量，判断都为空字符
-					if [ -n $str3 ] ; then
+					if [ -n "$str3" ] ; then
 					        echo "str3 $str3 is empty"
 					fi
 
