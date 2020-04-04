@@ -97,17 +97,17 @@
 					<h2 id="Arch-2">0×2.如何使用CUPS安装打印机</h2>
 					<p>	启动服务之后，可以在浏览器中使用这个网址打开CUPS配置页面：http://localhost:631</p>
 					<p>点击添加打印机后，可能会弹出一个窗口让你输入用户名和密码，请输入root和root密码（普通用户添加打印机可能会失败）：</p>
-					<img src="images/Arch6-1.png" alt="Arch AUR">
+					<img src="images/Arch6-1.png" alt="Arch CUPS">
 					<p>如果能够自动发现打印机会出现在上面红框那个列表里，只需要选择正确的打印机就行，如果没有发现设备，我们就需要选择下面的"LPD/LPR主机或打印机"来手动输入打印机地址：</p>
-					<img src="images/Arch6-2.png" alt="Arch AUR">
+					<img src="images/Arch6-2.png" alt="Arch CUPS">
 					<p>搜索到打印机后，在location中填入打印机标识（WPS打印时选择打印机看到的就是这个名称）：</p>
-					<img src="images/Arch6-3.png" alt="Arch AUR">
+					<img src="images/Arch6-3.png" alt="Arch CUPS">
 					<p>在下图这一步中，一定要选择对打印机的型号：</p>
-					<img src="images/Arch6-4.png" alt="Arch AUR">
+					<img src="images/Arch6-4.png" alt="Arch CUPS">
 					<p>已经添加的打印机，可以在Printers页面查看和管理，点击打印机的名称，可以看到具体参数：</p>
-					<img src="images/Arch6-5.png" alt="Arch AUR">
+					<img src="images/Arch6-5.png" alt="Arch CUPS">
 					<p>如果选择错了打印机驱动，可以在打印机详细页面，选择Modify printer来重新选择打印机驱动：</p>
-					<img src="images/Arch6-5.png" alt="Arch AUR">
+					<img src="images/Arch6-5.png" alt="Arch CUPS">
 					 <pre class="brush: bash;">
 					#注：每次重启如果需要使用打印机，都需要先启动服务
 					 qing@qingsword.com:~$ sudo systemctl start cups-browsed.service
