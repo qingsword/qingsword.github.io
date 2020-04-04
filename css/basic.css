@@ -1,4 +1,5 @@
 @charset "utf-8";
+html{filter:progid:DXImageTransform.Microsoft.BasicImage(grayscale=1);-webkit-filter:grayscale(100%);}
 /**初始化**/
 body,h1,h2,h3,p,ul,li,img,figure,figcaption {   /*去边框*/
 	margin: 0px;
