@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<!--Copyright©QingSword.COM︻☼1010D>-->
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
+	<meta name="description" content="晴刃,是一个致力推广实用计算机技术的个人博客;我们分享计算机知识;为计算机系统以及网络安全防范做出一份贡献。【专注技术 创造价值 共同进步】">
+	<meta name="keywords" content="晴刃,晴,qing,qingsword,ccna图文笔记,ubuntu,linux,ubuntu server,mysql,node.js,javascript,python,计算机技术博客">
+	<title>使用rsync实现文件数据本地和远程同步 - QingSword.COM</title>
+	<link rel="shortcut icon" type="image/x-icon" href="../logo/favicon.ico">
+	<link rel="stylesheet" type="text/css" href="../css/basic.css">
+	<link rel="stylesheet" type="text/css" href="../css/text.css">
+	<!-- 代码块高亮js -->
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shCore.css"/>
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shThemeRDark.css"/>
+	 <script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shCore.js"></script>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shBrushBash.js"></script>
+	<script type="text/javascript">
+	SyntaxHighlighter.all();
+	</script>
+</head>
+<body>
+	<!--header -->
+	<header id="nav">
+			<div class="nav-container"> 
+				<!-- 根大纲-->
+				<a href="http://www.qingsword.com" title="晴刃">
+					<h1 class="nav-logo">晴刃</h1>
+				</a>
+				<h2 class="nav-site-description desc-hidden">
+					自由、互助、分享、专注计算机技术
+				</h2>
+				<nav class="nav-links"> 
+					<!-- nav连接大纲-->
+					<h1 style="display:none;">网站导航</h1> 
+					<ul>
+						<li  class="li-hidden">
+							<a href="../index.html" title="home">
+								<span class="link-word"><img src="../logo/home.png" alt="home" class="link-img">首页</span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../web.html" title="web">
+								<span class="link-word"><img src="../logo/web.png" alt="web" class="link-img">程序<span class="word-hidden">设计</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../system.html" title="system">
+								<span class="link-word"><img src="../logo/linux.png" alt="linux" class="link-img">系统<span class="word-hidden">应用</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../net.html" title="net">
+								<span class="link-word"><img src="../logo/net.png" alt="net" class="link-img">网络<span class="word-hidden">技术</span></span>
+							</a>
+						</li>
+						<li>
+							<a href="../sitemap.html" title="sitemap">
+								<span class="link-word"><img src="../logo/archives.png" alt="archives" class="link-img"><span class="word-hidden">文章</span>归档</span>
+							</a>
+						</li>
+					</ul>
+				</nav>
+			</div>		
+	</header>
+	<!-- /header -->
+
+	<!-- content-->
+	<div id="content">
+		<div class="content-container">
+			<!-- 文章区 -->
+			<article class="text-container">
+				<header class="text-header">
+					<h1>使用rsync实现文件数据本地和远程同步</h1>	
+				</header><!-- /header -->
+				<section class="text-body">
+					<h2>引言</h2>
+					<p>rsync是一款十分优秀的本地或远程文件数据同步工具，它可以实现增量备份，配合任务计划，可以实现本地到本地，本地到远程的自动化备份功能。</p>
+					<!-- 目录 -->
+					<h2>文章目录</h2>
+					<ul class="contents">	
+						 <li><a href="#rsync-1">0×1.安装rsync</a></li>
+						 <li><a href="#rsync-2">0×2.rsync本地备份</a></li>
+						 <li><a href="#rsync-3">0×3.rsync远程备份</a></li>
+						 <li><a href="#rsync-4">0×4.rsync参数参考</a></li>
+					 </ul>
+					<!-- /目录 -->
+
+					<!-- 正文 -->
+					<h2 id="rsync-1">0×1.安装rsync</h2>
+					<p>Arch安装：</p>
+					<pre class="brush: bash;">
+					 qing@qingsword.com:~$ sudo pacman -S rsync
+					</pre>
+
+					<p>Ubuntu安装：</p>
+					<pre class="brush: bash;">
+					 qing@qingsword.com:~$ sudo apt install rsync
+					</pre>
+
+					<p>红帽、CentOS系列安装：</p>
+					<pre class="brush: bash;">
+					 qing@qingsword.com:~$ sudo yum install rsync
+					</pre>
+
+					<h2 id="rsync-2">0×2.rsync本地备份</h2>
+					<p>实例1，将/home/qing/dir1目录的内容同步到/home/qing/dir2：</p>
+					<pre class="brush: bash;">
+					#参数解析
+					 # -r 递归备份，不仅备份父目录中的文件，还备份目录下的子目录和文件
+					 # -t 保持mtime属性，强烈建议任何时候都加上"-t"，否则目标文件mtime会设置为系统时间，导致下次更新检查出mtime不同从而导致增量传输无效
+					 # -u 仅在源mtime比目标已存在文件的mtime新时才拷贝（文件有修改源mtime就会比较新）
+					 # --delete 用本例的命令来说明就是，以dir1为主，对dir2进行同步，文件多则删之，少则补之，如果不想删除目标文件夹中其他多余的文件可以不加这个参数
+					 # -vv 显示详细详细（这个参数可以多达四个v，即-vvvv，内容也是递增的）
+
+					 ！！！注意：同步文件夹时一定要在路径后面添加/符号！！！
+
+					 qing@qingsword.com:~$ rsync -r -t -u --delete -vv  /home/qing/dir1/   /home/qing/dir2/
+					</pre>
+					<p>可能有人会问，什么是增量传输？这是个好问题，举个例子：比如dir1目录下有个a文件中的内容是qingsword.com，现在我使用上面的命令，将dir1目录中所有文件同步到dir2之后，我将dir1中a文件中的内容改成www.qingsword.com，这个时候，再次使用上面的命令的时候，rsync基于自己的算法，判断出a文件的改变（这个改变可以是增加内容或删除内容），如果我仅做了修改a文件内容这个操作，dir1中的其他的文件保持不变，rsync就会仅将dir1中a文件传输过去覆盖dir2中的a文件，而不会去覆盖其他没有修改的文件，这就是增量传输。</p>
+
+
+					<h2 id="rsync-3">0×3.rsync远程备份</h2>
+
+					<p>实例2：将本地将/home/qing/dir1目录的内容同步到192.168.1.188的/home/qing/dir2</p>
+					<pre class="brush: bash;">
+					#格式 rsync -r -t -u --delete -vv  [本地路径]  [远程计算机用户名]@[远程计算机ip]:[远程计算机目录地址]
+					 qing@qingsword.com:~$ rsync -r -t -u --delete -vv  /home/qing/dir1/   root@192.168.1.188:/home/qing/dir2/
+
+					 #也可以列出远程计算机目录中已经存在的文件
+					 qing@qingsword.com:~$ rsync root@192.168.1.188:/home/qing/dir2/
+					</pre>
+
+					<h2 id="rsync-4">0×4.rsync参数参考</h2>
+					<p>下面是rsync部分参数参考，详细请参考man rsync：</p>
+					<pre class="brush: bash;">
+					-v：显示rsync过程中详细信息。可以使用"-vvvv"获取更详细信息。
+					-P：显示文件传输的进度信息。(实际上"-P"="--partial --progress"，其中的"--progress"才是显示进度信息的)。
+					-n --dry-run  ：仅测试传输，而不实际传输。常和"-vvvv"配合使用来查看rsync是如何工作的。
+					-a --archive  ：归档模式，表示递归传输并保持文件属性。等同于"-rtopgDl"。
+					-r --recursive：递归到目录中去。
+					-t --times：保持mtime属性。强烈建议任何时候都加上"-t"，否则目标文件mtime会设置为系统时间，导致下次更新，检查出mtime不同从而导致增量传输无效。
+					-o --owner：保持owner属性(属主)。
+					-g --group：保持group属性(属组)。
+					-p --perms：保持perms属性(权限，不包括特殊权限)。
+					-D        ：是"--device --specials"选项的组合，即也拷贝设备文件和特殊文件。
+					-l --links：如果文件是软链接文件，则拷贝软链接本身而非软链接所指向的对象。
+					-z        ：传输时进行压缩提高效率。
+					-R --relative：使用相对路径。意味着将命令行中指定的全路径而非路径最尾部的文件名发送给服务端，包括它们的属性。用法见下文示例。
+					--size-only ：默认算法是检查文件大小和mtime不同的文件，使用此选项将只检查文件大小。
+					-u --update ：仅在源mtime比目标已存在文件的mtime新时才拷贝。注意，该选项是接收端判断的，不会影响删除行为。
+					-d --dirs   ：以不递归的方式拷贝目录本身。默认递归时，如果源为"dir1/file1"，则不会拷贝dir1目录，使用该选项将拷贝dir1但不拷贝file1。
+					--max-size  ：限制rsync传输的最大文件大小。可以使用单位后缀，还可以是一个小数值(例如："--max-size=1.5m")
+					--min-size  ：限制rsync传输的最小文件大小。这可以用于禁止传输小文件或那些垃圾文件。
+					--exclude   ：指定排除规则来排除不需要传输的文件。
+					--delete    ：以SRC为主，对DEST进行同步。多则删之，少则补之。注意"--delete"是在接收端执行的，所以它是在exclude/include规则生效之后才执行的。
+					-b --backup ：对目标上已存在的文件做一个备份，备份的文件名后默认使用"~"做后缀。
+					--backup-dir：指定备份文件的保存路径。不指定时默认和待备份文件保存在同一目录下。
+					-e          ：指定所要使用的远程shell程序，默认为ssh。
+					--port      ：连接daemon时使用的端口号，默认为873端口。
+					--password-file：daemon模式时的密码文件，可以从中读取密码实现非交互式。注意，这不是远程shell认证的密码，而是rsync模块认证的密码。
+					-W --whole-file：rsync将不再使用增量传输，而是全量传输。在网络带宽高于磁盘带宽时，该选项比增量传输更高效。
+					--existing  ：要求只更新目标端已存在的文件，目标端还不存在的文件不传输。注意，使用相对路径时如果上层目录不存在也不会传输。
+					--ignore-existing：要求只更新目标端不存在的文件。和"--existing"结合使用有特殊功能。
+					--remove-source-files：要求删除源端已经成功传输的文件。
+					</pre>
+
+					
+				<!-- /正文 -->
+
+				<footer class="text-footer">
+					<p>
+						*转载请注明来自:<a title="晴刃-自由、互助、分享、专注计算机技术。" href="http://www.qingsword.com" target="_blank">晴刃(QingSword.COM)</a>
+					</p>
+					<p>*原文连接:<a title="使用rsync实现文件数据本地和远程同步" href="http://www.qingsword.com/qing/linux-rsync.html" target="_blank">http://www.qingsword.com/qing/linux-rsync.html</a></p>
+				</footer>
+			</article>
+			<!-- /文章区 -->	
+		</div>
+	</div>
+	<!-- /content -->
+	
+	<!-- footer -->
+	<footer id="footer">
+		<div class="footer-container">
+			QingSword.COM &nbsp;<img src="../logo/by-nc-sa.png" alt="Creative Commons" title="Creative Commons">
+		</div>
+	</footer>
+	<!-- /footer -->
+</body>
+</html>

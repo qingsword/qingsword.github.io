@@ -106,10 +106,10 @@
 					 qing@qingsword.com:~$ sudo pacman -S bumblebee
 					</pre>
 					<h2 id="Arch-2">0×2.安装网络管理组件</h2>
-					<p>安装网络组件NetworkManager(deepin桌面不需要安装这些，默认安装好了)：</p>
+					<p>安装网络组件NetworkManager(deepin桌面不需要安装network-manager-applet，默认安装好了)：</p>
 					<pre class="brush: bash;">
 					#安装NetworkManager与配套组件
-					 qing@qingsword.com:~$ sudo pacman -S networkmanager nm-connection-editor network-manager-applet
+					 qing@qingsword.com:~$ sudo pacman -S networkmanager nm-connection-editor 
 					#随机启动，启动服务
 					 qing@qingsword.com:~$ systemctl enable NetworkManager
 					 qing@qingsword.com:~$ systemctl start NetworkManager

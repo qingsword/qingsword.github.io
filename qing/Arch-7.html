@@ -75,7 +75,7 @@
 				</header><!-- /header -->
 				<section class="text-body">
 					<h2>引言</h2>
-					<p>在前面的安装和配置中，笔者使用了Deepin的桌面环境，Deepin配套的NetworkManager网络组件在Arch中存在一个小Bug，无线Wifi在手动断开重连的过程中无法正常建立链接，表现为反复的断开重连，最后连接失败，本文笔者自建shell，使用wpa组件，手动连接Wifi，从而规避了Deepin桌面环境的这个Bug。</p>
+					<p>在前面的安装和配置中，笔者使用了Deepin的桌面环境，Deepin配套的NetworkManager网络组件在Arch中存在一个小Bug，当链接到一个隐藏Wifi时候，无线Wifi在手动断开重连的过程中无法正常建立链接，表现为反复的断开重连，最后连接失败，本文笔者自建shell，使用wpa组件，手动连接Wifi，从而规避了这个Bug。</p>
 					<!-- 目录 -->
 					<h2>文章目录</h2>
 					<ul class="contents">	
@@ -85,9 +85,10 @@
 
 					<!-- 正文 -->
 					<h2 id="Arch-1">0×1.解决Arch无线网络断线重连Bug</h2>
-					<p>Arch无线网络断线重连Bug描述：笔者使用2020.3.1镜像安装Deepin桌面，Deepin默认使用NetworkManager管理前后端有线与无线网络，在使用Deepin前端图形界面连接Wifi的过程中，密码正确的情况下，时不时出现无法连接，需要重启计算机，才能顺利连接，如果手动断开，再次连接偶尔能够连接上，大多数情况下是反复的连接断开，在图形界面关闭Deepin网络配置页面无线网络功能后，笔者只能利用下面的这个脚本手动切换不同的Wifi，目前来看，这个方法可以替代图形界面的Wifi连接和切换操作：</p>
+					<p>2020.05.23更新：在更新系统到Deepin20.04桌面之后，这个Bug似乎没有出现了，下面的操作对Deepin15桌面版本仍然适用。</p>
+					<p>Arch无线网络断线重连Bug描述：笔者使用2020.3.1镜像安装Deepin桌面，Deepin默认使用NetworkManager管理前后端有线与无线网络，在使用Deepin前端图形界面连接隐藏的Wifi过程中，密码正确的情况下，时不时出现无法连接，需要重启计算机，才能顺利连接，如果手动断开，再次连接偶尔能够连接上，大多数情况下是反复的连接断开，在图形界面关闭Deepin网络配置页面无线网络功能后，笔者只能利用下面的这个脚本手动切换不同的Wifi，目前来看，这个方法可以替代图形界面的Wifi连接和切换操作：</p>
 					<pre class="brush: bash;">
-					#1.假设我们的无线网卡是wlo1，有两个wifi，一个叫"wifiSSID1"，一个叫"wifiSSID2"，密码都是"wifiPassword"
+					#1.假设我们的无线网卡是wlo1，有两个隐藏的wifi，一个叫"wifiSSID1"，一个叫"wifiSSID2"，密码都是"wifiPassword"
 					##首先创建一个脚本用于连接wifiSSID1
 					 qing@qingsword.com:~$ vim linkSSID1.sh
 
@@ -98,7 +99,11 @@
 					#这两个kill是为了结束上一个wifi连接进程
 					sudo kill $(ps -ef | grep "sudo wpa" | grep -v grep | awk '{print $2}') 
 					sudo kill $(ps -ef | grep "dhcpcd" | grep -v grep | awk '{print $2}')
-					sudo wpa_passphrase wifiSSID1 wifiPassword > wifi.conf 
+					echo "network={
+						ssid="wifiSSID1"
+						psk="wifiPassword"
+					    scan_ssid=1
+					}"&gt;/home/qing/sh/wificonf/wifi.conf
 					sudo wpa_supplicant -c /home/qing/sh/wificonf/wifi.conf -i wlo1 &
 					sleep 10
 					sudo dhcpcd &
@@ -113,7 +118,11 @@
 					#这两个kill是为了结束上一个wifi连接进程
 					sudo kill $(ps -ef | grep "sudo wpa" | grep -v grep | awk '{print $2}') 
 					sudo kill $(ps -ef | grep "dhcpcd" | grep -v grep | awk '{print $2}')
-					sudo wpa_passphrase wifiSSID2 wifiPassword > wifi.conf 
+					echo "network={
+						ssid="wifiSSID2"
+						psk="wifiPassword"
+					    scan_ssid=1
+					}"&gt;/home/qing/sh/wificonf/wifi.conf
 					sudo wpa_supplicant -c /home/qing/sh/wificonf/wifi.conf -i wlo1 &
 					sleep 10
 					sudo dhcpcd &
@@ -135,7 +144,7 @@
 					 qing@qingsword.com:~$ bash disconnectWIFI.sh  
 					 </pre>
 
-					 <p>关于这个Bug本身笔者没有深入的研究，后面有时间再补充吧。</p>
+					 <p>关于这个Bug，如果是非隐藏的SSID，并不会出现，但是遇到隐藏的SSID，只能使用scan_ssid=1参数写到配置文件中，这个参数会让系统主动的去扫描指定的隐藏SSID，然后通过脚本来切换不同的隐藏SSID这个方法，至于为什么图形界面下的前端管理器会出现这个问题，笔者没有去继续深究，暂且这样吧。</p>
 
 					
 				<!-- /正文 -->
