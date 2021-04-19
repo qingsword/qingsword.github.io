@@ -28,6 +28,7 @@
 }
 #content .about h2,
 #content .tags h2,
+#content .OfficialWechat h2,
 #content .recommend h2{
 	display: block;
 	height: 35px;
@@ -81,6 +82,14 @@
 	line-height: 24px;
 	color:#999;
 }
+
+#content .OfficialWechat img{
+	margin: 10px 10px 6px 20px;
+	width: 250px;
+	height: 250px;
+}
+
+
 #content .tags ul,
 #content .recommend ul{
 	margin: 6px 0 0 20px;
