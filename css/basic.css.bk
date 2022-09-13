@@ -1,4 +1,5 @@
 @charset "utf-8";
+/**html{filter:progid:DXImageTransform.Microsoft.BasicImage(grayscale=1);-webkit-filter:grayscale(100%);}**/
 /**初始化**/
 body,h1,h2,h3,p,ul,li,img,figure,figcaption {   /*去边框*/
 	margin: 0px;
@@ -23,7 +24,7 @@ div,li{  /*border，padding不扩充宽高*/
 	box-sizing:border-box;
 }
 .clearfix::after{  /*清理浮动div*/
-	content: "nikkocat.com";
+	content: "qingsword.com";
 	display: block;
 	height: 0;
 	visibility: hidden;
@@ -34,73 +35,66 @@ div,li{  /*border，padding不扩充宽高*/
 #nav {
 	background-color: #000;
 	width: 100%;
-	height: 80px;
+	height: 85px;
 	box-shadow: 0px 1px 4px rgb(229,229,229);
 	position: fixed;
 	top: 0;
 	z-index: 9999;
 }
-/**导航栏宽度**/
 #nav .nav-container{
-	max-width: 95%;
+	max-width: 1263px;
 	margin: 0 auto;
 }
-/**logo宽高，位置**/
 #nav  .nav-logo{
-	width: 260px;
-	height: 80px;
-	/**margin-top: 5px;**/
+	width: 189px;
+	height: 60px;
+	margin-top: 5px;
 	background-image: url("../logo/logoa.png") ;
 	background-repeat: no-repeat;
 	text-indent: -9999px;
 	float: left;
 }
 #nav .nav-site-description{
-	border-left: 2px solid #7e7d7d;
-	height: 35px;
-	line-height: 30px;
-	margin:27px 0 0 10px;
+	border-left: 1px solid #7e7d7d;
+	height: 45px;
+	line-height: 45px;
+	margin:12.5px 0 0 10px;
 	padding-left: 10px; 
-	font-size: 20px;
+	font-size: 17px;
 	letter-spacing: 1.2px;
 	color: #dedede;
-	font-weight: bold;
-	text-shadow: 1px 1px 0.5px #0C0C0C;
+	font-weight: normal;
+	/*text-shadow:1px 1px 1px gray ;*/
 	float: left;
 }
 #nav .nav-links{
 	float: right;
-	font-size: 20px;
+	font-size: 18px;
 }
 #nav .nav-links li{
 	float: left;
 }
-/**导航按钮宽高**/
 #nav .nav-links a{
 	display: inline-block;
-	height: 80px;
-	width: 140px;
+	height: 85px;
+	width: 120px;
 }
 #nav .nav-links .link-word{
 	display: block; 
 	text-align: center;
-	line-height: 80px;
+	line-height: 85px;
 	color: #e7e7e7;
 	text-shadow:1px 1px 1px gray ;
-	letter-spacing: 2px;
+	letter-spacing: 1.2px;
 }
-/**导航，动态效果，蒙版+下划线**/
-/**当鼠标移动到导航标时，触发**/
-/**当鼠标点击后，在跳转的页面导航标签上添加active类，这样这个导航标签就会被选中**/
 #nav .nav-links li:hover,
 #nav .nav-links .active{
-	border-bottom: 1.2px solid rgb(222, 246, 7);
+	border-bottom: 1px solid rgb(3, 192, 198);
 	background-color: #222;
 }
-/**导航，当鼠标移上去后，字体放大**/
 #nav .nav-links .link-word:hover{
 	color: #fff;
-	font-size: 23px;
+	font-size: 18.5px;
 }
 #nav .link-img{
 	display: inline-block;
@@ -110,32 +104,42 @@ div,li{  /*border，padding不扩充宽高*/
 
 
 /**媒体查询，响应式布局**/
-/*当页面大于1400px时，PC大屏*/
-/*@media (min-width: 1401px) {
+/*当页面大于1200px时，PC大屏*/
+@media (min-width: 1200px) {
 
-}*/
-/*768-1450，Pad和小屏PC，或者浏览器大小调整*/
-@media (min-width: 768px) and (max-width: 1450px) {
+}
+/*在992和1199像素之间，PC小屏*/
+@media (min-width: 992px) and (max-width: 1199px) {
 	#nav  .nav-logo{
-		margin-left: 1px;
+		margin-left: 10px;
 	}
-	#nav .desc-hidden,
-	#nav .word-hidden {
+ 	#nav .word-hidden{
  		display: none;
  	}
  	#nav .nav-links a {
-		width: 90px;
+		width: 82px;
 	}
-
 }
-
+/*在768和991像素之间，PAD端*/
+@media (min-width: 768px) and (max-width: 991px) {
+	#nav  .nav-logo{
+		margin-left: 10px;
+	}
+	#nav .nav-links a {
+		width: 82px;
+	}
+	#nav .desc-hidden,
+	#nav .word-hidden{
+ 		display: none;
+ 	}
+}
 /*在480和767像素之间，高分辨率手机端*/
 @media (min-width: 480px) and (max-width: 767px) {
 	#nav  .nav-logo{
-		margin-left: 1px;
+		margin-left: 10px;
 	}
 	#nav .nav-links a {
-		width: 90px;
+		width: 82px;
 	}
 	#nav .desc-hidden,
 	#nav .word-hidden,
@@ -146,10 +150,10 @@ div,li{  /*border，padding不扩充宽高*/
 /*小于480像素的屏幕，低分辨率手机端*/
 @media (max-width: 479px) {
 	#nav  .nav-logo{
-		margin-left: 1px;
+		margin-left: 10px;
 	}
 	#nav .nav-links a {
-		width: 90px;
+		width: 82px;
 	}
 	#nav .desc-hidden,
 	#nav .word-hidden,

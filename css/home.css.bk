@@ -1,12 +1,12 @@
 @charset "utf-8";
+/**html{filter:progid:DXImageTransform.Microsoft.BasicImage(grayscale=1);-webkit-filter:grayscale(100%);}**/
 /*home内容区主框架*/
 #content {
 	width 100%;
 	margin-top: 90px;
 }
-/**页面nav下方，主体区域宽度**/
 #content .content-container{
-	max-width: 88%;
+	max-width: 1263px;
 	margin: 0 auto;
 	padding: 0 6px;
 }
@@ -19,35 +19,37 @@
 }
 #content .about,
 #content .tags,
+#content .OfficialWechat,
 #content .recommend{
 	font-size: 18px;
-	border: 1px solid #1b9854;
+	border: 1px solid #7e7d7d;
 	border-radius: 8px;
 	padding: 8px;
 	margin-bottom: 10px;
-	margin-top: 20px;
 }
+
 #content .about h2,
 #content .tags h2,
+#content .OfficialWechat h2,
 #content .recommend h2{
 	display: block;
 	height: 35px;
 	line-height: 35px;
-	background-image: linear-gradient(90deg,rgb(30, 166, 92) 0%,black 50%);
+	background-image: linear-gradient(90deg,rgb(3, 192, 198) 0%,black 8%);
 	border-radius: 6px;
-	font-size: 22px;
+	font-size: 18px;
 	font-weight: normal;
 	color: #dedede;
 	padding-left: 18px;	
 }
 #content .aside .eng-h{
-	font-size: 21px;
-	color: #DEF607;
+	font-size: 15px;
+	color: #6ec3c8;
 }
 #content .about .about-link{
 	display: block;
 	height: 32px;
-	margin: 16px 0 6px 18px;
+	margin: 6px 0 6px 18px;
 }
 #content .about .qingbarin{
 	float: left;
@@ -56,19 +58,11 @@
 	display: block;
 	float: left;
 	line-height: 32px;
-	margin-left: 10px;
+	margin-left: 5px;
 	color: #c7c5c5;
 }
-/*侧边栏群组，鼠标移动上去，边框加放大效果*/
-#content .about .about-link span:hover{
-	border:1px solid #c7c5c5;
-	color: white;
-	font-size: 20px;
-	border-radius: 4px;
-}
-
 #content .about figure{
-	margin: 0px 0px 5px 18px;
+	margin: 0px 0px 5px 22px;
 	clear: both;
 }
 #content .about .about-info{
@@ -90,6 +84,14 @@
 	line-height: 24px;
 	color:#999;
 }
+
+#content .OfficialWechat img{
+	margin: 10px 10px 6px 20px;
+	width: 250px;
+	height: 250px;
+}
+
+
 #content .tags ul,
 #content .recommend ul{
 	margin: 6px 0 0 20px;
@@ -101,7 +103,7 @@
 #content .tags li a{
 	margin: 4px;
 	display: block;
-	width: 160px;
+	width: 122px;
 	height: 32px;
 	border-radius: 6px;
 	line-height: 32px;
@@ -122,7 +124,6 @@
 	text-overflow:ellipsis; /*超出的部分用...代替*/
 	border-radius: 4px;
 	letter-spacing: 1.2px;
-	font-size: 22px;
 }
 #content .recommend li a:hover{
 	background-color: #0c0c0c;
@@ -137,17 +138,17 @@
 }
 #content .sections .sections-title{
 	border-bottom: solid 2px #333;
-	margin: 25px 0 10px 0;
+	margin: 12px 0;
 }
 #content .sections .sections-title h2{
 	display: inline-block;
 	border-bottom: solid 2px #1ea65c;
-	font-size: 24px;
+	font-size: 22px;
 	color: #c7c5c5;
 	letter-spacing: 1.2px;
 }
 #content .sections .article{
-	border: 1px solid #1b9854;
+	border: 1px solid #7e7d7d;
 	border-radius: 6px;
 	margin-bottom: 10px;
 	padding: 10px;
@@ -160,7 +161,7 @@
 }
 #content .article header h1{
 	letter-spacing: 1.2px;
-	font-size: 23px;
+	font-size: 20px;
 	padding: 10px;
 }
 #content .article header a{
@@ -172,28 +173,28 @@
 #content .article section p{
 	letter-spacing: 1.2px;
 	line-height: 1.4;
-	font-size: 22px;
+	font-size: 18px;
 	padding: 16px;
 	color: #c7c7c7;
 }
 #content .article section a{
 	color: #d2d2d2;
 	display: block;
-	width: 140px;
-	height: 35px;
+	width: 120px;
+	height: 32px;
 	text-align: center;
 	line-height: 32px;
 	border-radius: 6px;
-	font-size: 20px;
+	font-size: 18px;
 	margin-left: 16px;
-	border: 1.6px solid #1ea65c;
+	border: 1px solid #1ea65c;
 }
 #content .article section a:hover{
 	color: #fff;
 }
 #content .article footer{
 	margin: 6px 0 0 16px;
-	font-size: 21px;
+	font-size: 16px;
 	letter-spacing: 1.2px;
 	color: #bebebe;
 }
@@ -231,29 +232,22 @@
 /*sitemap归档*/
 #content .sitemap .sitemap-ul a{
 	color: #cfcfcf;
-	font-size: 23px;
 }
-
-/*归档页面分类logo*/
-/*程序设计,字体大小*/
 #content .sitemap .sitemap-ul>li:nth-of-type(1){
 	background-image: url("../logo/web.png");
 	background-repeat: no-repeat;
-	padding-left: 35px;
+	padding-left: 28px;
 }
-
-/*网站地图标题下方，可扩展的分类 控制每个分类的css*/
 #content .sitemap .sitemap-ul>li:nth-of-type(2){
 	background-image: url("../logo/linux.png");
 	background-repeat: no-repeat;
-	padding-left: 35px;	
+	padding-left: 28px;	
 }
 #content .sitemap .sitemap-ul>li:nth-of-type(3){
 	background-image: url("../logo/net.png");
 	background-repeat: no-repeat;
-	padding-left: 35px;
+	padding-left: 28px;
 }
-
 #content .sitemap .sitemap-ul>ul{
 	padding-left: 28px;
 }
@@ -266,7 +260,7 @@
 	border: 1px solid #1ea65c;
 	border-radius: 6px;
 	text-align: center;
-	width: 205px;
+	width: 180px;
 	height: 30px;
 	line-height: 30px;
 	margin: 6px 0;
@@ -282,7 +276,7 @@
 	color: #fff;
 }
 #content  .clearnavfix:before{
-	content: "nikkocat.com";
+	content: "qingsword.com";
 	display: block;
 	width: 0px;
 	height: 76px;
@@ -296,7 +290,6 @@
 	border-radius: 4px;
 	color: #c7c5c5;
 	padding: 10px;
-	font-size: 23px;   /*控制归档页面每个h3标签字体大小*/
 }
 #content .col-content{
 	padding-left: 20px;
@@ -307,7 +300,7 @@
 	margin: 0 10px 0 0;
 	padding: 6px 0 6px 6px;
 	border-radius: 4px;
-	font-size: 22px;  /*控制归档页面每个子标题字体大小*/
+	font-size: 18px;
 	color: #c7c5c5;
 	overflow: hidden;
 	white-space: nowrap;
