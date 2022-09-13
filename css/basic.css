@@ -47,7 +47,7 @@ div,li{  /*border，padding不扩充宽高*/
 }
 /**logo宽高，位置**/
 #nav  .nav-logo{
-	width: 260px;
+	width: 251px;
 	height: 80px;
 	/**margin-top: 5px;**/
 	background-image: url("../logo/logoa.png") ;
