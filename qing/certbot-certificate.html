@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<!--Copyright©QingSword.COM︻☼1010D>-->
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
+	<meta name="description" content="晴刃,是一个致力推广实用计算机技术的个人博客;我们分享计算机知识;为计算机系统以及网络安全防范做出一份贡献。【专注技术 创造价值 共同进步】">
+	<meta name="keywords" content="晴刃,晴,qing,qingsword,ccna图文笔记,ubuntu,linux,ubuntu server,mysql,node.js,javascript,python,计算机技术博客,rust,kali,shell,arch,manjore">
+	<meta name="author" content="www.qingsword.com">
+	<title>[Linux]-如何使用certbot申请免费证书 - QingSword.COM</title>
+	<link rel="shortcut icon" type="image/x-icon" href="../logo/favicon.ico">
+	<link rel="stylesheet" type="text/css" href="../css/basic.css">
+	<link rel="stylesheet" type="text/css" href="../css/text.css">
+	<!-- 代码块高亮js -->
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shCore.css"/>
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shThemeRDark.css"/>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shCore.js"></script>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shBrushBash.js"></script>
+	<script type="text/javascript">
+	SyntaxHighlighter.all();
+	</script>
+</head>
+<body>
+	<!--header -->
+	<header id="nav">
+			<div class="nav-container"> 
+				<!-- 根大纲-->
+				<a href="https://www.qingsword.com" title="晴刃">
+					<h1 class="nav-logo">晴刃</h1>
+				</a>
+				<h2 class="nav-site-description desc-hidden">
+					自由、互助、分享、专注计算机技术
+				</h2>
+				<nav class="nav-links"> 
+					<!-- nav连接大纲-->
+					<h1 style="display:none;">网站导航</h1> 
+					<ul>
+						<li  class="li-hidden">
+							<a href="../index.html" title="home">
+								<span class="link-word"><img src="../logo/home.png" alt="home" class="link-img">首页</span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../web.html" title="web">
+								<span class="link-word"><img src="../logo/web.png" alt="web" class="link-img">程序<span class="word-hidden">设计</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../system.html" title="system">
+								<span class="link-word"><img src="../logo/linux.png" alt="linux" class="link-img">系统<span class="word-hidden">应用</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../net.html" title="net">
+								<span class="link-word"><img src="../logo/net.png" alt="net" class="link-img">网络<span class="word-hidden">技术</span></span>
+							</a>
+						</li>
+						<li>
+							<a href="../sitemap.html" title="sitemap">
+								<span class="link-word"><img src="../logo/archives.png" alt="archives" class="link-img"><span class="word-hidden">文章</span>归档</span>
+							</a>
+						</li>
+					</ul>
+				</nav>
+			</div>		
+	</header>
+	<!-- /header -->
+
+	<!-- content-->
+	<div id="content">
+		<div class="content-container">
+			<!-- 文章区 -->
+			<article class="text-container">
+				<header class="text-header">
+					<h1>[Linux]-如何使用certbot申请免费证书</h1>	
+				</header><!-- /header -->
+				<section class="text-body">
+					<h2>引言</h2>
+					<p>这篇文章主要讲解如何使用certbot申请免费证书，以及如何给证书续期。</p>
+					<!-- 目录 -->
+					<h2>文章目录</h2>
+					<ul class="contents">	
+						 <li><a href="#certbot-certificate-0">0×0.申请证书</a></li>
+						 <li><a href="#certbot-certificate-1">0×1.更新证书</a></li>
+						 <li><a href="#certbot-certificate-2">0×2.查看证书有效期</a></li>
+					 </ul>
+					<!-- /目录 -->
+
+					<!-- 正文 -->
+					<h2 id="certbot-certificate-0">0×0.申请证书</h2>
+
+					<p>可以用任何Linux发行版，首先安装certbot：</p>
+					<pre class="brush: bash;">
+					#Ubuntu
+					sudo apt-get install certbot -y
+
+					#Arch
+					sudo pacman -S certbot --noconfirm
+
+					#其他的Linux发行版请自行替换安装命令，软件名称都是certbot
+					</pre>
+					<p>申请证书：</p>
+					<pre class="brush: bash;">
+					#申请证书：修改下面的管理员邮箱demo@gmail.com、网站根目录/var/www/html、域名地址example.com，改为自己的信息填入
+					certbot certonly --non-interactive --agree-tos -m demo@gmail.com --webroot -w /var/www/html -d example.com
+
+					#申请完成后，会有一串重要的信息，大致中文意思如下
+					重要笔记：
+					 - 恭喜！您的证书和链已保存在：
+					   /etc/letsencrypt/live/example.com/fullchain.pem
+					   您的密钥文件已保存在：
+					   /etc/letsencrypt/live/example.com/privkey.pem
+					   您的证书将于 2022-12-07 到期。获得新的或经过调整的
+					   将来此证书的版本，只需运行 certbot
+					   再次。要以非交互方式更新*所有*您的证书，请运行
+					   'certbot renew'
+					 - 您的帐户凭据已保存在您的 Certbot 中
+					   /etc/letsencrypt 的配置目录。你应该做一个
+					   立即安全备份此文件夹。这个配置目录将
+					   还包含 Certbot 获得的证书和私钥，所以
+					   定期备份此文件夹是理想的。
+					</pre>
+
+
+					<h2 id="certbot-certificate-1">0×1.更新证书</h2>
+
+					<p>这个证书的有效期限应该是3个月，可以在到期前使用下面的命令续期，续期也是3个月，可以一直续：</p>
+
+					<p>手动更新：</p>
+					<pre class="brush: bash;">
+					#手动更新证书 需要重启nginx或Apache服务才能刷新到页面上
+					certbot -q renew --deploy-hook "systemctl restart nginx"
+					</pre>
+
+					<p>自动更新：</p>
+					<pre class="brush: bash;">
+					#自动更新证书，同样需要重启nginx或Apache，建议手动更新，或者在晚上自动更新证书，以免业务中断
+					编辑 /etc/cron.d/certbot
+					0 */12 * * * root test -x /usr/bin/certbot -a \! -d /run/systemd/system && perl -e 'sleep int(rand(43200))' && certbot -q renew --deploy-hook "systemctl restart nginx"
+
+					#systemd
+					#可以在 /lib/systemd/system中找到certbot.servcie，certbot.timer
+					#同样我们需要修改certbot.service文件
+					#将文件内容中的/usr/bin/certbot -q renew修改为
+					#（注意自己是nginx还是Apache，或者其他的比如Openlitespeed，替换成对应的web服务名称即可）
+					#/usr/bin/certbot -q renew --deploy-hook "systemctl restart nginx"
+					#如下所示
+
+					[Unit]
+					Description=Certbot
+					Documentation=file:///usr/share/doc/python-certbot-doc/html/index.html
+					Documentation=https://letsencrypt.readthedocs.io/en/latest/
+					[Service]
+					Type=oneshot
+					ExecStart=/usr/bin/certbot -q renew --deploy-hook "systemctl restart nginx"
+					PrivateTmp=true
+					</pre>
+
+					<h2 id="certbot-certificate-2">0×2.查看证书有效期</h2>
+
+					<pre class="brush: bash;">
+					#后面的目录指定证书链的位置，就能查看证书的到期期限
+					openssl x509 -noout -dates -in /etc/letsencrypt/live/example.com/fullchain.pem
+					</pre>
+
+					<p>安装证书，不同的环境安装方式不一样，可以在网上搜一下不同web服务端安装ssl证书的方法，不难。</p>
+
+					
+				<!-- /正文 -->
+
+				<footer class="text-footer">
+					<p>
+						*转载请注明来自:<a title="晴刃-自由、互助、分享、专注计算机技术。" href="http://www.qingsword.com" target="_blank">晴刃(QingSword.COM)</a>
+					</p>
+					<p>*原文连接:<a title="[Linux]-如何使用公钥私钥对登录SSH" href="http://www.qingsword.com/qing/certbot-certificate.html" target="_blank">http://www.qingsword.com/qing/certbot-certificate.html</a></p>
+				</footer>
+			</article>
+			<!-- /文章区 -->	
+		</div>
+	</div>
+	<!-- /content -->
+	
+	<!-- footer -->
+	<footer id="footer">
+		<div class="footer-container">
+			QingSword.COM &nbsp;<img src="../logo/by-nc-sa.png" alt="Creative Commons" title="Creative Commons">
+		</div>
+	</footer>
+	<!-- /footer -->
+</body>
+</html>
