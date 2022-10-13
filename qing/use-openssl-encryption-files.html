@@ -91,34 +91,36 @@
 					<p>对文件进行加密打包：</p>
 					<pre class="brush: bash;">
 					#qingsword.txt是需要加密的文件
-					#使用des3加密算法加密
-					#-k后面跟密码
-					#qingsword.com.des3为加密后输出的文件
-					tar -vczf - qingsword.txt | openssl des3 -salt -k 123456 | dd of=qingsword.com.des3
+					#使用aes-256-cbc加密算法加密，不推荐使用des3，des3即将淘汰
+					#-k后面跟自定义的密码
+					#qingsword.com.x为加密后输出的文件
+					#-iter 100000为覆盖密码的默认迭代次数
+					tar -vczf - qingsword.txt | openssl enc -aes-256-cbc -md sha512 -pbkdf2 -iter 100000 -salt -k 123456 | dd of=qingsword.txt.x
 					</pre>
 					<p>解密：</p>
 					<pre class="brush: bash;">
-					#qingsword.com.des3是需要解密的文件
-					#使用des3加密算法进行解密
+					#qingsword.x 是需要解密的文件
+					#使用aes-256-cbc加密算法进行解密
 					#-k后面是加密时输入的密码
 					#注意如果tar使用的是vcjf压缩,这里也需要用vxjf来解压
-					dd if=qingsword.com.des3 | openssl des3 -d -k 123456 | tar -vxzf -
+					#加密时使用的参数，解密时都需要加上，一个都不能错
+					dd if=qingsword.x | openssl enc -aes-256-cbc -md sha512 -pbkdf2 -iter 100000 -salt -d -k 123456 | tar -vxzf -
 					</pre>
 
 					<h2 id="use-openssl-encryption-files-1">0×1.对文件夹进行加密解密</h2>
 
 					<p>对文件夹进行加密打包：</p>
 					<pre class="brush: bash;">
-					#将/root/qing文件夹用des3算法加密打包成qingsword.com.des3,密码为123456
-					tar -vczf - /root/qing/ | openssl des3 -salt -k 123456 | dd of=qingsword.com.des3
+					#将/root/qing文件夹用aes-256-cbc算法加密打包成qingsword.com.x,密码为123456
+					tar -vczf - /root/qing/ | openssl enc -aes-256-cbc -md sha512 -pbkdf2 -iter 100000 -salt -k 123456 | dd of=qingsword.com.x
 
 					#或者根据模式匹配,仅打包文件夹下.txt后缀的文件
-					tar -vczf - /root/qing/*.txt | openssl des3 -salt -k 123456 | dd of=qingsword.com.des3
+					tar -vczf - /root/qing/*.txt | openssl enc -aes-256-cbc -md sha512 -pbkdf2 -iter 100000 -salt -k 123456 | dd of=qingsword.com.x
 					</pre>
 					<p>解密：</p>
 					<pre class="brush: bash;">
-					#解密出qingsword.com.des3中的所有文件
-					dd if=qingsword.com.des3 | openssl des3 -d -k 123456 | tar -vxzf -
+					#解密出qingsword.com.x中的所有文件
+					dd if=qingsword.com.x | openssl enc -aes-256-cbc -md sha512 -pbkdf2 -iter 100000 -salt -d -k 123456 | tar -vxzf -
 					</pre>
 
 					
