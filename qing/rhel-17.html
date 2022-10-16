@@ -425,7 +425,7 @@
 					[root@qingsword.com vsftpd]# vim /etc/vsftpd/vsftpd.conf 
 
 					#禁止匿名登录
-					nonymous_enable=NO
+					anonymous_enable=NO
 					
 					##虚拟用户配置参数##
 					#开启允许虚拟用户登录
@@ -469,21 +469,21 @@
 					#创建单个用户配置文件，文件名称要与第1步创建的用户验证数据库中的用户名一一对应
 					[root@qingsword.com vuser_conf]# vim user1
 					
-					on_upload_enable=YES
+					anon_upload_enable=YES
 					anon_mkdir_write_enable=YES
 					anon_other_write_enable=YES
 					local_root=/home/ftp_root/user1
 
 					[root@qingsword.com vuser_conf]# vim user2
 
-					on_upload_enable=YES
+					anon_upload_enable=YES
 					anon_mkdir_write_enable=YES
 					anon_other_write_enable=YES
 					local_root=/home/ftp_root/user2
 
 					[root@qingsword.com vuser_conf]# vim user3
 
-					on_upload_enable=YES
+					anon_upload_enable=YES
 					anon_mkdir_write_enable=YES
 					anon_other_write_enable=YES
 					local_root=/home/ftp_root/user3
