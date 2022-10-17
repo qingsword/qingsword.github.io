@@ -85,7 +85,7 @@
 						 <li class="subli"><a href="#rhel-vsftpd-3">a.匿名登录</a></li>
 						 <li class="subli"><a href="#rhel-vsftpd-4">b.系统用户登录</a></li>
 						 <li class="subli"><a href="#rhel-vsftpd-5">c.虚拟用户登录</a></li>
-						 <li><a href="#rhel-vsftpd-3">0×3.Vsftpd设置用户目录大小限制</a></li>
+						 <li><a href="#rhel-vsftpd-6">0×3.Vsftpd设置用户目录大小限制</a></li>
 					 </ul>
 					<!-- /目录 -->
 
@@ -506,7 +506,7 @@
 
 					<p>配置完成后，客户端使用user1-3登录服务端FTP就能够登录到/home/ftp_root下对应的用户目录中了。</p>
 
-					<h2 id="rhel-vsftpd-3">0×3.Vsftpd设置用户目录大小限制</h2>
+					<h2 id="rhel-vsftpd-6">0×3.Vsftpd设置用户目录大小限制</h2>
 					<p>对系统用户方式登录的ftp用户，可以使用磁盘配额的方式设置用户登录目录的大小，但是对于虚拟账户，无法使用这种方法，但是可以使用自己创建磁盘镜像的方式来限制用户目录的大小，这个方法同样适用于上面所有的登录方式。</p>
 					<p>1）首先，假设需要限定user1能够使用的磁盘空间大小是100M，用dd在磁盘上创建一个指定大小的文件：</p>
 					<pre class="brush: bash;">
