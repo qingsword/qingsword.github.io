@@ -85,6 +85,7 @@
 						 <li class="subli"><a href="#rhel-vsftpd-3">a.匿名登录</a></li>
 						 <li class="subli"><a href="#rhel-vsftpd-4">b.系统用户登录</a></li>
 						 <li class="subli"><a href="#rhel-vsftpd-5">c.虚拟用户登录</a></li>
+						 <li><a href="#rhel-vsftpd-3">0×3.Vsftpd设置用户目录大小限制</a></li>
 					 </ul>
 					<!-- /目录 -->
 
@@ -504,7 +505,47 @@
 					</pre>
 
 					<p>配置完成后，客户端使用user1-3登录服务端FTP就能够登录到/home/ftp_root下对应的用户目录中了。</p>
-						
+
+					<h2 id="rhel-vsftpd-3">0×3.Vsftpd设置用户目录大小限制</h2>
+					<p>对系统用户方式登录的ftp用户，可以使用磁盘配额的方式设置用户登录目录的大小，但是对于虚拟账户，无法使用这种方法，但是可以使用自己创建磁盘镜像的方式来限制用户目录的大小，这个方法同样适用于上面所有的登录方式。</p>
+					<p>1）首先，假设需要限定user1能够使用的磁盘空间大小是100M，用dd在磁盘上创建一个指定大小的文件：</p>
+					<pre class="brush: bash;">
+					#创建一个2M*50=100M的文件disk.img，本例存放在home目录中，这个文件的存放目录大家自定义即可
+					[root@qingsword.com ~]# dd if=/dev/zero of=/home/disk.img bs=2M count=50
+					</pre>
+					<p>2）将创建的这个100M大小的文件，挂载为loop设备：</p>
+					<pre class="brush: bash;">
+					#dev下的loop名称不能自定义，但是可以根据不同的文件挂载成loop0、loop1、loop2...以此类推
+					[root@qingsword.com ~]# losetup /dev/loop0 /home/disk.img
+					</pre>
+					<p>3）格式化设备为ext4文件系统：</p>
+					<pre class="brush: bash;">
+					[root@qingsword.com ~]# mkfs.ext4 /dev/loop0
+					</pre>
+					<p>4）现在我们有一个大小为100M的ext4文件系统的盘，将它挂载到用户对应的ftp目录：</p>
+					<pre class="brush: bash;">
+					#挂载到user1对应的ftp根目录
+					[root@qingsword.com ~]# mount -t ext4 /dev/loop0 /home/ftp_root/user1
+
+					#因为使用root用户挂载，user1目录的所属会发生变化，所以需要重新设置一下所属
+					[root@qingsword.com ~]# chown -R v_users:v_users /home/ftp_root/user1
+					</pre>
+					<p>这样设置之后，user1能够使用的ftp文件夹空间大小就被限定成了100M。</p>
+
+					<p>如果想要卸载，请看下面的操作：</p>
+					<pre class="brush: bash;">
+					#1.首先关闭vsftpd，否则umount的时候会提示繁忙
+					[root@qingsword.com ~]# systemctl stop vsftpd
+
+					#2.umount文件系统
+					[root@qingsword.com ~]# umount /home/ftp_root/user1
+
+					#3.卸载对应的loop设备
+					[root@qingsword.com ~]# losetup -d /dev/loop0
+
+					#4.删除创建的文件
+					[root@qingsword.com ~]# rm /home/disk.img
+					</pre>
 				<!-- /正文 -->
 
 				<footer class="text-footer">
