@@ -516,6 +516,7 @@
 					<p>2）将创建的这个100M大小的文件，挂载为loop设备：</p>
 					<pre class="brush: bash;">
 					#dev下的loop名称不能自定义，但是可以根据不同的文件挂载成loop0、loop1、loop2...以此类推
+					#在挂载之前，最好先ls /dev/loop*看看是否已经存在其他的loop设备，loop后的数字不要重复
 					[root@qingsword.com ~]# losetup /dev/loop0 /home/disk.img
 					</pre>
 					<p>3）格式化设备为ext4文件系统：</p>

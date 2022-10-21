@@ -84,7 +84,8 @@
 						 <li class="subli"><a href="#Arch-3">b.链接到互联网</a></li>
 						 <li class="subli"><a href="#Arch-4">c.使用fdisk分区</a></li>
 						 <li class="subli"><a href="#Arch-5">d.安装Grub</a></li>
-						 <li class="subli"><a href="#Arch-6">e.收尾工作</a></li>
+						 <li class="subli"><a href="#Arch-6">e.安装网络组件</a></li>
+						 <li class="subli"><a href="#Arch-7">f.收尾工作</a></li>
 					 </ul>
 					<!-- /目录 -->
 
@@ -212,7 +213,7 @@
 					<p>安装必要软件：</p>
 					<pre class="brush: bash;">
 					#安装Linux内核等模块
-					 root@archiso:~$ pacstrap  /mnt base linux linux-firmware base-devel vi vim
+					 root@archiso:~$ pacstrap /mnt base linux linux-firmware base-devel linux-headers bash zsh vim
 					</pre>
 					<p>挂载信息写入fstab：</p>
 					<pre class="brush: bash;">
@@ -222,8 +223,9 @@
 					<pre class="brush: bash;">
 					#[分之-1]UEFI，安装grub组件和UEFI引导组件efibootmgr，与必要组件
 					#切换到刚才挂载的分区
-					 root@archiso:~$ arch-root /mnt
-					 root@localhost:~$ pacman -S  grub  efibootmgr  intel-ucode  os-prober
+					 root@archiso:~$ arch-chroot /mnt
+					 #如果使用的是AMD的芯片组，将下面的intel-ucode替换成amd-ucode
+					 root@localhost:~$ pacman -S  grub  efibootmgr  intel-ucode os-prober
 					#创建引导目录
 					 root@localhost:~$ mkdir /boot/grub
 					#生成grub配置文件
@@ -235,7 +237,8 @@
 
 					#[分之-2]非UEFI模式
 					#切换到刚才挂载的分区，安装必要组件
-					 root@archiso:~$ arch-root /mnt
+					 root@archiso:~$ arch-chroot /mnt
+					 #如果使用的是AMD的芯片组，将下面的intel-ucode替换成amd-ucode
 					 root@localhost:~$ pacman -S  grub  intel-ucode  os-prober
 					#创建引导目录
 					 root@localhost:~$ mkdir /boot/grub
@@ -247,8 +250,15 @@
 					 root@localhost:~$ grub-mkconfig -o /boot/grub/grub.cfg
 					</pre>
 
-					<h3 id="Arch-6">e.收尾工作</h3>
+					<h3 id="Arch-6">e.安装网络组件</h3>
+					<pre class="brush: bash;">
+					#安装NetworkManager与配套组件
+					 root@localhost:~$ pacman -Sy networkmanager nm-connection-editor network-manager-applet
+					#随机启动
+					 root@localhost:~$ systemctl enable NetworkManager
+					</pre>
 
+					<h3 id="Arch-7">f.收尾工作</h3>
 					<p>图形界面在下一篇文章中会讲，这里最后修改一些文件的信息：</p>
 					<pre class="brush: bash;">
 					#更改root密码
@@ -267,13 +277,23 @@
 					 root@localhost:~$ ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 					 root@localhost:~$ hwclock --systohc
 
+					 #设置本地语言
+					 root@localhost:~$ vim /etc/locale.gen
+					 #搜索"zh_CN.UTF-8"和"en_US.UTF-8"两行都去掉前面的#号
+					 en_US.UTF-8 UTF-8
+					 zh_CN.UTF-8 UTF-8
+					 #让语言生效
+					 root@localhost:~$ locale-gen
+					 #配置本地语言环境为中文
+					 root@localhost:~$ echo "LANG=zh_CN.UTF-8">/etc/locale.conf
+
 					#添加普通用户
 					 root@localhost:~$ useradd -m qing
 					 root@localhost:~$ passwd qing
 
-					#编辑sudo文件，在"root ALL=(ALL) ALL"下面加一行，将刚才添加的用户加入其中
+					#编辑sudo文件，在"root ALL=(ALL:ALL) ALL"下面加一行，将刚才添加的用户加入其中
 					 root@localhost:~$ visudo
-					 qing ALL=(ALL) ALL
+					 qing ALL=(ALL:ALL) ALL
 					</pre>
 
 					<p>做完这些操作之后，重启就能引导进入字符界面的Arch了，下一篇文章，安装图形化界面。</p>
