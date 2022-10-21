@@ -277,16 +277,6 @@
 					 root@localhost:~$ ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 					 root@localhost:~$ hwclock --systohc
 
-					 #设置本地语言
-					 root@localhost:~$ vim /etc/locale.gen
-					 #搜索"zh_CN.UTF-8"和"en_US.UTF-8"两行都去掉前面的#号
-					 en_US.UTF-8 UTF-8
-					 zh_CN.UTF-8 UTF-8
-					 #让语言生效
-					 root@localhost:~$ locale-gen
-					 #配置本地语言环境为中文
-					 root@localhost:~$ echo "LANG=zh_CN.UTF-8">/etc/locale.conf
-
 					#添加普通用户
 					 root@localhost:~$ useradd -m qing
 					 root@localhost:~$ passwd qing
@@ -296,7 +286,15 @@
 					 qing ALL=(ALL:ALL) ALL
 					</pre>
 
-					<p>做完这些操作之后，重启就能引导进入字符界面的Arch了，下一篇文章，安装图形化界面。</p>
+					<p>做完这些操作之后，重启就能引导进入字符界面的Arch了</p>
+					<pre class="brush: bash;">
+					#退出arch-chroot
+					 root@localhost:~$ exit
+					
+					#重启
+					root@localhost:~$ reboot
+					</pre>
+					<p>下一篇文章，安装图形化界面。</p>
 				<!-- /正文 -->
 
 				<footer class="text-footer">
