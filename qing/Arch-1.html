@@ -85,7 +85,8 @@
 						 <li class="subli"><a href="#Arch-4">c.使用fdisk分区</a></li>
 						 <li class="subli"><a href="#Arch-5">d.安装Grub</a></li>
 						 <li class="subli"><a href="#Arch-6">e.安装网络组件</a></li>
-						 <li class="subli"><a href="#Arch-7">f.收尾工作</a></li>
+						 <li class="subli"><a href="#Arch-7">f.添加普通用户</a></li>
+						 <li class="subli"><a href="#Arch-8">g.收尾工作</a></li>
 					 </ul>
 					<!-- /目录 -->
 
@@ -213,7 +214,7 @@
 					<p>安装必要软件：</p>
 					<pre class="brush: bash;">
 					#安装Linux内核等模块
-					 root@archiso:~$ pacstrap /mnt base linux linux-firmware base-devel linux-headers bash zsh vim
+					 root@archiso:~$ pacstrap /mnt base linux linux-firmware base-devel linux-headers bash vim
 					</pre>
 					<p>挂载信息写入fstab：</p>
 					<pre class="brush: bash;">
@@ -258,13 +259,31 @@
 					 root@localhost:~$ systemctl enable NetworkManager
 					</pre>
 
-					<h3 id="Arch-7">f.收尾工作</h3>
+					<h3 id="Arch-7">f.添加普通用户</h3>
+					<pre class="brush: bash;">
+					 #首先，更改root密码
+					 root@localhost:~$ passwd root
+
+					 #创建普通用户，
+					 #-s指定用户默认shell为bash
+					 #-m创建用户同名目录
+					 #-G用户加入附加组（users为系统标准用户组，可不加；wheel为管理组，sudo会用到wheel组权限）
+					 root@localhost:~$ useradd -s /bin/bash -mG users,wheel qing
+
+					 #编辑sudo文件
+					 #[方法-1]在"root ALL=(ALL:ALL) ALL"下面，将"# %wheel ALL=(ALL:ALL) ALL"前面的#号去掉
+					 root@localhost:~$ visudo
+					 %wheel ALL=(ALL:ALL) ALL
+
+					 #[方法-2]如果上面创建用户时，没有将用户加入附加wheel组，可以直接在"root ALL=(ALL:ALL) ALL"下面加一行，将刚才添加的用户加入其中
+					 root@localhost:~$ visudo
+					 qing ALL=(ALL:ALL) ALL
+					</pre>
+
+					<h3 id="Arch-8">f.收尾工作</h3>
 					<p>图形界面在下一篇文章中会讲，这里最后修改一些文件的信息：</p>
 					<pre class="brush: bash;">
-					#更改root密码
-					 root@localhost:~$ passwd
-
-					#创建hostname
+					#创建hostname，设置主机名称
 					 root@localhost:~$ echo "qingsword" > /etc/hostname
 
 					#添加hosts文件信息
@@ -276,14 +295,6 @@
 					#设置时区
 					 root@localhost:~$ ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 					 root@localhost:~$ hwclock --systohc
-
-					#添加普通用户
-					 root@localhost:~$ useradd -m qing
-					 root@localhost:~$ passwd qing
-
-					#编辑sudo文件，在"root ALL=(ALL:ALL) ALL"下面加一行，将刚才添加的用户加入其中
-					 root@localhost:~$ visudo
-					 qing ALL=(ALL:ALL) ALL
 					</pre>
 
 					<p>做完这些操作之后，重启就能引导进入字符界面的Arch了</p>
