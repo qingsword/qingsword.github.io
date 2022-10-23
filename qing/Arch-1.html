@@ -226,7 +226,7 @@
 					#切换到刚才挂载的分区
 					 root@archiso:~$ arch-chroot /mnt
 					 #如果使用的是AMD的芯片组，将下面的intel-ucode替换成amd-ucode
-					 root@localhost:~$ pacman -S  grub  efibootmgr  intel-ucode os-prober
+					 root@localhost:~$ pacman -S grub efibootmgr intel-ucode os-prober
 					#创建引导目录
 					 root@localhost:~$ mkdir /boot/grub
 					#生成grub配置文件
@@ -269,6 +269,8 @@
 					 #-m创建用户同名目录
 					 #-G用户加入附加组（users为系统标准用户组，可不加；wheel为管理组，sudo会用到wheel组权限）
 					 root@localhost:~$ useradd -s /bin/bash -mG users,wheel qing
+					 #设置普通用户密码
+					 root@localhost:~$ passwd qing
 
 					 #编辑sudo文件
 					 #[方法-1]在"root ALL=(ALL:ALL) ALL"下面，将"# %wheel ALL=(ALL:ALL) ALL"前面的#号去掉
