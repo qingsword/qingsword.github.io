@@ -153,14 +153,14 @@
 					<pre class="brush: bash;">
 					 #创建一个EFI分区（/dev/sda1）
 					 Command (m for help)：n
-					 大小+512M
+					 大小+1G
 					 #调整分区类型
 					 Command (m for help)：t
 					 #输入1，即为EFI System
 					 Command (m for help)：1
 					 #再创建一个分区
 					 Command (m for help)：n
-					 #本例划分了第二个分区(/dev/sda2)30G作为等会要装系统的/目录，其他分区请随意
+					 #本例划分了第二个分区(/dev/sda2)50G作为等会要装系统的/目录，其他分区请随意
 					 #保存
 					 Command (m for help)：w
 
@@ -254,9 +254,11 @@
 					<h3 id="Arch-6">e.安装网络组件</h3>
 					<pre class="brush: bash;">
 					#安装NetworkManager与配套组件
-					 root@localhost:~$ pacman -Sy networkmanager nm-connection-editor network-manager-applet
+					 root@localhost:~$ pacman -Sy networkmanager nm-connection-editor network-manager-applet wpa_supplicant dhcpcd dialog
 					#随机启动
 					 root@localhost:~$ systemctl enable NetworkManager
+					 root@localhost:~$ systemctl enable dhcpcd
+					 root@localhost:~$ systemctl enable wpa_supplicant
 					</pre>
 
 					<h3 id="Arch-7">f.添加普通用户</h3>

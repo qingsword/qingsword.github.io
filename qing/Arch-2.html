@@ -75,23 +75,130 @@
 				</header><!-- /header -->
 				<section class="text-body">
 					<h2>引言</h2>
-					<p>这篇文章给大家介绍使用Arch安装Deepin桌面环境，网络组件的配置，字体优化等。</p>
+					<p>这篇文章给大家介绍使用Arch安装Systemd启动器、显卡驱动、桌面环境、字体优化等。</p>
 					<!-- 目录 -->
 					<h2>文章目录</h2>
 					<ul class="contents">	
-						 <li><a href="#Arch-1">0×1.安装Deepin桌面环境</a></li>
-						 <li><a href="#Arch-2">0×2.安装网络管理组件</a></li>
+						 <li><a href="#Arch-0">0×0.安装Systemd启动器</a></li>
+						 <li><a href="#Arch-1">0×1.安装显卡驱动</a></li>
+						 <li><a href="#Arch-2">0×2.安装桌面环境</a></li>
 						 <li><a href="#Arch-3">0×3.安装微软雅黑字体</a></li>
 						 <li><a href="#Arch-4">0×4.本地界面中文化配置</a></li>
 					 </ul>
 					<!-- /目录 -->
 
 					<!-- 正文 -->
-					<h2 id="Arch-1">0×1.安装Deepin桌面环境</h2>
-					<p>这一部分选择Deepin是因为深度的桌面优化的还不错，平时做桌面使用开箱即用，省去了很多界面优化的时间：</p>
+					<h2 id="Arch-0">0×0.安装Systemd启动器</h2>
+					<pre class="brush: bash;">
+					#安装Systemd启动器
+					qing@qingsword.com:~$ sudo bootctl install
+
+					#配置Systemd，在下面目录中创建一个自定义文件名的conf文件
+					qing@qingsword.com:~$ sudo vim /boot/loader/entries/qingsword.conf
+					#写入下面的信息
+					#注意！如果你的CPU是intel，请将下面amd-ucode.img替换成intel-ucode.img
+					title QingSword Arch Linux
+					linux /vmlinuz-linux
+					initrd /amd-ucode.img
+					initrd /initramfs-linux.img
+
+					#用df查看一下/目录所在分区，本文为/dev/sda2
+					qing@qingsword.com:~$ df -h
+					....
+					/dev/sda2  49G  2.8G   44G   6% /
+
+					#使用下面的命令，将/目录对应的分区的UUID，写入上面创建的"/boot/loader/entries/qingsword.conf"文件
+					qing@qingsword.com:~$ su root
+					...需要root权限
+					root@qingsword.com:~# echo "options root=PARTUUID=$(blkid -s PARTUUID -o value /dev/sda2) rw" &gt;&gt; /boot/loader/entries/qingsword.conf
+					</pre>
+
+					<h2 id="Arch-1">0×1.安装显卡驱动</h2>
+					<p>首先查看一下自己机器的显卡类型：</p>
+					<pre class="brush: bash;">
+					#看输出信息中包含的是AMD还是Intel或者NVIDIA
+					qing@qingsword.com:~$ lspci -v |  grep -A1 -e VGA -e 3D
+					...[AMD/ATI]...
+
+					#查看有哪些可选的驱动
+					qing@qingsword.com:~$ pacman -Ss xf86-video
+					</pre>
+					<p>不同型号的显卡驱动，可以参考这篇文章中的表格，根据不同的显卡型号，安装表格中对应的驱动：</p>
+					<p>https://wiki.archlinux.org/title/Xorg</p>
+
+					<pre class="brush: bash;">
+					#首先，去掉下面文件中multilib两行前面的#号，开启32位软件下载支持
+					qing@qingsword.com:~$ sudo vim /etc/pacman.conf 
+					[multilib]
+					Include = /etc/pacman.d/mirrorlist
+					qing@qingsword.com:~$ sudo pacman -Syy
+
+					#分支1-[AMD显卡]
+					#安装AMD显卡驱动
+					#安装xf86-video-amdgpu，mesa和对32位的兼容lib32-mesa
+					qing@qingsword.com:~$ sudo pacman -S xf86-video-amdgpu mesa lib32-mesa lib32-vulkan-radeon libva-mesa-driver lib32-libva-mesa-driver mesa-vdpau lib32-mesa-vdpau libglvnd lib32-libglvnd
+
+					#配置"/boot/loader/entries/qingsword.conf"文件，在rw后面，写入AMD参数"amdgpu.dpm=0 amdgpu.noretry=0"
+					qing@qingsword.com:~$ sudo vim /boot/loader/entries/qingsword.conf
+					options root=PARTUUID=b1e54cec-x3ec-be4d-8b9a-e4527c0f034a rw amdgpu.dpm=0 amdgpu.noretry=0
+
+
+					#分支2-[Intel显卡]
+					#安装Intel显卡驱动
+					qing@qingsword.com:~$ sudo pacman -S xf86-video-intel mesa lib32-mesa lib32-vulkan-radeon libva-mesa-driver lib32-libva-mesa-driver mesa-vdpau lib32-mesa-vdpau libglvnd lib32-libglvnd
+
+					#分支3-[NVIDIA显卡]
+					#安装NVIDIA显卡驱动
+					qing@qingsword.com:~$ sudo pacman -S mesa lib32-mesa lib32-vulkan-radeon libva-mesa-driver lib32-libva-mesa-driver mesa-vdpau lib32-mesa-vdpau libglvnd lib32-libglvnd nvidia dkms nvidia-utils lib32-nvidia-utils opencl-nvidia lib32-opencl-nvidia nvidia-settings
+
+					#N卡驱动配置
+					qing@qingsword.com:~$ sudo vim /etc/mkinitcpio.conf
+					#将"nvidia nvidia_modeset nvidia_uvm nvidia_drm"按顺序写入MODULES后面的括号中
+					MODULES=(nvidia nvidia_modeset nvidia_uvm nvidia_drm)
+					qing@qingsword.com:~$ su root
+					....下面的配置需要root权限
+					qing@qingsword.com:~# mkdir /etc/pacman.d/hooks
+					qing@qingsword.com:~# vim /etc/pacman.d/hooks/nvidia.hook
+					#写入下面的内容（注意大小写不能错）
+					[Trigger]
+					Operation=Install
+					Operation=Upgrade
+					Operation=Remove
+					Type=Package
+					Target=nvidia
+					Target=linux
+
+					[Action]
+					Depends=mkinitcpio
+					When=PostTransaction
+					Exec=/usr/bin/mkinitcpio -P
+
+					#配置"/boot/loader/entries/qingsword.conf"文件，在rw后面，写入NVIDIA参数"nvidia-drm.modeset=1"
+					qing@qingsword.com:~$ sudo vim /boot/loader/entries/qingsword.conf
+					options root=PARTUUID=b1e54cec-x3ec-be4d-8b9a-e4527c0f034a rw nvidia-drm.modeset=1
+
+					#分支4-双显卡笔记本（未完成）
+					#[Intel+Nvidia]
+					#安装Intel显卡驱动
+					qing@qingsword.com:~$ sudo pacman -S xf86-video-intel mesa lib32-mesa lib32-vulkan-radeon libva-mesa-driver lib32-libva-mesa-driver mesa-vdpau lib32-mesa-vdpau libglvnd lib32-libglvnd
+					#安装bumblebee（未完成对bumblebee的配置，这样之后，只能使用Intel卡，相当于放弃N卡的使用）
+					qing@qingsword.com:~$ sudo pacman -S bumblebee
+					</pre>
+
+					<h2 id="Arch-2">0×2.安装桌面环境</h2>
+					<p>KDE桌面安装参考：https://wiki.archlinux.org/title/KDE</p>
 					<pre class="brush: bash;">
 					#安装xorg桌面基础架构
-					 qing@qingsword.com:~$ sudo pacman -S xorg xorg-apps xorg-server xorg-xinit
+					qing@qingsword.com:~$ sudo pacman -S xorg xorg-apps xorg-server xorg-xinit xorg-twm xorg-xclock xterm konsole
+					
+					#分支1-[KDE plasma桌面]
+					#KDE-plasma桌面，sddm显示管理器
+					#以及kde-applications全套软件包（可选，包含的软件列表参考：https://archlinux.org/groups/x86_64/kde-applications/）
+					qing@qingsword.com:~$ sudo pacman -Syyu plasma kde-applications sddm
+					#sddm随机启动
+					qing@qingsword.com:~$ sudo systemctl enable sddm
+
+					#分支2-[deepin桌面] 
 					#安装deepin桌面环境，以及deepin-extra桌面环境组件
 					 qing@qingsword.com:~$ sudo pacman -S deepin deepin-extra
 					#编辑lightdm.conf文件
@@ -100,19 +207,6 @@
 					 qing@qingsword.com:~$ sudo vim /etc/lightdm/lightdm.conf
 					#随机启动lightdm
 					 qing@qingsword.com:~$ sudo systemctl enable lightdm
-					#双网卡笔记本，或者intel芯片组网卡，安装intel显卡驱动支持
-					 qing@qingsword.com:~$ sudo pacman -S  xf86-video-intel mesa mesa-libgl
-					#如果有Nvidia卡必须安装bumblebee（不然deepin有可能进不去桌面，卡登录）这里暂时不折腾N卡驱动
-					 qing@qingsword.com:~$ sudo pacman -S bumblebee
-					</pre>
-					<h2 id="Arch-2">0×2.安装网络管理组件</h2>
-					<p>安装网络组件NetworkManager(deepin桌面不需要安装network-manager-applet，默认安装好了)：</p>
-					<pre class="brush: bash;">
-					#安装NetworkManager与配套组件
-					 qing@qingsword.com:~$ sudo pacman -S networkmanager nm-connection-editor 
-					#随机启动，启动服务
-					 qing@qingsword.com:~$ systemctl enable NetworkManager
-					 qing@qingsword.com:~$ systemctl start NetworkManager
 					</pre>
 
 					<h2 id="Arch-3">0×3.安装微软雅黑字体</h2>
@@ -145,7 +239,7 @@
 					#配置本地语言环境为中文
 					 qing@qingsword.com:~$ sudo echo "LANG=zh_CN.UTF-8"&gt;/etc/locale.conf
 					</pre>
-					<p>通过这四步操作，重启之后进入Deepin桌面环境，在配置中就能修改系统语言为微软雅黑，界面字体看起来也相对比较舒服了。</p>
+					<p>通过这四步操作，重启之后进入桌面环境，在配置中就能修改系统语言为微软雅黑，界面字体看起来也相对比较舒服了。</p>
 				<!-- /正文 -->
 
 				<footer class="text-footer">
