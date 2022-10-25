@@ -231,15 +231,16 @@
 					<h2 id="Arch-4">0×4.本地界面中文化配置</h2>
 					<p>到目前为止，图形界面还是英文的语言环境，可以使用下面的方法替换成中文环境，为了防止乱码，请先参考文章第三部分安装中文字体，中文字体如果没有安装，会出现乱码：</p>
 					<pre class="brush: bash;">
-					#编辑本地语言环境配置文件
-					 qing@qingsword.com:~$ sudo vim /etc/locale.gen
+					#编辑本地语言环境配置文件，建议用root用户修改
+					 qing@qingsword.com:~$ passwd root
+					 qing@qingsword.com:~# vim /etc/locale.gen
 					#搜索"zh_CN.UTF-8"和"en_US.UTF-8"两行都去掉前面的#号
 					#让语言生效输入下面的命令
-					 qing@qingsword.com:~$ sudo locale-gen
+					 qing@qingsword.com:~# locale-gen
 					#配置本地语言环境为中文
-					 qing@qingsword.com:~$ sudo echo "LANG=zh_CN.UTF-8"&gt;/etc/locale.conf
+					 qing@qingsword.com:~# echo "LANG=zh_CN.UTF-8"&gt;/etc/locale.conf
 					</pre>
-					<p>通过这四步操作，重启之后进入桌面环境，在配置中就能修改系统语言为微软雅黑，界面字体看起来也相对比较舒服了。</p>
+					<p>通过这一步的操作，重启之后进入桌面环境，在配置中搜索language，就能修改系统语言为微软雅黑，界面字体看起来也相对比较舒服了。</p>
 				<!-- /正文 -->
 
 				<footer class="text-footer">

@@ -81,6 +81,8 @@
 					<ul class="contents">	
 						 <li><a href="#Arch-1">0×1.如何使用Pacman</a></li>
 						 <li><a href="#Arch-2">0×2.如何使用AUR</a></li>
+						 <li><a href="#Arch-3">0×3.使用ArchLinux中文社区仓库</a></li>
+						 <li><a href="#Arch-4">0×4.使用AUR包管理器yay安装软件</a></li>
 					 </ul>
 					<!-- /目录 -->
 
@@ -88,25 +90,29 @@
 					<h2 id="Arch-1">0×1.如何使用Pacman</h2>
 					<p>Pacman是Arch下非常好用的包管理软件，官方使用wiki文档请参考：<a title="Arch pacman wiki" href="https://wiki.archlinux.org/index.php/Pacman_(%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87)" target="_blank">Arch Pacman wiki</a></p>
 					<p>所有能够通过pacman下载安装，被纳入官方软件包列表的软件，都可以通过这个页面查找到：<a title="Arch Packages" href="https://www.archlinux.org/packages/" target="_blank">Arch Packages</a></p>
-					<p>所以，Arch上我们只需要知道要安装的软件包名称，然后通过pacman命令安装即可，下面总结出个人使用中最常用的4条命令：</p>
+					<p>所以，Arch上我们只需要知道要安装的软件包名称，然后通过pacman命令安装即可，下面总结出个人使用中最常用的几条命令：</p>
 					<pre class="brush: bash;">
+					#搜索并列出firefox开头的所有软件包的名称
+					 qing@qingsword.com:~$ sudo pacman -Ss firefox
+
 					#安装或者升级单个软件，例如安装火狐浏览器，如果已安装并且版本比较新则会被升级，如果已安装版本相同，在得到你的同意后，会重新安装
 					 qing@qingsword.com:~$ sudo pacman -S firefox
+
 					#安装或升级多个软件（用看空格分开每个软件包名称即可），例如火狐浏览器，火狐浏览器中文支持，Google浏览器
 					 qing@qingsword.com:~$ sudo pacman -S firefox firefox-i18n-zh-cn chromium
 					
 					#升级整个系统，将会更新所有系统中安装的软件（这就是Arch强大的地方，基本上不需要重装系统）
-					 qing@qingsword.com:~$ sudo pacman -Syu
+					 qing@qingsword.com:~$ sudo pacman -Syyu
 
 					#查找系统中安装过的软件包，例如uGet，会列出所有名称包含uget的软件包
 					 qing@qingsword.com:~$ sudo pacman -Qs uget
 
-					#删除指定软件包，及其所有没有被其他已安装软件包使用的依赖关系，例如uget，如果有多个软件，用空格分隔
+					#删除指定软件包，以及所有没有被其他已安装软件包使用的依赖关系，例如uget，如果有多个软件，用空格分隔
 					 qing@qingsword.com:~$ sudo pacman -Rs  uget
 					</pre>
 
 					<h2 id="Arch-2">0×2.如何使用AUR</h2>
-					<p>AUR是指Archlinux User-community Repository，也就是,Archlinux用户社区的软件库，他的由来是因为很多软件从git到编译到安装基本上都是相同的步骤，所以一部分十(xian)分(de)聪(dan)明(teng)的人，将这个过程打包成了一个脚本，我们只需要git下来这个脚本，即可完成软件的自(wu)动(nao)化安装。</p>
+					<p>AUR是指Archlinux User-community Repository，也就是,Archlinux用户社区的软件库，他的由来是因为很多软件从git到编译到安装基本上都是相同的步骤，所以一部分十分聪明的人，将这个过程打包成了一个脚本，我们只需要git下来这个脚本，即可完成软件的自(wu)动(nao)化安装。</p>
 					<p>AUR官方网址是：<a title="Arch AUR" href="https://aur.archlinux.org/" target="_blank">AUR</a></p>
 					<p>这里有一篇很详细的文章介绍什么是AUR以及其中的原理：<a title="Arch AUR" href="https://www.jianshu.com/p/1b48ef4bc2ba" target="_blank">Archlinux的灵魂-PKGBUILD、AUR和ABS</a></p>
 					<p>所以，所有可以通过AUR官方链接查到的软件包，都可以使用下面这种方式来安装：</p>
@@ -125,7 +131,45 @@
 					#使用pacman安装刚才生成的安装包
 					 qing@qingsword.com:~/wingide $ sudo pacman -U wingide-7.2.1.0.1-1-x86_64.pkg.tar.xz
 					</pre>
-					<p>上面就是Arch安装软件的常规操作，基本上官方源配合AUR能够满足日常需求。</p>
+
+					<h2 id="Arch-3">0×3.使用ArchLinux中文社区仓库</h2>
+					<p>ArchLinux中文社区仓库的介绍请参考下面的连接：</p>
+					<p>https://www.archlinuxcn.org/archlinux-cn-repo-and-mirror/</p>
+					<pre class="brush: bash;">
+					#编辑pacman.conf
+					 qing@qingsword.com:~$ sudo vim /etc/pacman.conf  
+					#在内容最下面，加入下面的信息，考虑到国内访问速度，建议将阿里云镜像放在最前面
+					[archlinuxcn]
+					Server = https://mirrors.aliyun.com/archlinuxcn/$arch
+					Server = https://mirrors.tuna.tsinghua.edu.cn/archlinuxcn/$arch
+					Server = https://mirrors.ustc.edu.cn/archlinuxcn/$arch
+					Server = https://repo.archlinuxcn.org/$arch
+
+					#更新仓库列表
+					 qing@qingsword.com:~$ sudo pacman -S archlinuxcn-keyring
+					 qing@qingsword.com:~$ sudo pacman-key --init
+					 qing@qingsword.com:~$ sudo pacman-key --populate archlinux
+					 qing@qingsword.com:~$ sudo pacman-key --populate archlinuxcn
+					 qing@qingsword.com:~$ sudo pacman -Syy
+
+					#测试从archlinuxcn安装AUR包管理器yay
+					 qing@qingsword.com:~$ sudo pacman -S yay
+					</pre>
+
+					<h2 id="Arch-4">0×4.使用AUR包管理器yay安装软件</h2>
+					<p>yay不在Arch官方的仓库中，请参考本文第三部分，从ArchLinux中文社区仓库中下载安装yay。</p>
+					<p>在本文的第二部分，通过AUR安装软件的步骤有点麻烦，实际上还有一种简化的方法，通过yay一键安装AUR仓库中的软件，请看下面的实例：</p>
+					<pre class="brush: bash;">
+					#首先需要参考本文第二部分，通过AUR页面查找到我们需要安装的软件的name（本文图二），还是用wingide举例，首先查找到AUR中，我们想要安装的包的name为wingide
+					#通过yay安装wingide
+					 qing@qingsword.com:~$ yay -S wingide
+
+					#通过yay卸载刚才安装的wingide
+					 qing@qingsword.com:~$ yay -R wingide
+					</pre>
+
+					<p>上面就是Arch安装和删除软件的常规操作，基本上官方源配合AUR能够满足日常需求。</p>
+
 					
 				<!-- /正文 -->
 
