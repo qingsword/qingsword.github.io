@@ -86,34 +86,47 @@
 					<!-- 正文 -->
 					<h2 id="Arch-1">0×1.如何安装搜狗输入法</h2>
 					<p>自从Arch官方将qt4移出官方源之后，搜狗输入法一直没有添加对qt5的支持，导致搜狗输入法在Arch上无法使用原来的方法安装，还好国内某大神没有放弃对搜狗输入法的支持，我们可以使用下面的方法添加国内大神的源来安装搜狗输入法：</p>
-
 					<pre class="brush: bash;">
 					#首先编辑/etc/pacman.conf，添加archlinuxcn源
-					 qing@qingsword.com:~$ sudo vim /etc/pacman.conf
-					#在文件的最后，添加下面两行
+					 qing@qingsword.com:~$ sudo vim /etc/pacman.conf  
+					#在内容最下面，加入下面的信息，考虑到国内访问速度，建议将阿里云镜像放在最前面
 					[archlinuxcn]
-					Server = https://cdn.repo.archlinuxcn.org/$arch
+					Server = https://mirrors.aliyun.com/archlinuxcn/$arch
+					Server = https://mirrors.tuna.tsinghua.edu.cn/archlinuxcn/$arch
+					Server = https://mirrors.ustc.edu.cn/archlinuxcn/$arch
+					Server = https://repo.archlinuxcn.org/$arch
 
-					#更新源数据库，导入源GPG key
-					 qing@qingsword.com:~$ sudo pacman -Sy &amp;&amp; sudo pacman -S archlinuxcn-keyring
+					#更新仓库列表
+					 qing@qingsword.com:~$ sudo pacman -S archlinuxcn-keyring
+					 qing@qingsword.com:~$ sudo pacman-key --init
+					 qing@qingsword.com:~$ sudo pacman-key --populate archlinux
+					 qing@qingsword.com:~$ sudo pacman-key --populate archlinuxcn
+					 qing@qingsword.com:~$ sudo pacman -Syy
 					
 					#安装搜狗输入法以及相关组件
-					 qing@qingsword.com:~$ sudo pacman -S fcitx-im fcitx-configtool fcitx-gtk2 fcitx-gtk3 fcitx-qt4 fcitx-qt5 libidn fcitx-sogoupinyin fcitx-googlepinyin
+					 qing@qingsword.com:~$ sudo pacman -S fcitx fcitx-im kcm-fcitx fcitx-configtool
 
-					#创建autostart文件夹，这个文件夹一般会存在，不需要创建，然后将fcitx的启动配置文件复制到里面
+					#安装AUR仓库管理器yay
+					 qing@qingsword.com:~$ sudo pacman -S yay
+
+					#安装fcitx-sogoupinyin输入法
+					 qing@qingsword.com:~$ yay -S fcitx-sogoupinyin
+
+					#用ls查看一下，如果文件夹存在，就不需要创建
+					 qing@qingsword.com:~$ ls ~/.config/autostart
+					#如果ls没有结果，创建autostart文件夹，然后将fcitx的启动配置文件复制到里面如果
 					 qing@qingsword.com:~$ mkdir ~/.config/autostart
 					 qing@qingsword.com:~$ cp /etc/xdg/autostart/fcitx-autostart.desktop ~/.config/autostart/
 
-					#使用echo创建两个fcitx配置文件
-					 qing@qingsword.com:~$ echo "GTK_IM_MODULE=fcitx
-										   QT_IM_MODULE=fcitx
-										   XMODIFIERS=@im=fcitx" &gt; .pam_environment
-					 qing@qingsword.com:~$ echo "export GTK_IM_MODULE=fcitx
-										   export QT_IM_MODULE=fcitx
-										   export XMODIFIERS=@im=fcitx" &gt; .xprofile
+					#用vim打开用户家目录中".pam_environment"文件
+					 qing@qingsword.com:~$ vim ~/.pam_environment
+					#添加下面的内容到文件末尾
+					GTK_IM_MODULE DEFAULT=fcitx
+					QT_IM_MODULE  DEFAULT=fcitx
+					XMODIFIERS    DEFAULT=\@im=fcitx
 					</pre>
 
-					<p>重启之后，就能够愉快的使用搜狗拼音输入法了，在这里我只希望搜狗，都2222年了，赶紧支持qt5吧。</p>
+					<p>重启之后，就能够愉快的使用搜狗拼音输入法了...</p>
 					
 				<!-- /正文 -->
 
