@@ -6,7 +6,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
 	<meta name="description" content="晴刃,是一个致力推广实用计算机技术的个人博客;我们分享计算机知识;为计算机系统以及网络安全防范做出一份贡献。【专注技术 创造价值 共同进步】">
 	<meta name="keywords" content="晴刃,晴,qing,qingsword,ccna图文笔记,ubuntu,linux,ubuntu server,mysql,node.js,javascript,python,计算机技术博客">
-	<title>[Arch]-7-解决Arch无线网络断线重连Bug - QingSword.COM</title>
+	<title>[Arch]-7-如何安装浏览器与下载插件 - QingSword.COM</title>
 	<link rel="shortcut icon" type="image/x-icon" href="../logo/favicon.ico">
 	<link rel="stylesheet" type="text/css" href="../css/basic.css">
 	<link rel="stylesheet" type="text/css" href="../css/text.css">
@@ -71,80 +71,41 @@
 			<!-- 文章区 -->
 			<article class="text-container">
 				<header class="text-header">
-					<h1>[Arch]-7-解决Arch无线网络断线重连Bug</h1>	
+					<h1>[Arch]-7-如何安装浏览器与下载插件</h1>	
 				</header><!-- /header -->
 				<section class="text-body">
 					<h2>引言</h2>
-					<p>在前面的安装和配置中，笔者使用了Deepin的桌面环境，Deepin配套的NetworkManager网络组件在Arch中存在一个小Bug，当链接到一个隐藏Wifi时候，无线Wifi在手动断开重连的过程中无法正常建立链接，表现为反复的断开重连，最后连接失败，本文笔者自建shell，使用wpa组件，手动连接Wifi，从而规避了这个Bug。</p>
+					<p>这篇文章介绍ArchLinux中如何安装firefox，google-chrome等浏览器，以及安装这些浏览器对应的下载插件，能够通过这些插件自动调用uGet下载器进行下载。</p>
 					<!-- 目录 -->
 					<h2>文章目录</h2>
 					<ul class="contents">	
-						 <li><a href="#Arch-1">0×1.解决Arch无线网络断线重连Bug</a></li>
+						 <li><a href="#Arch-1">0×1.安装浏览器</a></li>
+						 <li><a href="#Arch-2">0×2.安装uGet下载器以及浏览器插件</a></li>
 					 </ul>
 					<!-- /目录 -->
 
 					<!-- 正文 -->
-					<h2 id="Arch-1">0×1.解决Arch无线网络断线重连Bug</h2>
-					<p>2020.05.23更新：在更新系统到Deepin20.04桌面之后，这个Bug似乎没有出现了，下面的操作对Deepin15桌面版本仍然适用。</p>
-					<p>Arch无线网络断线重连Bug描述：笔者使用2020.3.1镜像安装Deepin桌面，Deepin默认使用NetworkManager管理前后端有线与无线网络，在使用Deepin前端图形界面连接隐藏的Wifi过程中，密码正确的情况下，时不时出现无法连接，需要重启计算机，才能顺利连接，如果手动断开，再次连接偶尔能够连接上，大多数情况下是反复的连接断开，在图形界面关闭Deepin网络配置页面无线网络功能后，笔者只能利用下面的这个脚本手动切换不同的Wifi，目前来看，这个方法可以替代图形界面的Wifi连接和切换操作：</p>
+					<h2 id="Arch-1">0×1.安装浏览器</h2>
+					<p>以安装火狐，google浏览器为例：</p>
 					<pre class="brush: bash;">
-					#1.假设我们的无线网卡是wlo1，有两个隐藏的wifi，一个叫"wifiSSID1"，一个叫"wifiSSID2"，密码都是"wifiPassword"
-					##首先创建一个脚本用于连接wifiSSID1
-					 qing@qingsword.com:~$ vim linkSSID1.sh
+					#安装火狐浏览器与中文支持
+					qing@qingsword.com:~$ sudo pacman -S firefox firefox-i18n-zh-cn 
 
-					#!/bin/bash
+					#安装google开源浏览器chromium
+					qing@qingsword.com:~$ sudo pacman -S chromium
 
-					sudo ip link set wlo1 up
-					sleep 1
-					#这两个kill是为了结束上一个wifi连接进程
-					sudo kill $(ps -ef | grep "sudo wpa" | grep -v grep | awk '{print $2}') 
-					sudo kill $(ps -ef | grep "dhcpcd" | grep -v grep | awk '{print $2}')
-					echo "network={
-						ssid="wifiSSID1"
-						psk="wifiPassword"
-					    scan_ssid=1
-					}"&gt;/home/qing/sh/wificonf/wifi.conf
-					sudo wpa_supplicant -c /home/qing/sh/wificonf/wifi.conf -i wlo1 &
-					sleep 10
-					sudo dhcpcd &
+					#安装google-chrome浏览器，google-chrome在AUR仓库中，所以这里用yay安装，yay的安装请参考本系列前面的文章
+					qing@qingsword.com:~$ yay -S google-chrome
+					</pre>
 
-					##创建另外一个脚本用于连接wifiSSID2
-					 qing@qingsword.com:~$ vim linkSSID2.sh
-
-					#!/bin/bash
-
-					sudo ip link set wlo1 up
-					sleep 1
-					#这两个kill是为了结束上一个wifi连接进程
-					sudo kill $(ps -ef | grep "sudo wpa" | grep -v grep | awk '{print $2}') 
-					sudo kill $(ps -ef | grep "dhcpcd" | grep -v grep | awk '{print $2}')
-					echo "network={
-						ssid="wifiSSID2"
-						psk="wifiPassword"
-					    scan_ssid=1
-					}"&gt;/home/qing/sh/wificonf/wifi.conf
-					sudo wpa_supplicant -c /home/qing/sh/wificonf/wifi.conf -i wlo1 &
-					sleep 10
-					sudo dhcpcd &
-
-					#2.现在要连接到1，只需要
-					 qing@qingsword.com:~$ bash linkSSID1.sh
-					##连接到2，只需要
-					 qing@qingsword.com:~$ bash linkSSID2.sh
-
-					 #3.如果想要断开Wifi连接，只需要再创建一个脚本
-					 qing@qingsword.com:~$ vim disconnectWIFI.sh 
-
-					 #!/bin/bash
-
-					sudo kill $(ps -ef | grep "sudo wpa" | grep -v grep | awk '{print $2}')
-					sudo kill $(ps -ef | grep "dhcpcd" | grep -v grep | awk '{print $2}')
-
-					##需要断开Wifi连接只需要
-					 qing@qingsword.com:~$ bash disconnectWIFI.sh  
-					 </pre>
-
-					 <p>关于这个Bug，如果是非隐藏的SSID，并不会出现，但是遇到隐藏的SSID，只能使用scan_ssid=1参数写到配置文件中，这个参数会让系统主动的去扫描指定的隐藏SSID，然后通过脚本来切换不同的隐藏SSID这个方法，至于为什么图形界面下的前端管理器会出现这个问题，笔者没有去继续深究，暂且这样吧。</p>
+					<h2 id="Arch-1">0×2.安装uGet下载器以及浏览器插件</h2>
+					<p>UGet是Linux下很好用的下载器，可以使用aria2作为后端，提供了一个很友好的UI界面，可以使用下面的命令安装：</p>
+					<pre class="brush: bash;">
+					#安装Uget+aria2插件，以及第一部分中安装的三种浏览器支持插件
+					qing@qingsword.com:~$ qing@qingsword.com:~$ sudo pacman -S uget aria2 uget-integrator uget-integrator-chrome uget-integrator-chromium uget-integrator-firefox
+					</pre>
+					<p>打开浏览器的扩展与主题/扩展程序，在里面搜索"uGet Integration"这个扩展程序安装上，就能够在点击下载时弹出uGet下载器下载了。</p>
+					<p>最后，在uGet的"编辑"&gt;"设置"&gt;"插件"选项中，选择aria2，勾选"启动时运行aria2"。</p>
 
 					
 				<!-- /正文 -->
@@ -153,7 +114,7 @@
 					<p>
 						*转载请注明来自:<a title="晴刃-自由、互助、分享、专注计算机技术。" href="http://www.qingsword.com" target="_blank">晴刃(QingSword.COM)</a>
 					</p>
-					<p>*原文连接:<a title="[Arch]-7-解决Arch无线网络断线重连Bug" href="http://www.qingsword.com/qing/Arch-7.html" target="_blank">http://www.qingsword.com/qing/Arch-7.html</a></p>
+					<p>*原文连接:<a title="[Arch]-7-如何安装浏览器与下载插件" href="http://www.qingsword.com/qing/Arch-7.html" target="_blank">http://www.qingsword.com/qing/Arch-7.html</a></p>
 				</footer>
 			</article>
 			<!-- /文章区 -->	
