@@ -84,6 +84,7 @@
 						 <li><a href="#SSH-authorized-keys-1">0×1.将公钥部署到服务器</a></li>
 						 <li><a href="#SSH-authorized-keys-2">0×2.客户端使用秘钥连接服务器</a></li>
 						 <li><a href="#SSH-authorized-keys-3">0×3.服务器禁用密码登录</a></li>
+						 <li><a href="#SSH-authorized-keys-4">0×4.scp使用秘钥传输</a></li>
 					 </ul>
 					<!-- /目录 -->
 
@@ -150,6 +151,20 @@
 					systemctl restart sshd
 					</pre>
 					<p>重启ssh之后，服务器就只能通过key文件进行登录了，请确保key私钥文件不会被误删，否则就..</p>
+
+					<h2 id="SSH-authorized-keys-4">0×4.scp使用秘钥传输</h2>
+					<p>按照上面的步骤配置秘钥登录之后，scp就不能直接通过密码来验证了，也只能通过秘钥来进行验证传输。</p>
+					<p>下面是可供参考的上传下载实例：</p>
+					<pre class="brush: bash;">
+					#从服务器下载test.tar.gz文件到本地家目录
+					#-i后面跟本地的秘钥文件
+					#-P（大写）后面是服务器ssh开放的端口，如果端口默认是22，就不需要这个选项
+					#如果传输的不是压缩包，也不是单个文件，而是一个目录，请添加-r参数，递归复制整个目录
+					scp -i ~/.ssh/testkey -P 12345 root@10.10.10.10:/root/test.tar.gz ~
+					
+					#从本地上传test.tar.gz文件到服务器家目录
+					scp -i ~/.ssh/testkey -P 12345 ~/test.tar.gz root@10.10.10.10:~
+					</pre>
 
 				<!-- /正文 -->
 
