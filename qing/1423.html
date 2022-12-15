@@ -141,6 +141,12 @@
 					www@qingsword.com:~$ mysql -u root -p qingsword&lt;~/qingsword_com.sql
 					password: &lt;-输入root连接密码
 
+					--如果上面这一步报错，或者不能完整导入，可以进入数据库中使用source命令导入，例如
+					--将qingsword_com.sql放在当前目录中
+					--使用use后面接需要还原的数据库名称
+					mysql&gt; use qingsword;
+					mysql&gt; source qingsword_com.sql
+
 					#备份数据表（单独的一张表）
 					-- mysqldump -u root -p [数据库名] [表名]&gt;[存放在系统中的位置]
 					www@qingsword.com:~$ mysqldump -u root -p qingsword t1&gt;~/qingsword_t1.sql
