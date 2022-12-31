@@ -146,16 +146,17 @@
 					qing@qingsword.com:~# touch /etc/rc.local
 					qing@qingsword.com:~# chmod 755 /etc/rc.local
 
-					#3.设置rc-local服务开机启动
-					qing@qingsword.com:~# systemctl start rc-local
-					qing@qingsword.com:~# systemctl enable rc-local
-
-					#4.写入开机需要执行的命令到/etc/rc.local文件中即可
+					#3.写入开机需要执行的命令到/etc/rc.local文件中即可
 					qing@qingsword.com:~# vim /etc/rc.local
 
-					#本例写入下面的测试语句
+					#本例写入下面的测试语句（注意：最后一句exit 0必须写，所有需要执行的命令都可以写在这一句之前就行，否则服务会无法启动成功 ）
 					#!/bin/bash
 					echo "qingsword.com" >> ~/qingsword.com.txt
+					exit 0
+
+					#4.设置rc-local服务开机启动
+					qing@qingsword.com:~# systemctl start rc-local
+					qing@qingsword.com:~# systemctl enable rc-local
 					</pre>
 
 					<p>上面这样设置之后，开机之后就会自动执行/etc/rc.local文件中的内容，请根据实际情况更改上面的内容。</p>
