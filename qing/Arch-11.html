@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<!--Copyright©QingSword.COM︻☼1010D>-->
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
+	<meta name="description" content="晴刃,是一个致力推广实用计算机技术的个人博客;我们分享计算机知识;为计算机系统以及网络安全防范做出一份贡献。【专注技术 创造价值 共同进步】">
+	<meta name="keywords" content="晴刃,晴,qing,qingsword,ccna图文笔记,ubuntu,linux,ubuntu server,mysql,node.js,javascript,python,计算机技术博客,rust,kali,shell,arch,manjore,rust编程基础">
+	<title>[Arch]-11-根目录垃圾数据清理 - QingSword.COM</title>
+	<link rel="shortcut icon" type="image/x-icon" href="../logo/favicon.ico">
+	<link rel="stylesheet" type="text/css" href="../css/basic.css">
+	<link rel="stylesheet" type="text/css" href="../css/text.css">
+	<!-- 代码块高亮js -->
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shCore.css"/>
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shThemeRDark.css"/>
+	 <script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shCore.js"></script>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shBrushBash.js"></script>
+	<script type="text/javascript">
+	SyntaxHighlighter.all();
+	</script>
+</head>
+<body>
+	<!--header -->
+	<header id="nav">
+			<div class="nav-container"> 
+				<!-- 根大纲-->
+				<a href="http://www.qingsword.com" title="晴刃">
+					<h1 class="nav-logo">晴刃</h1>
+				</a>
+				<h2 class="nav-site-description desc-hidden">
+					自由、互助、分享、专注计算机技术
+				</h2>
+				<nav class="nav-links"> 
+					<!-- nav连接大纲-->
+					<h1 style="display:none;">网站导航</h1> 
+					<ul>
+						<li  class="li-hidden">
+							<a href="../index.html" title="home">
+								<span class="link-word"><img src="../logo/home.png" alt="home" class="link-img">首页</span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../web.html" title="web">
+								<span class="link-word"><img src="../logo/web.png" alt="web" class="link-img">程序<span class="word-hidden">设计</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../system.html" title="system">
+								<span class="link-word"><img src="../logo/linux.png" alt="linux" class="link-img">系统<span class="word-hidden">应用</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../net.html" title="net">
+								<span class="link-word"><img src="../logo/net.png" alt="net" class="link-img">网络<span class="word-hidden">技术</span></span>
+							</a>
+						</li>
+						<li>
+							<a href="../sitemap.html" title="sitemap">
+								<span class="link-word"><img src="../logo/archives.png" alt="archives" class="link-img"><span class="word-hidden">文章</span>归档</span>
+							</a>
+						</li>
+					</ul>
+				</nav>
+			</div>		
+	</header>
+	<!-- /header -->
+
+	<!-- content-->
+	<div id="content">
+		<div class="content-container">
+			<!-- 文章区 -->
+			<article class="text-container">
+				<header class="text-header">
+					<h1>[Arch]-11-根目录垃圾数据清理</h1>	
+				</header><!-- /header -->
+				<section class="text-body">
+					<h2>引言</h2>
+					<p>在Arch系统日常使用了一段时间之后，根目录空间会慢慢变小，这篇文章记录日常使用过一段时间后的Arch系统，根目录垃圾数据清理的过程。</p>
+					<!-- 目录 -->
+					<h2>文章目录</h2>
+					<ul class="contents">	
+						 <li><a href="#Arch-root-directory-slimming-1">0×1.根目录文件占用分析</a></li>
+						 <li><a href="#Arch-root-directory-slimming-2">0×2.清理垃圾数据</a></li>
+					 </ul>
+					<!-- /目录 -->
+
+					<!-- 正文 -->
+					<h2 id="Arch-root-directory-slimming-1">0×1.根目录文件占用分析</h2>
+					<pre class="brush: bash;">
+					#1.首先查看以下系统分区剩余空间大小
+					qing@qingsword.com:~$ df -h
+					文件系统           大小  已用   可用   已用% 挂载点
+					dev              16G     0   16G    0%  /dev
+					run              16G  1.6M   16G    1%  /run
+					/dev/nvme0n1p2   30G  1.2G   29G   98%  /
+					tmpfs            16G  432K   16G    1%  /dev/shm
+					tmpfs            16G   29M   16G    1%  /tmp
+					/dev/nvme0n1p3  887G  703G  139G   84%  /home
+					/dev/nvme0n1p1  300M  312K  300M    1%  /boot/efi
+					tmpfs           3.2G   88K  3.2G    1%  /run/user/1000
+
+					#2.查看/目录下面是哪些目录占用了空间
+					#sort -nr将du -sh *的结果从大到小排列
+					#因为home是单独的分区挂载，所以这里排除home目录，最大的目录是var的14.1G和usr的13G
+					qing@qingsword.com:~$ cd / &amp;&amp; sudo du -sh * | sort -nr 
+					703G    home
+					14.1G    var
+					188K    tmp
+					67M     boot
+					24K     desktopfs-pkgs.txt
+					16K     lost+found
+					13M     etc
+					13G     usr
+					12K     srv
+					8.0K    rootfs-pkgs.txt
+					4.0K    root
+					4.0K    mnt
+					1.7M    run
+					1.7G    opt
+
+					#3.根据经验判断var中保存着系统日志，以及下载的软件安装包缓存，进入var中查看
+					qing@qingsword.com:~$ cd /var &amp;&amp; sudo du -sh * | sort -nr
+					9G    cache
+					186M    lib
+					5G    log
+					89M     tmp
+					40K     spool
+					24K     db
+					4.0K    opt
+					4.0K    local
+					4.0K    games
+					4.0K    empty
+					0       run
+					0       mail
+					0       lock
+
+					#4.其中cache中保存了pacman下载的软件安装包缓存，log存储了系统日志文件
+					qing@qingsword.com:~$ cd /var/cache &amp;&amp; sudo du -sh * | sort -nr
+					3G    pkgfile
+					6G    pacman
+					112K    ldconfig
+					20K     cups
+					5.8M    man
+					4.0M    swcatalog
+					4.0K    samba
+					4.0K    private
+					2.2M    fontconfig
+
+					qing@qingsword.com:~$ cd /var/log &amp;&amp; sudo du -sh * | sort -nr
+					5G    journal
+					964K    wtmp
+					372K    pacman.log
+					288K    vnetlib
+					156K    vmware
+					56K     cups
+					40K     Xorg.0.log
+					36K     Xorg.0.log.old
+					4.0K    samba
+					4.0K    private
+					4.0K    old
+					4.0K    gssproxy
+					4.0K    btmp.1
+					4.0K    audit
+					0       lastlog
+					0       btmp
+					</pre>
+					<p>通过上面的分析，只需要删除日志文件，然后清除pacman下载的软件安装包缓存即可释放差不多14G的空间。</p>
+
+					<h2 id="Arch-root-directory-slimming-2">0×2.清理垃圾数据</h2>
+					<p>1，清理所有的pacman缓存文件：</p>
+					<pre class="brush: bash;">
+					#pacman缓存可以缓存所有用户已经安装的软件包到本地，当用户删除软件后，再安装，系统不需要联网去下载这个软件包，而只需要取出本地缓存的安装包进行安装，下面的命令将清空本地缓存的所有安装包
+					qing@qingsword.com:~$ sudo pacman -Scc
+					</pre>
+					
+					<p>2，清理日志文件夹：</p>
+					<pre class="brush: bash;">
+					#方法一：仅保留一周的日志
+					qing@qingsword.com:~$ sudo journalctl --vacuum-time=1w
+
+					#方法二：仅保留最新的100M大小的日志
+					qing@qingsword.com:~$ sudo journalctl --vacuum-size=500M
+
+					#方法三：删除日志文件，将日志文件名“23d24258e4304a548c74208e6baecc8f”替换成你机器上的日志文件夹名
+					qing@qingsword.com:~$ sudo rm -rf /var/log/journal/23d24258e4304a548c74208e6baecc8f
+					</pre>
+
+					<p>经过这两步操作之后，更目录的大小释放了14G左右的空间，又可以浪一阵子了。</p>
+
+				<!-- /正文 -->
+
+				<footer class="text-footer">
+					<p>
+						*转载请注明来自:<a title="晴刃-自由、互助、分享、专注计算机技术。" href="http://www.qingsword.com" target="_blank">晴刃(QingSword.COM)</a>
+					</p>
+					<p>*原文连接:<a title="[Arch]-11-根目录垃圾数据清理" href="http://www.qingsword.com/qing/Arch-11.html" target="_blank">http://www.qingsword.com/qing/Arch-11.html</a></p>
+				</footer>
+			</article>
+			<!-- /文章区 -->	
+		</div>
+	</div>
+	<!-- /content -->
+	
+	<!-- footer -->
+	<footer id="footer">
+		<div class="footer-container">
+			QingSword.COM &nbsp;<img src="../logo/by-nc-sa.png" alt="Creative Commons" title="Creative Commons">
+		</div>
+	</footer>
+	<!-- /footer -->
+</body>
+</html>
