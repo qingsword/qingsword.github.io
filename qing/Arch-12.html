@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<!--Copyright©QingSword.COM︻☼1010D>-->
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
+	<meta name="description" content="晴刃,是一个致力推广实用计算机技术的个人博客;我们分享计算机知识;为计算机系统以及网络安全防范做出一份贡献。【专注技术 创造价值 共同进步】">
+	<meta name="keywords" content="晴刃,晴,qing,qingsword,ccna图文笔记,ubuntu,linux,ubuntu server,mysql,node.js,javascript,python,计算机技术博客,rust,kali,shell,arch,manjore,rust编程基础">
+	<title>[Arch]-12-Manjaro从AMD显卡替换Nvidia显卡 - QingSword.COM</title>
+	<link rel="shortcut icon" type="image/x-icon" href="../logo/favicon.ico">
+	<link rel="stylesheet" type="text/css" href="../css/basic.css">
+	<link rel="stylesheet" type="text/css" href="../css/text.css">
+	<!-- 代码块高亮js -->
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shCore.css"/>
+	<link type="text/css" rel="stylesheet" href="../plugins/SyntaxHighlighter/styles/shThemeRDark.css"/>
+	 <script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shCore.js"></script>
+	<script type="text/javascript" src="../plugins/SyntaxHighlighter/scripts/shBrushBash.js"></script>
+	<script type="text/javascript">
+	SyntaxHighlighter.all();
+	</script>
+</head>
+<body>
+	<!--header -->
+	<header id="nav">
+			<div class="nav-container"> 
+				<!-- 根大纲-->
+				<a href="http://www.qingsword.com" title="晴刃">
+					<h1 class="nav-logo">晴刃</h1>
+				</a>
+				<h2 class="nav-site-description desc-hidden">
+					自由、互助、分享、专注计算机技术
+				</h2>
+				<nav class="nav-links"> 
+					<!-- nav连接大纲-->
+					<h1 style="display:none;">网站导航</h1> 
+					<ul>
+						<li  class="li-hidden">
+							<a href="../index.html" title="home">
+								<span class="link-word"><img src="../logo/home.png" alt="home" class="link-img">首页</span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../web.html" title="web">
+								<span class="link-word"><img src="../logo/web.png" alt="web" class="link-img">程序<span class="word-hidden">设计</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../system.html" title="system">
+								<span class="link-word"><img src="../logo/linux.png" alt="linux" class="link-img">系统<span class="word-hidden">应用</span></span>
+							</a>
+						</li>
+						<li class="li-hidden">
+							<a href="../net.html" title="net">
+								<span class="link-word"><img src="../logo/net.png" alt="net" class="link-img">网络<span class="word-hidden">技术</span></span>
+							</a>
+						</li>
+						<li>
+							<a href="../sitemap.html" title="sitemap">
+								<span class="link-word"><img src="../logo/archives.png" alt="archives" class="link-img"><span class="word-hidden">文章</span>归档</span>
+							</a>
+						</li>
+					</ul>
+				</nav>
+			</div>		
+	</header>
+	<!-- /header -->
+
+	<!-- content-->
+	<div id="content">
+		<div class="content-container">
+			<!-- 文章区 -->
+			<article class="text-container">
+				<header class="text-header">
+					<h1>[Arch]-12-Manjaro从AMD显卡替换Nvidia显卡</h1>	
+				</header><!-- /header -->
+				<section class="text-body">
+					<h2>引言</h2>
+					<p>这篇文章记录Manjaro系统环境中，从A卡替换到N卡的过程，在替换之后出现CPU占用率从3%跳到15%反复出现，排查后发现是N卡开源驱动的问题，替换成官方闭源驱动完美解决。</p>
+					<!-- 目录 -->
+					<h2>文章目录</h2>
+					<ul class="contents">	
+						 <li><a href="#Arch-Manjaro-Nvidia-1">0×1.Manjaro如何将Amd卡替换成Nvidia卡</a></li>
+					 </ul>
+					<!-- /目录 -->
+
+					<!-- 正文 -->
+					<h2 id="Arch-Manjaro-Nvidia-1">0×1.Manjaro如何将Amd卡替换成Nvidia卡</h2>
+					<p>实验系统：Manjaro</p>
+					<p>主机替换前显卡：AMD</p>
+					<p>主机替换后显卡：Nvidia 3080</p>
+
+					<p>本来想着Manjaro已经集成了Nvidia的开源驱动，直接将A卡取出来，换上N卡完事，但进入系统后，CPU的使用率有点奇怪，监控中显示CPU的使用率在0%~15%这个区间，有规律的跳动，从0直接跳15再到0再到15，看起来就像是在跳机械舞，查阅了部分资料后，分析出问题可能出现在自带的Nouveau驱动上，需要替换安装官方的闭源驱动才行，然后就有了下面的操作：</p>
+					<pre class="brush: bash;">
+					#首先查看一下显卡型号
+					qing@qingsword.com:~$ lspci -k | grep -A 2 -E "(VGA|3D)"
+					26:00.0 VGA compatible controller: NVIDIA Corporation GA102 [GeForce RTX 3080 Lite Hash Rate] (rev a1)
+			        Subsystem: NVIDIA Corporation Device 1539
+			        Kernel driver in use: Nouveau #用的是Nouveau驱动
+					</pre>
+					<p>	根据自己显卡显示型号（GeForce RTX 3080），去下面这个N卡官方网站搜驱动</p>
+					<p>https://www.nvidia.com/Download/index.aspx</p>
+					<p>以型号（GeForce RTX 3080）为例如下图所示，点击search按钮：</p>
+					<img src="images/manjaro-nvidia-1.png" alt="manjaro-nvidia-1">
+					<p>搜索出来的结果，点击下载按钮：</p>
+					<img src="images/manjaro-nvidia-2.png" alt="manjaro-nvidia-2">
+					<p>下载下来之后，先需要禁用Nouveau驱动：</p>
+					<pre class="brush: bash;">
+					#禁用Nouveau驱动，创建下面这个文件
+					qing@qingsword.com:~$ sudo vim /etc/modprobe.d/nvidia-installer-disable-nouveau.conf
+					#写入下面这两行内容
+					blacklist nouveau
+					options nouveau modeset=0
+
+					#保存之后，更新数据
+					qing@qingsword.com:~$ sudo update-initramfs -u
+					</pre>
+
+					<p>进入刚才下载的官方N卡驱动文件夹：</p>
+					<pre class="brush: bash;">
+					#给.run文件添加x权限
+					qing@qingsword.com:~$ chmod +x NVIDIA-Linux-x86_64-525.89.02.run
+					#安装
+					qing@qingsword.com:~$ sudo ./NVIDIA-Linux-x86_64-525.89.02.run
+
+					#安装过程中所有的提示全部选择yes回车【用tab键切换选择】
+					</pre>
+					<p>安装完成后重启，不出意外的话，进入系统就能查看到使用的驱动为Nvidia了。</p>
+
+					<p>如果在安装过程中遇到问题（比如停电或者死机），重启了，这个时候很可能会卡在一个黑色屏幕进不去系统，需要重新将N卡取下来，将A卡装上去，然后重复上面安装N卡闭源驱动的过程，直到安装完成，再将替换成N卡，就能成功进入系统了：</p>
+
+				<!-- /正文 -->
+
+				<footer class="text-footer">
+					<p>
+						*转载请注明来自:<a title="晴刃-自由、互助、分享、专注计算机技术。" href="http://www.qingsword.com" target="_blank">晴刃(QingSword.COM)</a>
+					</p>
+					<p>*原文连接:<a title="[Arch]-12-Manjaro从AMD显卡替换Nvidia显卡" href="http://www.qingsword.com/qing/Arch-12.html" target="_blank">http://www.qingsword.com/qing/Arch-12.html</a></p>
+				</footer>
+			</article>
+			<!-- /文章区 -->	
+		</div>
+	</div>
+	<!-- /content -->
+	
+	<!-- footer -->
+	<footer id="footer">
+		<div class="footer-container">
+			QingSword.COM &nbsp;<img src="../logo/by-nc-sa.png" alt="Creative Commons" title="Creative Commons">
+		</div>
+	</footer>
+	<!-- /footer -->
+</body>
+</html>
