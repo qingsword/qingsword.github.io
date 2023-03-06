@@ -135,9 +135,14 @@
 					#保存
 					命令(输入 m 获取帮助)： w
 
-					#3.重新将U盘拔出插入，如果分区自动挂载，请先卸载，然后对该分区进行格式化，格式化成fat是为了让Windows也能识别（mkfs格式化ntfs非常慢，如果想要格式化成ntfs的，可以用mkfs.ntfs替换）
+					#3.重新将U盘拔出插入，如果分区自动挂载，请先卸载，然后对该分区进行格式化，格式化成fat是为了让Windows也能识别
 					qing@qingsword.com:~$ sudo umount /dev/sdc1
 					qing@qingsword.com:~$ sudo mkfs.fat /dev/sdc1
+
+					#如果想格式化成NTFS分区，用下面的命令
+					#-f参数，让系统使用快速格式化
+					qing@qingsword.com:~$ sudo umount /dev/sdc1
+					qing@qingsword.com:~$ sudo mkfs.ntfs -f /dev/sdc1
 					</pre>
 					<p>硬盘分区和格式化请参阅：<a title="[Linux实用命令]-8-硬盘分区与管理。" href="917.html" target="_blank">[Linux实用命令]-8-硬盘分区与管理</a></p>
 					<p>Ps：dd命令直接将Linux的iso写入U盘就能开机引导的原因是，这些Linux的iso自带了引导文件，所以用dd将Windows的iso写入U盘将不能开机引导，Windows的U盘启动盘制作方法，请参考本文第三小节。</p>
