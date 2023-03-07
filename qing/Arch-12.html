@@ -80,6 +80,7 @@
 					<h2>文章目录</h2>
 					<ul class="contents">	
 						 <li><a href="#Arch-Manjaro-Nvidia-1">0×1.Manjaro如何将Amd卡替换成Nvidia卡</a></li>
+						 <li><a href="#Arch-Manjaro-Nvidia-2">0×2.Manjaro升级内核之后重装N卡驱动</a></li>
 					 </ul>
 					<!-- /目录 -->
 
@@ -127,6 +128,17 @@
 					<p>安装完成后重启，不出意外的话，进入系统就能查看到使用的驱动为Nvidia了。</p>
 
 					<p>如果在安装过程中遇到问题（比如停电或者死机），重启了，这个时候很可能会卡在一个黑色屏幕进不去系统，需要重新将N卡取下来，将A卡装上去，然后重复上面安装N卡闭源驱动的过程，直到安装完成，再将替换成N卡，就能成功进入系统了。</p>
+
+					<h2 id="Arch-Manjaro-Nvidia-2">0×2.Manjaro升级内核之后重装N卡驱动</h2>
+					<p>Manjaro内核大版本升级之后（例如从5.0升级到6.0），如果忘记重新安装N驱动，重启系统很有可能卡在有SYSTEM Clean提示的黑屏上，这个时候可以使用Ctrl+Alt+F2进入字符界面，登录进系统后，再重新安装N卡驱动：</p>
+					<p>N卡驱动需要提前放置到U盘，U盘挂载上，或已经下载到系统目录中，再使用下面的方法重新安装即可。</p>
+					<pre class="brush: bash;">
+					#安装
+					qing@qingsword.com:~$ sudo ./NVIDIA-Linux-x86_64-525.89.02.run
+
+					#安装过程中所有的提示全部选择yes回车【用tab键切换选择】
+					</pre>
+					<p>安装好之后就会直接进入登录界面。</p>
 
 				<!-- /正文 -->
 
